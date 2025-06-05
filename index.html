@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="CuriousLabs is an AI-driven creative code lab. Explore automation tools, stunning design systems, and breakthrough digital engineering.">
+    <title>CuriousLabs - AI CodeOps Service Lab</title>
+    
+    <!-- Critical Image Preloads for LCP Optimization -->
+    <link 
+      rel="preload" 
+      as="image" 
+      href="/assets/images/planets/milkyway_Light_mobile.webp"
+      media="(max-width: 768px)"
+      fetchpriority="high"
+    >
+    <link 
+      rel="preload" 
+      as="image" 
+      href="/assets/images/planets/milkyway_Light_tablet.webp"
+      media="(min-width: 769px) and (max-width: 1200px)"
+      fetchpriority="high"
+    >
+    <link 
+      rel="preload" 
+      as="image" 
+      href="/assets/images/planets/4k/milkyway_Light.webp"
+      media="(min-width: 1201px)"
+      fetchpriority="high"
+    >
+    
+    <!-- Font Display Swap -->
+    <style>
+      @font-face {
+        font-family: 'Main Font';
+        src: url('/fonts/main-font.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
+    
+    <!-- Theme color for browser UI -->
+    <meta name="theme-color" content="#0f172a">
+    
+    <!-- Canonical link -->
+    <link rel="canonical" href="https://curiouslabs.dev/">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

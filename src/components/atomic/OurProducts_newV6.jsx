@@ -1610,14 +1610,14 @@ const ProductsPage = () => {
       </div>
 
       {/* Product Detail Modal */}
-      <AnimatePresence>
+      <ThrottledAnimatePresence>
         {selectedProduct && (
           <ProductDetailModal 
             product={selectedProduct} 
             onClose={() => setSelectedProduct(null)} 
           />
         )}
-      </AnimatePresence>
+      </ThrottledAnimatePresence>
     </div>
   );
 };
@@ -1700,25 +1700,63 @@ const ServicesPage = ({ onScrollRelease }) => {
     // Only run typewriter if stellar is not active
     if (isStellarActive) return;
     
+    // FIXED: Replace setInterval with requestAnimationFrame to prevent DOM.resolveNode errors
     let index = 0;
-    const interval = setInterval(() => {
-      setText(fullText.slice(0, index));
-      index++;
-      
-      // Enable skip after 25% of text is shown
-      if (index >= Math.floor(fullText.length * 0.25) && !canSkip) {
-        setCanSkip(true);
+    let frameId;
+    let lastTime = 0;
+    
+    const typewriter = (currentTime) => {
+      // Throttle to ~15fps (67ms intervals) instead of 20fps to reduce DOM stress
+      if (currentTime - lastTime >= 67) {
+        setText(fullText.slice(0, index));
+        index++;
+        
+        // Enable skip after 25% of text is shown
+        if (index >= Math.floor(fullText.length * 0.25) && !canSkip) {
+          setCanSkip(true);
+        }
+        
+        if (index > fullText.length) {
+          setTypewriterComplete(true);
+          setShowStellarHint(true);
+          setShowFloatingWords(true);
+          return; // Exit animation loop
+        }
+        
+        lastTime = currentTime;
       }
       
-      if (index > fullText.length) {
-        clearInterval(interval);
-        setTypewriterComplete(true);
-        setShowStellarHint(true);
-        // Show floating words briefly
-        setShowFloatingWords(true);
+      frameId = requestAnimationFrame(typewriter);
+    };
+    
+    frameId = requestAnimationFrame(typewriter);
+    
+    return () => {
+      if (frameId) {
+        cancelAnimationFrame(frameId);
       }
-    }, 50);
-    return () => clearInterval(interval);
+    };
+    
+    // OLD CODE - This was causing DOM.resolveNode errors:
+    // let index = 0;
+    // const interval = setInterval(() => {
+    //   setText(fullText.slice(0, index));
+    //   index++;
+    //   
+    //   // Enable skip after 25% of text is shown
+    //   if (index >= Math.floor(fullText.length * 0.25) && !canSkip) {
+    //     setCanSkip(true);
+    //   }
+    //   
+    //   if (index > fullText.length) {
+    //     clearInterval(interval);
+    //     setTypewriterComplete(true);
+    //     setShowStellarHint(true);
+    //     // Show floating words briefly
+    //     setShowFloatingWords(true);
+    //   }
+    // }, 50);
+    // return () => clearInterval(interval);
   }, [onScrollRelease, isStellarActive, canSkip, fullText.length]);
 
   // Keyboard controls for skip and stellar activation
@@ -2207,6 +2245,77 @@ const useDebugMode = () => {
   }, [isDebug]);
   
   return isDebug;
+};
+
+// Add performance throttling for AnimatePresence
+const usePerformanceThrottle = () => {
+  const [shouldAnimate, setShouldAnimate] = useState(true);
+  const [performanceLevel, setPerformanceLevel] = useState('high');
+  
+  useEffect(() => {
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    // Performance heuristics
+    const isLowEndDevice = navigator.hardwareConcurrency <= 4;
+    const isSlowConnection = navigator.connection?.effectiveType === '2g' || navigator.connection?.effectiveType === 'slow-2g';
+    
+    if (prefersReducedMotion || isLowEndDevice || isSlowConnection) {
+      setPerformanceLevel('low');
+      setShouldAnimate(false);
+    } else if (isLowEndDevice) {
+      setPerformanceLevel('medium');
+    }
+    
+    // DISABLED: MutationObserver was causing DOM.resolveNode errors
+    // Monitor DOM mutations for performance
+    // let mutationCount = 0;
+    // const observer = new MutationObserver((mutations) => {
+    //   mutationCount += mutations.length;
+    //   
+    //   // If high DOM activity detected, temporarily reduce animations
+    //   if (mutationCount > 100) {
+    //     setDomActivityHigh(true);
+    //     setShouldAnimate(false);
+    //     
+    //     // Reset after a delay
+    //     setTimeout(() => {
+    //       mutationCount = 0;
+    //       setDomActivityHigh(false);
+    //       if (!prefersReducedMotion && !isLowEndDevice) {
+    //         setShouldAnimate(true);
+    //       }
+    //     }, 2000);
+    //   }
+    // });
+    // 
+    // observer.observe(document.body, {
+    //   childList: true,
+    //   subtree: true,
+    //   attributes: true
+    // });
+    // 
+    // return () => {
+    //   observer.disconnect();
+    // };
+  }, []);
+  
+  return { shouldAnimate, performanceLevel };
+};
+
+// Throttled AnimatePresence wrapper
+const ThrottledAnimatePresence = ({ children, ...props }) => {
+  const { shouldAnimate } = usePerformanceThrottle();
+  
+  if (!shouldAnimate) {
+    return children;
+  }
+  
+  return (
+    <AnimatePresence {...props}>
+      {children}
+    </AnimatePresence>
+  );
 };
 
 // Main Component

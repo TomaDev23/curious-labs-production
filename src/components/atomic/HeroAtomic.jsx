@@ -16,17 +16,16 @@
 // ⚠️ WARNING: DO NOT REMOVE - MAIN HOMEPAGE HERO
 // 📊 BUNDLE: Lazy loaded for performance (Three.js content)
 // 🎯 TYPE: Homepage Hero Component
-// 🔗 DEPENDENCIES: HeroVisualPlanet, BackgroundLayerAtomic, HeroStageManager
+// �� DEPENDENCIES: Hero3DPlanet (simplified), BackgroundLayerAtomic, HeroStageManager
 
 import React, { useState, Suspense, lazy, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IMAGES } from '../../utils/assets';
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
 import MissionControlNavbar from '../navigation/MissionControlNavbar';
-// import HeroVisualPlanet from './HeroVisualPlanet';
 
-// Lazy load HeroVisualPlanet to prevent Three.js from contaminating main bundle
-const HeroVisualPlanet = lazy(() => import('./HeroVisualPlanet'));
+// ✅ NEW: Simplified single-layer 3D planet (replaces complex proxy chain)
+const Hero3DPlanet = lazy(() => import('../Hero3DPlanet'));
 
 import BackgroundLayerAtomic from './BackgroundLayerAtomic';
 import HeroStageManager from './hero/HeroStageManager';
@@ -43,10 +42,25 @@ const HeroAtomic = () => {
   const [sceneStep, setSceneStep] = useState(8);
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
+  const [contentLoaded, setContentLoaded] = useState(false);
+  const [show3D, setShow3D] = useState(false);
 
   // Use unified responsive hooks
   const { isMobile, isTablet, isDesktop } = useResponsive();
   const { prefersReducedMotion, performanceTier } = useDeviceCapabilities();
+
+  // ✅ NEW: Content-first loading sequence
+  useEffect(() => {
+    // Content loads immediately
+    setContentLoaded(true);
+    
+    // 3D planet delays 1.5 seconds (as requested)
+    const timer = setTimeout(() => {
+      setShow3D(true);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Memoized responsive classes for performance
   const responsiveClasses = React.useMemo(() => {
@@ -118,31 +132,38 @@ const HeroAtomic = () => {
       <HeroStageManager setSceneStep={setSceneStep} />
       
       <section className={responsiveClasses.section}>
-        {/* Background layer */}
+        {/* Background layer - Loads immediately */}
         <BackgroundLayerAtomic />
         
+        {/* ✅ NEW: 3D Planet with delayed entrance (1.5s after content) */}
+        <AnimatePresence>
+          {show3D && (
+            <div
+              style={{
+                position: 'absolute',
+                ...planetPosition,
+                zIndex: 20
+              }}
+            >
+              <Suspense fallback={null}>
+                <Hero3DPlanet />
+              </Suspense>
+            </div>
+          )}
+        </AnimatePresence>
+        
         {/* Controlled Planet Bloom - Atmospheric glow behind planet - EFFECTS TIER */}
-        <div
-          className={responsiveClasses.planetBloom}
-          style={{
-            ...planetPosition,
-            background: 'radial-gradient(ellipse, rgba(255,255,255,0.05) 0%, transparent 70%)'
-          }}
-        />
-        
-        {/* Planet visual - responsive positioning */}
-        <Suspense fallback={
-          <div className={`${responsiveClasses.planetContainer} rounded-full bg-gradient-to-br from-indigo-900/30 via-purple-900/30 to-violet-800/30 ${prefersReducedMotion ? '' : 'animate-pulse'}`} />
-        }>
-          <HeroVisualPlanet 
-            sceneStep={sceneStep}
-            className={responsiveClasses.planetContainer}
-            size={planetSize}
-            style={{ position: 'absolute', ...planetPosition }}
+        {show3D && (
+          <div
+            className={responsiveClasses.planetBloom}
+            style={{
+              ...planetPosition,
+              background: 'radial-gradient(ellipse, rgba(255,255,255,0.05) 0%, transparent 70%)'
+            }}
           />
-        </Suspense>
+        )}
         
-        {/* Enhanced Interactive Text content - responsive positioning */}
+        {/* Enhanced Interactive Text content - responsive positioning - LOADS FIRST */}
         <div className={responsiveClasses.contentWrapper}>
           <div className={isMobile ? 'mb-3' : 'mb-4'}>
             {/* Interactive header with hover effects */}

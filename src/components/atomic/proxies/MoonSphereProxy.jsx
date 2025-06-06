@@ -11,11 +11,30 @@
  */
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { useUnifiedDeviceCapabilities } from '../../../hooks/useUnifiedDeviceCapabilities';
+
+// 🚀 SAFE WEBGL ACCESS: Safely access WebGL context without throwing errors
+const useWebGLSafely = () => {
+  try {
+    // Try to import the hook, but handle gracefully if WebGL provider is not available
+    const { useUnifiedDeviceCapabilities } = require('../../../hooks/useUnifiedDeviceCapabilities');
+    return useUnifiedDeviceCapabilities();
+  } catch (error) {
+    console.warn('WebGL provider not available, using fallback values:', error.message);
+    // Return fallback values when WebGL provider is not available
+    return {
+      webglSupported: false,
+      shouldUse3D: false,
+      performanceLevel: 'low',
+      canHandle3D: false,
+      deviceClass: 'low-end',
+      memoryStatus: 'limited'
+    };
+  }
+};
 
 // 🚀 UNIFIED DEVICE CAPABILITY: Use unified hook instead of creating WebGL context
 const use3DCapability = () => {
-  const deviceProfile = useUnifiedDeviceCapabilities();
+  const deviceProfile = useWebGLSafely();
   
   if (!deviceProfile) return false;
   
@@ -74,7 +93,7 @@ const MoonSphereProxy = ({
   const shouldLoad3D = enabled !== null ? enabled : autoCapable;
   
   // 🚀 UNIFIED DEVICE CAPABILITY: Use unified hook instead of creating WebGL context
-  const deviceProfile = useUnifiedDeviceCapabilities();
+  const deviceProfile = useWebGLSafely();
   const hasWebGL = deviceProfile?.webglSupported && deviceProfile?.shouldUse3D;
   
   useEffect(() => {

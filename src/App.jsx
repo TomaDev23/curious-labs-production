@@ -1,6 +1,9 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
+// ✅ NEW: Import CosmicLoader for 3D routes
+const CosmicLoader = lazy(() => import('./components/CosmicLoader'));
+
 // 🚀 CRITICAL: Lazy load UnifiedWebGLProvider to prevent bundling all 3D code upfront
 const UnifiedWebGLProvider = lazy(() => import('./3d/engine/UnifiedWebGLProvider').then(module => ({ default: module.UnifiedWebGLProvider })));
 
@@ -14,7 +17,7 @@ const LegacyIndexSafeReview = lazy(() => import('./pages/legacy_index_safe_revie
 const CosmicRevDev = lazy(() => import('./pages/CosmicRevDev'));
 const HomeLayout = lazy(() => import('./layouts/HomeLayout'));
 
-// Lazy-loaded pages for better performance
+// ✅ SLEEP-UNTIL-CALLED: All pages lazy loaded with route-level splitting
 const ProductsPortal = lazy(() => import('./pages/products/index.jsx'));
 const Aegis = lazy(() => import('./pages/products/aegis.jsx'));
 const OpsPipe = lazy(() => import('./pages/products/opspipe.jsx'));
@@ -30,16 +33,19 @@ const Contact = lazy(() => import('./pages/contact.jsx'));
 const Documentation = lazy(() => import('./pages/docs.jsx'));
 const NotFound = lazy(() => import('./pages/404.jsx'));
 
-// Legacy and remaining pages - cleaned up after Phase 2 file removal
+// ✅ 3D ROUTES: Only these 3 pages need 3D
+// 🎯 V7 UPDATE: Homepage now uses wrapper for 3D isolation
+const HomePage_v7_wrapper = lazy(() => import('./pages/HomePage_v7_wrapper.jsx')); // Homepage - 3D isolated to component level
+const CosmicRevPage = lazy(() => import('./pages/cosmic-rev.jsx')); // Cosmic route - 3D with loader
+const PlanetSandboxWithStarsPage = lazy(() => import('./pages/dev/planet-sandbox-with-stars.jsx')); // Dev 3D route
+
+// ✅ NON-3D ROUTES: Clean routes with no 3D overhead
 const DevV4CosmicPage = lazy(() => import('./pages/dev_v4_cosmic.jsx'));
 const BackgroundSandbox = lazy(() => import('./pages/background_sandbox.jsx'));
 const HomeV5AtomicPage = lazy(() => import('./pages/HomeV5AtomicPage.jsx'));
-const V6AtomicPage = lazy(() => import('./pages/v6_atomic.jsx'));
 const V6ProductsPage = lazy(() => import('./pages/v6-products.tsx'));
 const V6ProductsPage2 = lazy(() => import('./pages/v6-products2.tsx'));
 const Museum = lazy(() => import('./pages/museum.jsx'));
-
-// Remaining dev pages - cleaned up after Phase 2 file removal
 const CombinedParallaxTest = lazy(() => import('./pages/dev/combined-parallax-test.jsx'));
 const PlanetSandboxPage = lazy(() => import('./pages/dev/planet-sandbox.jsx'));
 
@@ -53,17 +59,12 @@ const PerformanceContext = React.createContext({
   addMetric: () => {}
 });
 
-// Loading fallback component - simplified without legacy redirect
-const LoadingFallback = () => {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-curious-dark-900">
-      <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-8"></div>
-      <p className="text-white text-center max-w-md px-4">
-        Loading the cosmic experience...
-      </p>
-    </div>
-  );
-};
+// ✅ NEW: Simple loading fallback for non-3D routes
+const SimpleLoader = () => (
+  <div className="flex items-center justify-center min-h-screen bg-black">
+    <div className="w-8 h-8 border-2 border-lime-400 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 // BackgroundManagerWrapper component that only renders on specific routes
 const BackgroundManagerWrapper = () => {
@@ -167,37 +168,30 @@ const useThoughtTrails = () => {
 };
 
 export default function App() {
-  // Use lazy-loaded ThoughtTrails system
-  useThoughtTrails();
-  
-  // 🎯 CONDITIONAL 3D LOADING: Only load 3D system on routes that actually need it
   const location = useLocation();
-  const routes3D = ['/']; // Only homepage needs 3D currently
-  const needs3D = routes3D.includes(location.pathname);
-  
-  // Performance metrics state
   const [metrics, setMetrics] = useState({});
   
-  // Add performance metric
+  // 🎯 REMOVED: Conditional 3D detection and double wrapping
+  // Let components handle their own 3D context needs
+  // const routes3D = ['/', '/cosmic-rev', '/dev/planet-sandbox-with-stars'];
+  // const needs3D = routes3D.includes(location.pathname);
+
   const addMetric = (key, value) => {
-    setMetrics(prev => {
-      const newMetrics = { ...prev };
-      if (!newMetrics[key]) {
-        newMetrics[key] = [];
+    setMetrics(prev => ({
+      ...prev,
+      [key]: {
+        ...value,
+        timestamp: Date.now()
       }
-      newMetrics[key].push(value);
-      
-      // Limit array size to prevent memory issues
-      if (newMetrics[key].length > 50) {
-        newMetrics[key] = newMetrics[key].slice(-50);
-      }
-      
-      return newMetrics;
-    });
+    }));
   };
-  
+
+  // 🚀 SURGICAL FIX: Remove conditional 3D wrapping - let components handle their own context
   // 🚀 OPTIMIZED: Lazy load performance monitoring only in development
   useEffect(() => {
+    // ⛔ DISABLED: Performance monitoring temporarily disabled for audit
+    return;
+    
     if (process.env.NODE_ENV === 'development') {
       loadPerformanceMonitor().then(({ generatePerformanceReport }) => {
         const intervalId = setInterval(() => {
@@ -224,15 +218,8 @@ export default function App() {
   return (
     <Suspense fallback={null}>
       <PerformanceContext.Provider value={{ metrics, addMetric }}>
-        {needs3D ? (
-          // 🎯 WITH 3D: Load UnifiedWebGLProvider only on routes that need it
-          <UnifiedWebGLProvider>
-            <AppRoutes />
-          </UnifiedWebGLProvider>
-        ) : (
-          // 🚀 WITHOUT 3D: Skip 3D overhead for better performance
-          <AppRoutes />
-        )}
+        {/* 🚀 SURGICAL FIX: Remove conditional 3D wrapping - let components handle their own context */}
+        <AppRoutes />
       </PerformanceContext.Provider>
     </Suspense>
   );
@@ -249,73 +236,89 @@ const AppRoutes = () => (
     <BackgroundManagerWrapper />
     
     <Routes>
-      {/* 🚀 HOMEPAGE NOW OPTIMIZED: V6AtomicPage (bulletproof!) */}
+      {/* 🚀 HOMEPAGE V7 ISOLATED: HomePage_v7_wrapper (3D engine isolated!) */}
       <Route path="/" element={
-        <Suspense fallback={<LoadingFallback />}>
-          <React.StrictMode>
+        <Suspense fallback={<SimpleLoader />}>
+          {import.meta.env.DEV ? (
+            <React.StrictMode>
+              <Suspense fallback={<SafeV4CosmicPage />}>
+                <ErrorBoundary fallback={<SafeV4CosmicPage />}>
+                  <HomePage_v7_wrapper />
+                </ErrorBoundary>
+              </Suspense>
+            </React.StrictMode>
+          ) : (
             <Suspense fallback={<SafeV4CosmicPage />}>
               <ErrorBoundary fallback={<SafeV4CosmicPage />}>
-                <V6AtomicPage />
+                <HomePage_v7_wrapper />
               </ErrorBoundary>
             </Suspense>
-          </React.StrictMode>
+          )}
         </Suspense>
       } />
       
       {/* 🏛️ MUSEUM: Code Museum - Development History Archive */}
       <Route path="/museum" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Museum />
         </Suspense>
       } />
       
       {/* 🏛️ MUSEUM: Original V4 Cosmic experience preserved */}
       <Route path="/dev-v4-cosmic" element={
-        <Suspense fallback={<LoadingFallback />}>
-          <React.StrictMode>
+        <Suspense fallback={<SimpleLoader />}>
+          {import.meta.env.DEV ? (
+            <React.StrictMode>
+              <Suspense fallback={<SafeV4CosmicPage />}>
+                <ErrorBoundary fallback={<SafeV4CosmicPage />}>
+                  <DevV4CosmicPage />
+                </ErrorBoundary>
+              </Suspense>
+            </React.StrictMode>
+          ) : (
             <Suspense fallback={<SafeV4CosmicPage />}>
               <ErrorBoundary fallback={<SafeV4CosmicPage />}>
                 <DevV4CosmicPage />
               </ErrorBoundary>
             </Suspense>
-          </React.StrictMode>
+          )}
         </Suspense>
       } />
       
       {/* Safe fallback version that can be accessed directly */}
       <Route path="/safe" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <SafeV4CosmicPage />
         </Suspense>
       } />
       
       <Route path="/products" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <ProductsPortal />
         </Suspense>
       } />
       <Route path="/products/aegis" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Aegis />
         </Suspense>
       } />
       <Route path="/products/opspipe" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <OpsPipe />
         </Suspense>
       } />
       <Route path="/products/moonsignal" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <MoonSignal />
         </Suspense>
       } />
       <Route path="/products/curious" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Curious />
         </Suspense>
       } />
       <Route path="/products/guardian" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Guardian />
         </Suspense>
       } />
@@ -328,42 +331,42 @@ const AppRoutes = () => (
       } /> */}
       
       <Route path="/tools" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Tools />
         </Suspense>
       } />
       <Route path="/tools/final-purge" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <FinalPurgePage />
         </Suspense>
       } />
       <Route path="/codelab" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <CodeLab />
         </Suspense>
       } />
       <Route path="/blog" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Blog />
         </Suspense>
       } />
       <Route path="/about" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <About />
         </Suspense>
       } />
       <Route path="/contact" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Contact />
         </Suspense>
       } />
       <Route path="/docs" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Documentation />
         </Suspense>
       } />
       <Route path="/docs/*" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Documentation />
         </Suspense>
       } />
@@ -404,7 +407,7 @@ const AppRoutes = () => (
       
       {/* 🚨 KEEP: /dev/combined-parallax-test - handle last */}
       <Route path="/dev/combined-parallax-test" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <CombinedParallaxTest />
         </Suspense>
       } />
@@ -442,39 +445,49 @@ const AppRoutes = () => (
       
       {/* 🚨 KEEP: /background-sandbox - Background System Sandbox */}
       <Route path="/background-sandbox" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <BackgroundSandbox />
         </Suspense>
       } />
       
       <Route path="/home-v5" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <HomeV5AtomicPage />
         </Suspense>
       } />
       
-      <Route path="/cosmic-rev" element={<CosmicRevDev />} />
-      
-      {/* 🗑️ GO: THE BIG ONE - /v6 main target - bye bye */}
-      {/* <Route path="/v6" element={
-        <Suspense fallback={<LoadingFallback />}>
-          <React.StrictMode>
-            <ErrorBoundary fallback={<SafeV4CosmicPage />}>
-              <V6HomePage />
-            </ErrorBoundary>
-          </React.StrictMode>
+      {/* ✅ NEW: 3D ROUTES WITH COSMIC LOADER */}
+      {/* 🚀 Cosmic Rev - 3D route with cosmic loading experience */}
+      <Route path="/cosmic-rev" element={
+        <Suspense fallback={
+          <Suspense fallback={<SimpleLoader />}>
+            <CosmicLoader message="🌌 Preparing cosmic revision interface..." />
+          </Suspense>
+        }>
+          <CosmicRevPage />
         </Suspense>
-      } /> */}
+      } />
+      
+      {/* 🚀 Planet Sandbox with Stars - 3D dev route with cosmic loading */}
+      <Route path="/dev/planet-sandbox-with-stars" element={
+        <Suspense fallback={
+          <Suspense fallback={<SimpleLoader />}>
+            <CosmicLoader message="🪐 Warming up stellar engines..." />
+          </Suspense>
+        }>
+          <PlanetSandboxWithStarsPage />
+        </Suspense>
+      } />
       
       {/* 🚨 KEEP: V6 Products - static museum */}
       <Route path="/v6-products" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <V6ProductsPage />
         </Suspense>
       } />
       
       <Route path="/v6-products2" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <V6ProductsPage2 />
         </Suspense>
       } />
@@ -513,7 +526,7 @@ const AppRoutes = () => (
       } /> */}
       
       <Route path="*" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <NotFound />
         </Suspense>
       } />

@@ -13,8 +13,8 @@ import React, { Suspense, lazy } from 'react';
 import { useScene } from './SceneControllerV6';
 // import EarthSphere from '../../atomic/Planetary/EarthSphere';
 
-// Using EarthSphereProxy to handle the migration automatically
-const EarthSphere = lazy(() => import('../../proxies/EarthSphereProxy'));
+// ✅ UPDATED: Using new simplified Hero3DPlanet instead of deleted EarthSphereProxy
+const Hero3DPlanet = lazy(() => import('../../Hero3DPlanet'));
 
 // TEMPORARY: Using fallback only until EarthSphere integration
 // const AegisPlanet3DV6 = lazy(() => import('./AegisPlanet3DV6'));
@@ -59,7 +59,7 @@ const AegisPlanetV6 = ({ className = '', size = 300 }) => {
     return (
       <div style={{ width: size, height: size }} className={className}>
         <Suspense fallback={<LoadingPlaceholder />}>
-          <EarthSphere className="w-full h-full" />
+          <Hero3DPlanet />
         </Suspense>
       </div>
     );

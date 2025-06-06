@@ -7,7 +7,7 @@ import React, { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 
 // Lazy load 3D components for this route
-const Hero3DPlanet = lazy(() => import('../components/Hero3DPlanet'));
+// TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../components/Hero3DPlanet'));
 const CosmicRevDev = lazy(() => import('./CosmicRevDev'));
 
 const CosmicRevPage = () => {
@@ -34,11 +34,12 @@ const CosmicRevPage = () => {
         
         {/* 3D Planet Component */}
         <div className="relative">
-          <Suspense fallback={
-            <div className="w-96 h-96 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 animate-pulse" />
-          }>
-            <Hero3DPlanet />
-          </Suspense>
+          <div className="absolute inset-0">
+            {/* TEMPORARILY DISABLED: <Hero3DPlanet /> */}
+            <div className="flex items-center justify-center h-full">
+              <div className="text-lime-400 text-lg">🌍 2D Planet Coming Soon</div>
+            </div>
+          </div>
         </div>
         
         {/* Original CosmicRevDev content */}

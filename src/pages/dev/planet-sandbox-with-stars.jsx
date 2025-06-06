@@ -6,8 +6,7 @@
 import React, { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 
-// Lazy load 3D components for this route
-const Hero3DPlanet = lazy(() => import('../../components/Hero3DPlanet'));
+// TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../../components/Hero3DPlanet'));
 
 const PlanetSandboxWithStarsPage = () => {
   return (
@@ -50,20 +49,24 @@ const PlanetSandboxWithStarsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
           <div className="relative">
             <h3 className="text-lg text-white/80 mb-4 text-center">Primary Planet</h3>
-            <Suspense fallback={
-              <div className="w-64 h-64 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 animate-pulse mx-auto" />
-            }>
-              <Hero3DPlanet />
-            </Suspense>
+            <div className="absolute inset-0 flex flex-col gap-8">
+              {/* First Planet */}
+              <div className="flex-1 flex items-center justify-center">
+                {/* TEMPORARILY DISABLED: <Hero3DPlanet /> */}
+                <div className="text-lime-400 text-lg">🌍 Planet Sandbox Disabled</div>
+              </div>
+            </div>
           </div>
           
           <div className="relative">
             <h3 className="text-lg text-white/80 mb-4 text-center">Secondary Planet</h3>
-            <Suspense fallback={
-              <div className="w-64 h-64 rounded-full bg-gradient-to-br from-green-500/20 to-blue-500/20 animate-pulse mx-auto" />
-            }>
-              <Hero3DPlanet />
-            </Suspense>
+            <div className="absolute inset-0 flex flex-col gap-8">
+              {/* Second Planet */}
+              <div className="flex-1 flex items-center justify-center">
+                {/* TEMPORARILY DISABLED: <Hero3DPlanet /> */}
+                <div className="text-lime-400 text-lg">🪐 Coming in V8</div>
+              </div>
+            </div>
           </div>
         </div>
         

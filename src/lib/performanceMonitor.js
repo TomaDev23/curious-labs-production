@@ -11,13 +11,17 @@ class PerformanceMonitor {
       chunkLoading: []
     };
     this.observers = new Set();
-    this.isEnabled = process.env.NODE_ENV === 'development';
+    this.isEnabled = false; // DISABLED FOR LIGHTHOUSE AUDIT
     
     // Initialize performance monitoring
     this.init();
   }
   
   init() {
+    // ⛔ DISABLED: Performance monitoring temporarily disabled for audit
+    console.log('⛔ Performance Monitor disabled for audit');
+    return;
+    
     if (!this.isEnabled || typeof window === 'undefined') return;
     
     console.log('🎯 Performance Monitor initialized for Phase 6 optimization');

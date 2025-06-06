@@ -6,10 +6,23 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { useUnifiedWebGL } from '../3d/engine/UnifiedWebGLProvider';
+
+// Safe WebGL context access with fallback
+const useWebGLSafely = () => {
+  try {
+    const { useUnifiedWebGL } = require('../3d/engine/UnifiedWebGLProvider');
+    return useUnifiedWebGL();
+  } catch (error) {
+    // WebGL provider not available - return fallback
+    return {
+      webglSupported: false,
+      capabilities: null
+    };
+  }
+};
 
 export const useUnifiedDeviceCapabilities = () => {
-  const { webglSupported, capabilities } = useUnifiedWebGL();
+  const { webglSupported, capabilities } = useWebGLSafely();
   const [deviceProfile, setDeviceProfile] = useState(null);
 
   // Device performance assessment using unified WebGL capabilities
@@ -19,7 +32,18 @@ export const useUnifiedDeviceCapabilities = () => {
         webglSupported: false,
         performanceLevel: 'minimal',
         canHandle3D: false,
-        shouldUse3D: false
+        shouldUse3D: false,
+        // Fallback values for when WebGL is disabled
+        webglVersion: 1,
+        hasEnoughMemory: navigator.deviceMemory ? navigator.deviceMemory >= 4 : true,
+        isSlowNetwork: false,
+        isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+        isTablet: /iPad|Android(?=.*\b(tablet|large))/i.test(navigator.userAgent),
+        isDesktop: !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+        maxTextureSize: 0,
+        maxTextures: 0,
+        vendor: 'Unknown',
+        renderer: 'Software Fallback'
       };
     }
 

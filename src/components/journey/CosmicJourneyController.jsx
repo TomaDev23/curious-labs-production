@@ -445,6 +445,9 @@ export default function CosmicJourneyController({ children }) {
 
   // Performance monitoring
   const checkPerformance = useCallback(() => {
+    // ⛔ DISABLED: Performance monitoring temporarily disabled for audit
+    return;
+    
     if (process.env.NODE_ENV === 'development') {
       const report = performanceMonitor.getReport(metadata.id);
       if (report) {
@@ -467,13 +470,13 @@ export default function CosmicJourneyController({ children }) {
     ScrollPipeline.init();
     const cleanup = ScrollPipeline.subscribe(setScrollProgress);
     
-    // Setup performance check interval
-    const perfInterval = setInterval(checkPerformance, 5000);
+    // ⛔ DISABLED: Performance check interval temporarily disabled for audit
+    // const perfInterval = setInterval(checkPerformance, 5000);
     
     return () => {
       cleanup();
       ScrollPipeline.cleanup();
-      clearInterval(perfInterval);
+      // clearInterval(perfInterval);
       performanceMonitor.reset(metadata.id);
     };
   }, [checkPerformance]);

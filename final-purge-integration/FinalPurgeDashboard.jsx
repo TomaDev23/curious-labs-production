@@ -1,29 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import mermaid from 'mermaid';
+// SURGICAL FIX: Remove eager mermaid import - replaced with runtime loading
+// import mermaid from 'mermaid';
 
 // Final Purge Dashboard Component with Mermaid Charts
 export default function FinalPurgeDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [animationStep, setAnimationStep] = useState(0);
+  const [mermaidLoaded, setMermaidLoaded] = useState(false);
 
-  // Initialize Mermaid
-  useEffect(() => {
-    mermaid.initialize({ 
-      theme: 'dark',
-      themeVariables: {
-        primaryColor: '#84cc16',
-        primaryTextColor: '#ffffff',
-        primaryBorderColor: '#84cc16',
-        lineColor: '#84cc16',
-        sectionBkgColor: '#000000',
-        altSectionBkgColor: '#1a1a1a',
-        gridColor: '#333333',
-        secondaryColor: '#ff4444',
-        tertiaryColor: '#fbbf24'
+  // SURGICAL FIX: Runtime Mermaid loading
+  const loadMermaid = async () => {
+    if (typeof window !== 'undefined' && !mermaidLoaded) {
+      try {
+        const mermaid = await import('mermaid');
+        mermaid.default.initialize({ 
+          theme: 'dark',
+          themeVariables: {
+            primaryColor: '#84cc16',
+            primaryTextColor: '#ffffff',
+            primaryBorderColor: '#84cc16',
+            lineColor: '#84cc16',
+            sectionBkgColor: '#000000',
+            altSectionBkgColor: '#1a1a1a',
+            gridColor: '#333333',
+            secondaryColor: '#ff4444',
+            tertiaryColor: '#fbbf24'
+          }
+        });
+        setMermaidLoaded(true);
+        return mermaid.default;
+      } catch (error) {
+        console.warn('Failed to load Mermaid:', error);
+        return null;
       }
-    });
+    }
+    return null;
+  };
+
+  // SURGICAL FIX: Initialize Mermaid with runtime loading
+  useEffect(() => {
+    loadMermaid();
   }, []);
+
+  // SURGICAL FIX: Render diagram with runtime loading
+  const renderDiagram = async (id, diagram) => {
+    const mermaid = await loadMermaid();
+    if (mermaid && mermaidLoaded) {
+      const element = document.getElementById(id);
+      if (element) {
+        try {
+          mermaid.render(`${id}-svg`, diagram, (svgCode) => {
+            element.innerHTML = svgCode;
+          });
+        } catch (error) {
+          console.warn('Failed to render diagram:', error);
+          element.innerHTML = '<div class="text-white/60 text-sm text-center py-8">Diagram failed to load</div>';
+        }
+      }
+    }
+  };
 
   // Project Statistics (from our actual purge)
   const stats = {

@@ -1,41 +1,100 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import mermaid from 'mermaid';
+// SURGICAL FIX: Remove eager mermaid import - replaced with runtime loading
+// import mermaid from 'mermaid';
 
 // Enhanced Final Purge Tool Card with Mermaid Chart
 export function FinalPurgeToolCard({ tool, index, getStatusColor, setActiveSection, activeSection }) {
   const [showDetails, setShowDetails] = useState(false);
   const [chartRendered, setChartRendered] = useState(false);
+  const [mermaidLoaded, setMermaidLoaded] = useState(false);
+
+  // SURGICAL FIX: Runtime Mermaid loading
+  const loadMermaid = async () => {
+    if (typeof window !== 'undefined' && !mermaidLoaded) {
+      try {
+        const mermaid = await import('mermaid');
+        mermaid.default.initialize({ 
+          theme: 'dark',
+          themeVariables: {
+            primaryColor: '#84cc16',
+            primaryTextColor: '#ffffff',
+            primaryBorderColor: '#84cc16',
+            lineColor: '#84cc16',
+            sectionBkgColor: '#000000',
+            altSectionBkgColor: '#1a1a1a',
+            gridColor: '#333333',
+            secondaryColor: '#ff4444',
+            tertiaryColor: '#fbbf24'
+          }
+        });
+        setMermaidLoaded(true);
+        return mermaid.default;
+      } catch (error) {
+        console.warn('Failed to load Mermaid:', error);
+        return null;
+      }
+    }
+    return null;
+  };
+
+  // SURGICAL FIX: Initialize Mermaid with runtime loading
+  useEffect(() => {
+    if (showDetails && !chartRendered) {
+      const renderChart = async () => {
+        const mermaid = await loadMermaid();
+        if (mermaid && mermaidLoaded) {
+          // Render the chart
+          setTimeout(() => {
+            const element = document.getElementById('final-purge-chart');
+            if (element) {
+              try {
+                mermaid.render('final-purge-mermaid', miniChart, (svgCode) => {
+                  element.innerHTML = svgCode;
+                  setChartRendered(true);
+                });
+              } catch (error) {
+                console.warn('Failed to render chart:', error);
+                element.innerHTML = '<div class="text-white/60 text-sm text-center py-4">Chart failed to load</div>';
+              }
+            }
+          }, 100);
+        }
+      };
+      renderChart();
+    }
+  }, [showDetails, chartRendered, mermaidLoaded]);
 
   // Initialize Mermaid
   useEffect(() => {
-    if (showDetails && !chartRendered) {
-      mermaid.initialize({ 
-        theme: 'dark',
-        themeVariables: {
-          primaryColor: '#84cc16',
-          primaryTextColor: '#ffffff',
-          primaryBorderColor: '#84cc16',
-          lineColor: '#84cc16',
-          sectionBkgColor: '#000000',
-          altSectionBkgColor: '#1a1a1a',
-          gridColor: '#333333',
-          secondaryColor: '#ff4444',
-          tertiaryColor: '#fbbf24'
-        }
-      });
-      
-      // Render the chart
-      setTimeout(() => {
-        const element = document.getElementById('final-purge-chart');
-        if (element) {
-          mermaid.render('final-purge-mermaid', miniChart, (svgCode) => {
-            element.innerHTML = svgCode;
-            setChartRendered(true);
-          });
-        }
-      }, 100);
-    }
+    // SURGICAL FIX: Removed eager mermaid initialization
+    /*
+    mermaid.initialize({ 
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#84cc16',
+        primaryTextColor: '#ffffff',
+        primaryBorderColor: '#84cc16',
+        lineColor: '#84cc16',
+        sectionBkgColor: '#000000',
+        altSectionBkgColor: '#1a1a1a',
+        gridColor: '#333333',
+        secondaryColor: '#ff4444',
+        tertiaryColor: '#fbbf24'
+      }
+    });
+    
+    // Render the chart
+    setTimeout(() => {
+      const element = document.getElementById('final-purge-chart');
+      if (element) {
+        mermaid.render('final-purge-mermaid', miniChart, (svgCode) => {
+          element.innerHTML = svgCode;
+          setChartRendered(true);
+        });
+      }
+    }, 100);
+    */
   }, [showDetails, chartRendered]);
 
   const miniChart = `

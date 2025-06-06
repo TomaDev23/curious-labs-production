@@ -327,34 +327,23 @@ const MissionAtomic = () => {
       viewport={{ once: true, margin: "0px 0px -20% 0px" }}
       variants={sectionVariants}
     >
-      {/* Critical LCP Image - Responsive with srcSet */}
-      <div className="absolute inset-0">
-        <img
-          src="/assets/images/planets/milkyway_Light_mobile.webp"
-          srcSet="
-            /assets/images/planets/milkyway_Light_mobile.webp 1000w,
-            /assets/images/planets/milkyway_Light_tablet.webp 1400w,
-            /assets/images/planets/4k/milkyway_Light.webp 2560w
-          "
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
-          alt="Milky Way Background"
-          className="w-full h-full"
-          loading="eager"
-          fetchpriority="high"
-          decoding="sync"
-          style={{ 
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '110vh',
-            objectFit: 'cover',
-            objectPosition: 'center center',
-            transform: 'scale(1.2)',
-            zIndex: 0
-          }}
-        />
-      </div>
+      {/* Milky Way Background - Converted to CSS to avoid LCP dominance */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '110vh',
+          backgroundImage: 'url("/assets/images/planets/milkyway_Light_tablet.webp")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          transform: 'scale(1.2)',
+          zIndex: 0
+        }}
+      />
       
       {/* Light glassmorphism overlay - much lighter to let image show through */}
       <div 

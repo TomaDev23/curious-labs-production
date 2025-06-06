@@ -5,9 +5,12 @@
  * @type atomic
  */
 
-import React, { useState, useEffect } from 'react';
-// SAFE MIGRATION: ContactGlobe with 100% fallback reliability
-import ContactGlobeProxy from './proxies/ContactGlobeProxy';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { useLocation } from 'react-router-dom';
+
+// 🎯 CONDITIONAL 3D: Only import ContactGlobeProxy when actually needed
+// This prevents the massive 3D bundle from loading on non-3D routes
+const ContactGlobeProxy = lazy(() => import('./proxies/ContactGlobeProxy'));
 
 // Component metadata for LEGIT compliance
 export const metadata = {
@@ -18,6 +21,11 @@ export const metadata = {
 };
 
 const ContactTerminalAtomic = () => {
+  // 🎯 CONDITIONAL 3D: Check if current route should have 3D
+  const location = useLocation();
+  const routes3D = ['/']; // Only homepage needs 3D currently
+  const should3D = routes3D.includes(location.pathname);
+  
   // Self-contained responsive state
   const [isMobile, setIsMobile] = useState(false);
   const [typedText, setTypedText] = useState('');
@@ -324,11 +332,13 @@ const ContactTerminalAtomic = () => {
       </div>
       
       {/* Right Side - Visual */}
-      {!isMobile && (
+      {!isMobile && should3D && (
         <div className="w-full md:w-1/2 flex justify-center items-center">
           {/* Interactive Globe Visualization - Now using unified 3D architecture with automatic fallback */}
           <div className="relative w-full h-96">
-            <ContactGlobeProxy />
+            <Suspense fallback={<div>Loading...</div>}>
+              <ContactGlobeProxy />
+            </Suspense>
           </div>
         </div>
       )}

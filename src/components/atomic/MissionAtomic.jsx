@@ -19,7 +19,9 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import MoonSphereProxy from './proxies/MoonSphereProxy';
-import MissionControlBoard from '../cosmic/MissionControlBoard';
+
+// 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
+const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
 
 // Lazy load MoonSphere to prevent Three.js contamination
 // const MoonSphere = lazy(() => import('./Planetary/MoonSphere'));
@@ -701,13 +703,21 @@ const MissionAtomic = () => {
         className="absolute bottom-0 left-0 right-0 w-full pb-[32vh]"
         style={{ zIndex: 10 }}
       >
-        <MissionControlBoard 
-          currentPhase={moonPhaseOverride}
-          onPhaseChange={handleMissionControlPhaseChange}
-          onAnomalyChange={handleMissionControlAnomalyChange}
-          className="w-full"
-          showSlidingControl={true}
-        />
+        <Suspense fallback={
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
+              <div className="text-white/60 text-sm">Loading Mission Control Board...</div>
+            </div>
+          </div>
+        }>
+          <MissionControlBoard 
+            currentPhase={moonPhaseOverride}
+            onPhaseChange={handleMissionControlPhaseChange}
+            onAnomalyChange={handleMissionControlAnomalyChange}
+            className="w-full"
+            showSlidingControl={true}
+          />
+        </Suspense>
       </motion.div>
 
       {/* Transition art between Mission and Products */}

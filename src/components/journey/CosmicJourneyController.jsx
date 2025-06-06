@@ -12,7 +12,6 @@ import { useParticlePerformanceConfig } from './hooks/useParticlePerformanceConf
 import { useSceneVisibility } from './hooks/useSceneVisibility';
 import { getDissolveOpacity, getDissolveZIndex, getFadeBlendClass } from '../../utils/dissolveEngine';
 import PersistentElements from './PersistentElements';
-import GlobalParticleSystem from './visual/GlobalParticleSystem';
 import withDraggable from '../../components/ui/DraggableHOC';
 import { useHUDContext } from '../../components/ui/HUDHub';
 import { ScrollPipeline } from '../../utils/scrollPipeline';
@@ -483,12 +482,6 @@ export default function CosmicJourneyController({ children }) {
 
   return (
     <div className="w-full text-white">
-      <GlobalParticleSystem 
-        scrollProgress={scrollProgress} 
-        activeScene={currentSceneKey}
-        sceneProgress={sceneProgress}
-      />
-      
       <ColorOverlay />
       
       <div className="relative">

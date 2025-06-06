@@ -9,11 +9,53 @@ import { useState, useEffect, useMemo } from 'react';
 
 // Safe WebGL context access with fallback
 const useWebGLSafely = () => {
+  // DISABLED: UnifiedWebGLProvider removed during 3D cleanup - using fallback
+  // try {
+  //   const { useUnifiedWebGL } = require('../3d/engine/UnifiedWebGLProvider');
+  //   return useUnifiedWebGL();
+  // } catch (error) {
+  //   // WebGL provider not available - return fallback
+  //   return {
+  //     webglSupported: false,
+  //     capabilities: null
+  //   };
+  // }
+  
+  // Safe fallback implementation - provides basic WebGL detection without provider dependency
   try {
-    const { useUnifiedWebGL } = require('../3d/engine/UnifiedWebGLProvider');
-    return useUnifiedWebGL();
+    const canvas = document.createElement('canvas');
+    const webgl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    
+    if (webgl) {
+      // Basic capability detection
+      const maxTextureSize = webgl.getParameter(webgl.MAX_TEXTURE_SIZE) || 0;
+      const maxTextures = webgl.getParameter(webgl.MAX_COMBINED_TEXTURE_IMAGE_UNITS) || 0;
+      const vendor = webgl.getParameter(webgl.VENDOR) || 'Unknown';
+      const renderer = webgl.getParameter(webgl.RENDERER) || 'Unknown';
+      const isWebGL2 = !!(webgl instanceof WebGL2RenderingContext);
+      
+      // Clean up test context
+      const ext = webgl.getExtension('WEBGL_lose_context');
+      if (ext) ext.loseContext();
+      
+      return {
+        webglSupported: true,
+        capabilities: {
+          maxTextureSize,
+          maxCombinedTextureImageUnits: maxTextures,
+          vendor,
+          renderer,
+          isWebGL2
+        }
+      };
+    } else {
+      return {
+        webglSupported: false,
+        capabilities: null
+      };
+    }
   } catch (error) {
-    // WebGL provider not available - return fallback
+    // Fallback for environments without canvas support
     return {
       webglSupported: false,
       capabilities: null
@@ -138,7 +180,7 @@ export const useUnifiedDeviceCapabilities = () => {
     window.addEventListener('resize', handleResize);
     
     return () => window.removeEventListener('resize', handleResize);
-  }, [performanceProfile, breakpoint]);
+  }, []);
 
   return deviceProfile;
 };

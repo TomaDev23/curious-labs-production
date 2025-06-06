@@ -21,11 +21,14 @@ class DOMPurifier {
 
   // Monitor WebGL contexts
   startMonitoring() {
-    // TEMPORARILY DISABLED - WebGL monitoring creating too much noise
-    // We need to fix the architecture first, then re-enable monitoring
+    // DISABLED: WebGL monitoring completely disabled for 3D rebuild compatibility
+    // The context override will interfere with new 3D implementation
+    // Once 3D is rebuilt, we can re-enable with proper coordination
     
-    console.log('🧹 DOMPurifier: Basic monitoring started (WebGL monitoring disabled)');
+    console.log('🧹 DOMPurifier: Basic monitoring started (WebGL monitoring permanently disabled for 3D compatibility)');
     return;
+    
+    /* DISABLED CODE - DO NOT RE-ENABLE WITHOUT 3D COORDINATION
     
     // Override getContext to track WebGL contexts
     const originalGetContext = HTMLCanvasElement.prototype.getContext;
@@ -64,6 +67,8 @@ class DOMPurifier {
     };
 
     console.log('🧹 DOMPurifier: Monitoring started');
+    
+    END DISABLED CODE */
   }
 
   // Track WebGL contexts

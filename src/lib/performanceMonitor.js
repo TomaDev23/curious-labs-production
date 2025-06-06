@@ -5,32 +5,29 @@ class PerformanceMonitor {
   constructor() {
     this.metrics = {
       bundleLoading: [],
+      chunkLoading: [],
       memoryUsage: [],
-      renderTimes: [],
-      threeJsUsage: [],
-      chunkLoading: []
+      // DISABLED: Three.js monitoring removed for 3D rebuild compatibility
+      // threeJsUsage: [],
     };
-    this.observers = new Set();
-    this.isEnabled = false; // DISABLED FOR LIGHTHOUSE AUDIT
+    this.observers = [];
+    this.isEnabled = process.env.NODE_ENV === 'development';
     
     // Initialize performance monitoring
     this.init();
   }
   
   init() {
-    // ⛔ DISABLED: Performance monitoring temporarily disabled for audit
-    console.log('⛔ Performance Monitor disabled for audit');
-    return;
+    if (!this.isEnabled) return;
     
-    if (!this.isEnabled || typeof window === 'undefined') return;
-    
-    console.log('🎯 Performance Monitor initialized for Phase 6 optimization');
+    console.log('📊 Performance Monitor initialized');
     
     // Monitor bundle loading
     this.setupBundleMonitoring();
     
+    // DISABLED: Three.js monitoring removed for 3D rebuild compatibility
     // Monitor Three.js usage
-    this.setupThreeJsMonitoring();
+    // this.setupThreeJsMonitoring();
     
     // Monitor memory usage
     this.setupMemoryMonitoring();
@@ -64,21 +61,31 @@ class PerformanceMonitor {
   }
   
   setupThreeJsMonitoring() {
+    // DISABLED: Three.js monitoring completely removed for 3D rebuild compatibility
+    // This monitoring will interfere with new Three.js implementation
+    console.log('🚫 Three.js monitoring disabled for 3D rebuild compatibility');
+    return;
+    
+    /* DISABLED CODE - DO NOT RE-ENABLE WITHOUT 3D COORDINATION
+    
     // Monitor Three.js specific usage
     if (typeof window !== 'undefined' && window.THREE) {
       this.monitorThreeJsMemory();
     }
     
     // Listen for Three.js initialization
-    window.addEventListener('threeJsInitialized', (event) => {
-      this.addMetric('threeJsUsage', {
-        component: event.detail.component,
-        geometry: event.detail.geometryCount || 0,
-        materials: event.detail.materialCount || 0,
-        textures: event.detail.textureCount || 0,
-        timestamp: Date.now()
-      });
-    });
+    // DISABLED: Three.js event listener removed for 3D rebuild compatibility
+    // window.addEventListener('threeJsInitialized', (event) => {
+    //   this.addMetric('threeJsUsage', {
+    //     component: event.detail.component,
+    //     geometry: event.detail.geometryCount || 0,
+    //     materials: event.detail.materialCount || 0,
+    //     textures: event.detail.textureCount || 0,
+    //     timestamp: Date.now()
+    //   });
+    // });
+    
+    END DISABLED CODE */
   }
   
   setupMemoryMonitoring() {
@@ -127,31 +134,40 @@ class PerformanceMonitor {
   }
   
   monitorThreeJsMemory() {
+    // DISABLED: Three.js memory monitoring completely removed
+    console.log('🚫 Three.js memory monitoring disabled for 3D rebuild compatibility');
+    return;
+    
+    /* DISABLED CODE - DO NOT RE-ENABLE WITHOUT 3D COORDINATION
+    
     // Custom Three.js memory tracking
-    if (typeof window !== 'undefined' && window.THREE) {
-      const THREE = window.THREE;
-      
-      // Track geometry creation
-      const originalBufferGeometry = THREE.BufferGeometry.prototype.dispose;
-      THREE.BufferGeometry.prototype.dispose = function() {
-        this._monitored_disposed = true;
-        return originalBufferGeometry.call(this);
-      };
-      
-      // Track material creation
-      const originalMaterial = THREE.Material.prototype.dispose;
-      THREE.Material.prototype.dispose = function() {
-        this._monitored_disposed = true;
-        return originalMaterial.call(this);
-      };
-      
-      // Track texture creation
-      const originalTexture = THREE.Texture.prototype.dispose;
-      THREE.Texture.prototype.dispose = function() {
-        this._monitored_disposed = true;
-        return originalTexture.call(this);
-      };
-    }
+    // DISABLED: All Three.js monitoring removed for 3D rebuild compatibility
+    // if (typeof window !== 'undefined' && window.THREE) {
+    //   const THREE = window.THREE;
+    //   
+    //   // Track geometry creation
+    //   const originalBufferGeometry = THREE.BufferGeometry.prototype.dispose;
+    //   THREE.BufferGeometry.prototype.dispose = function() {
+    //     this._monitored_disposed = true;
+    //     return originalBufferGeometry.call(this);
+    //   };
+    //   
+    //   // Track material creation
+    //   const originalMaterial = THREE.Material.prototype.dispose;
+    //   THREE.Material.prototype.dispose = function() {
+    //     this._monitored_disposed = true;
+    //     return originalMaterial.call(this);
+    //   };
+    //   
+    //   // Track texture creation
+    //   const originalTexture = THREE.Texture.prototype.dispose;
+    //   THREE.Texture.prototype.dispose = function() {
+    //     this._monitored_disposed = true;
+    //     return originalTexture.call(this);
+    //   };
+    // }
+    
+    END DISABLED CODE */
   }
   
   addMetric(category, data) {
@@ -194,6 +210,10 @@ class PerformanceMonitor {
   }
   
   getThreeJsAnalysis() {
+    // DISABLED: Three.js analysis removed for 3D rebuild compatibility
+    return null;
+    
+    /* DISABLED CODE
     const threeMetrics = this.getMetrics('threeJsUsage');
     
     if (!threeMetrics.length) return null;
@@ -204,6 +224,7 @@ class PerformanceMonitor {
       totalMaterials: threeMetrics.reduce((sum, m) => sum + (m.materials || 0), 0),
       totalTextures: threeMetrics.reduce((sum, m) => sum + (m.textures || 0), 0)
     };
+    */
   }
   
   getMemoryAnalysis() {
@@ -243,26 +264,14 @@ class PerformanceMonitor {
   }
   
   generateReport() {
-    if (!this.isEnabled) return null;
-    
-    const report = {
-      timestamp: new Date().toISOString(),
-      bundle: this.getBundleAnalysis(),
-      threeJs: this.getThreeJsAnalysis(),
+    return {
+      timestamp: Date.now(),
+      bundles: this.getBundleAnalysis(),
       memory: this.getMemoryAnalysis(),
-      summary: {
-        totalMetrics: Object.values(this.metrics).reduce((sum, arr) => sum + arr.length, 0),
-        monitoringDuration: Date.now() - (this.initTimestamp || Date.now())
-      }
+      // DISABLED: Three.js analysis removed for 3D rebuild compatibility
+      // threeJs: this.getThreeJsAnalysis(),
+      summary: this.generateSummary()
     };
-    
-    console.group('🎯 Phase 6 Performance Report');
-    console.log('Bundle Analysis:', report.bundle);
-    console.log('Three.js Analysis:', report.threeJs);
-    console.log('Memory Analysis:', report.memory);
-    console.groupEnd();
-    
-    return report;
   }
   
   reset() {
@@ -276,16 +285,17 @@ class PerformanceMonitor {
 const performanceMonitor = new PerformanceMonitor();
 
 // Export utilities
-export const trackThreeJsComponent = (componentName, stats = {}) => {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('threeJsInitialized', {
-      detail: {
-        component: componentName,
-        ...stats
-      }
-    }));
-  }
-};
+// DISABLED: Three.js tracking functions removed for 3D rebuild compatibility
+// export const trackThreeJsComponent = (componentName, stats = {}) => {
+//   if (typeof window !== 'undefined') {
+//     window.dispatchEvent(new CustomEvent('threeJsInitialized', {
+//       detail: {
+//         component: componentName,
+//         ...stats
+//       }
+//     }));
+//   }
+// };
 
 export const trackRenderTime = (componentName, renderTime) => {
   performanceMonitor.addMetric('renderTimes', {

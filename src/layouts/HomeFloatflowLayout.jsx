@@ -6,7 +6,8 @@ import FooterMain from '../components/FooterMain';
 // 🚀 UNIFIED DEVICE CAPABILITY: Replacing legacy hook that creates WebGL contexts
 import { useUnifiedDeviceCapabilities } from '../hooks/useUnifiedDeviceCapabilities';
 import HomepageSectionDebug from '../components/debug/HomepageSectionDebug';
-import ContactGlobeWithCanvas from '../components/hero/ContactGlobeWithCanvas.jsx';
+// TEMPORARILY DISABLED: import ContactGlobeWithCanvas from '../components/hero/ContactGlobeWithCanvas.jsx';
+import ContactTerminalAtomic from '../components/atomic/ContactTerminalAtomic';
 
 const HomeFloatflowLayout = ({ children }) => {
   const [scrollY, setScrollY] = useState(0);

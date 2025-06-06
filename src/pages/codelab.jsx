@@ -11,7 +11,7 @@
  * ⚠️ DO NOT REMOVE - MAIN CODELAB PAGE
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
@@ -37,26 +37,59 @@ import CTASection from '../components/codelab/CTASection';
 import LegitSection from '../components/codelab/LegitSection';
 import MetricsLogsSection from '../components/codelab/MetricsLogsSection';
 
-// ✅ KEEP - CODELAB COMPONENT
-export default function CodeLab() {
-  console.log('🧪 CodeLab component rendering...');
-  
-  const [activeService, setActiveService] = useState(null);
+// ✅ OPTIMIZED: Separate component for mission status to isolate timer re-renders
+const MissionStatusPanel = () => {
   const [missionTime, setMissionTime] = useState(new Date());
   
-  console.log('🧪 CodeLab state initialized, services:', services);
-  
-  // Update mission time every second
   useEffect(() => {
-    console.log('🧪 CodeLab useEffect running...');
     const timer = setInterval(() => {
       setMissionTime(new Date());
     }, 1000);
     return () => clearInterval(timer);
   }, []);
   
-  // Animation variants for staggered row animations
-  const containerVariants = {
+  return (
+    <motion.div 
+      className="fixed top-20 right-4 z-50 bg-black/80 backdrop-blur-md border border-lime-400/30 rounded-lg p-3 text-xs"
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.5 }}
+    >
+      <div className="text-lime-400 font-mono mb-1">ENG-BAY STATUS</div>
+      <div className="text-white font-mono">{missionTime.toUTCString().slice(17, 25)} UTC</div>
+      <div className="flex items-center gap-2 mt-1">
+        <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
+        <span className="text-lime-400">OPERATIONAL</span>
+      </div>
+    </motion.div>
+  );
+};
+
+// ✅ KEEP - CODELAB COMPONENT
+export default function CodeLab() {
+  // console.log('🧪 CodeLab component rendering...'); // Removed verbose logging
+  
+  const [activeService, setActiveService] = useState(null);
+  
+  // ✅ OPTIMIZED: Memoize expensive service computations (only compute once)
+  const enhancedServices = useMemo(() => {
+    return services.map((service, index) => ({
+      ...service,
+      coordinates: `ENG-${String(index + 1).padStart(3, '0')}`,
+      status: ['OPERATIONAL', 'ACTIVE', 'MONITORING', 'STANDBY', 'RESEARCH'][index % 5],
+      classification: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'][index % 4]
+    }));
+  }, [services]); // Only recompute if services change
+  
+  // ✅ OPTIMIZED: Memoize tier divisions
+  const { tier1, tier2, tier3 } = useMemo(() => ({
+    tier1: enhancedServices.slice(0, 2),
+    tier2: enhancedServices.slice(2, 4), 
+    tier3: enhancedServices.slice(4, 6)
+  }), [enhancedServices]);
+  
+  // ✅ OPTIMIZED: Memoize animation variants (prevent recreation)
+  const containerVariants = useMemo(() => ({
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
@@ -65,29 +98,19 @@ export default function CodeLab() {
         delayChildren: 0.3
       }
     }
-  };
+  }), []);
   
-  const itemVariants = {
+  const itemVariants = useMemo(() => ({
     hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: { duration: 0.7, ease: "easeOut" }
     }
-  };
+  }), []);
   
-  // Enhanced service data with mission coordinates and status
-  const enhancedServices = services.map((service, index) => ({
-    ...service,
-    coordinates: `ENG-${String(index + 1).padStart(3, '0')}`,
-    status: ['OPERATIONAL', 'ACTIVE', 'MONITORING', 'STANDBY', 'RESEARCH'][index % 5],
-    classification: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'][index % 4]
-  }));
-  
-  console.log('🧪 Enhanced services:', enhancedServices);
-  
-  // Status color mapping
-  const getStatusColor = (status) => {
+  // ✅ OPTIMIZED: Memoize status color function
+  const getStatusColor = useCallback((status) => {
     switch (status) {
       case 'OPERATIONAL': return 'text-lime-400 bg-lime-400/20';
       case 'ACTIVE': return 'text-blue-400 bg-blue-400/20';
@@ -96,13 +119,10 @@ export default function CodeLab() {
       case 'RESEARCH': return 'text-purple-400 bg-purple-400/20';
       default: return 'text-gray-400 bg-gray-400/20';
     }
-  };
+  }, []);
   
-  // Divide services into tiers
-  const tier1 = enhancedServices.slice(0, 2); // Trace Agent, Security Harden Agent
-  const tier2 = enhancedServices.slice(2, 4); // CI/CD Pipeline, Trace & Audit Pack
-  const tier3 = enhancedServices.slice(4, 6); // LEGIT Compliance, AI Agent Wrapper
-
+  // console.log('🧪 CodeLab state initialized, services:', services); // Removed verbose logging
+  
   return (
     <>
       <div className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden font-['Space_Grotesk']">
@@ -129,19 +149,7 @@ export default function CodeLab() {
         
         <main className="flex-grow relative z-10">
           {/* Mission Status Panel */}
-          <motion.div 
-            className="fixed top-20 right-4 z-50 bg-black/80 backdrop-blur-md border border-lime-400/30 rounded-lg p-3 text-xs"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <div className="text-lime-400 font-mono mb-1">ENG-BAY STATUS</div>
-            <div className="text-white font-mono">{missionTime.toUTCString().slice(17, 25)} UTC</div>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
-              <span className="text-lime-400">OPERATIONAL</span>
-            </div>
-          </motion.div>
+          <MissionStatusPanel />
           
           {/* New FloatflowLayout wrapper for the whole page */}
           <CodelabFloatflowLayout>

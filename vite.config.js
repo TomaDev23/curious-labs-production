@@ -69,15 +69,16 @@ export default defineConfig({
           // ✅ CRITICAL FIX: Don't chunk React at all - keep in main bundle
           // This ensures ALL React dependencies stay together
           
-          // ✅ 3D Libraries - Only loads on 3D routes
-          if (id.includes('three') || id.includes('@react-three')) {
-            return 'vendor-three-core';
-          }
+          // REMOVED: 3D Libraries - Three.js dependencies have been removed
+          // if (id.includes('three') || id.includes('@react-three')) {
+          //   return 'vendor-three-core';
+          // }
           
-          // ✅ Heavy Mermaid - Only loads on docs/tools routes
-          if (id.includes('mermaid')) {
-            return 'vendor-mermaid';
-          }
+          // ✅ SURGICAL FIX: Removed mermaid chunking - let it load truly on-demand
+          // Heavy Mermaid was being forced into vendor chunk despite dynamic imports
+          // if (id.includes('mermaid')) {
+          //   return 'vendor-mermaid';
+          // }
           
           // ✅ Graph libraries - Only loads on graph routes
           if (id.includes('cytoscape') || id.includes('dagre')) {
@@ -107,10 +108,13 @@ export default defineConfig({
             return undefined;
           }
           
-          // Keep other vendor libs together for cache efficiency
-          if (id.includes('node_modules')) {
+          // ✅ CORRECTED APPROACH: Exclude mermaid from vendor-bundle catch-all
+          // This allows mermaid to bypass ALL chunking rules for true dynamic loading
+          if (id.includes('node_modules') && !id.includes('mermaid')) {
             return 'vendor-bundle';
           }
+          
+          // Mermaid will fall through here and remain unchunked = truly dynamic!
         },
       },
     },

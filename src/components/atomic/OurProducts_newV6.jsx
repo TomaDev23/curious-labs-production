@@ -1700,12 +1700,19 @@ const ServicesPage = ({ onScrollRelease }) => {
     // Only run typewriter if stellar is not active
     if (isStellarActive) return;
     
+    // ✅ SURGICAL FIX: Prevent infinite recursion by tracking completion state
+    if (typewriterComplete) return;
+    
     // FIXED: Replace setInterval with requestAnimationFrame to prevent DOM.resolveNode errors
     let index = 0;
     let frameId;
     let lastTime = 0;
+    let completed = false; // Local completion flag to prevent race conditions
     
     const typewriter = (currentTime) => {
+      // Early exit if already completed
+      if (completed) return;
+      
       // Throttle to ~15fps (67ms intervals) instead of 20fps to reduce DOM stress
       if (currentTime - lastTime >= 67) {
         setText(fullText.slice(0, index));
@@ -1717,6 +1724,7 @@ const ServicesPage = ({ onScrollRelease }) => {
         }
         
         if (index > fullText.length) {
+          completed = true; // Set local flag first
           setTypewriterComplete(true);
           setShowStellarHint(true);
           setShowFloatingWords(true);
@@ -1726,12 +1734,16 @@ const ServicesPage = ({ onScrollRelease }) => {
         lastTime = currentTime;
       }
       
-      frameId = requestAnimationFrame(typewriter);
+      // Only continue animation if not completed
+      if (!completed) {
+        frameId = requestAnimationFrame(typewriter);
+      }
     };
     
     frameId = requestAnimationFrame(typewriter);
     
     return () => {
+      completed = true; // Ensure cleanup sets completion flag
       if (frameId) {
         cancelAnimationFrame(frameId);
       }
@@ -1757,7 +1769,7 @@ const ServicesPage = ({ onScrollRelease }) => {
     //   }
     // }, 50);
     // return () => clearInterval(interval);
-  }, [onScrollRelease, isStellarActive, canSkip, fullText.length]);
+  }, [isStellarActive, typewriterComplete, fullText.length]); // ✅ FIXED: Added missing typewriterComplete dependency
 
   // Keyboard controls for skip and stellar activation
   useEffect(() => {

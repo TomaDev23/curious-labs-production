@@ -11,16 +11,14 @@
  */
 
 import React, { useState, useEffect, Suspense } from 'react';
+import { useUnifiedDeviceCapabilities } from '../../../hooks/useUnifiedDeviceCapabilities';
 
 // 🚀 SAFE WEBGL ACCESS: Safely access WebGL context without throwing errors
 const useWebGLSafely = () => {
   try {
-    // Try to import the hook, but handle gracefully if WebGL provider is not available
-    const { useUnifiedDeviceCapabilities } = require('../../../hooks/useUnifiedDeviceCapabilities');
     return useUnifiedDeviceCapabilities();
   } catch (error) {
-    console.warn('WebGL provider not available, using fallback values:', error.message);
-    // Return fallback values when WebGL provider is not available
+    // Silent fallback - no console spam
     return {
       webglSupported: false,
       shouldUse3D: false,
@@ -35,11 +33,7 @@ const useWebGLSafely = () => {
 // 🚀 UNIFIED DEVICE CAPABILITY: Use unified hook instead of creating WebGL context
 const use3DCapability = () => {
   const deviceProfile = useWebGLSafely();
-  
-  if (!deviceProfile) return false;
-  
-  // Use unified WebGL assessment instead of creating our own context
-  return deviceProfile.shouldUse3D && deviceProfile.webglSupported;
+  return deviceProfile?.shouldUse3D && deviceProfile?.webglSupported;
 };
 
 // CSS fallback component
@@ -85,59 +79,9 @@ const MoonSphereProxy = ({
   fallbackToEclipse = false,
   ...otherProps // ⭐ NEW: Forward all other props to MoonSphere
 }) => {
-  const [Component, setComponent] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  
-  const autoCapable = use3DCapability();
-  const shouldLoad3D = enabled !== null ? enabled : autoCapable;
-  
-  // 🚀 UNIFIED DEVICE CAPABILITY: Use unified hook instead of creating WebGL context
-  const deviceProfile = useWebGLSafely();
-  const hasWebGL = deviceProfile?.webglSupported && deviceProfile?.shouldUse3D;
-  
-  useEffect(() => {
-    if (!shouldLoad3D || Component || loading || error) return;
-    
-    setLoading(true);
-    
-    // 🚀 UNIFIED 3D ENGINE MIGRATION - Using new unified component
-    import('../../../3d/scenes/home/MissionMoonWithCanvas')
-      .then((module) => {
-        setComponent(() => module.default);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.warn('Failed to load MissionMoonWithCanvas:', err);
-        setError(true);
-        setLoading(false);
-      });
-  }, [shouldLoad3D, Component, loading, error]);
-  
-  // Show fallback if not capable, error, or explicitly requested
-  if (!shouldLoad3D || error || fallbackToEclipse) {
-    return <MoonFallback className={className} />;
-  }
-  
-  // Show loading state
-  if (loading || !Component) {
-    return (
-      <div className={`relative rounded-full flex items-center justify-center ${className}`}>
-        <div className="text-white/40 text-xs">Loading Moon...</div>
-      </div>
-    );
-  }
-  
-  // Render the actual 3D component with forwarded props
-  return (
-    <Suspense fallback={<div className="text-white/50">Loading Moon...</div>}>
-      <Component 
-        className={className} 
-        fallbackToEclipse={fallbackToEclipse}
-        {...otherProps}
-      />
-    </Suspense>
-  );
+  // ✅ SURGICAL FIX: Since 3D is completely disabled, return fallback immediately
+  // No hooks, no state, no device detection - prevents all update loops
+  return <MoonFallback className={className} />;
 };
 
 export default MoonSphereProxy; 

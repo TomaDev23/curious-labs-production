@@ -5,7 +5,7 @@
  * @migration_safety CRITICAL - Implements 100% fallback reliability
  */
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React from 'react';
 
 // Smart Fallback Component with visual continuity
 const ContactGlobeFallback = () => (
@@ -48,44 +48,8 @@ const ContactGlobeFallback = () => (
 );
 
 const ContactGlobeProxy = () => {
-  const [fallbackMode, setFallbackMode] = useState(false);
-  const [ContactGlobeComponent, setContactGlobeComponent] = useState(null);
-
-  useEffect(() => {
-    // MISSION CONTROL: Component initialization
-    console.log('🌍 MISSION CONTROL: ContactGlobe initialization sequence started [GLOBE-001]');
-    
-    // Attempt to load the new ContactGlobeWithCanvas
-    const loadNewComponent = async () => {
-      try {
-        const { default: ContactGlobeWithCanvas } = await import('../../../3d/scenes/home/ContactGlobeWithCanvas');
-        setContactGlobeComponent(() => ContactGlobeWithCanvas);
-        console.log('🌍 MISSION CONTROL: 3D ContactGlobe systems online - Unified architecture active [GLOBE-200]');
-      } catch (error) {
-        console.warn('🌍 MISSION ALERT: ContactGlobe system unavailable - Static backup protocol active [GLOBE-500]');
-        setFallbackMode(true);
-      }
-    };
-
-    loadNewComponent();
-  }, []);
-
-  // Handle component errors with error boundary-like behavior
-  const handleComponentError = (error) => {
-    console.warn('🌍 MISSION ALERT: Runtime error detected in ContactGlobe - Switching to backup systems [GLOBE-ERROR]');
-    setFallbackMode(true);
-  };
-
-  // Render priority: New Component > Static Fallback
-  if (!fallbackMode && ContactGlobeComponent) {
-    return (
-      <Suspense fallback={<ContactGlobeFallback />}>
-        <ContactGlobeComponent onError={handleComponentError} />
-      </Suspense>
-    );
-  }
-  
-  // Static fallback ensures 100% reliability
+  // ✅ SURGICAL FIX: Since 3D is disabled, immediately return fallback
+  // No useState, no useEffect, no console spam, no mounting cycles
   return <ContactGlobeFallback />;
 };
 

@@ -4,9 +4,6 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 // ✅ NEW: Import CosmicLoader for 3D routes
 const CosmicLoader = lazy(() => import('./components/CosmicLoader'));
 
-// 🚀 CRITICAL: Lazy load UnifiedWebGLProvider to prevent bundling all 3D code upfront
-const UnifiedWebGLProvider = lazy(() => import('./3d/engine/UnifiedWebGLProvider').then(module => ({ default: module.UnifiedWebGLProvider })));
-
 // 🚀 LAZY LOAD EVERYTHING - Even basic components for maximum optimization
 const ScrollToTop = lazy(() => import('./components/ScrollToTop'));
 const ErrorBoundary = lazy(() => import('./components/ErrorBoundary'));
@@ -47,7 +44,7 @@ const V6ProductsPage = lazy(() => import('./pages/v6-products.tsx'));
 const V6ProductsPage2 = lazy(() => import('./pages/v6-products2.tsx'));
 const Museum = lazy(() => import('./pages/museum.jsx'));
 const CombinedParallaxTest = lazy(() => import('./pages/dev/combined-parallax-test.jsx'));
-const PlanetSandboxPage = lazy(() => import('./pages/dev/planet-sandbox.jsx'));
+// TEMPORARILY DISABLED: const PlanetSandboxPage = lazy(() => import('./pages/dev/planet-sandbox.jsx'));
 
 // 🚀 LAZY LOAD HEAVY UTILS - Only load when needed
 const loadThoughtTrails = () => import('./lib/thoughtTrails');
@@ -412,13 +409,8 @@ const AppRoutes = () => (
         </Suspense>
       } />
       
-      {/* 🚨 ISOLATED: /dev/planet-sandbox - TEMPORARILY UNMOUNTED */}
-      {/* Route will be restored once system is fully optimized */}
-      {/* <Route path="/dev/planet-sandbox" element={
-        <Suspense fallback={<LoadingFallback />}>
-          <PlanetSandboxPage />
-        </Suspense>
-      } /> */}
+      {/* TEMPORARILY DISABLED: <Route path="/dev/planet-sandbox" element={<PlanetSandboxPage />} /> */}
+      <Route path="/dev/planet-sandbox-with-stars" element={<PlanetSandboxWithStarsPage />} />
       
       {/* 🔍 LEGACY REVIEW: Mount old index.jsx for examination */}
       {/* <Route path="/dev/legacy-index-review" element={

@@ -16,7 +16,7 @@
 // ⚠️ WARNING: DO NOT REMOVE - MAIN HOMEPAGE HERO
 // 📊 BUNDLE: Lazy loaded for performance (Three.js content)
 // 🎯 TYPE: Homepage Hero Component
-// �� DEPENDENCIES: Hero3DPlanet (simplified), BackgroundLayerAtomic, HeroStageManager
+//  DEPENDENCIES: Hero3DPlanet (simplified), BackgroundLayerAtomic, HeroStageManager
 
 import React, { useState, Suspense, lazy, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,8 +24,7 @@ import { IMAGES } from '../../utils/assets';
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
 import MissionControlNavbar from '../navigation/MissionControlNavbar';
 
-// ✅ NEW: Simplified single-layer 3D planet (replaces complex proxy chain)
-const Hero3DPlanet = lazy(() => import('../Hero3DPlanet'));
+// TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../Hero3DPlanet'));
 
 import BackgroundLayerAtomic from './BackgroundLayerAtomic';
 import HeroStageManager from './hero/HeroStageManager';
@@ -135,7 +134,7 @@ const HeroAtomic = () => {
         {/* Background layer - Loads immediately */}
         <BackgroundLayerAtomic />
         
-        {/* ✅ NEW: 3D Planet with delayed entrance (1.5s after content) */}
+        {/* TEMPORARILY DISABLED: 3D Planet with delayed entrance (1.5s after content) */}
         <AnimatePresence>
           {show3D && (
             <div
@@ -145,9 +144,10 @@ const HeroAtomic = () => {
                 zIndex: 20
               }}
             >
-              <Suspense fallback={null}>
-                <Hero3DPlanet />
-              </Suspense>
+              {/* TEMPORARILY DISABLED: <Hero3DPlanet /> */}
+              <div className="flex items-center justify-center h-full">
+                <div className="text-lime-400/60 text-sm">Planet View Disabled</div>
+              </div>
             </div>
           )}
         </AnimatePresence>

@@ -1,8 +1,10 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { useCodelabPerformance } from "../../layouts/CodelabFloatflowLayout";
 
-const LegitSection = ({ isLowPerf }) => {
+const LegitSection = () => {
   const shouldReduceMotion = useReducedMotion();
+  const { isLowPerf } = useCodelabPerformance();
   const simplifiedAnimation = shouldReduceMotion || isLowPerf;
 
   // Simplified animation variants

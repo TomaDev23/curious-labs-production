@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useCodelabPerformance } from "../../layouts/CodelabFloatflowLayout";
 
 // Simple hook for animating number counting with performance optimizations
 const useCountAnimation = (targetValue, duration = 2, start = 0) => {
@@ -44,8 +45,9 @@ const useCountAnimation = (targetValue, duration = 2, start = 0) => {
   return [count, setIsInView];
 };
 
-const MetricsLogsSection = ({ isLowPerf }) => {
+const MetricsLogsSection = () => {
   const shouldReduceMotion = useReducedMotion();
+  const { isLowPerf } = useCodelabPerformance();
   const simplifiedAnimation = shouldReduceMotion || isLowPerf;
   
   const sectionRef = useRef(null);

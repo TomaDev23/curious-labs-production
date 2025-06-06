@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, createContext, useContext } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+
+// ✅ SURGICAL FIX: Create context to avoid prop drilling to DOM elements
+const CodelabPerformanceContext = createContext({ isLowPerf: false });
+
+// Export hook for components to use
+export const useCodelabPerformance = () => useContext(CodelabPerformanceContext);
 
 const CodelabFloatflowLayout = ({ children }) => {
   const shouldReduceMotion = useReducedMotion();
@@ -96,84 +102,81 @@ const CodelabFloatflowLayout = ({ children }) => {
     };
   }, [simplifiedAnimation]);
 
-  // Forward isLowPerf to children
-  const childrenWithProps = React.Children.map(children, child => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child, { isLowPerf });
-    }
-    return child;
-  });
+  // ✅ SURGICAL FIX: Use context provider instead of prop drilling
+  const performanceContext = { isLowPerf, simplifiedAnimation };
 
   return (
-    <motion.section
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="relative z-10 px-4 sm:px-8 md:px-16 xl:px-24 py-20 overflow-hidden"
-    >
-      {/* Background elements with simplified z-index structure */}
-      {/* Matrix rain canvas */}
-      {!simplifiedAnimation && (
-        <canvas 
-          ref={canvasRef} 
-          className="absolute inset-0 opacity-20" 
-          style={{ zIndex: 0 }}
-        />
-      )}
-      
-      {/* Primary nebula glow - static for low perf */}
-      <div 
-        className="absolute inset-0 opacity-40"
-        style={{
-          zIndex: 1,
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.15) 0%, rgba(30, 27, 75, 0.05) 70%)',
-        }}
-      />
-      
-      {/* Animated nebula - only if not simplified */}
-      {!simplifiedAnimation && (
-        <motion.div 
-          className="absolute inset-0 opacity-30"
+    <CodelabPerformanceContext.Provider value={performanceContext}>
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-10 px-4 sm:px-8 md:px-16 xl:px-24 py-20 overflow-hidden"
+      >
+        {/* Background elements with simplified z-index structure */}
+        {/* Matrix rain canvas */}
+        {!simplifiedAnimation && (
+          <canvas 
+            ref={canvasRef} 
+            className="absolute inset-0 opacity-20" 
+            style={{ zIndex: 0 }}
+          />
+        )}
+        
+        {/* Primary nebula glow - static for low perf */}
+        <div 
+          className="absolute inset-0 opacity-40"
           style={{
-            zIndex: 2,
-            background: 'radial-gradient(ellipse at 30% 70%, rgba(192, 132, 252, 0.15) 0%, rgba(30, 27, 75, 0.01) 70%)',
-          }}
-          animate={{ 
-            scale: [1, 1.05, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{ 
-            duration: 15, 
-            repeat: Infinity, 
-            repeatType: "reverse", 
-            ease: "easeInOut" 
+            zIndex: 1,
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.15) 0%, rgba(30, 27, 75, 0.05) 70%)',
           }}
         />
-      )}
-      
-      {/* Star background */}
-      <div className="absolute inset-0 opacity-30" 
-        style={{ 
-          zIndex: 3,
-          backgroundImage: "url(/images/stars.svg)",
-          backgroundSize: "cover",
-        }}
-      />
-      
-      {/* Bottom glow gradient */}
-      <div 
-        className="absolute bottom-0 left-0 w-full h-[20%]"
-        style={{
-          zIndex: 4,
-          background: 'linear-gradient(to bottom, rgba(139, 92, 246, 0) 0%, rgba(139, 92, 246, 0.05) 100%)',
-        }}
-      />
-      
-      {/* Content container */}
-      <div className="space-y-12 max-w-7xl mx-auto relative" style={{ zIndex: 10 }}>
-        {childrenWithProps}
-      </div>
-    </motion.section>
+        
+        {/* Animated nebula - only if not simplified */}
+        {!simplifiedAnimation && (
+          <motion.div 
+            className="absolute inset-0 opacity-30"
+            style={{
+              zIndex: 2,
+              background: 'radial-gradient(ellipse at 30% 70%, rgba(192, 132, 252, 0.15) 0%, rgba(30, 27, 75, 0.01) 70%)',
+            }}
+            animate={{ 
+              scale: [1, 1.05, 1],
+              opacity: [0.2, 0.3, 0.2],
+            }}
+            transition={{ 
+              duration: 15, 
+              repeat: Infinity, 
+              repeatType: "reverse", 
+              ease: "easeInOut" 
+            }}
+          />
+        )}
+        
+        {/* Star background */}
+        <div className="absolute inset-0 opacity-30" 
+          style={{ 
+            zIndex: 3,
+            backgroundImage: "url(/images/stars.svg)",
+            backgroundSize: "cover",
+          }}
+        />
+        
+        {/* Bottom glow gradient */}
+        <div 
+          className="absolute bottom-0 left-0 w-full h-[20%]"
+          style={{
+            zIndex: 4,
+            background: 'linear-gradient(to bottom, rgba(139, 92, 246, 0) 0%, rgba(139, 92, 246, 0.05) 100%)',
+          }}
+        />
+        
+        {/* Content container */}
+        <div className="space-y-12 max-w-7xl mx-auto relative" style={{ zIndex: 10 }}>
+          {children}
+        </div>
+      </motion.section>
+    </CodelabPerformanceContext.Provider>
   );
 };
 

@@ -26,14 +26,31 @@ import CosmicBackgroundSystemV6 from '../components/home/v6/CosmicBackgroundSyst
 // import ContactTerminal from '../components/home/v6/ContactTerminal'; // Removed
 
 // --- 🔴 KEEP - ATOMIC COMPONENTS 🔴 ---
-// Lazy load HeroAtomic to prevent Three.js contamination
+// 🚀 OPTIMIZED: Lazy load critical components for better bundle splitting
 const HeroAtomic = lazy(() => import('../components/atomic/HeroAtomic')); // CODE: ATOMIC-COMP-001
+const MissionAtomic = lazy(() => import('../components/atomic/MissionAtomic')); // CODE: ATOMIC-COMP-003 - Convert to lazy
+const OurProducts_newV6 = lazy(() => import('../components/atomic/OurProducts_newV6')); // CODE: ATOMIC-COMP-004 (102KB - MUST be lazy)
+const ServicesOrbitalAtomic = lazy(() => import('../components/atomic/ServicesOrbitalAtomic')); // CODE: ATOMIC-COMP-005 - Convert to lazy
+const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTerminalAtomic')); // CODE: ATOMIC-COMP-006 - Convert to lazy
+
+// Keep ProcessLegacyAtomic eager since it's smaller and less likely to cause issues
 import ProcessLegacyAtomic from '../components/atomic/ProcessLegacyAtomic'; // CODE: ATOMIC-COMP-002
-import MissionAtomic from '../components/atomic/MissionAtomic'; // CODE: ATOMIC-COMP-003
-// import ProductScrollAtomic from '../components/atomic/ProductScrollAtomic'; // Removed
-import OurProducts_newV6 from '../components/atomic/OurProducts_newV6'; // CODE: ATOMIC-COMP-004 (102KB needs optimization)
-import ServicesOrbitalAtomic from '../components/atomic/ServicesOrbitalAtomic'; // CODE: ATOMIC-COMP-005
-import ContactTerminalAtomic from '../components/atomic/ContactTerminalAtomic'; // CODE: ATOMIC-COMP-006
+
+// Optimized loading component
+const AtomicSectionLoader = ({ children, sectionName }) => (
+  <Suspense fallback={
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+      <div className="flex flex-col items-center space-y-4">
+        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="text-white/60 text-sm font-mono tracking-wider">
+          Loading {sectionName}...
+        </div>
+      </div>
+    </div>
+  }>
+    {children}
+  </Suspense>
+);
 
 const V6AtomicPage = () => {
   return (
@@ -55,18 +72,27 @@ const V6AtomicPage = () => {
         </div>
 
         {/* 🔴 ATOMIC SCENES START HERE - ALL KEEP 🔴 */}
-        <Suspense fallback={
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="text-white/60">Loading Hero...</div>
-          </div>
-        }>
+        <AtomicSectionLoader sectionName="Hero">
           <HeroAtomic />
-        </Suspense>
-        <MissionAtomic />
-        <OurProducts_newV6 />
-        <ServicesOrbitalAtomic />
+        </AtomicSectionLoader>
+        
+        <AtomicSectionLoader sectionName="Mission">
+          <MissionAtomic />
+        </AtomicSectionLoader>
+        
+        <AtomicSectionLoader sectionName="Products">
+          <OurProducts_newV6 />
+        </AtomicSectionLoader>
+        
+        <AtomicSectionLoader sectionName="Services">
+          <ServicesOrbitalAtomic />
+        </AtomicSectionLoader>
+        
         <ProcessLegacyAtomic />
-        <ContactTerminalAtomic />
+        
+        <AtomicSectionLoader sectionName="Contact">
+          <ContactTerminalAtomic />
+        </AtomicSectionLoader>
         {/* 🔴 ATOMIC SCENES END 🔴 */}
 
       </LayoutWrapper>

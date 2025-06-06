@@ -1,62 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 import FooterExperience from '../components/home/v4/FooterExperience';
+
+// 🚀 LAZY LOAD: Mermaid is large and only needed for dev tools
+const MermaidLoader = lazy(() => import('mermaid'));
 
 // Final Purge Complete Page Component
 export default function FinalPurgePage() {
   const [activeTab, setActiveTab] = useState('overview');
   const [animationStep, setAnimationStep] = useState(0);
-  const [showMermaid, setShowMermaid] = useState(false);
-
-  // Initialize Mermaid charts
-  useEffect(() => {
-    // Dynamically import mermaid to avoid SSR issues
-    const loadMermaid = async () => {
-      try {
-        const mermaid = await import('mermaid');
-        mermaid.default.initialize({ 
-          theme: 'dark',
-          themeVariables: {
-            primaryColor: '#84cc16',
-            primaryTextColor: '#ffffff',
-            primaryBorderColor: '#84cc16',
-            lineColor: '#84cc16',
-            sectionBkgColor: '#000000',
-            altSectionBkgColor: '#1a1a1a',
-            gridColor: '#333333',
-            secondaryColor: '#ff4444',
-            tertiaryColor: '#fbbf24'
-          },
-          flowchart: {
-            htmlLabels: true,
-            curve: 'basis',
-            padding: 20
-          },
-          startOnLoad: false
-        });
-        
-        // Wait a bit longer for DOM to be ready
-        setTimeout(() => {
-          setShowMermaid(true);
-          // Render charts with additional delay
-          setTimeout(() => {
-            try {
-              mermaid.default.run();
-            } catch (error) {
-              console.log('Mermaid rendering failed, using fallback');
-              setShowMermaid(false);
-            }
-          }, 300);
-        }, 200);
-      } catch (error) {
-        console.log('Mermaid not available, using fallback charts');
-        setShowMermaid(false);
-      }
-    };
-    
-    loadMermaid();
-  }, [activeTab]);
 
   // Project Statistics (from our actual purge)
   const stats = {
@@ -134,13 +87,76 @@ export default function FinalPurgePage() {
     }
   ];
 
-  // Mermaid chart components with fallback
-  const ProcessFlowChart = () => (
-    <div className="bg-black/50 p-8 rounded-lg border border-white/10 min-h-[400px] flex items-center justify-center">
-      {showMermaid ? (
-        <div className="w-full max-w-7xl mx-auto">
-          <div className="mermaid text-center" style={{ minHeight: '350px', width: '100%' }}>
-            {`graph LR
+  // Mermaid chart components with independent initialization
+  const ProcessFlowChart = () => {
+    const [diagramReady, setDiagramReady] = useState(false);
+
+    useEffect(() => {
+      const initAndRender = async () => {
+        try {
+          const mermaidModule = await import('mermaid');
+          const mermaid = mermaidModule.default;
+          
+          mermaid.initialize({ 
+            theme: 'dark',
+            themeVariables: {
+              primaryColor: '#84cc16',
+              primaryTextColor: '#ffffff',
+              primaryBorderColor: '#84cc16',
+              lineColor: '#84cc16',
+              sectionBkgColor: '#000000',
+              altSectionBkgColor: '#1a1a1a',
+              gridColor: '#333333',
+              secondaryColor: '#ff4444',
+              tertiaryColor: '#fbbf24'
+            },
+            flowchart: {
+              htmlLabels: true,
+              curve: 'basis',
+              padding: 20
+            },
+            startOnLoad: false,
+            securityLevel: 'loose'
+          });
+          
+          setDiagramReady(true);
+          
+          // Render after short delay
+          setTimeout(() => {
+            const element = document.getElementById('process-flow-chart');
+            if (element) {
+              mermaid.run({ nodes: [element] }).catch(() => {
+                setDiagramReady(false);
+              });
+            }
+          }, 100);
+        } catch (error) {
+          setDiagramReady(false);
+        }
+      };
+
+      initAndRender();
+    }, []);
+
+    return (
+      <div className="bg-black/50 p-8 rounded-lg border border-white/10 min-h-[400px] flex items-center justify-center">
+        {diagramReady ? (
+          <div className="w-full max-w-7xl mx-auto">
+            <div 
+              id="process-flow-chart"
+              className="mermaid text-center" 
+              style={{ 
+                minHeight: '350px', 
+                width: '100%',
+                maxWidth: '100%',
+                display: 'block',
+                margin: '0 auto',
+                fontSize: '14px',
+                fontFamily: 'monospace',
+                overflow: 'visible'
+              }}
+            >
+              {`graph LR
     subgraph Analysis["🔍 Analysis Phase"]
         A1["📊 Analyze Codebase"] --> A2["📋 Track Dependencies"]
         A2 --> A3["🔗 Map Imports"]
@@ -171,57 +187,121 @@ export default function FinalPurgePage() {
     style Analysis fill:#1a1a1a,stroke:#84cc16,stroke-width:2px
     style Processing fill:#1a1a1a,stroke:#fbbf24,stroke-width:2px
     style Validation fill:#1a1a1a,stroke:#10b981,stroke-width:2px`}
-          </div>
-        </div>
-      ) : (
-        <div className="text-center py-12 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-6xl mx-auto">
-            <div className="bg-lime-400/20 p-6 rounded-lg border border-lime-400/30">
-              <div className="text-4xl mb-4">🔍</div>
-              <div className="text-lime-400 font-bold text-lg mb-2">Analysis Phase</div>
-              <div className="space-y-3 text-sm">
-                <div className="bg-lime-400/10 p-2 rounded text-white">📊 Analyze Codebase</div>
-                <div className="bg-lime-400/10 p-2 rounded text-white">📋 Track Dependencies</div>
-                <div className="bg-lime-400/10 p-2 rounded text-white">🔗 Map Imports</div>
-              </div>
-            </div>
-            <div className="bg-yellow-400/20 p-6 rounded-lg border border-yellow-400/30">
-              <div className="text-4xl mb-4">🔥</div>
-              <div className="text-yellow-400 font-bold text-lg mb-2">Processing Phase</div>
-              <div className="space-y-3 text-sm">
-                <div className="bg-yellow-400/10 p-2 rounded text-white">🎯 Find Used Files</div>
-                <div className="bg-red-400/20 p-2 rounded text-white">📦 Extract Production Files</div>
-                <div className="bg-yellow-400/10 p-2 rounded text-white">📋 Copy Configs</div>
-              </div>
-            </div>
-            <div className="bg-green-400/20 p-6 rounded-lg border border-green-400/30">
-              <div className="text-4xl mb-4">✅</div>
-              <div className="text-green-400 font-bold text-lg mb-2">Validation Phase</div>
-              <div className="space-y-3 text-sm">
-                <div className="bg-green-400/10 p-2 rounded text-white">🧪 Test Build</div>
-                <div className="bg-green-400/10 p-2 rounded text-white">✅ Validate Functionality</div>
-                <div className="bg-green-400/10 p-2 rounded text-white">🚀 Deploy Clean Version</div>
-              </div>
             </div>
           </div>
-          <div className="mt-8">
-            <p className="text-white/70 text-lg">
-              Three-phase workflow: <span className="text-lime-400">Analysis</span> → 
-              <span className="text-yellow-400"> Processing</span> → 
-              <span className="text-green-400"> Validation</span>
-            </p>
+        ) : (
+          <div className="text-center py-12 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-6xl mx-auto">
+              <div className="bg-lime-400/20 p-6 rounded-lg border border-lime-400/30">
+                <div className="text-4xl mb-4">🔍</div>
+                <div className="text-lime-400 font-bold text-lg mb-2">Analysis Phase</div>
+                <div className="space-y-3 text-sm">
+                  <div className="bg-lime-400/10 p-2 rounded text-white">📊 Analyze Codebase</div>
+                  <div className="bg-lime-400/10 p-2 rounded text-white">📋 Track Dependencies</div>
+                  <div className="bg-lime-400/10 p-2 rounded text-white">🔗 Map Imports</div>
+                </div>
+              </div>
+              <div className="bg-yellow-400/20 p-6 rounded-lg border border-yellow-400/30">
+                <div className="text-4xl mb-4">🔥</div>
+                <div className="text-yellow-400 font-bold text-lg mb-2">Processing Phase</div>
+                <div className="space-y-3 text-sm">
+                  <div className="bg-yellow-400/10 p-2 rounded text-white">🎯 Find Used Files</div>
+                  <div className="bg-red-400/20 p-2 rounded text-white">📦 Extract Production Files</div>
+                  <div className="bg-yellow-400/10 p-2 rounded text-white">📋 Copy Configs</div>
+                </div>
+              </div>
+              <div className="bg-green-400/20 p-6 rounded-lg border border-green-400/30">
+                <div className="text-4xl mb-4">✅</div>
+                <div className="text-green-400 font-bold text-lg mb-2">Validation Phase</div>
+                <div className="space-y-3 text-sm">
+                  <div className="bg-green-400/10 p-2 rounded text-white">🧪 Test Build</div>
+                  <div className="bg-green-400/10 p-2 rounded text-white">✅ Validate Functionality</div>
+                  <div className="bg-green-400/10 p-2 rounded text-white">🚀 Deploy Clean Version</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-white/70 text-lg">
+                Three-phase workflow: <span className="text-lime-400">Analysis</span> → 
+                <span className="text-yellow-400"> Processing</span> → 
+                <span className="text-green-400"> Validation</span>
+              </p>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
-  const ArchitectureChart = () => (
-    <div className="bg-black/50 p-8 rounded-lg border border-white/10 min-h-[450px] flex items-center justify-center">
-      {showMermaid ? (
-        <div className="w-full max-w-7xl mx-auto">
-          <div className="mermaid text-center" style={{ minHeight: '400px', width: '100%' }}>
-            {`graph LR
+  const ArchitectureChart = () => {
+    const [diagramReady, setDiagramReady] = useState(false);
+
+    useEffect(() => {
+      const initAndRender = async () => {
+        try {
+          const mermaidModule = await import('mermaid');
+          const mermaid = mermaidModule.default;
+          
+          mermaid.initialize({ 
+            theme: 'dark',
+            themeVariables: {
+              primaryColor: '#84cc16',
+              primaryTextColor: '#ffffff',
+              primaryBorderColor: '#84cc16',
+              lineColor: '#84cc16',
+              sectionBkgColor: '#000000',
+              altSectionBkgColor: '#1a1a1a',
+              gridColor: '#333333',
+              secondaryColor: '#ff4444',
+              tertiaryColor: '#fbbf24'
+            },
+            flowchart: {
+              htmlLabels: true,
+              curve: 'basis',
+              padding: 20
+            },
+            startOnLoad: false,
+            securityLevel: 'loose'
+          });
+          
+          setDiagramReady(true);
+          
+          // Render after short delay
+          setTimeout(() => {
+            const element = document.getElementById('architecture-chart');
+            if (element) {
+              mermaid.run({ nodes: [element] }).catch(() => {
+                setDiagramReady(false);
+              });
+            }
+          }, 100);
+        } catch (error) {
+          setDiagramReady(false);
+        }
+      };
+
+      initAndRender();
+    }, []);
+
+    return (
+      <div className="bg-black/50 p-8 rounded-lg border border-white/10 min-h-[450px] flex items-center justify-center">
+        {diagramReady ? (
+          <div className="w-full max-w-7xl mx-auto">
+            <div 
+              id="architecture-chart"
+              className="mermaid text-center" 
+              style={{ 
+                minHeight: '400px', 
+                width: '100%',
+                maxWidth: '100%',
+                display: 'block',
+                margin: '0 auto',
+                fontSize: '14px',
+                fontFamily: 'monospace',
+                overflow: 'visible'
+              }}
+            >
+              {`graph LR
     subgraph Original["🗂️ Original Codebase"]
         A1["23,800 Files"] --> A2["2.1 GB Size"]
         A3["847 Dependencies"] --> A4["120s Build"]
@@ -246,53 +326,54 @@ export default function FinalPurgePage() {
     style Original fill:#1a1a1a,stroke:#ef4444,stroke-width:2px
     style Process fill:#1a1a1a,stroke:#fbbf24,stroke-width:2px
     style Clean fill:#1a1a1a,stroke:#84cc16,stroke-width:2px`}
-          </div>
-        </div>
-      ) : (
-        <div className="text-center py-12 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
-            <div className="bg-red-400/20 p-6 rounded-lg border border-red-400/30">
-              <div className="text-4xl mb-4">🗂️</div>
-              <div className="text-red-400 font-bold text-lg mb-2">Original Codebase</div>
-              <div className="space-y-2 text-sm">
-                <div className="text-white">23,800 Files</div>
-                <div className="text-white">2.1 GB Size</div>
-                <div className="text-white">847 Dependencies</div>
-                <div className="text-white">120s Build Time</div>
-              </div>
-            </div>
-            <div className="bg-yellow-400/20 p-6 rounded-lg border border-yellow-400/30">
-              <div className="text-4xl mb-4">🔥</div>
-              <div className="text-yellow-400 font-bold text-lg mb-2">Final Purge</div>
-              <div className="space-y-2 text-sm">
-                <div className="text-white">🔍 Dependency Tracer</div>
-                <div className="text-white">🎯 Production Extractor</div>
-                <div className="text-white">✅ Validator</div>
-                <div className="text-white">Smart Processing</div>
-              </div>
-            </div>
-            <div className="bg-green-400/20 p-6 rounded-lg border border-green-400/30">
-              <div className="text-4xl mb-4">✨</div>
-              <div className="text-green-400 font-bold text-lg mb-2">Clean Version</div>
-              <div className="space-y-2 text-sm">
-                <div className="text-white">261 Files</div>
-                <div className="text-white">23.4 MB Size</div>
-                <div className="text-white">34 Dependencies</div>
-                <div className="text-white">15.4s Build Time</div>
-              </div>
             </div>
           </div>
-          <div className="mt-8">
-            <p className="text-white/70 text-lg">
-              Three-stage process: <span className="text-red-400">Bloated Input</span> → 
-              <span className="text-yellow-400"> Smart Processing</span> → 
-              <span className="text-green-400"> Clean Output</span>
-            </p>
+        ) : (
+          <div className="text-center py-12 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
+              <div className="bg-red-400/20 p-6 rounded-lg border border-red-400/30">
+                <div className="text-4xl mb-4">🗂️</div>
+                <div className="text-red-400 font-bold text-lg mb-2">Original Codebase</div>
+                <div className="space-y-2 text-sm">
+                  <div className="text-white">23,800 Files</div>
+                  <div className="text-white">2.1 GB Size</div>
+                  <div className="text-white">847 Dependencies</div>
+                  <div className="text-white">120s Build Time</div>
+                </div>
+              </div>
+              <div className="bg-yellow-400/20 p-6 rounded-lg border border-yellow-400/30">
+                <div className="text-4xl mb-4">🔥</div>
+                <div className="text-yellow-400 font-bold text-lg mb-2">Final Purge</div>
+                <div className="space-y-2 text-sm">
+                  <div className="text-white">🔍 Dependency Tracer</div>
+                  <div className="text-white">🎯 Production Extractor</div>
+                  <div className="text-white">✅ Validator</div>
+                  <div className="text-white">Smart Processing</div>
+                </div>
+              </div>
+              <div className="bg-green-400/20 p-6 rounded-lg border border-green-400/30">
+                <div className="text-4xl mb-4">✨</div>
+                <div className="text-green-400 font-bold text-lg mb-2">Clean Version</div>
+                <div className="space-y-2 text-sm">
+                  <div className="text-white">261 Files</div>
+                  <div className="text-white">23.4 MB Size</div>
+                  <div className="text-white">34 Dependencies</div>
+                  <div className="text-white">15.4s Build Time</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-white/70 text-lg">
+                Three-stage process: <span className="text-red-400">Bloated Input</span> → 
+                <span className="text-yellow-400"> Smart Processing</span> → 
+                <span className="text-green-400"> Clean Output</span>
+              </p>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -727,6 +808,7 @@ export default function FinalPurgePage() {
                     <span className="text-yellow-400 mr-2">🔄</span>
                     Process Flow
                   </h2>
+                  {/* Only render ProcessFlowChart when this tab is active */}
                   <ProcessFlowChart />
                   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-4 bg-green-400/10 rounded-lg">
@@ -747,6 +829,7 @@ export default function FinalPurgePage() {
                     <span className="text-blue-400 mr-2">🏗️</span>
                     System Architecture
                   </h2>
+                  {/* Only render ArchitectureChart when this tab is active */}
                   <ArchitectureChart />
                   <div className="mt-6 text-center">
                     <p className="text-white/70">

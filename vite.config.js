@@ -64,26 +64,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // ✅ SLEEP-UNTIL-CALLED: Vendor chunking strategy
-          
-          // ✅ CRITICAL FIX: Don't chunk React at all - keep in main bundle
-          // This ensures ALL React dependencies stay together
-          
-          // REMOVED: 3D Libraries - Three.js dependencies have been removed
-          // if (id.includes('three') || id.includes('@react-three')) {
-          //   return 'vendor-three-core';
-          // }
-          
           // ✅ SURGICAL FIX: Removed mermaid chunking - let it load truly on-demand
           // Heavy Mermaid was being forced into vendor chunk despite dynamic imports
           // if (id.includes('mermaid')) {
           //   return 'vendor-mermaid';
           // }
-          
-          // ✅ Graph libraries - Only loads on graph routes
-          if (id.includes('cytoscape') || id.includes('dagre')) {
-            return 'vendor-graph';
-          }
           
           // ✅ Math libraries - Only loads when needed
           if (id.includes('katex') || id.includes('mathjs')) {
@@ -108,13 +93,24 @@ export default defineConfig({
             return undefined;
           }
           
-          // ✅ CORRECTED APPROACH: Exclude mermaid from vendor-bundle catch-all
-          // This allows mermaid to bypass ALL chunking rules for true dynamic loading
-          if (id.includes('node_modules') && !id.includes('mermaid')) {
+          // ✅ CRITICAL FIX: Only put "safe" node_modules in vendor-bundle
+          // Exclude ALL graph/visualization libraries to prevent contamination
+          if (id.includes('node_modules') && 
+              !id.includes('mermaid') && 
+              !id.includes('cytoscape') && 
+              !id.includes('dagre') &&
+              !id.includes('d3') &&
+              !id.includes('lodash') && // Can be heavy, better dynamic
+              !id.includes('chart') && 
+              !id.includes('graph') &&
+              !id.includes('plot') &&
+              !id.includes('vis')) {
             return 'vendor-bundle';
           }
           
-          // Mermaid will fall through here and remain unchunked = truly dynamic!
+          // ✅ FORCE DYNAMIC: All visualization libraries fall through = truly lazy
+          // This includes: mermaid, cytoscape, dagre, d3, lodash, chart libraries
+          // They will only load when explicitly imported by OpsPipe/FinalPurge
         },
       },
     },

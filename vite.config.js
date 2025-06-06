@@ -59,10 +59,61 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
+    target: 'esnext',
     sourcemap: false,
-    minify: 'esbuild'
-    // Let Vite handle chunking automatically - no manual chunks!
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // ✅ SLEEP-UNTIL-CALLED: Vendor chunking strategy
+          
+          // ✅ CRITICAL FIX: Don't chunk React at all - keep in main bundle
+          // This ensures ALL React dependencies stay together
+          
+          // ✅ 3D Libraries - Only loads on 3D routes
+          if (id.includes('three') || id.includes('@react-three')) {
+            return 'vendor-three-core';
+          }
+          
+          // ✅ Heavy Mermaid - Only loads on docs/tools routes
+          if (id.includes('mermaid')) {
+            return 'vendor-mermaid';
+          }
+          
+          // ✅ Graph libraries - Only loads on graph routes
+          if (id.includes('cytoscape') || id.includes('dagre')) {
+            return 'vendor-graph';
+          }
+          
+          // ✅ Math libraries - Only loads when needed
+          if (id.includes('katex') || id.includes('mathjs')) {
+            return 'vendor-math';
+          }
+          
+          // ✅ SKIP React AND React-dependent libraries - keep all in main bundle
+          if (id.includes('react') || 
+              id.includes('react-dom') ||
+              id.includes('react-router') ||
+              id.includes('react-helmet') ||
+              id.includes('react-hot-toast') ||
+              id.includes('react-parallax') ||
+              id.includes('react-intersection-observer') ||
+              id.includes('react-icons') ||
+              id.includes('@react-hook') ||
+              id.includes('use-deep-compare-effect') ||
+              id.includes('react-use') ||
+              id.includes('scheduler') ||
+              id.includes('framer-motion')) { // ✅ MOVED: Framer Motion needs React
+            // Return undefined to keep in main bundle
+            return undefined;
+          }
+          
+          // Keep other vendor libs together for cache efficiency
+          if (id.includes('node_modules')) {
+            return 'vendor-bundle';
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600, // Slightly higher for vendor chunks
   }
 });

@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
 
 // Simple hook for animating number counting with performance optimizations
+import {  motion, useReducedMotion, useInView  } from '../../FramerProvider';
+
 const useCountAnimation = (targetValue, duration = 2, start = 0) => {
   const [count, setCount] = useState(start);
   const shouldReduceMotion = useReducedMotion();

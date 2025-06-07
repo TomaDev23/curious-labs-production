@@ -1,5 +1,6 @@
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import {  motion, useReducedMotion  } from '../../FramerProvider';
+
 
 const HeroSection = () => {
   const shouldReduceMotion = useReducedMotion();

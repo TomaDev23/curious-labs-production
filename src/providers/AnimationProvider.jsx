@@ -1,5 +1,3 @@
-import { LazyMotion, domAnimation } from 'framer-motion';
-
 /**
  * AnimationProvider - Global Framer Motion optimization
  * 

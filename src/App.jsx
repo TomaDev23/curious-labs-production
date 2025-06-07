@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { FramerProvider } from './FramerProvider';
 
 // 🚀 LAZY LOAD EVERYTHING - Even basic components for maximum optimization
 const ScrollToTop = lazy(() => import('./components/ScrollToTop'));
@@ -215,12 +216,15 @@ export default function App() {
   }, [metrics]);
 
   return (
-    <Suspense fallback={null}>
+    <FramerProvider>
       <PerformanceContext.Provider value={{ metrics, addMetric }}>
-        {/* 🚀 SURGICAL FIX: Remove conditional 3D wrapping - let components handle their own context */}
-        <AppRoutes />
+        <Suspense fallback={<SimpleLoader />}>
+          <ErrorBoundary>
+            <AppRoutes />
+          </ErrorBoundary>
+        </Suspense>
       </PerformanceContext.Provider>
-    </Suspense>
+    </FramerProvider>
   );
 }
 

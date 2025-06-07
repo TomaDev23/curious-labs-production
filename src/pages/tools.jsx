@@ -10,13 +10,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 import FooterExperience from '../components/home/v4/FooterExperience';
 import ScrollToTop from '../components/ScrollToTop';
 import BackgroundLayerAtomic from '../components/atomic/BackgroundLayerAtomic';
 
 // ✅ KEEP - TOOLS PAGE COMPONENT
+import { motion, AnimatePresence } from '../FramerProvider';
+
 export default function Tools() {
   const [activeSection, setActiveSection] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');

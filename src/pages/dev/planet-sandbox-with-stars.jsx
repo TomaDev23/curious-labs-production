@@ -1,10 +1,11 @@
+import {  motion  } from '../../FramerProvider';
+
 /**
  * @component PlanetSandboxWithStarsPage
  * @description Planet sandbox development with stellar background - 3D route with delayed loading
  */
 
 import React, { Suspense, lazy } from 'react';
-import { motion } from 'framer-motion';
 
 // TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../../components/Hero3DPlanet'));
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion } from '../FramerProvider';
+
 
 const orbitData = [
   { icon: "/assets/images/general/Page_Logos/OpsPipe_logo.webp", title: "OpsPipe", path: "/products/opspipe", angle: 0, adjustX: 100, adjustY: 20 },

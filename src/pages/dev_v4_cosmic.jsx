@@ -1,5 +1,4 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 // UPDATED: Using new MissionControlNavbar instead of legacy NavBar
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
@@ -18,6 +17,8 @@ import ScrollToTop from '../components/ScrollToTop';
 import useBackgroundZone from '../hooks/useBackgroundZone';
 
 // Lazy load all other components which aren't needed for initial paint
+import { motion } from '../FramerProvider';
+
 const LogoStrip = lazy(() => import('../components/LogoStrip'));
 const MissionStatement = lazy(() => import('../components/home/v4/MissionStatement'));
 const WhyAIDevCards = lazy(() => import('../components/home/v4/WhyAIDevCards'));

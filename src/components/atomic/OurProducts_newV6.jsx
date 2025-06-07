@@ -67,7 +67,7 @@ const OPS_BENTO_ITEMS = [
       ],
       whyItMatters: 'Forget babysitting chatbots. OpsPipe turns messy operational data into a reliable work system — with repeatable results, auditable flows, and minimal chaos.'
     },
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     accentColor: '#84cc16', // Lime
     theme: 'lime',
     bgGradient: 'from-lime-900/50 to-lime-700/30',
@@ -95,7 +95,7 @@ const OPS_BENTO_ITEMS = [
       ],
       whyItMatters: 'Most AI tools are transactional. Curious is relational. It doesn\'t just respond — it remembers, reflects, and returns. This is AI that sticks with you.'
     },
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     accentColor: '#d946ef', // Magenta
     theme: 'magenta',
     bgGradient: 'from-purple-900/50 to-pink-700/30',
@@ -123,7 +123,7 @@ const OPS_BENTO_ITEMS = [
       ],
       whyItMatters: 'Today\'s screens are addictive — not supportive. Guardian offers an alternative: a digital friend that cares, guides, and encourages healthy screen time — not just grabs attention. Built on the AEGIS runtime with a specialized safe-mode persona engine.'
     },
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     accentColor: '#f59e0b', // Amber
     theme: 'amber',
     bgGradient: 'from-amber-900/50 to-orange-700/30',
@@ -151,7 +151,7 @@ const OPS_BENTO_ITEMS = [
       ],
       whyItMatters: 'Most bots spit random indicators. MoonSignal outputs structured, state-driven signals backed by testable logic. No more black box — just raw edge.'
     },
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     accentColor: '#22d3ee', // Cyan
     theme: 'cyan',
     bgGradient: 'from-cyan-900/50 to-teal-700/30',

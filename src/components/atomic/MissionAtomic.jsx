@@ -327,7 +327,7 @@ const MissionAtomic = () => {
       viewport={{ once: true, margin: "0px 0px -20% 0px" }}
       variants={sectionVariants}
     >
-      {/* Milky Way Background - Converted to CSS to avoid LCP dominance */}
+      {/* Milky Way Background - Converted to CSS to avoid LCP competition */}
       <div 
         className="absolute inset-0"
         style={{
@@ -336,12 +336,20 @@ const MissionAtomic = () => {
           left: 0,
           width: '100vw',
           height: '110vh',
-          backgroundImage: 'url("/assets/images/planets/milkyway_Light_tablet.webp")',
+          zIndex: 0,
+          backgroundImage: `
+            image-set(
+              url('/assets/images/planets/milkyway_Light_mobile.webp') 1x,
+              url('/assets/images/planets/milkyway_Light_tablet.webp') 1.4x,
+              url('/assets/images/planets/4k/milkyway_Light.webp') 2.56x
+            )
+          `,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
           transform: 'scale(1.2)',
-          zIndex: 0
+          // Fallback for browsers that don't support image-set
+          background: `url('/assets/images/planets/milkyway_Light_tablet.webp') center center / cover no-repeat`
         }}
       />
       

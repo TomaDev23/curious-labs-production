@@ -26,7 +26,7 @@ const OPS_BENTO_ITEMS = [
     ],
     tagline: 'Office-in-your-pocket with full control',
     backContent: 'Automate workflows with AI precision and scale seamlessly.',
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     theme: 'lime',
     accentColor: '#84cc16', // Lime
     bgGradient: 'from-lime-900/50 to-lime-700/30',
@@ -43,7 +43,7 @@ const OPS_BENTO_ITEMS = [
     ],
     tagline: 'The screen friend that protects, not distracts',
     backContent: 'Nurture creativity with an AI that cares and adapts.',
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     theme: 'magenta',
     accentColor: '#d946ef', // Magenta
     bgGradient: 'from-purple-900/50 to-pink-700/30',
@@ -60,7 +60,7 @@ const OPS_BENTO_ITEMS = [
     ],
     tagline: 'Smarter signals for faster action',
     backContent: 'Trade smarter with AI-driven insights and real-time data.',
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     theme: 'cyan',
     accentColor: '#22d3ee', // Cyan
     bgGradient: 'from-cyan-900/50 to-teal-700/30',
@@ -77,7 +77,7 @@ const OPS_BENTO_ITEMS = [
     ],
     tagline: 'Emotional AI for real connection',
     backContent: 'Your AI companion that truly understands and evolves with you.',
-    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6.JPG',
+    illustrationSrc: '/assets/images/planets/4k/Galaxy_1_v6_small.webp',
     theme: 'lime',
     accentColor: '#84cc16',
     bgGradient: 'from-lime-900/50 to-green-700/30',
@@ -447,7 +447,7 @@ const AnimatedRunner = ({ children }) => {
       <motion.div
         className="absolute inset-0 opacity-10"
         style={{
-          backgroundImage: 'url(/assets/images/planets/4k/Galaxy_1_v6.JPG)',
+          backgroundImage: 'url(/assets/images/planets/4k/Galaxy_1_v6_small.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           width: '180%', // Slightly extend the background
@@ -463,7 +463,7 @@ const AnimatedRunner = ({ children }) => {
       <motion.div
         className="absolute opacity-8"
         style={{
-          backgroundImage: 'url(/assets/images/planets/4k/Galaxy_1_v6.JPG)',
+          backgroundImage: 'url(/assets/images/planets/4k/Galaxy_1_v6_small.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           width: '100%',

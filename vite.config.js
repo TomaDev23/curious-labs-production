@@ -34,7 +34,14 @@ export default defineConfig({
     global: 'globalThis',
   },
   optimizeDeps: {
-    exclude: ['three/webgpu', 'three/tsl'],
+    exclude: [
+      'three', 
+      'three-globe',
+      'mermaid',
+      'cytoscape',
+      'cytoscape-fcose',
+      'cytoscape-cose-bilkent'
+    ],
     include: [
       'react', 
       'react-dom', 
@@ -64,11 +71,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // ✅ SURGICAL FIX: Removed mermaid chunking - let it load truly on-demand
-          // Heavy Mermaid was being forced into vendor chunk despite dynamic imports
-          // if (id.includes('mermaid')) {
-          //   return 'vendor-mermaid';
-          // }
+          // ✅ SPLIT framer-motion into separate chunk
+          if (id.includes('framer-motion')) {
+            return 'framer-motion';
+          }
+          
+          // 🎯 COMPLETELY EXCLUDE MERMAID + CYTOSCAPE from any bundling
+          // These should ONLY load via explicit dynamic imports
+          if (id.includes('mermaid') || id.includes('cytoscape')) {
+            return undefined;
+          }
           
           // ✅ Math libraries - Only loads when needed
           if (id.includes('katex') || id.includes('mathjs')) {
@@ -87,8 +99,7 @@ export default defineConfig({
               id.includes('@react-hook') ||
               id.includes('use-deep-compare-effect') ||
               id.includes('react-use') ||
-              id.includes('scheduler') ||
-              id.includes('framer-motion')) { // ✅ MOVED: Framer Motion needs React
+              id.includes('scheduler')) { // ✅ REMOVED: Framer Motion moved to separate chunk
             // Return undefined to keep in main bundle
             return undefined;
           }
@@ -109,7 +120,7 @@ export default defineConfig({
           }
           
           // ✅ FORCE DYNAMIC: All visualization libraries fall through = truly lazy
-          // This includes: mermaid, cytoscape, dagre, d3, lodash, chart libraries
+          // This includes: mermaid, dagre, d3, lodash, chart libraries
           // They will only load when explicitly imported by OpsPipe/FinalPurge
         },
       },

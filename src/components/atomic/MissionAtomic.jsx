@@ -315,44 +315,25 @@ const MissionAtomic = () => {
     <motion.div 
       className="relative w-full bg-curious-dark-900 overflow-hidden"
       style={{ 
-        minHeight: '140vh', // Extended from 110vh to 140vh (+30vh)
-        marginTop: '-30vh', // Extended from -10vh to -30vh (+20vh into hero)
+        minHeight: '120vh', // Reduced from 140vh to 120vh (-20vh)
+        marginTop: '-25vh', // Reduced from -30vh to -25vh 
         paddingTop: '6rem', // py-24 equivalent
-        paddingBottom: 'calc(6rem + 80vh)', // Extended from 50vh to 80vh (+30vh spacer)
+        paddingBottom: 'calc(6rem + 70vh)', // Reduced from 80vh to 70vh
         mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black calc(100% - 50vh), rgba(0,0,0,0.7) calc(100% - 30vh), rgba(0,0,0,0.3) calc(100% - 15vh), transparent 100%)',
-        WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black calc(100% - 50vh), rgba(0,0,0,0.7) calc(100% - 30vh), rgba(0,0,0,0.3) calc(100% - 15vh), transparent 100%)'
+        WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black calc(100% - 50vh), rgba(0,0,0,0.7) calc(100% - 30vh), rgba(0,0,0,0.3) calc(100% - 15vh), transparent 100%)',
+        contain: 'layout style', // Add performance containment
+        // NUCLEAR FIX: Move background to CSS-only (no contentful paint)
+        backgroundImage: `url('/assets/images/planets/milkyway_Light_tablet.webp')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
       }}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "0px 0px -20% 0px" }}
       variants={sectionVariants}
     >
-      {/* Milky Way Background - Converted to CSS to avoid LCP competition */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '110vh',
-          zIndex: 0,
-          backgroundImage: `
-            image-set(
-              url('/assets/images/planets/milkyway_Light_mobile.webp') 1x,
-              url('/assets/images/planets/milkyway_Light_tablet.webp') 1.4x,
-              url('/assets/images/planets/4k/milkyway_Light.webp') 2.56x
-            )
-          `,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          transform: 'scale(1.2)',
-          // Fallback for browsers that don't support image-set
-          background: `url('/assets/images/planets/milkyway_Light_tablet.webp') center center / cover no-repeat`
-        }}
-      />
-      
       {/* Light glassmorphism overlay - much lighter to let image show through */}
       <div 
         className="absolute inset-0 w-full h-full"
@@ -721,7 +702,7 @@ const MissionAtomic = () => {
       <div
         className="absolute bottom-0 w-full h-[60vh] pointer-events-none"
         style={{
-          backgroundImage: 'url(/assets/images/general/transition_item1.png)',
+          backgroundImage: 'url(/assets/images/general/transition_item1.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center 70%',
           backgroundRepeat: 'no-repeat',

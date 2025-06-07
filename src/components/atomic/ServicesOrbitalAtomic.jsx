@@ -354,7 +354,17 @@ const ServicesOrbitalAtomic = () => {
       <CosmicParticles activeService={activeService} prefersReducedMotion={prefersReducedMotion} />
       
       {/* PRESERVED: Enhanced orbital background rings with kinetic effect */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div 
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{
+          // Scale down the entire orbital system to reduce LCP footprint
+          // while preserving the beautiful "broken rings" kinetic effect
+          transform: 'scale(0.99)', // 95% scale - perfect balance: fits container better while maintaining overflow
+          transformOrigin: 'center center',
+          contain: 'layout style paint', // Isolate the scaled container
+          willChange: 'transform' // Optimize for scaling
+        }}
+      >
         {SERVICES.map((service, index) => (
           <motion.div
             key={`orbit-${index}`}

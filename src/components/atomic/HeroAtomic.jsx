@@ -166,15 +166,24 @@ const HeroAtomic = () => {
         {/* Enhanced Interactive Text content - responsive positioning - LOADS FIRST */}
         <div className={responsiveClasses.contentWrapper}>
           <div className={isMobile ? 'mb-3' : 'mb-4'}>
-            {/* Interactive header with hover effects */}
+            {/* Interactive header with hover effects - LCP OPTIMIZED */}
             <div 
               className="group cursor-pointer transition-all duration-500 hover:scale-[1.02] mb-6"
               onClick={handleHeaderToggle}
+              style={{
+                contain: 'layout style paint',
+                willChange: 'auto'
+              }}
             >
               <h1 
                 className={responsiveClasses.title}
                 role="heading"
                 aria-level={1}
+                style={{
+                  fontDisplay: 'swap',
+                  contain: 'layout style',
+                  priority: 'high'
+                }}
               >
                 We bring you a <span className="bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(132,204,22,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(132,204,22,0.8)] transition-all duration-300">universe</span> of solutions
                 <span className={`inline-block ml-2 transition-transform duration-300 ${isHeaderExpanded ? 'rotate-180' : 'rotate-0'}`}>

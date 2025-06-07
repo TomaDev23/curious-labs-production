@@ -1,3 +1,5 @@
+import {  motion  } from '../../../../FramerProvider';
+
 /**
  * @metadata
  * @component TextRevealBlock
@@ -7,7 +9,6 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 
 const TextRevealBlock = ({ className = '', scenePhase }) => {
   // Force complete state for testing

@@ -1,3 +1,6 @@
+import React, { useState, useEffect, useRef } from 'react';
+import {  motion, useReducedMotion  } from '../../../../FramerProvider';
+
 /**
  * @metadata
  * @component OpsBentoCluster
@@ -8,9 +11,6 @@
  * @scs SCS5
  * @doc contract_ops_bento_cluster.md
  */
-
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 
 // Define bento items for the four products
 const OPS_BENTO_ITEMS = [

@@ -1,3 +1,5 @@
+import {  motion  } from '../../../FramerProvider';
+
 /**
  * @metadata
  * @component PlanetVisualizationV6
@@ -8,7 +10,6 @@
  */
 
 import React, { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useScene } from './SceneControllerV6';
 
 // 2D visualization of product planets

@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useAnimation, useInView } from 'framer-motion';
+import {  motion, useAnimation, useInView  } from '../../FramerProvider';
 
 // Component metadata for LEGIT compliance
 export const metadata = {

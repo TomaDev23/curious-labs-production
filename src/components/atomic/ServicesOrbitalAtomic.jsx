@@ -17,8 +17,8 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
+import {  useInView, motion, AnimatePresence  } from '../../FramerProvider';
 
 // Component metadata for LEGIT compliance
 export const metadata = {

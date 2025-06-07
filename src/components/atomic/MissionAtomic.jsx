@@ -17,8 +17,8 @@
  */
 
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { motion, useAnimation } from 'framer-motion';
 import MoonSphereProxy from './proxies/MoonSphereProxy';
+import {  motion, useAnimation  } from '../../FramerProvider';
 
 // 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
 const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));

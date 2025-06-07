@@ -19,10 +19,10 @@
 //  DEPENDENCIES: Hero3DPlanet (simplified), BackgroundLayerAtomic, HeroStageManager
 
 import React, { useState, Suspense, lazy, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { IMAGES } from '../../utils/assets';
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
 import MissionControlNavbar from '../navigation/MissionControlNavbar';
+import {  motion, AnimatePresence  } from '../../FramerProvider';
 
 // TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../Hero3DPlanet'));
 

@@ -19,7 +19,6 @@
 // 🔗 DEPENDENCIES: framer-motion, react
 
 import React, { useEffect, useState, useRef, useId } from 'react';
-import { motion } from 'framer-motion';
 
 // Internal performance detection
 const useDeviceCapabilities = () => {

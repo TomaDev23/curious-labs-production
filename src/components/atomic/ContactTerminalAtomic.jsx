@@ -179,13 +179,12 @@ const ContactTerminalAtomic = () => {
           {/* Content based on active tab */}
           {activeTab === 'info' ? (
             // Contact Information Tab
-            <div className="space-y-4 font-mono">
+            (<div className="space-y-4 font-mono">
               <div className="text-lime-400 text-sm flex items-start">
                 <span className="mr-2">&gt;</span>
                 <span>{typedText}</span>
                 {!typingComplete && <span className="ml-1 h-4 w-2 bg-lime-400 animate-pulse"></span>}
               </div>
-              
               {typingComplete && (
                 <div 
                   className="mt-2 space-y-3 pl-4 border-l border-gray-800 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]"
@@ -222,7 +221,6 @@ const ContactTerminalAtomic = () => {
                   </div>
                 </div>
               )}
-              
               {/* Terminal Input Simulation */}
               <div 
                 className={`mt-6 flex items-center opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]`}
@@ -232,7 +230,6 @@ const ContactTerminalAtomic = () => {
                 <span className="text-gray-300">how can we assist?</span>
                 <span className="ml-1 h-4 w-2 bg-lime-400 animate-pulse"></span>
               </div>
-              
               {/* Switch to form tab suggestion */}
               <div 
                 className={`mt-6 text-center opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]`}
@@ -245,10 +242,10 @@ const ContactTerminalAtomic = () => {
                   need to send a message? switch to contact_init
                 </button>
               </div>
-            </div>
+            </div>)
           ) : (
             // Contact Form Tab
-            <form onSubmit={handleSubmit} className="space-y-6 font-mono">
+            (<form onSubmit={handleSubmit} className="space-y-6 font-mono">
               <div>
                 <label htmlFor="name" className="block text-sm text-gray-400 mb-1">$ name:</label>
                 <input
@@ -262,7 +259,6 @@ const ContactTerminalAtomic = () => {
                   placeholder="John Doe"
                 />
               </div>
-              
               <div>
                 <label htmlFor="email" className="block text-sm text-gray-400 mb-1">$ email:</label>
                 <input
@@ -276,7 +272,6 @@ const ContactTerminalAtomic = () => {
                   placeholder="john@example.com"
                 />
               </div>
-              
               <div>
                 <label htmlFor="project" className="block text-sm text-gray-400 mb-1">$ project_type:</label>
                 <select
@@ -291,7 +286,6 @@ const ContactTerminalAtomic = () => {
                   ))}
                 </select>
               </div>
-              
               <div>
                 <label htmlFor="message" className="block text-sm text-gray-400 mb-1">$ message:</label>
                 <textarea
@@ -305,7 +299,6 @@ const ContactTerminalAtomic = () => {
                   placeholder="Tell us about your project..."
                 ></textarea>
               </div>
-              
               <button
                 type="submit"
                 className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md text-base font-medium text-black bg-lime-400 hover:bg-lime-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 transition-colors"
@@ -315,7 +308,6 @@ const ContactTerminalAtomic = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </button>
-              
               {/* Switch to info tab suggestion */}
               <div className="text-center text-xs text-gray-400 mt-4">
                 <button 
@@ -326,11 +318,10 @@ const ContactTerminalAtomic = () => {
                   just need our contact info? switch to contact_info
                 </button>
               </div>
-            </form>
+            </form>)
           )}
         </div>
       </div>
-      
       {/* Right Side - Visual */}
       {!isMobile && should3D && (
         <div className="w-full md:w-1/2 flex justify-center items-center">

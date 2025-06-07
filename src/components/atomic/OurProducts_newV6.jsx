@@ -21,9 +21,9 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { StellarMessageComponent } from '../StellarMessageGrok';
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
+import {  motion, AnimatePresence  } from '../../FramerProvider';
 
 // Global animation delays - generated once and never change
 const PERSISTENT_ANIMATION_DELAYS = {

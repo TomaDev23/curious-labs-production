@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from '../FramerProvider';
 
 // This component would handle Final Purge downloads
 // Can be integrated as a route or modal for /tools/final-purge/download

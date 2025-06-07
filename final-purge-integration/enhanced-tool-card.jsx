@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '../FramerProvider';
 // SURGICAL FIX: Remove eager mermaid import - replaced with runtime loading
 // import mermaid from 'mermaid';
 

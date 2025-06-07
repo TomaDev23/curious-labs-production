@@ -1,10 +1,11 @@
+import { motion } from '../FramerProvider';
+
 /**
  * @component CosmicRevPage
  * @description Cosmic revision interface - 3D route with delayed loading
  */
 
 import React, { Suspense, lazy } from 'react';
-import { motion } from 'framer-motion';
 
 // Lazy load 3D components for this route
 // TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../components/Hero3DPlanet'));

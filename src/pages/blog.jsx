@@ -9,7 +9,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 // LEGACY: import NavBar from '../components/NavBar';
@@ -19,6 +18,8 @@ import { IMAGES } from '../utils/assets';
 import ScrollToTop from '../components/ScrollToTop';
 
 // ✅ KEEP - BLOG PAGE COMPONENT
+import { motion, AnimatePresence } from '../FramerProvider';
+
 export default function Blog() {
   const [activeSection, setActiveSection] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);

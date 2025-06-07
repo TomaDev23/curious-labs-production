@@ -9,7 +9,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 import FooterExperience from '../components/home/v4/FooterExperience';
 import BackgroundLayerAtomic from '../components/atomic/BackgroundLayerAtomic';
@@ -17,6 +16,8 @@ import { IMAGES } from '../utils/assets';
 import ScrollToTop from '../components/ScrollToTop';
 
 // ✅ KEEP - SHARED PRODUCTION COMPONENTS
+import { motion } from '../FramerProvider';
+
 
 export default function Contact() {
   const [activeSection, setActiveSection] = useState(null);

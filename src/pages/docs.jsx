@@ -8,7 +8,6 @@
 // 🎯 ROUTE: /docs
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 import FooterExperience from '../components/home/v4/FooterExperience';

@@ -9,7 +9,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 // LEGACY: import NavBar from '../components/NavBar';
 import FooterExperience from '../components/home/v4/FooterExperience';
@@ -18,6 +17,8 @@ import { IMAGES } from '../utils/assets';
 import ScrollToTop from '../components/ScrollToTop';
 
 // ✅ KEEP - ABOUT PAGE COMPONENT
+import { motion } from '../FramerProvider';
+
 export default function About() {
   const [activeSection, setActiveSection] = useState(null);
   const [missionTime, setMissionTime] = useState('');

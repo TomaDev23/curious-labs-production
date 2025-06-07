@@ -40,8 +40,8 @@ const SimpleLoader = () => (
 export default function HomePage_v7_wrapper() {
   return (
     // TEMPORARILY DISABLED: <UnifiedWebGLProvider>
-      <V6AtomicPage />
     // TEMPORARILY DISABLED: </UnifiedWebGLProvider>
+    <V6AtomicPage />
   );
 }
 

@@ -1,3 +1,5 @@
+import { motion } from '../FramerProvider';
+
 /**
  * ✅ KEEP - CODELAB-001
  * 
@@ -11,10 +13,9 @@
  * ⚠️ DO NOT REMOVE - MAIN CODELAB PAGE
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 import { services } from '../../data/services';
 import { useReveal } from '../utils/useReveal.js';
 
@@ -37,23 +38,96 @@ import CTASection from '../components/codelab/CTASection';
 import LegitSection from '../components/codelab/LegitSection';
 import MetricsLogsSection from '../components/codelab/MetricsLogsSection';
 
+// 🚀 COSMIC MISSION CONTROL - Smart logging system (moved outside component)
+const createMissionLog = (() => {
+  let initialized = false;
+  let lastRenderCount = 0;
+  const renderThreshold = 5; // Alert after 5+ rapid renders
+  
+  return {
+    initiate: () => {
+      if (!initialized) {
+        console.log('🚀 [MISSION CONTROL] Engineering Bay initializing...');
+        console.log('🛰️ [COSMIC-NET] Establishing quantum link to developer arsenal');
+        console.log('⚡ [POWER-CORE] All systems nominal - Welcome, Commander');
+        initialized = true;
+      }
+    },
+    renderAlert: () => {
+      lastRenderCount++;
+      if (lastRenderCount === renderThreshold) {
+        console.warn('⚠️ [MISSION CONTROL] Excessive render cycles detected - Check for infinite loops, Commander');
+        console.log('🔧 [AUTO-REPAIR] Temporal stabilizers engaged');
+      }
+    },
+    serviceDeployment: (services) => {
+      if (!initialized) return;
+      console.log(`🎯 [DEPLOYMENT] ${services.length} engineering modules loaded and ready for deployment`);
+      console.log('🌌 [COSMIC-GRID] All service coordinates locked and verified');
+    }
+  };
+})();
+
 // ✅ KEEP - CODELAB COMPONENT
 export default function CodeLab() {
-  console.log('🧪 CodeLab component rendering...');
+  // Initialize mission only once
+  createMissionLog.initiate();
+  createMissionLog.renderAlert();
+  
+  // 🎮 COSMIC DEVELOPER CONSOLE EASTER EGG
+  useEffect(() => {
+    // Add a special developer command to the global scope
+    if (typeof window !== 'undefined' && !window.cosmicProtocol) {
+      window.cosmicProtocol = {
+        activate: () => {
+          console.log('🌌 [COSMIC PROTOCOL ACTIVATED]');
+          console.log('🚀 Welcome to the hidden developer dimension, Commander!');
+          console.log('⚡ Your coding powers have been enhanced beyond mortal limits');
+          console.log('🎯 Available cosmic commands:');
+          console.log('   • cosmicProtocol.boost() - Temporary productivity surge');
+          console.log('   • cosmicProtocol.status() - Check cosmic developer status');
+          console.log('   • cosmicProtocol.wisdom() - Receive cosmic coding wisdom');
+          console.log('💫 May the code be with you, always.');
+        },
+        boost: () => {
+          console.log('⚡ [COSMIC BOOST] Developer efficiency increased to 200%!');
+          console.log('🔥 All bugs will fear your presence for the next 30 minutes');
+        },
+        status: () => {
+          console.log('🛰️ [COSMIC STATUS] Developer Level: Legendary');
+          console.log('🌟 Mission Completion Rate: 99.97%');
+          console.log('🚀 Code Quality Index: Transcendent');
+        },
+        wisdom: () => {
+          const wisdoms = [
+            '🔮 "The best code is written not just for machines, but for future developers"',
+            '⚡ "Debug with patience, for every bug teaches cosmic lessons"',
+            '🌌 "In the vast universe of code, simplicity is the ultimate sophistication"',
+            '💫 "A well-named variable is worth a thousand comments"',
+            '🚀 "Code fearlessly, but test even more fearlessly"'
+          ];
+          const wisdom = wisdoms[Math.floor(Math.random() * wisdoms.length)];
+          console.log(`🧙 [COSMIC WISDOM] ${wisdom}`);
+        }
+      };
+      console.log('🎮 [EASTER EGG] Try typing "cosmicProtocol.activate()" in the console!');
+    }
+  }, []);
   
   const [activeService, setActiveService] = useState(null);
   const [missionTime, setMissionTime] = useState(new Date());
   
-  console.log('🧪 CodeLab state initialized, services:', services);
-  
-  // Update mission time every second
+  // Fix the infinite render loop - memoize the timer setup
   useEffect(() => {
-    console.log('🧪 CodeLab useEffect running...');
+    console.log('⏰ [CHRONOMETER] Mission time synchronization initiated');
     const timer = setInterval(() => {
       setMissionTime(new Date());
     }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    return () => {
+      clearInterval(timer);
+      console.log('🛑 [SHUTDOWN] Chronometer offline - Mission phase complete');
+    };
+  }, []); // Empty dependency array to prevent re-runs
   
   // Animation variants for staggered row animations
   const containerVariants = {
@@ -84,7 +158,11 @@ export default function CodeLab() {
     classification: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'][index % 4]
   }));
   
-  console.log('🧪 Enhanced services:', enhancedServices);
+  // Log service deployment only once per initialization
+  useMemo(() => {
+    createMissionLog.serviceDeployment(enhancedServices);
+    return enhancedServices;
+  }, []); // Only run once
   
   // Status color mapping
   const getStatusColor = (status) => {
@@ -96,6 +174,28 @@ export default function CodeLab() {
       case 'RESEARCH': return 'text-purple-400 bg-purple-400/20';
       default: return 'text-gray-400 bg-gray-400/20';
     }
+  };
+  
+  // 🎮 COSMIC EASTER EGGS - Developer interaction rewards
+  const cosmicEasterEggs = [
+    '🌟 [QUANTUM-LINK] Tool accessed - Neural pathways synchronized, Commander',
+    '⚡ [ENERGY-SURGE] Developer powers amplified by 127%',
+    '🔮 [COSMIC-WISDOM] The universe smiles upon your code choices',
+    '🚀 [HYPERDRIVE] Productivity engines at maximum efficiency',
+    '🛸 [ALIEN-TECH] Unknown beneficial side effects detected',
+    '🌌 [STELLAR-BOOST] Your code now has cosmic significance',
+    '💫 [STARDUST] Legacy code transformed into pure art',
+    '🔥 [PHOENIX-MODE] Your debugging skills have transcended reality',
+    '🎯 [BULLSEYE] Target locked - Mission success probability: 99.97%',
+    '🌈 [RAINBOW-BRIDGE] Connection to developer nirvana established'
+  ];
+  
+  const handleServiceAccess = (serviceId, serviceName) => {
+    setActiveService(serviceId);
+    // Random cosmic easter egg
+    const randomEgg = cosmicEasterEggs[Math.floor(Math.random() * cosmicEasterEggs.length)];
+    console.log(randomEgg);
+    console.log(`🎯 [TOOL-ACCESS] ${serviceName} module engaged - Prepare for enhanced development`);
   };
   
   // Divide services into tiers
@@ -185,8 +285,8 @@ export default function CodeLab() {
                       className="bg-black/40 backdrop-blur-md border border-lime-400/20 rounded-2xl p-8 shadow-2xl 
                                  transition-all duration-300 hover:border-lime-400/50 hover:shadow-lime-400/20
                                  w-full sm:w-[47%] md:w-[45%] relative group cursor-pointer"
-                      onClick={() => setActiveService(service.id)}
-                      onKeyDown={(e) => e.key === "Enter" && setActiveService(service.id)}
+                      onClick={() => handleServiceAccess(service.id, service.title)}
+                      onKeyDown={(e) => e.key === "Enter" && handleServiceAccess(service.id, service.title)}
                       tabIndex={0}
                       role="button"
                     >
@@ -256,8 +356,8 @@ export default function CodeLab() {
                       className="bg-black/30 backdrop-blur-md border border-cyan-400/20 rounded-2xl p-6 shadow-xl 
                                  transition-all duration-300 hover:border-cyan-400/50 hover:shadow-cyan-400/20
                                  w-full sm:w-[45%] md:w-[40%] relative group cursor-pointer"
-                      onClick={() => setActiveService(service.id)}
-                      onKeyDown={(e) => e.key === "Enter" && setActiveService(service.id)}
+                      onClick={() => handleServiceAccess(service.id, service.title)}
+                      onKeyDown={(e) => e.key === "Enter" && handleServiceAccess(service.id, service.title)}
                       tabIndex={0}
                       role="button"
                     >
@@ -326,8 +426,8 @@ export default function CodeLab() {
                       className="bg-black/25 backdrop-blur-md border border-purple-400/20 rounded-2xl p-5 shadow-lg 
                                  transition-all duration-300 hover:border-purple-400/50 hover:shadow-purple-400/20
                                  w-full sm:w-[43%] md:w-[38%] relative group cursor-pointer"
-                      onClick={() => setActiveService(service.id)}
-                      onKeyDown={(e) => e.key === "Enter" && setActiveService(service.id)}
+                      onClick={() => handleServiceAccess(service.id, service.title)}
+                      onKeyDown={(e) => e.key === "Enter" && handleServiceAccess(service.id, service.title)}
                       tabIndex={0}
                       role="button"
                     >

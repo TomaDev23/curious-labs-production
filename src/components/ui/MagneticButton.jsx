@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import { prefersReducedMotion } from '../../utils/animation';
+import {  motion  } from '../../FramerProvider';
+
 
 /**
  * MagneticButton - Interactive button with magnetic hover effect

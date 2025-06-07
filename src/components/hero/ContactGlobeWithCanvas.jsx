@@ -5,7 +5,6 @@
  */
 
 import React, { lazy, Suspense, useState } from 'react';
-import { useInView } from 'framer-motion';
 
 // 🚀 LAZY IMPORT - 3D scene only loads when needed
 // DISABLED: 3D scene removed during surgical cleanup - prevents runtime crash

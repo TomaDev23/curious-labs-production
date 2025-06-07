@@ -9,8 +9,8 @@
 // 🔗 DEPENDENCIES: react-router-dom, framer-motion
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { IMAGES } from '../../utils/assets';
+import {  motion, AnimatePresence  } from '../../FramerProvider';
 
 /**
  * MissionControlNavbar - Standalone Mission Control themed navigation bar

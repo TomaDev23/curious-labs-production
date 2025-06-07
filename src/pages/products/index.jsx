@@ -9,7 +9,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import ScrollToTop from '../../components/ScrollToTop';
@@ -17,6 +16,8 @@ import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic
 import SolarSystemLayout from '../../components/SolarSystemLayout';
 
 // Product data for mobile view
+import {  motion  } from '../../FramerProvider';
+
 const productData = [
   { 
     icon: "/assets/images/general/Page_Logos/Aegis_logo.webp", 

@@ -15,10 +15,11 @@ import MissionControlNavbar from '../../components/navigation/MissionControlNavb
 // import Footer from '../../components/Footer_legacy';
 import { IMAGES } from '../../utils/assets';
 import ScrollToTop from '../../components/ScrollToTop';
-import { motion } from 'framer-motion';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 
 // ✅ KEEP - MOONSIGNAL PRODUCT COMPONENT
+import {  motion  } from '../../FramerProvider';
+
 export default function MoonSignal() {
   const [missionTime, setMissionTime] = useState(new Date());
 

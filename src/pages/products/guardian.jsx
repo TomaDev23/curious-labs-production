@@ -9,7 +9,6 @@
 // 🔗 PARENT: Products Portal (/products)
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 
 // ✅ KEEP - SHARED PRODUCTION COMPONENTS
@@ -21,6 +20,8 @@ import { Link } from 'react-router-dom';
 import { IMAGES } from '../../utils/assets';
 
 // ✅ KEEP - GUARDIAN PRODUCT COMPONENT
+import {  motion  } from '../../FramerProvider';
+
 export default function Guardian() {
   const [missionTime, setMissionTime] = useState(new Date());
 

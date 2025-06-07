@@ -11,7 +11,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import { IMAGES } from '../../utils/assets';
 import ScrollToTop from '../../components/ScrollToTop';
@@ -19,6 +18,8 @@ import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic
 import './aegis.css'; // Add CSS import for custom animations
 
 // ✅ KEEP - AEGIS PRODUCT COMPONENT
+import {  motion  } from '../../FramerProvider';
+
 export default function Aegis() {
   const [activeTab, setActiveTab] = useState('features');
   const [selectedFeature, setSelectedFeature] = useState(0);

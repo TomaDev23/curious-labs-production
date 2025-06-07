@@ -1,3 +1,5 @@
+import {  motion  } from '../../FramerProvider';
+
 /**
  * 🛡️ KEEP - CRITICAL PRODUCTION SUB-ROUTE
  * Code: OPSPIPE-001
@@ -10,7 +12,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 

@@ -11,13 +11,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 // import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 // import Footer from '../../components/Footer_legacy';
 import { IMAGES } from '../../utils/assets';
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
+import {  motion  } from '../../FramerProvider';
+
 
 export default function Curious() {
   const [missionTime, setMissionTime] = useState(new Date());

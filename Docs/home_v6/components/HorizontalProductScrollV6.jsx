@@ -8,7 +8,7 @@
  */
 
 import React, { useRef, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from '../../../../FramerProvider';
 import { useScene } from './SceneControllerV6';
 import ProductSectionV6 from './ProductSectionV6';
 

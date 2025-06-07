@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from '../../../../FramerProvider';
 import { useScene } from './SceneControllerV6';
 import PlanetVisualizationV6 from './PlanetVisualizationV6';
 

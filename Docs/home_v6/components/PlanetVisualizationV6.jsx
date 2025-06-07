@@ -8,7 +8,7 @@
  */
 
 import React, { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from '../../../../FramerProvider';
 import { useScene } from './SceneControllerV6';
 
 // 2D visualization of product planets

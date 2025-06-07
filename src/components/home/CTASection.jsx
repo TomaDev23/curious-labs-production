@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import {  motion  } from '../../FramerProvider';
 
 /**
  * CTASection component with a contact form and information

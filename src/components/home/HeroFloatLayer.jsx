@@ -1,6 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import HeroContent from './HeroContent';
+import {  motion  } from '../../FramerProvider';
+
 
 /**
  * Hero Float Layer Component - Phase 2 Implementation

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import {  motion  } from '../../FramerProvider';
 
 /**
  * MissionStatus component - floating level indicator in the top-left corner

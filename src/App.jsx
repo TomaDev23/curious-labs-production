@@ -1,9 +1,6 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
-// ✅ NEW: Import CosmicLoader for 3D routes
-const CosmicLoader = lazy(() => import('./components/CosmicLoader'));
-
 // 🚀 LAZY LOAD EVERYTHING - Even basic components for maximum optimization
 const ScrollToTop = lazy(() => import('./components/ScrollToTop'));
 const ErrorBoundary = lazy(() => import('./components/ErrorBoundary'));
@@ -59,7 +56,12 @@ const PerformanceContext = React.createContext({
 // ✅ NEW: Simple loading fallback for non-3D routes
 const SimpleLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-black">
-    <div className="w-8 h-8 border-2 border-lime-400 border-t-transparent rounded-full animate-spin"></div>
+    <div className="flex flex-col items-center space-y-4">
+      <div className="w-8 h-8 border-2 border-lime-400 border-t-transparent rounded-full animate-spin"></div>
+      <div className="text-lime-400 text-sm opacity-75 font-mono tracking-wider">
+        Warming up the Thrusters!
+      </div>
+    </div>
   </div>
 );
 
@@ -236,21 +238,9 @@ const AppRoutes = () => (
       {/* 🚀 HOMEPAGE V7 ISOLATED: HomePage_v7_wrapper (3D engine isolated!) */}
       <Route path="/" element={
         <Suspense fallback={<SimpleLoader />}>
-          {import.meta.env.DEV ? (
-            <React.StrictMode>
-              <Suspense fallback={<SafeV4CosmicPage />}>
-                <ErrorBoundary fallback={<SafeV4CosmicPage />}>
-                  <HomePage_v7_wrapper />
-                </ErrorBoundary>
-              </Suspense>
-            </React.StrictMode>
-          ) : (
-            <Suspense fallback={<SafeV4CosmicPage />}>
-              <ErrorBoundary fallback={<SafeV4CosmicPage />}>
-                <HomePage_v7_wrapper />
-              </ErrorBoundary>
-            </Suspense>
-          )}
+          <ErrorBoundary fallback={<SafeV4CosmicPage />}>
+            <HomePage_v7_wrapper />
+          </ErrorBoundary>
         </Suspense>
       } />
       
@@ -451,22 +441,14 @@ const AppRoutes = () => (
       {/* ✅ NEW: 3D ROUTES WITH COSMIC LOADER */}
       {/* 🚀 Cosmic Rev - 3D route with cosmic loading experience */}
       <Route path="/cosmic-rev" element={
-        <Suspense fallback={
-          <Suspense fallback={<SimpleLoader />}>
-            <CosmicLoader message="🌌 Preparing cosmic revision interface..." />
-          </Suspense>
-        }>
+        <Suspense fallback={<SimpleLoader />}>
           <CosmicRevPage />
         </Suspense>
       } />
       
       {/* 🚀 Planet Sandbox with Stars - 3D dev route with cosmic loading */}
       <Route path="/dev/planet-sandbox-with-stars" element={
-        <Suspense fallback={
-          <Suspense fallback={<SimpleLoader />}>
-            <CosmicLoader message="🪐 Warming up stellar engines..." />
-          </Suspense>
-        }>
+        <Suspense fallback={<SimpleLoader />}>
           <PlanetSandboxWithStarsPage />
         </Suspense>
       } />

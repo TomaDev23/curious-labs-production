@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-// console.log("[useReveal hook loaded]"); // Removed verbose logging
+console.log("[useReveal hook loaded]");
 
 export function useReveal(threshold = 0.2) {
   const [visible, setVisible] = useState(false);

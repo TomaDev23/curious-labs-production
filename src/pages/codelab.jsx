@@ -39,16 +39,16 @@ import MetricsLogsSection from '../components/codelab/MetricsLogsSection';
 
 // ✅ KEEP - CODELAB COMPONENT
 export default function CodeLab() {
-  // console.log('🧪 CodeLab component rendering...'); // Removed verbose logging
+  console.log('🧪 CodeLab component rendering...');
   
   const [activeService, setActiveService] = useState(null);
   const [missionTime, setMissionTime] = useState(new Date());
   
-  // console.log('🧪 CodeLab state initialized, services:', services); // Removed verbose logging
+  console.log('🧪 CodeLab state initialized, services:', services);
   
   // Update mission time every second
   useEffect(() => {
-    // console.log('🧪 CodeLab useEffect running...'); // Removed verbose logging
+    console.log('🧪 CodeLab useEffect running...');
     const timer = setInterval(() => {
       setMissionTime(new Date());
     }, 1000);
@@ -84,7 +84,7 @@ export default function CodeLab() {
     classification: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'][index % 4]
   }));
   
-  // console.log('🧪 Enhanced services:', enhancedServices); // Removed verbose logging
+  console.log('🧪 Enhanced services:', enhancedServices);
   
   // Status color mapping
   const getStatusColor = (status) => {

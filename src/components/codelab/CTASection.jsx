@@ -1,12 +1,10 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useCodelabPerformance } from "../../layouts/CodelabFloatflowLayout";
 
 const CTASection = () => {
   const shouldReduceMotion = useReducedMotion();
-  const { isLowPerf } = useCodelabPerformance();
-  const simplifiedAnimation = shouldReduceMotion || isLowPerf;
+  const simplifiedAnimation = shouldReduceMotion;
 
   // Simplified animation variants
   const containerVariants = {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 // LEGACY: import NavBar from '../components/NavBar';
 import FooterMain from '../components/FooterMain';

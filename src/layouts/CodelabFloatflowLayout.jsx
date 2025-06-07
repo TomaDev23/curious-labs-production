@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 
 // ✅ SURGICAL FIX: Create context to avoid prop drilling to DOM elements
+import { motion, useReducedMotion } from '../FramerProvider';
+
 const CodelabPerformanceContext = createContext({ isLowPerf: false });
 
 // Export hook for components to use

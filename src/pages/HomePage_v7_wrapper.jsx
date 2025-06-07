@@ -40,9 +40,7 @@ const SimpleLoader = () => (
 export default function HomePage_v7_wrapper() {
   return (
     // TEMPORARILY DISABLED: <UnifiedWebGLProvider>
-      <Suspense fallback={<SimpleLoader />}>
-        <V6AtomicPage />
-      </Suspense>
+      <V6AtomicPage />
     // TEMPORARILY DISABLED: </UnifiedWebGLProvider>
   );
 }

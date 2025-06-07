@@ -13,8 +13,8 @@ const CosmicRevDev = lazy(() => import('./CosmicRevDev'));
 const CosmicRevPage = () => {
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+      {/* Background - Changed from blue-purple gradient to solid black */}
+      <div className="absolute inset-0 bg-black" />
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">

@@ -36,16 +36,11 @@ const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTer
 // Keep ProcessLegacyAtomic eager since it's smaller and less likely to cause issues
 import ProcessLegacyAtomic from '../components/atomic/ProcessLegacyAtomic'; // CODE: ATOMIC-COMP-002
 
-// Optimized loading component
+// Optimized loading component - SIMPLIFIED
 const AtomicSectionLoader = ({ children, sectionName }) => (
   <Suspense fallback={
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
-      <div className="flex flex-col items-center space-y-4">
-        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-        <div className="text-white/60 text-sm font-mono tracking-wider">
-          Loading {sectionName}...
-        </div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="w-8 h-8 border-2 border-lime-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
   }>
     {children}

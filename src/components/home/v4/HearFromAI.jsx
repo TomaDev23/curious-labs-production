@@ -1,7 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import AITestimonials from './AITestimonials';
 import { useScrollReveal, sectionVariants, itemVariants } from '../../../utils/animation';
+import {  motion, useScroll  } from '../../../FramerProvider';
+
 
 /**
  * HearFromAI - Component wrapper for the AITestimonials grid

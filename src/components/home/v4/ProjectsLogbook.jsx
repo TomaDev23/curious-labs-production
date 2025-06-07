@@ -1,6 +1,7 @@
-import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import React, { useState } from "react";
 import { useBreakpoint } from '../../../hooks/useBreakpoint.js';
+import {  motion, useReducedMotion  } from '../../../FramerProvider';
+
 
 /**
  * ProjectsLogbook - "Mission Logbook" section for displaying projects

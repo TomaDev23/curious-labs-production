@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {  motion, AnimatePresence  } from '../../../FramerProvider';
+
 
 /**
  * BotFunZone - An interactive bot component for the homepage

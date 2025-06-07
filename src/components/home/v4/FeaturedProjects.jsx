@@ -1,6 +1,9 @@
+import React from "react";
+import { Link } from "react-router-dom";
 import { metrics } from "../../../../data/metrics";
-import { motion, useReducedMotion } from "framer-motion";
 import { useBreakpoint } from "../../../hooks/useBreakpoint.js";
+import {  motion, useReducedMotion  } from '../../../FramerProvider';
+
 
 export default function LegacyFeaturedProjects() {
   const prefersReducedMotion = useReducedMotion();

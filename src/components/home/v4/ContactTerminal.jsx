@@ -1,5 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import {  motion  } from '../../../FramerProvider';
+
 
 /**
  * ContactTerminal - "Mission Control Terminal" section

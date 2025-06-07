@@ -10,8 +10,8 @@
  */
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { motion } from '../../../FramerProvider';
 import MagneticButton from '../../ui/MagneticButton';
 import CosmicNoiseOverlay from '../../ui/CosmicNoiseOverlay';
 import ParticleField from '../../ui/ParticleField';

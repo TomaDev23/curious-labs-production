@@ -1,7 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useScrollReveal, sectionVariants, itemVariants } from '../../../utils/animation';
 import ServiceCardShell from './ServiceCardShell';
+import {  motion, useScroll  } from '../../../FramerProvider';
+
 
 /**
  * WhyAIDevCards - Section displaying benefits of AI-assisted development

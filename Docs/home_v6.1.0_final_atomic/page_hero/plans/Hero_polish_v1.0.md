@@ -158,3 +158,59 @@ This will establish the foundation motion system for the entire "Arrival of the 
 The plan ensures each component builds on the previous one, creating a cohesive scroll-driven narrative that transforms as users explore the hero section! 🌟
 
 **Confirm to proceed with HeroVisualPlanet enhancement?** 🪐✨
+
+
+==
+
+
+# 🎯 **Re-Aligned Plan: Follow the Original Vision**
+
+You're absolutely right! Let me **align our current progress** with the **original plan** and map out the proper next steps.
+
+---
+
+## 📍 **Where We Are Now:**
+- ✅ **Infrastructure**: HeroStageManager + sceneStep flowing properly
+- ✅ **Debug**: Can see sceneStep changing (1-8) as we scroll
+- ❌ **Motion**: CSS rotation not working (need to debug/fix)
+- ❌ **Positioning**: Planet still static in center (need cinematic entrance)
+
+---
+
+## 🎬 **Original Plan Requirements:**
+```typescript
+Phase 1 (sceneStep 1): Planet appears at (80vw, -20vh), scale 0.4, opacity 0→1
+Phase 2 (sceneStep 2): Diagonal drift to (50vw, 50vh), scale 0.7, rotation starts  
+Phase 3 (sceneStep 3): Continue to center, scale 1.0
+Phase 4+ (sceneStep 4+): Lock center, idle rotation
+Phase 7 (sceneStep 7): Rings appear/animate
+```
+
+---
+
+## 🚀 **Re-Aligned Next Steps:**
+
+### **Step 5: Fix Current Rotation**
+- Debug why CSS `animate-spin` isn't working
+- Get basic rotation working with current setup
+
+### **Step 6: Add Framer Motion Positioning**
+- Import `motion` from framer-motion
+- Add cinematic entrance: top-right (80vw, -20vh) → center (50vw, 50vh)
+- Add scale animation: 0.4 → 0.7 → 1.0
+
+### **Step 7: Make Rings Conditional**
+- Hide rings when `sceneStep < 7`
+- Show/animate rings when `sceneStep >= 7`
+
+### **Step 8: Polish Motion Timing**
+- Add proper Bezier easing
+- Sync with scroll percentages from plan
+
+---
+
+## 🔧 **Immediate Next Step:**
+
+**Let me fix the rotation issue first** - something's preventing the CSS animation from working.
+
+**Ready for me to debug the rotation?** Type **"ok"** and I'll fix why the planet isn't spinning! 🪐

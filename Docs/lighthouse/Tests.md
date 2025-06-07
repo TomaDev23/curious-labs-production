@@ -49,3 +49,11 @@ lighthouse https://curiouslabs-site.vercel.app/home-v5 \
   --output html \
   --output-path curiouslabs_mobile_report.html \
   --emulated-form-factor=mobile
+
+
+
+================================================================================
+
+
+
+lighthouse http://localhost:5173/v6_atomic --view --preset=desktop --only-categories=performance,accessibility,best-practices,seo

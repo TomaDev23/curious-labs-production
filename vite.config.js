@@ -35,20 +35,18 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: [
-      'three', 
-      'three-globe',
       'mermaid',
       'cytoscape',
       'cytoscape-fcose',
-      'cytoscape-cose-bilkent'
+      'cytoscape-cose-bilkent',
+      'dagre',
+      'd3'
     ],
     include: [
       'react', 
       'react-dom', 
       'react-dom/client',
-      'react/jsx-runtime',
-      'three', 
-      'three-globe'
+      'react/jsx-runtime'
     ]
   },
   server: {
@@ -76,9 +74,15 @@ export default defineConfig({
             return 'framer-motion';
           }
           
-          // 🎯 COMPLETELY EXCLUDE MERMAID + CYTOSCAPE from any bundling
-          // These should ONLY load via explicit dynamic imports
-          if (id.includes('mermaid') || id.includes('cytoscape')) {
+          // 🚀 SKIP HEAVY LIBRARIES: Don't pre-bundle visualization libraries
+          // They should only load via dynamic import()
+          if (id.includes('mermaid') || 
+              id.includes('cytoscape') || 
+              id.includes('dagre') ||
+              id.includes('d3') ||
+              id.includes('chart.js') ||
+              id.includes('plotly')) {
+            // Return undefined to let them be handled individually
             return undefined;
           }
           
@@ -87,41 +91,61 @@ export default defineConfig({
             return 'vendor-math';
           }
           
-          // ✅ SKIP React AND React-dependent libraries - keep all in main bundle
-          if (id.includes('react') || 
-              id.includes('react-dom') ||
-              id.includes('react-router') ||
-              id.includes('react-helmet') ||
-              id.includes('react-hot-toast') ||
-              id.includes('react-parallax') ||
-              id.includes('react-intersection-observer') ||
-              id.includes('react-icons') ||
-              id.includes('@react-hook') ||
-              id.includes('use-deep-compare-effect') ||
-              id.includes('react-use') ||
-              id.includes('scheduler')) { // ✅ REMOVED: Framer Motion moved to separate chunk
-            // Return undefined to keep in main bundle
-            return undefined;
+          // 🎯 NEW: Split React Router into separate chunk
+          if (id.includes('react-router') || id.includes('@remix-run')) {
+            return 'vendor-router';
           }
           
-          // ✅ CRITICAL FIX: Only put "safe" node_modules in vendor-bundle
-          // Exclude ALL graph/visualization libraries to prevent contamination
-          if (id.includes('node_modules') && 
-              !id.includes('mermaid') && 
-              !id.includes('cytoscape') && 
-              !id.includes('dagre') &&
-              !id.includes('d3') &&
-              !id.includes('lodash') && // Can be heavy, better dynamic
-              !id.includes('chart') && 
-              !id.includes('graph') &&
-              !id.includes('plot') &&
-              !id.includes('vis')) {
-            return 'vendor-bundle';
+          // 🎯 NEW: Split React Helmet into separate chunk  
+          if (id.includes('react-helmet')) {
+            return 'vendor-helmet';
           }
           
-          // ✅ FORCE DYNAMIC: All visualization libraries fall through = truly lazy
-          // This includes: mermaid, dagre, d3, lodash, chart libraries
-          // They will only load when explicitly imported by OpsPipe/FinalPurge
+          // 🎯 NEW: Split utility libraries
+          if (id.includes('dompurify') || 
+              id.includes('tailwind-merge') || 
+              id.includes('clsx')) {
+            return 'vendor-utils';
+          }
+          
+          // 🎯 PHASE 3: Split React ecosystem into smaller chunks
+          if (id.includes('react-dom')) {
+            return 'vendor-react-dom';
+          }
+          
+          if (id.includes('react') && !id.includes('react-dom')) {
+            return 'vendor-react';
+          }
+          
+          // 🎯 PHASE 3: Split heavy node modules
+          if (id.includes('node_modules')) {
+            // Heavy animation/motion libraries  
+            if (id.includes('gsap') || id.includes('lottie') || id.includes('animate')) {
+              return 'vendor-animation';
+            }
+            
+            // Heavy math/computation libraries
+            if (id.includes('lodash') || id.includes('underscore') || id.includes('ramda')) {
+              return 'vendor-functional';
+            }
+            
+            // Heavy UI libraries
+            if (id.includes('styled-components') || id.includes('emotion') || id.includes('@mui')) {
+              return 'vendor-styling';
+            }
+            
+            // Core utilities that are always needed
+            if (id.includes('prop-types') || 
+                id.includes('invariant') || 
+                id.includes('warning') ||
+                id.includes('scheduler') ||
+                id.includes('object-assign')) {
+              return 'vendor-core';
+            }
+            
+            // Everything else from node_modules
+            return 'vendor-misc';
+          }
         },
       },
     },

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from '../FramerProvider';
-// SURGICAL FIX: Remove eager mermaid import - replaced with runtime loading
-// import mermaid from 'mermaid';
+// MERMAID: Only loaded dynamically when needed
 
 // Final Purge Dashboard Component with Mermaid Charts
 export default function FinalPurgeDashboard() {

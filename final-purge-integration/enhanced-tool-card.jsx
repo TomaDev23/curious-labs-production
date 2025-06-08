@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from '../FramerProvider';
-// SURGICAL FIX: Remove eager mermaid import - replaced with runtime loading
-// import mermaid from 'mermaid';
+// MERMAID: Only loaded dynamically when needed
 
 // Enhanced Final Purge Tool Card with Mermaid Chart
 export function FinalPurgeToolCard({ tool, index, getStatusColor, setActiveSection, activeSection }) {

@@ -2,10 +2,8 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 import FooterExperience from '../components/home/v4/FooterExperience';
 
-// 🚀 LAZY LOAD: Mermaid is large and only needed for dev tools
+// 🚀 DYNAMIC IMPORT ONLY: Mermaid will only load when components actually need it
 import { motion, AnimatePresence } from '../FramerProvider';
-
-const MermaidLoader = lazy(() => import('mermaid'));
 
 // Final Purge Complete Page Component
 export default function FinalPurgePage() {

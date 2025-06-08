@@ -135,7 +135,7 @@ const ContactTerminalAtomic = () => {
         </p>
         
         {/* Terminal Tabs */}
-        <div className="flex mb-4 text-sm font-mono">
+        <div className="flex mb-4 text-sm font-mono" role="tablist" aria-label="Contact options">
           <button
             className={`px-4 py-2 rounded-t-md ${
               activeTab === 'info' 
@@ -145,6 +145,9 @@ const ContactTerminalAtomic = () => {
             onClick={() => setActiveTab('info')}
             aria-selected={activeTab === 'info'}
             role="tab"
+            aria-controls="contact-panel"
+            id="contact-info-tab"
+            aria-label="View contact information"
           >
             contact_info
           </button>
@@ -157,13 +160,21 @@ const ContactTerminalAtomic = () => {
             onClick={() => setActiveTab('form')}
             aria-selected={activeTab === 'form'}
             role="tab"
+            aria-controls="contact-panel"
+            id="contact-form-tab"
+            aria-label="Open contact form"
           >
             contact_init
           </button>
         </div>
         
         {/* Terminal-inspired Contact Info */}
-        <div className="bg-black bg-opacity-70 border border-gray-800 rounded-lg p-6 backdrop-blur-sm shadow-lg ring-1 ring-lime-900/30">
+        <div 
+          className="bg-black bg-opacity-70 border border-gray-800 rounded-lg p-6 backdrop-blur-sm shadow-lg ring-1 ring-lime-900/30"
+          role="tabpanel"
+          id="contact-panel"
+          aria-labelledby={activeTab === 'info' ? 'contact-info-tab' : 'contact-form-tab'}
+        >
           {/* Terminal Header */}
           <div className="flex items-center border-b border-gray-800 pb-4 mb-6">
             <div className="flex space-x-2">
@@ -238,6 +249,7 @@ const ContactTerminalAtomic = () => {
                 <button 
                   onClick={() => setActiveTab('form')} 
                   className="text-xs text-lime-400 hover:underline"
+                  aria-label="Switch to contact form to send a message"
                 >
                   need to send a message? switch to contact_init
                 </button>
@@ -302,6 +314,7 @@ const ContactTerminalAtomic = () => {
               <button
                 type="submit"
                 className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md text-base font-medium text-black bg-lime-400 hover:bg-lime-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 transition-colors"
+                aria-label="Submit contact form"
               >
                 <span>Submit</span>
                 <svg className="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -314,6 +327,7 @@ const ContactTerminalAtomic = () => {
                   onClick={() => setActiveTab('info')} 
                   className="text-lime-400 hover:underline"
                   type="button"
+                  aria-label="Switch to contact information tab"
                 >
                   just need our contact info? switch to contact_info
                 </button>

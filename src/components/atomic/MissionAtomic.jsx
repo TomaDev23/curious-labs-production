@@ -315,19 +315,16 @@ const MissionAtomic = () => {
     <motion.div 
       className="relative w-full bg-curious-dark-900 overflow-hidden"
       style={{ 
-        minHeight: '120vh', // Reduced from 140vh to 120vh (-20vh)
-        marginTop: '-25vh', // Reduced from -30vh to -25vh 
-        paddingTop: '6rem', // py-24 equivalent
-        paddingBottom: 'calc(6rem + 70vh)', // Reduced from 80vh to 70vh
-        mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black calc(100% - 50vh), rgba(0,0,0,0.7) calc(100% - 30vh), rgba(0,0,0,0.3) calc(100% - 15vh), transparent 100%)',
-        WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black calc(100% - 50vh), rgba(0,0,0,0.7) calc(100% - 30vh), rgba(0,0,0,0.3) calc(100% - 15vh), transparent 100%)',
-        contain: 'layout style', // Add performance containment
-        // NUCLEAR FIX: Move background to CSS-only (no contentful paint)
+        minHeight: '100vh', // Standard full height instead of 120vh
+        paddingTop: '6rem', // Clean rem-only padding
+        paddingBottom: '8rem', // Clean rem-only padding, no calc()
+        mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
+        WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
+        contain: 'layout style', // Keep performance containment
         backgroundImage: `url('/assets/images/planets/milkyway_Light_tablet.webp')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
+        backgroundRepeat: 'no-repeat'
       }}
       initial="hidden"
       whileInView="visible"
@@ -348,7 +345,7 @@ const MissionAtomic = () => {
       {/* Main content wrapper - Clean z-index */}
       <div className="relative w-full h-full opacity-100" style={{ zIndex: 50 }}>
         {/* Right Section with Numbered Mission Points */}
-        <div className={`${isMobile ? 'px-6' : 'md:ml-[45%] md:mr-[5%] pr-4 md:pr-8'} flex flex-col space-y-16 md:space-y-32 mt-[35vh]`}>
+        <div className={`${isMobile ? 'px-6' : 'md:ml-[45%] md:mr-[5%] pr-4 md:pr-8'} flex flex-col space-y-16 md:space-y-32 mt-16 md:mt-24`}>
           {MISSION_POINTS.map((point, index) => (
             <motion.div 
               key={point.id}
@@ -426,7 +423,7 @@ const MissionAtomic = () => {
       
       {/* Eclipse/Circle with Mission Statement - Bottom Left */}
       <motion.div 
-        className={`absolute ${isMobile ? 'bottom-[calc(2rem+60vh)] left-1/2 -translate-x-1/2' : 'bottom-[calc(4rem+75vh)] left-4 md:left-16'}`}
+        className={`absolute ${isMobile ? 'bottom-16 left-1/2 -translate-x-1/2' : 'bottom-16 left-4 md:left-16'}`}
         variants={eclipseVariants}
         style={{ zIndex: 3 }}
       >

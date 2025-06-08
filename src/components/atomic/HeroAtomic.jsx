@@ -217,12 +217,12 @@ const HeroAtomic = () => {
                     onMouseEnter={() => setActiveSection('mission')}
                     onMouseLeave={() => setActiveSection(null)}
                   >
-                    <h3 className={`font-space ${isMobile ? 'text-xs' : 'text-sm'} font-semibold text-lime-400 mb-2 flex items-center`}>
+                    <h2 className={`font-space ${isMobile ? 'text-xs' : 'text-sm'} font-semibold text-lime-400 mb-2 flex items-center`}>
                       <svg className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} mr-2`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                       Our Mission
-                    </h3>
+                    </h2>
                     <p className={`text-white/70 ${isMobile ? 'text-xs' : 'text-xs'} leading-relaxed`}>
                       Pioneering the future of digital experiences through AI-powered innovation and cutting-edge technology solutions.
                     </p>
@@ -235,12 +235,12 @@ const HeroAtomic = () => {
                       onMouseEnter={() => setActiveSection('tech')}
                       onMouseLeave={() => setActiveSection(null)}
                     >
-                      <h3 className={`font-space ${isMobile ? 'text-xs' : 'text-sm'} font-semibold text-emerald-400 mb-2 flex items-center`}>
+                      <h2 className={`font-space ${isMobile ? 'text-xs' : 'text-sm'} font-semibold text-emerald-400 mb-2 flex items-center`}>
                         <svg className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} mr-2`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
                         Technology
-                      </h3>
+                      </h2>
                       <p className={`text-white/70 ${isMobile ? 'text-xs' : 'text-xs'} leading-relaxed`}>
                         Advanced AI systems, machine learning algorithms, and next-generation web technologies.
                       </p>
@@ -282,6 +282,7 @@ const HeroAtomic = () => {
                     className={`group/btn relative ${isMobile ? 'px-3 py-2 text-xs' : 'px-4 py-2 text-sm'} bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-space font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-98 tracking-wide overflow-hidden`}
                     onMouseEnter={() => setActiveSection('cta')}
                     onMouseLeave={() => setActiveSection(null)}
+                    aria-label="Explore our products and services"
                   >
                     <span className="relative z-10">Explore Our Universe</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-lime-400 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
@@ -296,7 +297,10 @@ const HeroAtomic = () => {
                   </button>
 
                   {/* Secondary action button - responsive size */}
-                  <button className={`${isMobile ? 'p-1.5' : 'p-2'} border border-lime-400/30 rounded-full text-lime-400 hover:bg-lime-400/10 hover:border-lime-400/60 transition-all duration-300 hover:scale-110 active:scale-95`}>
+                  <button 
+                    className={`${isMobile ? 'p-1.5' : 'p-2'} border border-lime-400/30 rounded-full text-lime-400 hover:bg-lime-400/10 hover:border-lime-400/60 transition-all duration-300 hover:scale-110 active:scale-95`}
+                    aria-label="Open help or support information"
+                  >
                     <svg className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>

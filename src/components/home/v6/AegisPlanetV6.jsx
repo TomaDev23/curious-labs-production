@@ -9,8 +9,9 @@
  */
 
 import React, { Suspense, lazy } from 'react';
-// import { Canvas } from '@react-three/fiber'; // REMOVED: Unused import causing Three.js contamination
+// THREE.JS: Only loaded dynamically when needed
 import { useScene } from './SceneControllerV6';
+// import { Canvas } from '@react-three/fiber'; // REMOVED: Unused import causing Three.js contamination
 // import EarthSphere from '../../atomic/Planetary/EarthSphere';
 
 // TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../../Hero3DPlanet'));

@@ -29,7 +29,7 @@ import CosmicBackgroundSystemV6 from '../components/home/v6/CosmicBackgroundSyst
 // 🚀 OPTIMIZED: Lazy load critical components for better bundle splitting
 const HeroAtomic = lazy(() => import('../components/atomic/HeroAtomic')); // CODE: ATOMIC-COMP-001
 const MissionAtomic = lazy(() => import('../components/atomic/MissionAtomic')); // CODE: ATOMIC-COMP-003 - Convert to lazy
-const OurProducts_newV6 = lazy(() => import('../components/atomic/OurProducts_newV6')); // CODE: ATOMIC-COMP-004 (102KB - MUST be lazy)
+const HorizontalProductScrollV6 = lazy(() => import('../components/atomic/Products/HorizontalProductScrollV6')); // CODE: ATOMIC-COMP-004 (Optimized modular version)
 const ServicesOrbitalAtomic = lazy(() => import('../components/atomic/ServicesOrbitalAtomic')); // CODE: ATOMIC-COMP-005 - Convert to lazy
 const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTerminalAtomic')); // CODE: ATOMIC-COMP-006 - Convert to lazy
 
@@ -76,7 +76,7 @@ const V6AtomicPage = () => {
         </AtomicSectionLoader>
         
         <AtomicSectionLoader sectionName="Products">
-          <OurProducts_newV6 />
+          <HorizontalProductScrollV6 />
         </AtomicSectionLoader>
         
         <AtomicSectionLoader sectionName="Services">

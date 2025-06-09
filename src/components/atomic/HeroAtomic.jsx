@@ -29,6 +29,10 @@ import {  motion, AnimatePresence  } from '../../FramerProvider';
 import BackgroundLayerAtomic from './BackgroundLayerAtomic';
 import HeroStageManager from './hero/HeroStageManager';
 
+// Typewriter functionality - CLEAN IMPORTS
+import { useTypewriter } from './hero/hooks/useTypewriter';
+import useCoordinatedHeroLoading from './hero/hooks/useCoordinatedHeroLoading';
+
 // Export metadata for LEGIT compliance
 // export const metadata = {
 //   id: 'hero_atomic',
@@ -37,7 +41,7 @@ import HeroStageManager from './hero/HeroStageManager';
 //   doc: 'contract_heroAtomic.md'
 // };
 
-const HeroAtomic = () => {
+const HeroAtomic = React.memo(() => {
   const [sceneStep, setSceneStep] = useState(8);
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
@@ -48,10 +52,29 @@ const HeroAtomic = () => {
   const { isMobile, isTablet, isDesktop } = useResponsive();
   const { prefersReducedMotion, performanceTier } = useDeviceCapabilities();
 
+  // Typewriter coordination - CLEAN STATE MANAGEMENT
+  const { typewriterComplete, handleTypewriterComplete } = useCoordinatedHeroLoading();
+  
+  // Memoize subtext to prevent recreation
+  const subText = React.useMemo(() => 
+    "We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.",
+    []
+  );
+
+  // Typewriter for subtext - PERFORMANCE OPTIMIZED
+  const { displayText, isComplete, start } = useTypewriter(subText, {
+    speed: 40,
+    delay: 800,
+    onComplete: handleTypewriterComplete
+  });
+
   // ✅ NEW: Content-first loading sequence
   useEffect(() => {
     // Content loads immediately
     setContentLoaded(true);
+    
+    // Start typewriter effect immediately
+    start();
     
     // 3D planet delays 1.5 seconds (as requested)
     const timer = setTimeout(() => {
@@ -59,7 +82,7 @@ const HeroAtomic = () => {
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [start]);
 
   // Memoized responsive classes for performance
   const responsiveClasses = React.useMemo(() => {
@@ -268,44 +291,69 @@ const HeroAtomic = () => {
             
             {/* Enhanced subheader with responsive text */}
             <div className="relative">
-              <p className={responsiveClasses.subtitle}>
-                We're building next-generation digital experiences powered by cutting-edge AI technology. 
-                <span className="inline-block ml-1 transition-opacity duration-300">
-                  <span className="text-lime-400">Join us in shaping tomorrow's web.</span>
-                </span>
+              <p 
+                className={responsiveClasses.subtitle}
+                style={{
+                  minHeight: isMobile ? '3rem' : '4rem', // Prevent layout shift
+                  contentVisibility: 'auto',
+                  containIntrinsicSize: 'auto 4rem'
+                }}
+              >
+                {displayText}
+                {!isComplete && <span className="inline-block w-0.5 h-5 bg-lime-400 ml-1 animate-pulse">|</span>}
               </p>
               
-              {/* Enhanced CTA with responsive layout */}
-              <div className={`flex items-center ${isMobile ? 'justify-center flex-col space-y-3' : 'justify-between'} mt-4`}>
-                <div className={`flex items-center ${isMobile ? 'space-x-3' : 'space-x-4'}`}>
-                  <button 
-                    className={`group/btn relative ${isMobile ? 'px-3 py-2 text-xs' : 'px-4 py-2 text-sm'} bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-space font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-98 tracking-wide overflow-hidden`}
-                    onMouseEnter={() => setActiveSection('cta')}
-                    onMouseLeave={() => setActiveSection(null)}
-                    aria-label="Explore our products and services"
-                  >
-                    <span className="relative z-10">Explore Our Universe</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-lime-400 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                    
-                    {/* Animated particles on hover - Skip on reduced motion */}
-                    {!prefersReducedMotion && (
-                      <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300">
-                        <div className={`absolute top-1 left-2 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full animate-ping`}></div>
-                        <div className={`absolute bottom-1 right-3 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full animate-ping`} style={{ animationDelay: '0.5s' }}></div>
-                      </div>
-                    )}
-                  </button>
+              {/* Enhanced CTA with responsive layout - SHOWS AFTER TYPEWRITER */}
+              <div 
+                className={`${isMobile ? 'justify-center flex-col space-y-3' : 'justify-between'} mt-4`}
+                style={{
+                  minHeight: isMobile ? '3rem' : '2.5rem', // Prevent layout shift
+                  contentVisibility: 'auto'
+                }}
+              >
+                <AnimatePresence>
+                  {typewriterComplete && (
+                    <motion.div 
+                      className={`flex items-center ${isMobile ? 'justify-center flex-col space-y-3' : 'justify-between'}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ 
+                        duration: 0.5, 
+                        ease: "easeOut"
+                      }}
+                    >
+                      <div className={`flex items-center ${isMobile ? 'space-x-3' : 'space-x-4'}`}>
+                        <button 
+                          className={`group/btn relative ${isMobile ? 'px-3 py-2 text-xs' : 'px-4 py-2 text-sm'} bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-space font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-98 tracking-wide overflow-hidden`}
+                          onMouseEnter={() => setActiveSection('cta')}
+                          onMouseLeave={() => setActiveSection(null)}
+                          aria-label="Explore our products and services"
+                        >
+                          <span className="relative z-10">Explore Our Universe</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-lime-400 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                          
+                          {/* Animated particles on hover - Skip on reduced motion */}
+                          {!prefersReducedMotion && (
+                            <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300">
+                              <div className={`absolute top-1 left-2 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full animate-ping`}></div>
+                              <div className={`absolute bottom-1 right-3 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full animate-ping`} style={{ animationDelay: '0.5s' }}></div>
+                            </div>
+                          )}
+                        </button>
 
-                  {/* Secondary action button - responsive size */}
-                  <button 
-                    className={`${isMobile ? 'p-1.5' : 'p-2'} border border-lime-400/30 rounded-full text-lime-400 hover:bg-lime-400/10 hover:border-lime-400/60 transition-all duration-300 hover:scale-110 active:scale-95`}
-                    aria-label="Open help or support information"
-                  >
-                    <svg className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </button>
-                </div>
+                        {/* Secondary action button - responsive size */}
+                        <button 
+                          className={`${isMobile ? 'p-1.5' : 'p-2'} border border-lime-400/30 rounded-full text-lime-400 hover:bg-lime-400/10 hover:border-lime-400/60 transition-all duration-300 hover:scale-110 active:scale-95`}
+                          aria-label="Open help or support information"
+                        >
+                          <svg className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
@@ -329,6 +377,6 @@ const HeroAtomic = () => {
       </section>
     </div>
   );
-};
+});
 
 export default HeroAtomic; 

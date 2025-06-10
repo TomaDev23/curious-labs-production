@@ -1,623 +1,520 @@
 import React, { useState } from 'react';
 import { motion } from '../../../../FramerProvider';
-import { useDeviceCapabilities } from '../../../../hooks/useBreakpoint';
 
 /**
- * AEGIS Page Component
- * The hero/intro section showcasing AEGIS runtime and system architecture
+ * AEGIS Page Component - First page in horizontal scroll sequence
+ * Compact, modern design optimized for horizontal flow
  */
 export const AegisPage = () => {
-  // Use unified hooks
-  const { prefersReducedMotion } = useDeviceCapabilities();
+  const [expandedCard, setExpandedCard] = useState(null);
   
-  // Add flag to control visualization rendering
-  const [showVisualization, setShowVisualization] = useState(false);
+  // Animation variants for compact design
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+    }
+  };
+
+  // Technical sections with full content
+  const technicalSections = [
+    {
+      id: "state-machine",
+      title: "State Machine",
+      subtitle: "Orchestration",
+      icon: "⚙️",
+      color: "from-orange-400 to-amber-500",
+      category: "CONTROL PLANE ARCHITECTURE",
+      fullTitle: "STATE MACHINE ORCHESTRATION",
+      details: [
+        "Enum-based state transitions with guardrails - No invalid state changes possible",
+        "Recovery hooks trigger automatically on state failures",
+        "Trace provenance - Every state change logged with full context",
+        "Rollback capability - Can replay any execution from any checkpoint"
+      ]
+    },
+    {
+      id: "multi-agent",
+      title: "Multi-Agent",
+      subtitle: "Fallback Chain",
+      icon: "🤖",
+      color: "from-lime-400 to-green-500",
+      category: "CONTROL PLANE ARCHITECTURE",
+      fullTitle: "MULTI-AGENT FALLBACK CHAIN",
+      details: [
+        "Agent 1 → Agent 2 → Backup Agent cascading logic",
+        "Weighted scoring system - Each agent ranked by success rate per task type",
+        "Circuit breaker patterns - Failed agents temporarily removed from rotation",
+        "Real-time agent health monitoring with automatic re-enablement"
+      ]
+    },
+    {
+      id: "processing-engine",
+      title: "Processing Engine",
+      subtitle: "Documents & Languages",
+      icon: "🔄",
+      color: "from-blue-400 to-purple-500",
+      category: "CONTROL PLANE ARCHITECTURE",
+      fullTitle: "DOCUMENT & MULTILANGUAGE PROCESSING ENGINE",
+      details: [
+        "OCR processing with enhancement layers for low-quality inputs",
+        "Multi-format support - PDF, images, scanned documents, handwritten text",
+        "Unicode normalization across 40+ languages with character set detection",
+        "Language-specific parsing rules for date formats, currency, addresses",
+        "Structured data extraction with validation against expected schemas",
+        "Transliteration engine for non-Latin scripts to ASCII fallbacks",
+        "Error correction algorithms for corrupted or partial document recovery"
+      ]
+    },
+    {
+      id: "telemetry",
+      title: "Telemetry",
+      subtitle: "L.E.G.I.T. Compliance",
+      icon: "📊",
+      color: "from-yellow-400 to-amber-500",
+      category: "CONTROL PLANE ARCHITECTURE",
+      fullTitle: "TELEMETRY & OBSERVABILITY ENGINE",
+      details: [
+        "L.E.G.I.T. compliance - Every operation produces audit trail",
+        "Memory tracking across agent interactions",
+        "Performance metrics - Latency, success rate, cost per operation",
+        "Failure classification - Automatic categorization of error types for ML improvement"
+      ]
+    },
+    {
+      id: "fault-tolerance",
+      title: "Fault Tolerance",
+      subtitle: "Recovery Systems",
+      icon: "🛡️",
+      color: "from-emerald-400 to-green-500",
+      category: "RELIABILITY GUARANTEES",
+      fullTitle: "FAULT TOLERANCE",
+      details: [
+        "85-98% test coverage across critical paths",
+        "Replay sandbox - Can reproduce any failure scenario",
+        "Brand isolation - Multi-tenant with complete data separation",
+        "Override protocols - Manual intervention capabilities with full audit"
+      ]
+    },
+    {
+      id: "operational-control",
+      title: "Operational Control",
+      subtitle: "CLI & Diagnostics",
+      icon: "🎛️",
+      color: "from-sky-400 to-blue-500",
+      category: "RELIABILITY GUARANTEES",
+      fullTitle: "OPERATIONAL CONTROL",
+      details: [
+        "CLI-driven operations - Full system controllable via command line",
+        "Diagnostic runners - Built-in system health checks",
+        "Trace validation - Automatic verification of execution chains",
+        "Recovery registry - Pre-defined strategies for known failure patterns"
+      ]
+    }
+  ];
   
   return (
     <div 
-      className="relative w-screen h-screen flex items-center justify-start overflow-hidden"
+      className="relative w-screen h-screen flex overflow-hidden"
       style={{
         mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 2vh, rgba(0,0,0,0.3) 4vh, rgba(0,0,0,0.6) 6vh, rgba(0,0,0,0.8) 8vh, black 10vh)',
         WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 2vh, rgba(0,0,0,0.3) 4vh, rgba(0,0,0,0.6) 6vh, rgba(0,0,0,0.8) 8vh, black 10vh)'
       }}
     >
-      {/* Enhanced Cosmic Background with Grid */}
+      {/* Keep the original cosmic background */}
       <div className="absolute inset-0 z-[1]">
-        {/* Base gradient - SET TO 0.4 OPACITY */}
+        {/* Base gradient */}
         <div
           className="absolute inset-0 opacity-40"
           style={{
-            background: 'linear-gradient(135deg, #060b14 0%, #0a1120 30%, #131c2f 60%, rgba(98, 153, 16, 0.15) 100%)',
+            background: 'linear-gradient(135deg, #060b14 0%, #0a1120 30%, #131c2f 60%, rgba(98, 153, 16, 0.05) 100%)',
           }}
         />
         
         {/* AEGIS Background Asset Layer */}
         <div
-          className="absolute inset-0 opacity-30 z-[2]"
+          className="absolute inset-0 opacity-20 z-[2]"
           style={{
             backgroundImage: 'url(/assets/images/general/Aegis_Background.avif)',
             backgroundSize: 'cover',
             backgroundPosition: 'center right',
             backgroundRepeat: 'no-repeat',
             mixBlendMode: 'overlay',
-            filter: 'brightness(0.8) contrast(1.2)',
+            filter: 'brightness(0.6) contrast(1.1)',
             maskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,0.8) 35%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 70%, rgba(0,0,0,0) 85%)',
             WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 25%, rgba(0,0,0,0.8) 35%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 70%, rgba(0,0,0,0) 85%)',
           }}
         />
         
-        {/* Dynamic noise texture - STRONGER EFFECT */}
+        {/* Dynamic noise texture */}
         <div 
-          className="absolute inset-0 opacity-40 z-[8]"
+          className="absolute inset-0 opacity-20 z-[8]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noiseFilter)' opacity='0.8'/%3E%3C/svg%3E")`,
             mixBlendMode: 'overlay'
           }}
         />
-      </div>
 
-      {/* Enhanced Nebula Effect with Multiple Layers - MOVED UP */}
-      <div
-        className="absolute inset-0 z-[2]"
-        style={{
-          background: 'radial-gradient(ellipse at 25% 40%, rgba(98, 153, 16, 0.25) 0%, rgba(98, 153, 16, 0.1) 40%, transparent 70%)',
-          filter: 'blur(40px)',
-        }}
-      />
+        {/* Enhanced Nebula Effect with Multiple Layers */}
+        <div
+          className="absolute inset-0 z-[2]"
+          style={{
+            background: 'radial-gradient(ellipse at 25% 40%, rgba(98, 153, 16, 0.08) 0%, rgba(98, 153, 16, 0.03) 40%, transparent 70%)',
+            filter: 'blur(40px)',
+          }}
+        />
 
-      <div
-        className="absolute inset-0 z-[3]"
-        style={{
-          background: 'radial-gradient(ellipse at 70% 60%, rgba(34, 211, 238, 0.15) 0%, rgba(34, 211, 238, 0.08) 35%, transparent 60%)',
-          filter: 'blur(60px)',
-        }}
-      />
-      
-      {/* ThoughtTrails Layer */}
-      <div className="absolute inset-0 z-[5]" data-thought-trails-layer="true"></div>
-      
-      {/* Enhanced Content Layout - FULL WIDTH USAGE */}
-      <div className="relative z-[10] w-full h-full flex items-center">
-        <div className="w-full h-full grid grid-cols-12 gap-16 px-12 lg:px-20">
-          
-          {/* Left Column - Main Content - EXPANDED */}
-          <div className="col-span-12 lg:col-span-8 space-y-8 flex flex-col justify-center pr-8">
-            
-            {/* Header Section with Enhanced Typography */}
-            <div className="space-y-6">
-              {/* Mission Control Badge */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <motion.div 
-                    className="w-3 h-3 rounded-full bg-lime-400"
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  <span className="text-lime-400/80 text-sm font-mono uppercase tracking-wider">Mission Control</span>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-mono text-lime-400 uppercase tracking-wider">
-                    OPERATIONAL
-                  </div>
-                  <div className="text-xs text-white/50 font-mono">
-                    v2.1.0
-                  </div>
-                </div>
-              </div>
-              
-              <h2
-                className="text-6xl lg:text-8xl font-bold uppercase tracking-tight leading-none"
-                style={{ 
-                  background: 'linear-gradient(135deg, #84cc16 0%, #65a30d 50%, #22d3ee 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '0 0 30px rgba(132, 204, 22, 0.5)'
-                }}
-              >
-                AEGIS<br />
-                <span className="text-white/90 text-5xl lg:text-6xl normal-case">Runtime</span>
-              </h2>
-              
-              <p
-                className="text-2xl lg:text-3xl font-medium text-white/80 max-w-2xl leading-relaxed"
-              >
-                The smart core powering everything we build.
-              </p>
-            </div>
-
-            {/* Mission Statement with Enhanced Styling */}
-            <div className="relative max-w-3xl">
-              <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-lime-400 rounded-full" />
-              <h3 className="text-4xl lg:text-5xl font-semibold text-cyan-400 leading-tight">
-                Adaptive. Auditable. Alive.
-              </h3>
-              <p className="text-xl text-white/70 mt-4 max-w-2xl leading-relaxed">
-                AEGIS is the thinking engine behind CuriousLabs — a precision system built to orchestrate AI, logic, and control across all products.
-              </p>
-            </div>
-
-            {/* Enhanced Architecture Cards with Status Indicators - WIDER LAYOUT */}
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                <h4 className="text-base font-mono uppercase tracking-wider text-white/70">
-                  System Architecture
-                </h4>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  { 
-                    title: 'Multi-Agent Architecture', 
-                    desc: 'Real AI agents in parallel with roles, memory, and autonomy',
-                    icon: '🤖',
-                    status: 'ACTIVE',
-                    metric: '12 agents',
-                    uptime: '99.7%'
-                  },
-                  { 
-                    title: 'State Machine Control', 
-                    desc: 'Central mission engine governing every command',
-                    icon: '⚙️',
-                    status: 'OPERATIONAL',
-                    metric: '2.3M ops',
-                    uptime: '100%'
-                  },
-                  { 
-                    title: 'Audit-First Protocol', 
-                    desc: 'Complete logs, metrics, and traces for every execution',
-                    icon: '📊',
-                    status: 'MONITORING',
-                    metric: '847K events',
-                    uptime: '99.9%'
-                  },
-                  { 
-                    title: 'Modular & Scalable', 
-                    desc: 'Inject only what you need, scale sideways not up',
-                    icon: '🔧',
-                    status: 'READY',
-                    metric: '8 modules',
-                    uptime: '100%'
-                  }
-                ].map((feature, index) => (
-                  <motion.div
-                    key={index}
-                    className="group relative p-5 rounded-xl backdrop-blur-sm border border-white/10 hover:border-lime-400/30 transition-all duration-300"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6))',
-                      boxShadow: 'inset 0 0 20px rgba(255, 255, 255, 0.05)'
-                    }}
-                    whileHover={{ 
-                      scale: 1.02,
-                      boxShadow: `0 0 20px rgba(132, 204, 22, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1)`
-                    }}
-                  >
-                    {/* Status Indicator */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-2">
-                        <motion.div
-                          className="w-2 h-2 rounded-full bg-lime-400"
-                          animate={{ opacity: [0.5, 1, 0.5] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: index * 0.5 }}
-                        />
-                        <span className="text-xs font-mono text-lime-400 uppercase tracking-wider">
-                          {feature.status}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs text-white/60 font-mono">{feature.metric}</div>
-                        <div className="text-xs text-lime-400 font-mono">{feature.uptime}</div>
-                      </div>
-                    </div>
-                    
-                    {/* Main Content */}
-                    <div className="flex flex-col space-y-3">
-                      <span className="text-3xl">{feature.icon}</span>
-                      <div>
-                        <h5 className="text-white font-semibold text-sm mb-2">{feature.title}</h5>
-                        <p className="text-white/70 text-xs leading-relaxed">{feature.desc}</p>
-                      </div>
-                    </div>
-
-                    {/* Hover Enhancement */}
-                    <motion.div
-                      className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none"
-                      style={{
-                        background: `linear-gradient(135deg, rgba(132, 204, 22, 0.1), transparent)`,
-                        boxShadow: `inset 0 0 20px rgba(132, 204, 22, 0.2)`
-                      }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Developer Toolkit Section - WIDER */}
-            <div className="space-y-6 max-w-4xl">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                <h4 className="text-base font-mono uppercase tracking-wider text-white/70">
-                  Developer Toolkit
-                </h4>
-              </div>
-
-              {/* Enhanced AEGIS SDK Section */}
-              <div className="group/sdk">
-                <motion.div 
-                  className="p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm cursor-pointer transition-all duration-300 hover:border-cyan-400/30 hover:bg-white/10"
-                  style={{ 
-                    borderColor: 'rgba(34, 211, 238, 0.2)',
-                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(30, 41, 59, 0.5))'
-                  }}
-                  whileHover={{ scale: 1.01 }}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <motion.div
-                        className="w-2.5 h-2.5 rounded-full bg-cyan-400"
-                        animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
-                      <div>
-                        <h5 className="text-lg font-semibold text-cyan-400">
-                          AEGIS SDK
-                        </h5>
-                        <p className="text-sm text-white/60">
-                          Developer toolkit for mission-critical AI
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs font-mono text-cyan-400 uppercase tracking-wider">
-                        STABLE
-                      </div>
-                      <div className="text-xs text-white/50 font-mono">
-                        v1.2.0
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Collapsible Content */}
-                  <div className="overflow-hidden max-h-0 group-hover/sdk:max-h-60 transition-all duration-500 ease-in-out opacity-0 group-hover/sdk:opacity-100">
-                    <div className="pt-4 space-y-4 border-t border-cyan-400/20">
-                      {/* SDK Features */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {[
-                          { label: 'Python & JavaScript libraries', status: 'STABLE', icon: '📚' },
-                          { label: 'REST API with WebSocket streaming', status: 'ACTIVE', icon: '🔌' },
-                          { label: 'Mission templates & blueprints', status: 'BETA', icon: '📋' }
-                        ].map((feature, index) => (
-                          <motion.div
-                            key={`sdk-${index}`}
-                            className="flex items-center justify-between p-3 rounded bg-slate-800/50 border border-cyan-400/10"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ 
-                              opacity: 1, 
-                              y: 0,
-                              transition: { delay: index * 0.1, duration: 0.3 }
-                            }}
-                          >
-                            <div className="flex items-center space-x-3">
-                              <span className="text-lg">{feature.icon}</span>
-                              <span className="text-sm text-white/80">{feature.label}</span>
-                            </div>
-                            <span className="text-xs text-cyan-400 font-mono">{feature.status}</span>
-                          </motion.div>
-                        ))}
-                      </div>
-
-                      {/* Quick Code Example */}
-                      <motion.div 
-                        className="p-4 rounded bg-slate-900/80 border border-cyan-400/20"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ 
-                          opacity: 1, 
-                          y: 0,
-                          transition: { delay: 0.4, duration: 0.3 }
-                        }}
-                      >
-                        <div className="flex items-center space-x-2 mb-3">
-                          <div className="w-1 h-1 rounded-full bg-cyan-400" />
-                          <span className="text-sm font-mono text-cyan-400 uppercase tracking-wider">
-                            Quick Start
-                          </span>
-                        </div>
-                        <code className="text-sm font-mono text-cyan-300/90 leading-relaxed block">
-                          <span className="text-purple-400">from</span> aegis <span className="text-purple-400">import</span> Mission<br />
-                          <span className="text-yellow-400">mission</span> = Mission(<span className="text-green-400">"analyze"</span>)<br />
-                          <span className="text-yellow-400">result</span> = mission.execute()
-                        </code>
-                      </motion.div>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - AEGIS Core Visualization - POSITIONED TO RIGHT EDGE */}
-          <div className="col-span-12 lg:col-span-4 flex items-center justify-end">
-            {/* Architecture Diagram Header */}
-            <div className="w-full max-w-md space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" />
-                  <h4 className="text-sm font-mono uppercase tracking-wider text-white/80">
-                    System Architecture Flow
-                  </h4>
-                </div>
-                <p className="text-xs text-white/60 leading-relaxed">
-                  Real-time visualization of AEGIS orchestration layers and data flow patterns
-                </p>
-              </div>
-              
-              {/* Enhanced Architecture Diagram - MUCH MORE OPAQUE BACKGROUND */}
-              <div className="relative p-4 rounded-2xl backdrop-blur-sm border border-white/20 bg-slate-900/95 overflow-hidden">
-                {/* Background Grid - SUBTLE */}
-                <div 
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage: `
-                      linear-gradient(rgba(132, 204, 22, 0.3) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(132, 204, 22, 0.3) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '15px 15px'
-                  }}
-                />
-                
-                {/* Diagram Content - COMPACT */}
-                <div className="relative z-10 space-y-3">
-                  
-                  {/* Input Layer */}
-                  <div className="text-center">
-                    <motion.div 
-                      className="inline-block p-2 rounded-lg border border-orange-400/40 bg-orange-400/20"
-                      whileHover={{ scale: 1.05, borderColor: '#ff7f00' }}
-                    >
-                      <div className="text-xs font-mono text-orange-300 uppercase tracking-wider mb-1">Input Layer</div>
-                      <div className="text-xs text-white/80">TelegramBot • File Upload • POS Adapter</div>
-                    </motion.div>
-                  </div>
-
-                  {/* Flow Arrow */}
-                  <div className="flex justify-center">
-                    <motion.div 
-                      className="w-px h-4 bg-gradient-to-b from-orange-400 to-cyan-400"
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                  </div>
-
-                  {/* Command Center & Decision Layer */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <motion.div 
-                      className="p-2 rounded-lg border border-cyan-400/40 bg-cyan-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#44aaff' }}
-                    >
-                      <div className="text-xs font-mono text-cyan-300 uppercase tracking-wider mb-1">Command Center</div>
-                      <div className="text-xs text-white/80">Registry</div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="p-2 rounded-lg border border-lime-400/40 bg-lime-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#84cc16' }}
-                    >
-                      <div className="text-xs font-mono text-lime-300 uppercase tracking-wider mb-1">Decision Engine</div>
-                      <div className="text-xs text-white/80">AI Orchestration</div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="p-2 rounded-lg border border-cyan-400/40 bg-cyan-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#44aaff' }}
-                    >
-                      <div className="text-xs font-mono text-cyan-300 uppercase tracking-wider mb-1">Recovery Manager</div>
-                      <div className="text-xs text-white/80">Fault Tolerance</div>
-                    </motion.div>
-                  </div>
-
-                  {/* Flow Arrows */}
-                  <div className="flex justify-center space-x-4">
-                    {[0, 1, 2].map((i) => (
-                      <motion.div 
-                        key={i}
-                        className="w-px h-3 bg-gradient-to-b from-cyan-400 to-lime-400"
-                        animate={{ opacity: [0.5, 1, 0.5] }}
-                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Processing Layer */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <motion.div 
-                      className="p-2 rounded-lg border border-lime-400/40 bg-lime-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#84cc16' }}
-                    >
-                      <div className="text-xs font-mono text-lime-300 uppercase tracking-wider mb-1">Agent Loop</div>
-                      <div className="text-xs text-white/80">Multi-Agent</div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="p-2 rounded-lg border border-cyan-400/40 bg-cyan-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#44aaff' }}
-                    >
-                      <div className="text-xs font-mono text-cyan-300 uppercase tracking-wider mb-1">FSM + Trace</div>
-                      <div className="text-xs text-white/80">State Machine</div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="p-2 rounded-lg border border-cyan-400/40 bg-cyan-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#44aaff' }}
-                    >
-                      <div className="text-xs font-mono text-cyan-300 uppercase tracking-wider mb-1">Recovery System</div>
-                      <div className="text-xs text-white/80">Fallback Logic</div>
-                    </motion.div>
-                  </div>
-
-                  {/* Flow Arrow */}
-                  <div className="flex justify-center">
-                    <motion.div 
-                      className="w-px h-3 bg-gradient-to-b from-lime-400 to-purple-400"
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                  </div>
-
-                  {/* Output Layer */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <motion.div 
-                      className="p-2 rounded-lg border border-purple-400/40 bg-purple-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#a855f7' }}
-                    >
-                      <div className="text-xs font-mono text-purple-300 uppercase tracking-wider mb-1">Data Exports</div>
-                      <div className="text-xs text-white/80">/logs/ /docs/</div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="p-2 rounded-lg border border-purple-400/40 bg-purple-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#a855f7' }}
-                    >
-                      <div className="text-xs font-mono text-purple-300 uppercase tracking-wider mb-1">Knowledge Base</div>
-                      <div className="text-xs text-white/80">/cards/ /kb/</div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="p-2 rounded-lg border border-orange-400/40 bg-orange-400/20 text-center"
-                      whileHover={{ scale: 1.05, borderColor: '#ff7f00' }}
-                    >
-                      <div className="text-xs font-mono text-orange-300 uppercase tracking-wider mb-1">Human Layer</div>
-                      <div className="text-xs text-white/80">Interfaces</div>
-                    </motion.div>
-                  </div>
-
-                  {/* Connection Lines - SUBTLE */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    {/* Animated connection lines */}
-                    <svg className="w-full h-full" style={{ zIndex: 1 }}>
-                      <defs>
-                        <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#84cc16" stopOpacity="0.4"/>
-                          <stop offset="50%" stopColor="#22d3ee" stopOpacity="0.5"/>
-                          <stop offset="100%" stopColor="#a855f7" stopOpacity="0.4"/>
-                        </linearGradient>
-                      </defs>
-                      
-                      {/* Flowing data lines */}
-                      <motion.path
-                        d="M 50 30 Q 120 60 200 90 Q 280 120 350 150"
-                        stroke="url(#flowGradient)"
-                        strokeWidth="1"
-                        fill="none"
-                        strokeDasharray="2,2"
-                        animate={{
-                          strokeDashoffset: [0, -8],
-                          opacity: [0.3, 0.7, 0.3]
-                        }}
-                        transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                      />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Diagram Legend */}
-                <div className="mt-3 pt-3 border-t border-white/20">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center space-x-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                        <span className="text-white/70">User</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                        <span className="text-white/70">Code</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-lime-400" />
-                        <span className="text-white/70">Agent</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                        <span className="text-white/70">Data</span>
-                      </div>
-                    </div>
-                    <div className="text-white/50 font-mono text-xs">
-                      v2.1.0
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* System Metrics Panel - COMPACT */}
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: 'Throughput', value: '2.3K/sec', color: 'lime' },
-                  { label: 'Latency', value: '45ms', color: 'cyan' },
-                  { label: 'Agents', value: '12 active', color: 'purple' },
-                  { label: 'Uptime', value: '99.7%', color: 'orange' }
-                ].map((metric, index) => (
-                  <motion.div
-                    key={index}
-                    className="p-2 rounded-lg backdrop-blur-sm border border-white/10 bg-slate-900/60 text-center"
-                    whileHover={{ scale: 1.05 }}
-                    style={{ borderColor: `var(--${metric.color}-400, rgba(255,255,255,0.1))` }}
-                  >
-                    <div className={`text-sm font-bold text-${metric.color}-400`}>
-                      {metric.value}
-                    </div>
-                    <div className="text-xs text-white/60 uppercase tracking-wider">
-                      {metric.label}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <div
+          className="absolute inset-0 z-[3]"
+          style={{
+            background: 'radial-gradient(ellipse at 70% 60%, rgba(34, 211, 238, 0.06) 0%, rgba(34, 211, 238, 0.02) 35%, transparent 60%)',
+            filter: 'blur(60px)',
+          }}
+        />
       </div>
       
-      {/* Enhanced Particle System */}
-      {Array.from({ length: 15 }).map((_, i) => (
+      {/* Subtle particle effects */}
+      {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={`particle-${i}`}
           className="absolute rounded-full z-[2]"
           style={{ 
-            width: Math.random() * 3 + 1 + 'px',
-            height: Math.random() * 3 + 1 + 'px',
+            width: Math.random() * 2 + 1 + 'px',
+            height: Math.random() * 2 + 1 + 'px',
             backgroundColor: i % 3 === 0 ? '#84cc16' : i % 3 === 1 ? '#22d3ee' : '#ffffff',
             top: `${Math.random() * 100}%`, 
             left: `${Math.random() * 100}%`,
-            boxShadow: `0 0 ${Math.random() * 10 + 5}px currentColor`
+            boxShadow: `0 0 ${Math.random() * 6 + 3}px currentColor`
           }}
         />
       ))}
 
-      {/* Animated Data Stream Effects - Moving from bottom to top */}
-      {Array.from({ length: 5 }).map((_, i) => (
-        <motion.div
-          key={`stream-${i}`}
-          className="absolute w-px h-20 bg-gradient-to-t from-lime-400 to-transparent z-[2]"
-          style={{
-            bottom: `-20px`,
-            left: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            bottom: ['0%', '100%'],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: 3 + Math.random() * 4,
-            repeat: Infinity,
-            repeatType: 'loop',
-            ease: "linear",
-            delay: Math.random() * 2,
-          }}
-        />
-      ))}
+      {/* Left Column - Main Content */}
+      <motion.div 
+        className="relative z-[10] w-2/3 flex flex-col justify-center px-8 py-16"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        {/* Status Badge - Smaller */}
+        <motion.div 
+          className="flex items-center space-x-2 mb-4"
+          variants={itemVariants}
+        >
+          <motion.div 
+            className="w-2 h-2 rounded-full bg-lime-400"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <span className="text-lime-400/80 text-xs font-mono uppercase tracking-wider">System Operational</span>
+          <span className="text-xs text-white/40 font-mono">v2.1.0</span>
+        </motion.div>
+        
+        {/* Hero Title - Compact */}
+        <motion.div className="mb-6" variants={itemVariants}>
+          <h1 className="text-5xl font-bold mb-2">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-lime-400 to-cyan-400">
+              AEGIS
+            </span>
+            <span className="text-white/90 block text-3xl mt-1">Runtime</span>
+          </h1>
+          
+          <div className="inline-block border-l-2 border-cyan-400/50 pl-3 py-1 mb-3">
+            <p className="text-lg font-medium text-cyan-400/90">
+              Automated Enforcement for Guaranteed Interface Stability
+            </p>
+          </div>
+          
+          <p className="text-lg text-white/70 max-w-2xl">
+            The thinking engine behind CuriousLabs — orchestrating AI, logic, and control.
+          </p>
+        </motion.div>
+        
+        {/* Expandable Technical Cards Grid */}
+        <motion.div 
+          className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6"
+          variants={itemVariants}
+        >
+          {technicalSections.map((section, index) => (
+            <motion.div
+              key={section.id}
+              className={`relative p-4 rounded-lg backdrop-blur-sm bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300 cursor-pointer ${
+                expandedCard === section.id ? 'ring-2 ring-lime-400/50' : ''
+              }`}
+              variants={itemVariants}
+              custom={index}
+              whileHover={{ y: -2, scale: 1.01 }}
+              onClick={() => setExpandedCard(expandedCard === section.id ? null : section.id)}
+            >
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="text-xl">{section.icon}</div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-white">{section.title}</h3>
+                  <p className="text-xs text-white/60">{section.subtitle}</p>
+                </div>
+                <motion.div 
+                  className="text-white/40"
+                  animate={{ rotate: expandedCard === section.id ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  ↓
+                </motion.div>
+              </div>
+              <div className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r ${section.color}`} />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Expanded Card Details */}
+        {expandedCard && (
+          <motion.div 
+            className="mb-6 p-6 rounded-xl backdrop-blur-sm bg-black/40 border border-lime-400/30"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {(() => {
+              const section = technicalSections.find(s => s.id === expandedCard);
+              return (
+                <div>
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="text-2xl">{section.icon}</div>
+                    <div>
+                      <div className="text-xs text-lime-400 font-mono uppercase tracking-wider mb-1">
+                        {section.category}
+                      </div>
+                      <h3 className="text-xl font-bold text-white">{section.fullTitle}</h3>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {section.details.map((detail, i) => (
+                      <div key={i} className="flex items-start space-x-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-lime-400 mt-2 flex-shrink-0" />
+                        <p className="text-sm text-white/80 leading-relaxed">{detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+          </motion.div>
+        )}
+        
+        {/* SDK CTA - Compact */}
+        <motion.div 
+          className="max-w-2xl bg-black/20 backdrop-blur-md rounded-xl border border-lime-500/20 p-6"
+          variants={itemVariants}
+        >
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-slate-900/60 to-slate-800/40 border border-cyan-500/20">
+              <span className="text-lg">🧰</span>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-cyan-400">AEGIS SDK</h3>
+              <p className="text-white/60 text-sm">Developer toolkit for mission-critical AI</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            {[
+              "Python & Node.js",
+              "CLI Integration", 
+              "Streaming API"
+            ].map((feature, i) => (
+              <div key={i} className="text-center p-2 rounded bg-slate-900/40 border border-white/10">
+                <p className="text-xs text-white/80">{feature}</p>
+              </div>
+            ))}
+          </div>
+          
+          <motion.button 
+            className="w-full py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-lg text-white text-sm font-medium transition-all duration-300"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Explore Documentation →
+          </motion.button>
+        </motion.div>
+        
+        {/* Navigation Hint */}
+        <motion.div 
+          className="mt-6 flex items-center space-x-2 text-white/40"
+          variants={itemVariants}
+        >
+          <span className="text-xs font-mono">Page 1 of 3</span>
+          <div className="flex space-x-1">
+            <div className="w-2 h-2 rounded-full bg-lime-400" />
+            <div className="w-2 h-2 rounded-full bg-white/20" />
+            <div className="w-2 h-2 rounded-full bg-white/20" />
+          </div>
+          <span className="text-xs">→</span>
+        </motion.div>
+      </motion.div>
+
+      {/* Right Column - Architecture Diagram */}
+      <motion.div 
+        className="relative z-[10] w-1/3 flex items-center justify-center p-8"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        <div className="w-full max-w-md h-full flex flex-col justify-center">
+          {/* Diagram Header */}
+          <motion.div className="mb-6" variants={itemVariants}>
+            <div className="flex items-center space-x-2 mb-2">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <h4 className="text-sm font-mono uppercase tracking-wider text-white/80">
+                System Architecture
+              </h4>
+            </div>
+            <p className="text-xs text-white/60">
+              Real-time AEGIS orchestration flow
+            </p>
+          </motion.div>
+          
+          {/* Architecture Diagram Container */}
+          <motion.div 
+            className="relative rounded-2xl backdrop-blur-sm border border-white/20 bg-slate-900/80 p-6 overflow-hidden"
+            variants={itemVariants}
+          >
+            {/* Background Grid */}
+            <div 
+              className="absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: `
+                  linear-gradient(rgba(132, 204, 22, 0.3) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(132, 204, 22, 0.3) 1px, transparent 1px)
+                `,
+                backgroundSize: '20px 20px'
+              }}
+            />
+            
+            {/* System Architecture Visualization */}
+            <div className="relative z-10 space-y-6">
+              {/* Input Layer */}
+              <div className="text-center">
+                <motion.div 
+                  className="inline-block p-3 rounded-lg border border-orange-400/40 bg-orange-400/20"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-xs font-mono text-orange-300 uppercase tracking-wider mb-1">Input Layer</div>
+                  <div className="text-xs text-white/80">TelegramBot • File Upload • POS</div>
+                </motion.div>
+              </div>
+
+              {/* Flow Arrow */}
+              <div className="flex justify-center">
+                <motion.div 
+                  className="w-px h-6 bg-gradient-to-b from-orange-400 to-cyan-400"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </div>
+
+              {/* AEGIS Core */}
+              <div className="text-center">
+                <motion.div 
+                  className="inline-block p-4 rounded-xl border border-lime-400/40 bg-lime-400/20"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-2xl mb-2">⚡</div>
+                  <div className="text-sm font-mono text-lime-300 uppercase tracking-wider mb-1">AEGIS Core</div>
+                  <div className="text-xs text-white/80">State Machine + Multi-Agent</div>
+                </motion.div>
+              </div>
+
+              {/* Flow Arrows */}
+              <div className="flex justify-center space-x-8">
+                {[0, 1, 2].map((i) => (
+                  <motion.div 
+                    key={i}
+                    className="w-px h-4 bg-gradient-to-b from-lime-400 to-cyan-400"
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                  />
+                ))}
+              </div>
+
+              {/* Processing Layer */}
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: "Telemetry", color: "yellow" },
+                  { label: "Recovery", color: "cyan" },
+                  { label: "Control", color: "blue" }
+                ].map((component, i) => (
+                  <motion.div 
+                    key={i}
+                    className={`p-2 rounded-lg border border-${component.color}-400/40 bg-${component.color}-400/20 text-center`}
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <div className={`text-xs font-mono text-${component.color}-300 uppercase tracking-wider`}>
+                      {component.label}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Output Flow */}
+              <div className="flex justify-center">
+                <motion.div 
+                  className="w-px h-4 bg-gradient-to-b from-cyan-400 to-purple-400"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+              </div>
+
+              {/* Output Layer */}
+              <div className="text-center">
+                <motion.div 
+                  className="inline-block p-3 rounded-lg border border-purple-400/40 bg-purple-400/20"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-xs font-mono text-purple-300 uppercase tracking-wider mb-1">Output Layer</div>
+                  <div className="text-xs text-white/80">Data • Knowledge • Interfaces</div>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* System Metrics */}
+            <div className="mt-6 pt-4 border-t border-white/20">
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Agents', value: '12', color: 'lime' },
+                  { label: 'Uptime', value: '99.7%', color: 'cyan' },
+                  { label: 'Ops/sec', value: '2.3K', color: 'yellow' },
+                  { label: 'Latency', value: '45ms', color: 'blue' }
+                ].map((metric, index) => (
+                  <div
+                    key={index}
+                    className="text-center p-2 rounded bg-slate-900/60 border border-white/10"
+                  >
+                    <div className={`text-sm font-bold text-${metric.color}-400`}>
+                      {metric.value}
+                    </div>
+                    <div className="text-xs text-white/60 uppercase">
+                      {metric.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 };

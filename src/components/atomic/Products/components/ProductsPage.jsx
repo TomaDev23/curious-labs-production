@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from '../../../../FramerProvider';
 import { useResponsive, useDeviceCapabilities } from '../../../../hooks/useBreakpoint';
 import { OPS_BENTO_ITEMS } from './imports_shared';
@@ -316,430 +316,534 @@ const ProductDetailModal = ({ product, onClose }) => {
  * Main products showcase with grid layout and detailed modals
  */
 export const ProductsPage = () => {
-  const [currentPage, setCurrentPage] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const prevColorRef = useRef(null);
+  const [expandedProduct, setExpandedProduct] = useState(null);
+  const [activeSystem, setActiveSystem] = useState('opspipe');
 
-  // Dispatch events to native ThoughtTrails system
-  useEffect(() => {
-    const activeProduct = OPS_BENTO_ITEMS[currentPage];
-    
-    // Only dispatch if color has actually changed
-    if (prevColorRef.current === activeProduct.accentColor) {
-      return;
-    }
-    
-    // Small delay to ensure DOM has updated
-    const timeoutId = setTimeout(() => {
-      // Find the featured card element and get its bounds
-      const featuredCard = document.querySelector('[data-featured-card="true"]');
-      const cardBounds = featuredCard ? featuredCard.getBoundingClientRect() : null;
-      
-      console.log('🌟 Dispatching color update:', activeProduct.accentColor);
-      
-      // Dispatch event to native JS system
-      window.dispatchEvent(new CustomEvent('updateAccentColor', {
-        detail: {
-          color: activeProduct.accentColor,
-          cardBounds: cardBounds
-        }
-      }));
-      
-      // Update the ref to track this color
-      prevColorRef.current = activeProduct.accentColor;
-    }, 50); // Small delay to ensure DOM update
-    
-    return () => clearTimeout(timeoutId);
-  }, [currentPage]);
+  // Memoized system configs
+  const systemConfigs = useMemo(() => [
+    { id: 'opspipe', name: 'OpsPipe', color: '#10b981' },
+    { id: 'curious', name: 'Curious', color: '#8b5cf6' },
+    { id: 'guardian', name: 'Guardian', color: '#ef4444' },
+    { id: 'moonsignal', name: 'MoonSignal', color: '#06b6d4' }
+  ], []);
+
+  // Get the actual product logo path
+  const getProductLogo = useCallback((title) => {
+    const logoMap = {
+      'OpsPipe': '/assets/images/general/Page_Logos/OpsPipe_logo.webp',
+      'Curious': '/assets/images/general/Page_Logos/Curious_logo.webp',
+      'Guardian': '/assets/images/general/Page_Logos/Guardian_logo.webp',
+      'MoonSignal': '/assets/images/general/Page_Logos/MoonSignal_logo.webp'
+    };
+    return logoMap[title] || '/assets/images/placeholder.png';
+  }, []);
+
+  // Get product accent color (including Guardian override)
+  const getProductAccentColor = useCallback((title) => {
+    if (title === 'Guardian') return '#ef4444';
+    return OPS_BENTO_ITEMS.find(item => item.title === title)?.accentColor || '#ffffff';
+  }, []);
+
+  // Get product status
+  const getProductStatus = useCallback((title) => {
+    const statusMap = {
+      'OpsPipe': 'OPERATIONAL',
+      'MoonSignal': 'UNDER CONSTRUCTION',
+      'Curious': 'IN DEVELOPMENT',
+      'Guardian': 'IN DEVELOPMENT'
+    };
+    return statusMap[title] || 'UNKNOWN';
+  }, []);
+
+  // Handle product expansion
+  const handleProductExpand = useCallback((productId) => {
+    setExpandedProduct(expandedProduct === productId ? null : productId);
+  }, [expandedProduct]);
+
+  // Handle product modal
+  const handleProductModal = useCallback((product) => {
+    setSelectedProduct(product);
+  }, []);
 
   return (
     <div 
-      className="relative w-screen h-screen flex items-center justify-center overflow-hidden z-[3]" 
+      className="relative w-screen h-screen flex overflow-hidden z-[3]" 
       data-page="products"
       style={{
-        maskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 2vh, rgba(0,0,0,0.3) 4vh, rgba(0,0,0,0.6) 6vh, rgba(0,0,0,0.8) 8vh, black 10vh)',
+        mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 2vh, rgba(0,0,0,0.3) 4vh, rgba(0,0,0,0.6) 6vh, rgba(0,0,0,0.8) 8vh, black 10vh)',
         WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 2vh, rgba(0,0,0,0.3) 4vh, rgba(0,0,0,0.6) 6vh, rgba(0,0,0,0.8) 8vh, black 10vh)'
       }}
     >
-      {/* Enhanced Cosmic Background */}
+      {/* Enhanced Cosmic Background - Optimized */}
       <div className="absolute inset-0 z-[1]">
-        {/* Base gradient */}
         <div
           className="absolute inset-0 opacity-40"
           style={{
-            background: 'linear-gradient(135deg, #060b14 0%, #0a1120 30%, #131c2f 60%, rgba(98, 153, 16, 0.15) 100%)',
+            background: 'linear-gradient(135deg, #060b14 0%, #0a1120 30%, #131c2f 60%, rgba(98, 153, 16, 0.05) 100%)',
           }}
         />
         
-        {/* Dynamic noise texture */}
         <div 
-          className="absolute inset-0 opacity-40 z-[8]"
+          className="absolute inset-0 opacity-15 z-[8]"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noiseFilter)' opacity='0.8'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='50' height='50' filter='url(%23noiseFilter)' opacity='0.6'/%3E%3C/svg%3E")`,
             mixBlendMode: 'overlay'
           }}
         />
+
+        <div
+          className="absolute inset-0 z-[2]"
+          style={{
+            background: 'radial-gradient(ellipse at 25% 40%, rgba(98, 153, 16, 0.06) 0%, rgba(98, 153, 16, 0.02) 40%, transparent 70%)',
+            filter: 'blur(30px)',
+          }}
+        />
+
+        <div
+          className="absolute inset-0 z-[3]"
+          style={{
+            background: 'radial-gradient(ellipse at 70% 60%, rgba(34, 211, 238, 0.04) 0%, rgba(34, 211, 238, 0.01) 35%, transparent 60%)',
+            filter: 'blur(40px)',
+          }}
+        />
       </div>
-
-      {/* Enhanced Nebula Effects */}
-      <div
-        className="absolute inset-0 z-[2]"
-        style={{
-          background: 'radial-gradient(ellipse at 25% 40%, rgba(98, 153, 16, 0.25) 0%, rgba(98, 153, 16, 0.1) 40%, transparent 70%)',
-          filter: 'blur(40px)',
-        }}
-      />
-
-      <div
-        className="absolute inset-0 z-[3]"
-        style={{
-          background: 'radial-gradient(ellipse at 70% 60%, rgba(34, 211, 238, 0.15) 0%, rgba(34, 211, 238, 0.08) 35%, transparent 60%)',
-          filter: 'blur(60px)',
-        }}
-      />
       
+      {/* Optimized particle effects */}
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div
+          key={`particle-${i}`}
+          className="absolute rounded-full z-[2]"
+          style={{ 
+            width: '2px',
+            height: '2px',
+            backgroundColor: i % 2 === 0 ? '#84cc16' : '#22d3ee',
+            top: `${20 + i * 20}%`, 
+            left: `${10 + i * 25}%`,
+            boxShadow: `0 0 4px currentColor`
+          }}
+        />
+      ))}
+
       {/* ThoughtTrails Layer */}
       <div className="absolute inset-0 z-[5]" data-thought-trails-layer="true"></div>
       
-      {/* Enhanced Content Layout - Two Column like AEGIS */}
-      <div className="relative z-[10] w-full max-w-7xl mx-auto px-8 lg:px-16 h-full flex items-center">
-        <div className="grid grid-cols-12 gap-12 w-full">
+      {/* Responsive Layout Container */}
+      <div className="relative z-[10] w-full h-full flex flex-col lg:flex-row">
+        
+        {/* Left Column - Mission Control Panel */}
+        <motion.div 
+          className="relative flex-1 lg:w-1/3 flex flex-col justify-center px-4 md:px-8 py-8 lg:py-16"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Mission Control Badge */}
+          <motion.div 
+            className="flex items-center space-x-2 mb-4 md:mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <motion.div 
+              className="w-2 h-2 rounded-full bg-lime-400"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <span className="text-lime-400/80 text-xs md:text-sm font-mono uppercase tracking-wider">Mission Control</span>
+            <span className="text-xs text-white/40 font-mono">v2.1.0</span>
+          </motion.div>
           
-          {/* Left Column - Product Info Panel */}
-          <div className="col-span-12 lg:col-span-4 space-y-8">
-            <div className="h-full relative">
-              {/* Main AEGIS command card */}
-              <div 
-                className="backdrop-blur-xl bg-slate-900/80 rounded-2xl border border-white/25 p-7 h-full relative overflow-hidden"
-                style={{
-                  boxShadow: '0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05)',
-                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.8))'
-                }}
-              >
-                <div className="relative z-[10] h-full flex flex-col">
-                  {/* Enhanced AEGIS Header */}
-                  <div className="space-y-5 mb-7">
-                    {/* Mission Control Badge */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <motion.div 
-                          className="w-3 h-3 rounded-full bg-lime-400"
-                          animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        />
-                        <span className="text-sm font-mono uppercase tracking-wider text-white/60">
-                          MISSION CONTROL
-                        </span>
+          {/* Enhanced Title */}
+          <motion.div 
+            className="mb-6 md:mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-lime-400 to-cyan-400">
+                AEGIS
+              </span>
+              <span className="text-white/90 block text-xl md:text-3xl mt-1">Command</span>
+            </h1>
+            
+            <div className="inline-block border-l-2 border-cyan-400/50 pl-3 md:pl-4 py-2 mb-3 md:mb-4">
+              <p className="text-base md:text-lg font-medium text-cyan-400/90">
+                Your AI team, led by you
+              </p>
+            </div>
+            
+            <p className="text-sm md:text-lg text-white/70 leading-relaxed">
+              Mission-based orchestration with human oversight at every decision point.
+            </p>
+          </motion.div>
+
+          {/* Core Principles - Compact */}
+          <motion.div 
+            className="space-y-3 md:space-y-4 mb-6 md:mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h3 className="text-white text-base md:text-lg font-semibold flex items-center space-x-2">
+              <div className="w-2 h-2 rounded-full bg-cyan-400" />
+              <span>Core Principles</span>
+            </h3>
+            
+            <div className="space-y-2 md:space-y-3">
+              {[
+                { 
+                  text: 'Real AI agents with roles, memory, and autonomy',
+                  status: 'ACTIVE',
+                  metric: '12 agents'
+                },
+                { 
+                  text: 'Central mission engine governing every command',
+                  status: 'OPERATIONAL', 
+                  metric: '99.7% uptime'
+                },
+                { 
+                  text: 'Complete audit trail for every execution',
+                  status: 'MONITORING',
+                  metric: '2.3M events'
+                }
+              ].map((principle, index) => (
+                <div
+                  key={index}
+                  className="p-2 md:p-3 rounded-lg bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300"
+                >
+                  <div className="flex items-start space-x-2 md:space-x-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-lime-400 mt-1.5 md:mt-2 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-xs md:text-sm text-white/80 leading-relaxed">{principle.text}</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="text-xs font-mono text-lime-400">{principle.status}</span>
+                        <span className="text-xs text-white/50 font-mono">{principle.metric}</span>
                       </div>
-                      <div className="text-right">
-                        <div className="text-xs font-mono text-lime-400 uppercase tracking-wider">
-                          OPERATIONAL
-                        </div>
-                        <div className="text-xs text-white/50 font-mono">
-                          v2.1.0
-                        </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Runtime Control Demo */}
+          <motion.div 
+            className="bg-black/20 backdrop-blur-md rounded-xl border border-cyan-500/20 p-4 md:p-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-slate-900/60 to-slate-800/40 border border-cyan-500/20">
+                <span className="text-lg">🎛️</span>
+              </div>
+              <div>
+                <h3 className="text-lg md:text-xl font-semibold text-cyan-400">Runtime Control</h3>
+                <p className="text-white/60 text-xs md:text-sm">One engine, many intelligent products</p>
+              </div>
+            </div>
+            
+            {/* Active System Selector */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {systemConfigs.map((system) => (
+                <button
+                  key={system.id}
+                  onClick={() => setActiveSystem(system.id)}
+                  className={`p-2 rounded text-xs font-mono transition-all duration-300 ${
+                    activeSystem === system.id 
+                      ? 'bg-white/20 border border-white/30' 
+                      : 'bg-slate-900/40 border border-white/10 hover:border-white/20'
+                  }`}
+                  style={{
+                    color: activeSystem === system.id ? system.color : '#ffffff80'
+                  }}
+                >
+                  {system.name}
+                </button>
+              ))}
+            </div>
+            
+            {/* Live Status Display */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white/60">Active Runtime:</span>
+                <div className="flex items-center space-x-1">
+                  <div className="w-1 h-1 bg-lime-400 rounded-full animate-pulse" />
+                  <span className="text-lime-400 font-mono">AEGIS-{activeSystem.toUpperCase()}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white/60">Memory Usage:</span>
+                <span className="text-cyan-400 font-mono">
+                  {activeSystem === 'opspipe' ? '2.1GB' : 
+                   activeSystem === 'curious' ? '1.8GB' : 
+                   activeSystem === 'guardian' ? '1.2GB' : '3.2GB'}
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-white/60">Active Agents:</span>
+                <span className="text-cyan-400 font-mono">
+                  {activeSystem === 'opspipe' ? '8/12' : 
+                   activeSystem === 'curious' ? '4/6' : 
+                   activeSystem === 'guardian' ? '3/4' : '12/12'}
+                </span>
+              </div>
+            </div>
+            
+            <motion.div 
+              className="mt-4 p-2 rounded bg-slate-900/60 border border-white/10"
+              key={activeSystem}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <p className="text-xs text-white/70 leading-relaxed">
+                {activeSystem === 'opspipe' && 'Processing documents with enhanced OCR and multi-language support...'}
+                {activeSystem === 'curious' && 'Emotional presence active, building synthetic memory patterns...'}
+                {activeSystem === 'guardian' && 'Child-safe AI companion monitoring creative interactions...'}
+                {activeSystem === 'moonsignal' && 'Analyzing market data streams with GPT-enhanced algorithms...'}
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* Navigation Hint - Mobile Responsive */}
+          <motion.div 
+            className="mt-4 md:mt-6 flex items-center space-x-2 text-white/40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <span className="text-xs font-mono">Page 2 of 3</span>
+            <div className="flex space-x-1">
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/20" />
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-lime-400" />
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/20" />
+            </div>
+            <span className="text-xs">→</span>
+          </motion.div>
+        </motion.div>
+
+        {/* Right Column - Products Grid */}
+        <motion.div 
+          className="relative flex-1 lg:w-2/3 flex flex-col justify-center px-4 md:px-8 py-8 lg:py-16"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          {/* Header */}
+          <motion.div 
+            className="mb-6 md:mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <div className="flex items-center space-x-2 mb-3 md:mb-4">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-cyan-400/80 text-xs md:text-sm font-mono uppercase tracking-wider">Products Grid</span>
+              <span className="text-xs text-white/40 font-mono">{OPS_BENTO_ITEMS.length} Systems</span>
+            </div>
+            
+            <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-lime-400 to-cyan-400">
+                MISSION
+              </span>
+              <span className="text-white/90 block text-xl md:text-3xl mt-1">Products</span>
+            </h2>
+            
+            <p className="text-sm md:text-lg text-white/70 max-w-2xl leading-relaxed">
+              Advanced operational systems designed for mission-critical environments.
+            </p>
+          </motion.div>
+
+          {/* Responsive Products Grid */}
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            {OPS_BENTO_ITEMS.map((product, index) => {
+              const accentColor = getProductAccentColor(product.title);
+              return (
+                <motion.div
+                  key={product.id}
+                  className={`relative p-4 md:p-6 rounded-xl backdrop-blur-sm bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300 cursor-pointer ${
+                    expandedProduct === product.id ? 'ring-2 ring-lime-400/50' : ''
+                  }`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.05 }}
+                  whileHover={{ y: -1, scale: 1.005 }}
+                  whileTap={{ scale: 0.995 }}
+                  onClick={() => handleProductExpand(product.id)}
+                >
+                  <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
+                    <div className="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
+                      {/* Subtle glowing background effect behind the logo */}
+                      <div 
+                        className="absolute inset-0 rounded-lg blur-xl opacity-30"
+                        style={{
+                          background: `radial-gradient(circle at center, ${accentColor}20, transparent 70%)`,
+                          transform: 'scale(1.5)',
+                          zIndex: -1
+                        }}
+                      />
+                      {/* Logo without container */}
+                      <img
+                        src={getProductLogo(product.title)}
+                        alt={`${product.title} logo`}
+                        className="w-full h-full object-contain"
+                        onError={(e) => (e.target.src = '/assets/images/placeholder.png')}
+                      />
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <h3 
+                        className="text-lg md:text-xl font-bold uppercase tracking-wide mb-1"
+                        style={{ color: accentColor }}
+                      >
+                        {product.title}
+                      </h3>
+                      <p className="text-xs md:text-sm text-white/70 leading-relaxed">{product.summary}</p>
+                    </div>
+                    
+                    <motion.div 
+                      className="text-white/40 flex-shrink-0"
+                      animate={{ rotate: expandedProduct === product.id ? 180 : 0 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      ↓
+                    </motion.div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div 
+                        className="w-1.5 h-1.5 rounded-full animate-pulse"
+                        style={{ backgroundColor: accentColor }}
+                      />
+                      <span className="text-xs font-mono text-white/60">{getProductStatus(product.title)}</span>
+                    </div>
+                    <button 
+                      className="text-xs text-white/50 hover:text-white/80 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleProductModal(product);
+                      }}
+                    >
+                      <span className="hidden sm:inline">VIEW DETAILS </span>→
+                    </button>
+                  </div>
+                  
+                  <div 
+                    className="absolute top-0 left-0 w-full h-0.5"
+                    style={{ background: `linear-gradient(to right, ${accentColor}, ${accentColor}80)` }}
+                  />
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {expandedProduct && (
+            <motion.div 
+              className="p-4 md:p-6 rounded-xl backdrop-blur-sm bg-black/40 border border-lime-400/30"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {(() => {
+                const product = OPS_BENTO_ITEMS.find(p => p.id === expandedProduct);
+                const productRoute = `/products/${product.title.toLowerCase()}`;
+                const accentColor = getProductAccentColor(product.title);
+                
+                return (
+                  <div>
+                    <div className="flex items-center space-x-3 md:space-x-4 mb-4 md:mb-6">
+                      <div className="relative w-20 h-20 md:w-24 md:h-24">
+                        {/* Enhanced but subtle glowing background for expanded view */}
+                        <div 
+                          className="absolute inset-0 rounded-xl blur-2xl opacity-40"
+                          style={{
+                            background: `radial-gradient(circle at center, ${accentColor}25, transparent 60%)`,
+                            transform: 'scale(1.6)',
+                            zIndex: -1
+                          }}
+                        />
+                        {/* Logo without container */}
+                        <img
+                          src={getProductLogo(product.title)}
+                          alt={`${product.title} logo`}
+                          className="w-full h-full object-contain"
+                          onError={(e) => (e.target.src = '/assets/images/placeholder.png')}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-xs text-lime-400 font-mono uppercase tracking-wider mb-1">MISSION PRODUCT</div>
+                        <h3 
+                          className="text-xl md:text-2xl font-bold uppercase tracking-wide"
+                          style={{ color: accentColor }}
+                        >
+                          {product.title}
+                        </h3>
                       </div>
                     </div>
                     
-                    {/* Enhanced Title */}
-                    <div className="space-y-3">
-                      <h3
-                        className="text-3xl font-bold leading-tight"
-                        style={{ 
-                          background: 'linear-gradient(135deg, #84cc16 0%, #22d3ee 100%)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                        }}
-                      >
-                        AEGIS<br />Command
-                      </h3>
-                      
-                      <div className="relative">
-                        <div className="absolute -left-3 top-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-lime-400 rounded-full" />
-                        <p className="text-white/80 text-sm leading-relaxed font-medium pl-4">
-                          Your AI team, led by you. Mission-based orchestration with human oversight at every decision point.
-                        </p>
-                      </div>
+                    <div className="mb-4 md:mb-6">
+                      <p className="text-sm md:text-base text-white/80 leading-relaxed mb-3 md:mb-4">{product.summary}</p>
+                      {product.tagline && (
+                        <p className="text-base md:text-lg italic text-cyan-400/80 font-medium">"{product.tagline}"</p>
+                      )}
                     </div>
-                  </div>
-
-                  {/* Enhanced Mission Statement */}
-                  <div className="space-y-5 flex-1 overflow-y-auto">
-                    {/* Core Philosophy Card */}
-                    <div className="p-4 rounded-xl backdrop-blur-sm border border-lime-400/25 bg-lime-400/8">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div className="w-2 h-2 rounded-full bg-lime-400" />
-                        <h4 className="font-semibold text-base text-lime-400">
-                          Adaptive. Auditable. Alive.
-                        </h4>
-                      </div>
-                      <p className="text-white/80 text-xs leading-relaxed">
-                        The thinking engine behind CuriousLabs — orchestrating AI, logic, and control across all products.
-                      </p>
-                    </div>
-
-                    {/* Core Principles Grid */}
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                        <h5 className="text-xs font-mono uppercase tracking-wider text-white/70">
-                          CORE PRINCIPLES
-                        </h5>
-                      </div>
-
-                      <div className="space-y-2">
-                        {[
-                          { 
-                            text: 'Real AI agents in parallel with roles, memory, and autonomy',
-                            status: 'ACTIVE',
-                            metric: '12 agents'
-                          },
-                          { 
-                            text: 'Central mission engine governing every command',
-                            status: 'OPERATIONAL', 
-                            metric: '99.7% uptime'
-                          },
-                          { 
-                            text: 'Complete logs, metrics, and traces for every execution',
-                            status: 'MONITORING',
-                            metric: '2.3M events'
-                          }
-                        ].map((principle, index) => (
-                          <div
-                            key={`principle-${index}`}
-                            className="group p-3 rounded-lg bg-slate-800/40 border border-white/15 hover:border-lime-400/35 transition-all duration-300"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-start space-x-2 flex-1 min-w-0">
-                                <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 bg-lime-400" />
-                                <span className="text-white/80 text-xs leading-relaxed">{principle.text}</span>
-                              </div>
-                              <div className="text-right ml-2 flex-shrink-0">
-                                <div className="text-xs font-mono text-lime-400 uppercase tracking-wider">
-                                  {principle.status}
-                                </div>
-                                <div className="text-xs text-white/50 font-mono">
-                                  {principle.metric}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Enhanced AEGIS SDK Section */}
-                    <div className="group/aegis-sdk">
-                      <div 
-                        className="p-3 rounded-xl border border-white/15 bg-white/8 backdrop-blur-sm cursor-pointer transition-all duration-300 hover:border-cyan-400/35 hover:bg-white/12"
-                        style={{ borderColor: 'rgba(34, 211, 238, 0.25)' }}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center space-x-2 min-w-0 flex-1">
-                            <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse flex-shrink-0" />
-                            <div className="min-w-0">
-                              <h4 className="text-sm font-semibold text-cyan-400 truncate">
-                                AEGIS SDK
-                              </h4>
-                              <p className="text-xs text-white/60 truncate">
-                                Developer toolkit for mission-critical AI
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* System Status */}
-                  <div className="mt-5 pt-5 border-t border-white/15">
-                    <div className="p-3 rounded-xl bg-slate-800/60 border border-lime-400/35">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <motion.div
-                            className="w-2.5 h-2.5 rounded-full bg-lime-400"
-                            animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.1, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
+                      {product.features.map((feature, i) => (
+                        <div key={i} className="flex items-start space-x-2 md:space-x-3">
+                          <div 
+                            className="w-1.5 h-1.5 rounded-full mt-1.5 md:mt-2 flex-shrink-0"
+                            style={{ backgroundColor: accentColor }}
                           />
-                          <div>
-                            <div className="text-xs font-mono text-lime-400 uppercase tracking-wider">System Status</div>
-                            <div className="text-white/80 text-xs">All agents operational</div>
-                          </div>
+                          <p className="text-xs md:text-sm text-white/80 leading-relaxed">{feature}</p>
                         </div>
-                        <div className="text-right">
-                          <div className="text-xs text-lime-400 font-mono font-bold">ACTIVE</div>
-                          <div className="text-xs text-white/50 font-mono">24/7</div>
-                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="w-2 h-2 rounded-full animate-pulse"
+                          style={{ backgroundColor: accentColor }}
+                        />
+                        <span className="text-xs font-mono text-white/60">FULL DOCUMENTATION AVAILABLE</span>
                       </div>
+                      
+                      <motion.a
+                        href={productRoute}
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300"
+                        style={{
+                          background: `linear-gradient(135deg, ${accentColor}20, ${accentColor}40)`,
+                          border: `1px solid ${accentColor}60`,
+                          color: accentColor
+                        }}
+                        whileHover={{ scale: 1.02, boxShadow: `0 0 15px ${accentColor}40` }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <span>Explore {product.title}</span>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </motion.a>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Right Column - Product Grid */}
-          <div className="col-span-12 lg:col-span-8 relative">
-            {/* Header Section */}
-            <div className="space-y-6 mb-10">
-              {/* Mission Control Badge */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <motion.div 
-                    className="w-3 h-3 rounded-full bg-lime-400"
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  <span className="text-lime-400/80 text-sm font-mono uppercase tracking-wider">Products Grid</span>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-mono text-lime-400 uppercase tracking-wider">
-                    ACTIVE
-                  </div>
-                  <div className="text-xs text-white/50 font-mono">
-                    {OPS_BENTO_ITEMS.length} Systems
-                  </div>
-                </div>
-              </div>
-              
-              <h2
-                className="text-5xl lg:text-7xl font-bold uppercase tracking-tight leading-none"
-                style={{ 
-                  background: 'linear-gradient(135deg, #84cc16 0%, #65a30d 50%, #22d3ee 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '0 0 30px rgba(132, 204, 22, 0.5)'
-                }}
-              >
-                MISSION<br />
-                <span className="text-white/90 text-4xl lg:text-5xl normal-case">Products</span>
-              </h2>
-              
-              <p className="text-xl text-white/70 max-w-2xl leading-relaxed">
-                Advanced operational systems designed for mission-critical environments.
-              </p>
-            </div>
-
-            {/* Product Grid - Moderately Larger and Better Spaced */}
-            <div className="h-[550px]">
-              <div className="grid grid-cols-2 grid-rows-2 gap-8 h-full">
-                {OPS_BENTO_ITEMS.map((item, index) => {
-                  const isActive = index === currentPage;
-                  const isFeatured = index === currentPage;
-                  
-                  return (
-                    <motion.div 
-                      key={item.id}
-                      className="relative"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <div
-                        className="relative w-full h-full rounded-2xl overflow-hidden backdrop-blur-sm border cursor-pointer group"
-                        style={{
-                          background: isFeatured 
-                            ? `linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7), ${item.accentColor}20)`
-                            : 'linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6))',
-                          borderColor: isActive ? `${item.accentColor}aa` : 'rgba(255,255,255,0.25)',
-                          boxShadow: isActive
-                            ? `0 0 30px ${item.accentColor}40, inset 0 0 20px rgba(255,255,255,0.1)`
-                            : 'inset 0 0 5px rgba(255,255,255,0.05)',
-                        }}
-                        onMouseEnter={() => setCurrentPage(index)}
-                        onMouseLeave={() => {}}
-                        onClick={() => setSelectedProduct(item)}
-                      >
-                        {/* Status Indicator */}
-                        <div className="absolute top-6 right-6 z-20">
-                          <div className="flex items-center space-x-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2">
-                            <div 
-                              className="w-2 h-2 rounded-full animate-pulse"
-                              style={{ backgroundColor: item.accentColor }}
-                            />
-                            <span className="text-sm font-mono text-white/80">
-                              {isActive ? 'ACTIVE' : 'STANDBY'}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Click indicator */}
-                        <div className="absolute bottom-6 right-6 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="flex items-center space-x-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span className="text-sm font-mono text-white/80">CLICK TO EXPAND</span>
-                            <svg className="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                            </svg>
-                          </div>
-                        </div>
-
-                        {/* Background texture */}
-                        <div
-                          className="absolute inset-0 opacity-15 pointer-events-none"
-                          style={{
-                            backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
-                            mixBlendMode: 'overlay',
-                          }}
-                        />
-                        
-                        {/* Content */}
-                        <div className="relative z-[10] p-8 h-full flex flex-col justify-between">
-                          {/* Header */}
-                          <div className="space-y-4">
-                            {/* Icon */}
-                            <div className="relative w-20 h-20 mx-auto mb-6">
-                              <div 
-                                className="absolute inset-0 rounded-full"
-                                style={{
-                                  boxShadow: `0 0 25px ${item.accentColor}60`,
-                                  background: `radial-gradient(circle at 30% 30%, ${item.accentColor}, ${item.accentColor}90)`
-                                }}
-                              />
-                              <img
-                                src={item.illustrationSrc}
-                                alt={`${item.title} illustration`}
-                                className="w-full h-full object-cover rounded-full relative z-[10]"
-                                onError={(e) => (e.target.src = '/assets/images/placeholder.png')}
-                              />
-                            </div>
-                            
-                            <div className="text-center">
-                              <h3
-                                className="text-3xl font-bold uppercase tracking-wide mb-3"
-                                style={{ color: item.accentColor, textShadow: `0 0 15px ${item.accentColor}60` }}
-                              >
-                                {item.title}
-                              </h3>
-                              <p className="text-base font-medium text-white/80 leading-relaxed px-2">
-                                {item.summary}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Quick features preview */}
-                          <div className="space-y-3 mt-6">
-                            {item.features.slice(0, 2).map((feature, featureIndex) => (
-                              <div 
-                                key={featureIndex} 
-                                className="flex items-start space-x-3"
-                              >
-                                <div 
-                                  className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
-                                  style={{ backgroundColor: item.accentColor }}
-                                />
-                                <span className="text-sm text-white/75 leading-relaxed">{feature}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
+                );
+              })()}
+            </motion.div>
+          )}
+        </motion.div>
       </div>
 
       {/* Product Detail Modal */}

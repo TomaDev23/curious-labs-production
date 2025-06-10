@@ -5,6 +5,8 @@
  * used throughout the Products components ecosystem.
  * 
  * Use these contracts when editing components to ensure consistency.
+ * 
+ * UPDATED: Added mobile responsiveness contracts and AEGIS page mobile optimization specs
  */
 
 // ==========================================
@@ -45,24 +47,79 @@
  */
 
 // ==========================================
+// RESPONSIVE DESIGN CONTRACTS
+// ==========================================
+
+/**
+ * @typedef {Object} ResponsiveBreakpoints
+ * @description Standard breakpoints used across all components
+ * @property {string} mobile - "< 768px" - Mobile devices
+ * @property {string} tablet - "768px - 1024px" - Tablets and large phones
+ * @property {string} desktop - "> 1024px" - Desktop screens
+ * @property {string} sm - "≥ 640px" - Small tablets, large phones
+ * @property {string} md - "≥ 768px" - Tablets, landscape phones
+ * @property {string} lg - "≥ 1024px" - Small desktops, large tablets
+ * @property {string} xl - "≥ 1280px" - Desktop screens
+ * @property {string} xxl - "≥ 1536px" - Large desktop screens
+ */
+
+/**
+ * @typedef {Object} ResponsiveLayoutPattern
+ * @description Common responsive layout patterns used in components
+ * @property {string} mobile - Mobile layout classes (flex-col, single column, etc.)
+ * @property {string} tablet - Tablet layout classes (grid-cols-2, etc.)
+ * @property {string} desktop - Desktop layout classes (flex-row, grid-cols-3, etc.)
+ * @property {string} spacing - Responsive spacing pattern (px-4 md:px-8, etc.)
+ * @property {string} typography - Responsive text sizing (text-sm md:text-lg, etc.)
+ */
+
+/**
+ * @typedef {Object} TouchOptimization
+ * @description Touch-friendly interaction specifications
+ * @property {string} minTouchTarget - "44px" - Minimum touch target size
+ * @property {Object} tapFeedback - whileTap animation for mobile interactions
+ * @property {boolean} hoverDisabled - Whether hover effects are disabled on touch devices
+ * @property {number} tapDelay - Delay for tap interactions to prevent accidental triggers
+ */
+
+// ==========================================
 // COMPONENT PROP INTERFACES
 // ==========================================
 
 /**
  * @typedef {Object} AegisPageProps
  * @description Props for the AEGIS hero/intro section
- * No props required - self-contained component
+ * @property {ResponsiveLayoutPattern} [layout] - Override default responsive layout
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
+ * @property {TouchOptimization} [touchConfig] - Touch interaction configuration
+ * 
+ * MOBILE SPECIFICATIONS:
+ * - Layout: flex-col lg:flex-row (stacked on mobile, side-by-side on desktop)
+ * - Typography: text-3xl md:text-5xl (responsive scaling)
+ * - Spacing: px-4 md:px-8 py-8 lg:py-16 (mobile-first spacing)
+ * - Grid: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 (responsive technical cards)
+ * - Right column: hidden lg:flex (architecture diagram hidden on mobile)
+ * - Touch targets: All interactive elements have proper touch sizing
+ * - Performance: Optimized particle count and background effects for mobile
  */
 
 /**
  * @typedef {Object} ProductsPageProps
  * @description Props for the main products showcase
- * No props required - manages its own state
+ * @property {ResponsiveLayoutPattern} [layout] - Override default responsive layout
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
+ * 
+ * MOBILE SPECIFICATIONS:
+ * - Maintains excellent mobile responsiveness as reference implementation
+ * - Uses mobile-first responsive patterns throughout
+ * - Touch-optimized interactions and proper spacing
  */
 
 /**
  * @typedef {Object} ServicesPageProps
  * @property {Function} onScrollRelease - Callback when stellar sequence completes
+ * @property {ResponsiveLayoutPattern} [layout] - Override default responsive layout
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
  */
 
 /**
@@ -73,24 +130,29 @@
  * @property {Function} onHover - Mouse enter handler
  * @property {Function} onLeave - Mouse leave handler
  * @property {Function} onClick - Click handler for card expansion
+ * @property {TouchOptimization} [touchConfig] - Touch interaction configuration
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
  */
 
 /**
  * @typedef {Object} ProductDetailModalProps
  * @property {ProductItem|null} product - Product to display (null = closed)
  * @property {Function} onClose - Handler to close modal
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
  */
 
 /**
  * @typedef {Object} ThrottledAnimatePresenceProps
  * @property {React.ReactNode} children - Child components to animate
+ * @property {boolean} [reduceMotionOnMobile] - Whether to reduce animations on mobile (default: true)
  * @property {...Object} props - Additional AnimatePresence props
  */
 
 /**
  * @typedef {Object} ServicesCosmicEnvironmentProps
  * @description Background cosmic environment component
- * No props required - self-contained visual component
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
+ * @property {number} [particleCount] - Override particle count (auto-reduced on mobile)
  */
 
 /**
@@ -102,6 +164,8 @@
  * @property {boolean} typewriterComplete - Whether typewriter animation finished
  * @property {boolean} showStellarHint - Whether to show stellar activation hint
  * @property {string} text - Current typewriter text content
+ * @property {ResponsiveLayoutPattern} [layout] - Override default responsive layout
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
  */
 
 /**
@@ -109,6 +173,8 @@
  * @property {boolean} isStellarActive - Whether stellar message is active
  * @property {string} stellarPhase - Current stellar sequence phase
  * @property {boolean} showFloatingWords - Whether to display floating context words
+ * @property {ResponsiveLayoutPattern} [layout] - Override default responsive layout
+ * @property {boolean} [mobileOptimized] - Whether mobile optimizations are enabled (default: true)
  */
 
 // ==========================================
@@ -121,6 +187,12 @@
  * @property {boolean} isTablet - Screen width 768px - 1024px
  * @property {boolean} isDesktop - Screen width > 1024px
  * @property {string} breakpoint - Current breakpoint name
+ * @property {string} current - Current breakpoint identifier (mobile|tablet|desktop)
+ * @property {boolean} isSm - Screen width ≥ 640px
+ * @property {boolean} isMd - Screen width ≥ 768px
+ * @property {boolean} isLg - Screen width ≥ 1024px
+ * @property {boolean} isXl - Screen width ≥ 1280px
+ * @property {boolean} is2xl - Screen width ≥ 1536px
  */
 
 /**
@@ -129,6 +201,8 @@
  * @property {boolean} supportsHover - Device supports hover interactions
  * @property {boolean} isHighRefreshRate - Display supports >60fps
  * @property {boolean} isLowEndDevice - Device has limited performance
+ * @property {boolean} isTouchDevice - Device supports touch interactions
+ * @property {string} performanceTier - Device performance level (low|medium|high)
  */
 
 /**
@@ -136,6 +210,8 @@
  * @property {boolean} shouldAnimate - Whether animations should be enabled
  * @property {boolean} shouldThrottle - Whether to reduce animation complexity
  * @property {number} animationScale - Scale factor for animation duration (0-1)
+ * @property {boolean} shouldReduceParticles - Whether to reduce particle count
+ * @property {boolean} shouldDisableBlur - Whether to disable blur effects
  */
 
 /**
@@ -143,6 +219,7 @@
  * @property {boolean} isDebugMode - Whether debug mode is active
  * @property {Function} toggleDebug - Function to toggle debug mode
  * @property {Object} debugInfo - Current debug information object
+ * @property {ResponsiveHookReturn} responsiveInfo - Current responsive state for debugging
  */
 
 // ==========================================
@@ -155,6 +232,7 @@
  * @property {Object} detail - Event details
  * @property {number} detail.pageIndex - New page index (0-2)
  * @property {string} detail.pageName - Page name (aegis|products|services)
+ * @property {boolean} detail.isMobile - Whether event occurred on mobile device
  */
 
 /**
@@ -180,6 +258,15 @@
  * @property {number} detail.duration - Sequence duration in milliseconds
  */
 
+/**
+ * @typedef {Object} ResponsiveBreakpointChangeEvent
+ * @property {string} type - Event type: 'responsiveBreakpointChange'
+ * @property {Object} detail - Event details
+ * @property {string} detail.previousBreakpoint - Previous breakpoint
+ * @property {string} detail.currentBreakpoint - New breakpoint
+ * @property {ResponsiveHookReturn} detail.responsiveState - Current responsive state
+ */
+
 // ==========================================
 // ANIMATION CONSTANTS
 // ==========================================
@@ -203,6 +290,17 @@
  * @property {string} DISSOLUTION - 'dissolution'
  */
 
+/**
+ * @typedef {Object} ResponsiveAnimationConfig
+ * @description Animation configurations that adapt to device capabilities
+ * @property {Object} mobile - Mobile-specific animation settings
+ * @property {Object} tablet - Tablet-specific animation settings  
+ * @property {Object} desktop - Desktop-specific animation settings
+ * @property {boolean} reduceMotionOnLowEnd - Whether to reduce animations on low-end devices
+ * @property {number} mobileParticleCount - Particle count for mobile devices
+ * @property {number} desktopParticleCount - Particle count for desktop devices
+ */
+
 // ==========================================
 // THEME CONFIGURATIONS
 // ==========================================
@@ -215,6 +313,7 @@
  * @property {string} gradientFrom - Tailwind gradient start class
  * @property {string} gradientTo - Tailwind gradient end class
  * @property {string[]} particleColors - Array of particle colors
+ * @property {ResponsiveLayoutPattern} [responsiveOverrides] - Theme-specific responsive overrides
  */
 
 /**
@@ -257,6 +356,56 @@ export const THEME_CONFIGS = {
 };
 
 // ==========================================
+// RESPONSIVE DESIGN CONSTANTS
+// ==========================================
+
+/**
+ * Standard responsive layout patterns used across components
+ * @type {Object.<string, ResponsiveLayoutPattern>}
+ */
+export const RESPONSIVE_PATTERNS = {
+  AEGIS_PAGE: {
+    mobile: 'flex-col px-4 py-8',
+    tablet: 'flex-col md:px-8',
+    desktop: 'lg:flex-row lg:px-8 lg:py-16',
+    spacing: 'px-4 md:px-8 py-8 lg:py-16',
+    typography: 'text-3xl md:text-5xl'
+  },
+  PRODUCTS_PAGE: {
+    mobile: 'flex-col px-4 py-8',
+    tablet: 'md:px-8',
+    desktop: 'lg:px-8 lg:py-16',
+    spacing: 'px-4 md:px-8 py-8 lg:py-16',
+    typography: 'text-2xl md:text-4xl'
+  },
+  TECHNICAL_CARDS: {
+    mobile: 'grid-cols-1 gap-3',
+    tablet: 'md:grid-cols-2 md:gap-4',
+    desktop: 'lg:grid-cols-3',
+    spacing: 'p-3 md:p-4',
+    typography: 'text-sm md:text-base'
+  },
+  ARCHITECTURE_DIAGRAM: {
+    mobile: 'hidden',
+    tablet: 'hidden',
+    desktop: 'lg:flex lg:w-1/3',
+    spacing: 'p-4 md:p-8',
+    typography: 'text-xs md:text-sm'
+  }
+};
+
+/**
+ * Touch optimization configurations
+ * @type {TouchOptimization}
+ */
+export const TOUCH_OPTIMIZATION = {
+  minTouchTarget: '44px',
+  tapFeedback: { scale: 0.995 },
+  hoverDisabled: false, // Handled by device detection
+  tapDelay: 0
+};
+
+// ==========================================
 // VALIDATION HELPERS
 // ==========================================
 
@@ -288,6 +437,25 @@ export const getThemeConfig = (themeName) => {
   return THEME_CONFIGS[themeName] || null;
 };
 
+/**
+ * Validates responsive layout pattern
+ * @param {ResponsiveLayoutPattern} pattern - Pattern to validate
+ * @returns {boolean} - Whether pattern is valid
+ */
+export const validateResponsivePattern = (pattern) => {
+  const required = ['mobile', 'tablet', 'desktop'];
+  return required.every(breakpoint => pattern && pattern[breakpoint] !== undefined);
+};
+
+/**
+ * Gets responsive pattern by name
+ * @param {string} patternName - Pattern name
+ * @returns {ResponsiveLayoutPattern|null} - Pattern or null if not found
+ */
+export const getResponsivePattern = (patternName) => {
+  return RESPONSIVE_PATTERNS[patternName] || null;
+};
+
 // ==========================================
 // COMPONENT STATE INTERFACES
 // ==========================================
@@ -297,6 +465,7 @@ export const getThemeConfig = (themeName) => {
  * @property {number} currentPage - Currently active product index
  * @property {ProductItem|null} selectedProduct - Product selected for modal
  * @property {string} prevColor - Previous accent color (for change detection)
+ * @property {ResponsiveHookReturn} responsive - Current responsive state
  */
 
 /**
@@ -309,14 +478,24 @@ export const getThemeConfig = (themeName) => {
  * @property {boolean} canSkip - Whether skip is enabled
  * @property {boolean} typewriterComplete - Whether typewriter finished
  * @property {boolean} showStellarHint - Whether stellar hint is shown
+ * @property {ResponsiveHookReturn} responsive - Current responsive state
+ */
+
+/**
+ * @typedef {Object} AegisPageState
+ * @property {string|null} expandedCard - ID of currently expanded technical card
+ * @property {ResponsiveHookReturn} responsive - Current responsive state
+ * @property {DeviceCapabilitiesHookReturn} deviceCapabilities - Current device capabilities
+ * @property {boolean} mobileOptimized - Whether mobile optimizations are active
  */
 
 // ==========================================
 // EXPORT TYPES FOR RUNTIME CHECKING
 // ==========================================
 
-export const CONTRACT_VERSION = '1.0.0';
+export const CONTRACT_VERSION = '1.1.0';
 export const LAST_UPDATED = '2024-12-28';
+export const MOBILE_OPTIMIZATION_VERSION = '1.0.0';
 
 /**
  * Runtime type checker for development
@@ -329,4 +508,35 @@ export const checkType = (value, expectedType, componentName = 'Unknown') => {
     // Add runtime type checking logic here if needed
     console.log(`Type check: ${componentName} - ${expectedType}`, value);
   }
+};
+
+/**
+ * Validates component mobile optimization compliance
+ * @param {string} componentName - Name of component to validate
+ * @param {Object} props - Component props
+ * @returns {Object} - Validation result with recommendations
+ */
+export const validateMobileOptimization = (componentName, props = {}) => {
+  const result = {
+    isCompliant: true,
+    warnings: [],
+    recommendations: []
+  };
+
+  // Check if mobile optimization is enabled
+  if (props.mobileOptimized === false) {
+    result.warnings.push(`${componentName}: Mobile optimization is disabled`);
+  }
+
+  // Check for responsive layout pattern
+  if (!props.layout && !RESPONSIVE_PATTERNS[componentName.toUpperCase()]) {
+    result.recommendations.push(`${componentName}: Consider adding responsive layout pattern`);
+  }
+
+  // Check for touch optimization
+  if (!props.touchConfig && componentName.includes('Card')) {
+    result.recommendations.push(`${componentName}: Consider adding touch optimization config`);
+  }
+
+  return result;
 };

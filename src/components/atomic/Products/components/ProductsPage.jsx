@@ -392,17 +392,17 @@ export const ProductsPage = () => {
           }}
         />
 
-        <div
-          className="absolute inset-0 z-[2]"
-          style={{
+      <div
+        className="absolute inset-0 z-[2]"
+        style={{
             background: 'radial-gradient(ellipse at 25% 40%, rgba(98, 153, 16, 0.06) 0%, rgba(98, 153, 16, 0.02) 40%, transparent 70%)',
             filter: 'blur(30px)',
-          }}
-        />
+        }}
+      />
 
-        <div
-          className="absolute inset-0 z-[3]"
-          style={{
+      <div
+        className="absolute inset-0 z-[3]"
+        style={{
             background: 'radial-gradient(ellipse at 70% 60%, rgba(34, 211, 238, 0.04) 0%, rgba(34, 211, 238, 0.01) 35%, transparent 60%)',
             filter: 'blur(40px)',
           }}
@@ -424,7 +424,7 @@ export const ProductsPage = () => {
           }}
         />
       ))}
-
+      
       {/* ThoughtTrails Layer */}
       <div className="absolute inset-0 z-[5]" data-thought-trails-layer="true"></div>
       
@@ -438,23 +438,23 @@ export const ProductsPage = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Mission Control Badge */}
+                    {/* Mission Control Badge */}
           <motion.div 
             className="flex items-center space-x-2 mb-4 md:mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <motion.div 
+                        <motion.div 
               className="w-2 h-2 rounded-full bg-lime-400"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
+                          animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
             <span className="text-lime-400/80 text-xs md:text-sm font-mono uppercase tracking-wider">Mission Control</span>
             <span className="text-xs text-white/40 font-mono">v2.1.0</span>
           </motion.div>
-          
-          {/* Enhanced Title */}
+                    
+                    {/* Enhanced Title */}
           <motion.div 
             className="mb-6 md:mb-8"
             initial={{ opacity: 0, y: 20 }}
@@ -471,9 +471,9 @@ export const ProductsPage = () => {
             <div className="inline-block border-l-2 border-cyan-400/50 pl-3 md:pl-4 py-2 mb-3 md:mb-4">
               <p className="text-base md:text-lg font-medium text-cyan-400/90">
                 Your AI team, led by you
-              </p>
-            </div>
-            
+                      </p>
+                    </div>
+
             <p className="text-sm md:text-lg text-white/70 leading-relaxed">
               Mission-based orchestration with human oversight at every decision point.
             </p>
@@ -487,7 +487,7 @@ export const ProductsPage = () => {
             transition={{ delay: 0.3 }}
           >
             <h3 className="text-white text-base md:text-lg font-semibold flex items-center space-x-2">
-              <div className="w-2 h-2 rounded-full bg-cyan-400" />
+                        <div className="w-2 h-2 rounded-full bg-cyan-400" />
               <span>Core Principles</span>
             </h3>
             
@@ -495,21 +495,21 @@ export const ProductsPage = () => {
               {[
                 { 
                   text: 'Real AI agents with roles, memory, and autonomy',
-                  status: 'ACTIVE',
-                  metric: '12 agents'
-                },
-                { 
-                  text: 'Central mission engine governing every command',
-                  status: 'OPERATIONAL', 
-                  metric: '99.7% uptime'
-                },
-                { 
+                            status: 'ACTIVE',
+                            metric: '12 agents'
+                          },
+                          { 
+                            text: 'Central mission engine governing every command',
+                            status: 'OPERATIONAL', 
+                            metric: '99.7% uptime'
+                          },
+                          { 
                   text: 'Complete audit trail for every execution',
-                  status: 'MONITORING',
-                  metric: '2.3M events'
-                }
-              ].map((principle, index) => (
-                <div
+                            status: 'MONITORING',
+                            metric: '2.3M events'
+                          }
+                        ].map((principle, index) => (
+                          <div
                   key={index}
                   className="p-2 md:p-3 rounded-lg bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300"
                 >
@@ -520,12 +520,12 @@ export const ProductsPage = () => {
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-xs font-mono text-lime-400">{principle.status}</span>
                         <span className="text-xs text-white/50 font-mono">{principle.metric}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </motion.div>
 
           {/* Runtime Control Demo */}
@@ -538,8 +538,8 @@ export const ProductsPage = () => {
             <div className="flex items-center space-x-3 mb-4">
               <div className="p-2 rounded-lg bg-gradient-to-br from-slate-900/60 to-slate-800/40 border border-cyan-500/20">
                 <span className="text-lg">🎛️</span>
-              </div>
-              <div>
+                  </div>
+                          <div>
                 <h3 className="text-lg md:text-xl font-semibold text-cyan-400">Runtime Control</h3>
                 <p className="text-white/60 text-xs md:text-sm">One engine, many intelligent products</p>
               </div>
@@ -563,8 +563,8 @@ export const ProductsPage = () => {
                   {system.name}
                 </button>
               ))}
-            </div>
-            
+          </div>
+          
             {/* Live Status Display */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
@@ -646,7 +646,7 @@ export const ProductsPage = () => {
               <span className="text-cyan-400/80 text-xs md:text-sm font-mono uppercase tracking-wider">Products Grid</span>
               <span className="text-xs text-white/40 font-mono">{OPS_BENTO_ITEMS.length} Systems</span>
             </div>
-            
+
             <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-lime-400 to-cyan-400">
                 MISSION
@@ -668,23 +668,23 @@ export const ProductsPage = () => {
           >
             {OPS_BENTO_ITEMS.map((product, index) => {
               const accentColor = getProductAccentColor(product.title);
-              return (
-                <motion.div
+                  return (
+                    <motion.div 
                   key={product.id}
                   className={`relative p-4 md:p-6 rounded-xl backdrop-blur-sm bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300 cursor-pointer ${
                     expandedProduct === product.id ? 'ring-2 ring-lime-400/50' : ''
                   }`}
                   initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.05 }}
                   whileHover={{ y: -1, scale: 1.005 }}
                   whileTap={{ scale: 0.995 }}
                   onClick={() => handleProductExpand(product.id)}
-                >
+                    >
                   <div className="flex items-center space-x-3 md:space-x-4 mb-3 md:mb-4">
                     <div className="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
                       {/* Subtle glowing background effect behind the logo */}
-                      <div 
+                      <div
                         className="absolute inset-0 rounded-lg blur-xl opacity-30"
                         style={{
                           background: `radial-gradient(circle at center, ${accentColor}20, transparent 70%)`,
@@ -709,7 +709,7 @@ export const ProductsPage = () => {
                         {product.title}
                       </h3>
                       <p className="text-xs md:text-sm text-white/70 leading-relaxed">{product.summary}</p>
-                    </div>
+                          </div>
                     
                     <motion.div 
                       className="text-white/40 flex-shrink-0"
@@ -718,8 +718,8 @@ export const ProductsPage = () => {
                     >
                       ↓
                     </motion.div>
-                  </div>
-                  
+                        </div>
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <div 
@@ -727,7 +727,7 @@ export const ProductsPage = () => {
                         style={{ backgroundColor: accentColor }}
                       />
                       <span className="text-xs font-mono text-white/60">{getProductStatus(product.title)}</span>
-                    </div>
+                          </div>
                     <button 
                       className="text-xs text-white/50 hover:text-white/80 transition-colors"
                       onClick={(e) => {
@@ -737,8 +737,8 @@ export const ProductsPage = () => {
                     >
                       <span className="hidden sm:inline">VIEW DETAILS </span>→
                     </button>
-                  </div>
-                  
+                        </div>
+
                   <div 
                     className="absolute top-0 left-0 w-full h-0.5"
                     style={{ background: `linear-gradient(to right, ${accentColor}, ${accentColor}80)` }}
@@ -779,20 +779,20 @@ export const ProductsPage = () => {
                           src={getProductLogo(product.title)}
                           alt={`${product.title} logo`}
                           className="w-full h-full object-contain"
-                          onError={(e) => (e.target.src = '/assets/images/placeholder.png')}
-                        />
-                      </div>
+                                onError={(e) => (e.target.src = '/assets/images/placeholder.png')}
+                              />
+                            </div>
                       <div className="flex-1">
                         <div className="text-xs text-lime-400 font-mono uppercase tracking-wider mb-1">MISSION PRODUCT</div>
-                        <h3 
+                              <h3
                           className="text-xl md:text-2xl font-bold uppercase tracking-wide"
                           style={{ color: accentColor }}
-                        >
+                              >
                           {product.title}
-                        </h3>
-                      </div>
-                    </div>
-                    
+                              </h3>
+                            </div>
+                          </div>
+
                     <div className="mb-4 md:mb-6">
                       <p className="text-sm md:text-base text-white/80 leading-relaxed mb-3 md:mb-4">{product.summary}</p>
                       {product.tagline && (
@@ -808,9 +808,9 @@ export const ProductsPage = () => {
                             style={{ backgroundColor: accentColor }}
                           />
                           <p className="text-xs md:text-sm text-white/80 leading-relaxed">{feature}</p>
-                        </div>
-                      ))}
-                    </div>
+                              </div>
+                            ))}
+                          </div>
                     
                     <div className="flex items-center justify-between pt-4 border-t border-white/10">
                       <div className="flex items-center space-x-2">
@@ -837,8 +837,8 @@ export const ProductsPage = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                       </motion.a>
-                    </div>
-                  </div>
+              </div>
+            </div>
                 );
               })()}
             </motion.div>

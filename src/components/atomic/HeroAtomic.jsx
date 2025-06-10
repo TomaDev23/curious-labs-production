@@ -19,7 +19,6 @@
 //  DEPENDENCIES: Hero3DPlanet (simplified), BackgroundLayerAtomic, HeroStageManager
 
 import React, { useState, Suspense, lazy, useEffect, useCallback } from 'react';
-import { IMAGES } from '../../utils/assets';
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
 import MissionControlNavbar from '../navigation/MissionControlNavbar';
 import {  motion, AnimatePresence  } from '../../FramerProvider';
@@ -45,7 +44,6 @@ const HeroAtomic = React.memo(() => {
   const [sceneStep, setSceneStep] = useState(8);
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
-  const [contentLoaded, setContentLoaded] = useState(false);
   const [show3D, setShow3D] = useState(false);
 
   // Use unified responsive hooks
@@ -69,10 +67,7 @@ const HeroAtomic = React.memo(() => {
   });
 
   // ✅ NEW: Content-first loading sequence
-  useEffect(() => {
-    // Content loads immediately
-    setContentLoaded(true);
-    
+  useEffect(() => {    
     // Start typewriter effect immediately
     start();
     
@@ -87,7 +82,7 @@ const HeroAtomic = React.memo(() => {
   // Memoized responsive classes for performance
   const responsiveClasses = React.useMemo(() => {
     return {
-      container: `relative min-h-screen bg-black overflow-hidden`,
+      container: `relative min-h-screen overflow-hidden`,
       section: `relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden ${isMobile ? 'pt-16' : 'pt-14'}`,
       planetBloom: `absolute z-[15] ${isMobile ? 'w-[300px] h-[300px]' : isTablet ? 'w-[450px] h-[450px]' : 'w-[600px] h-[600px]'} rounded-full blur-3xl pointer-events-none`,
       planetContainer: `w-${isMobile ? '[250px] h-[250px]' : isTablet ? '[350px] h-[350px]' : '[400px] h-[400px]'}`,
@@ -113,14 +108,10 @@ const HeroAtomic = React.memo(() => {
 
   // Handle header toggle with performance consideration
   const handleHeaderToggle = useCallback(() => {
-    if (prefersReducedMotion) {
-      setIsHeaderExpanded(!isHeaderExpanded);
-    } else {
-      setIsHeaderExpanded(!isHeaderExpanded);
-    }
-  }, [isHeaderExpanded, prefersReducedMotion]);
+    setIsHeaderExpanded(!isHeaderExpanded);
+  }, [isHeaderExpanded]);
 
-  // Animation variants with reduced motion support
+  // Animation variants with reduced motion support - OPTIMIZED
   const animationVariants = React.useMemo(() => ({
     expandedContent: {
       initial: { maxHeight: 0, opacity: 0 },
@@ -143,10 +134,15 @@ const HeroAtomic = React.memo(() => {
         }
       }
     }
-  }), [isHeaderExpanded, isMobile, prefersReducedMotion]);
+  }), [isHeaderExpanded, prefersReducedMotion, isMobile]);
 
   return (
-    <div className={responsiveClasses.container}>
+    <div 
+      className={responsiveClasses.container}
+      style={{
+        background: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)'
+      }}
+    >
       {/* Mission Control Navbar - Now using standalone component */}
       <MissionControlNavbar />
 

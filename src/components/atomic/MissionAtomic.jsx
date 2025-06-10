@@ -315,27 +315,26 @@ const MissionAtomic = () => {
     <motion.div 
       className="relative w-full bg-curious-dark-900 overflow-hidden"
       style={{ 
-        minHeight: '100vh', // Standard full height instead of 120vh
+        minHeight: '170vh', // Correct height for proper section coverage
         paddingTop: '6rem', // Clean rem-only padding
         paddingBottom: '8rem', // Clean rem-only padding, no calc()
         mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
         WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
         contain: 'layout style', // Keep performance containment
-        backgroundImage: `url('/assets/images/planets/milkyway_Light_tablet.webp')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat'
+        outline: '3px solid lime', // Green outline on ALL borders
+        outlineOffset: '-3px', // Inside the container
+        position: 'relative'
       }}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "0px 0px -20% 0px" }}
       variants={sectionVariants}
     >
-      {/* Light glassmorphism overlay - much lighter to let image show through */}
+      {/* Reddish debug glassmorphism overlay */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          background: 'rgba(0, 0, 0, 0.2)',
+          background: 'rgba(220, 38, 38, 0.3)',
           backdropFilter: 'blur(0.5px)',
           WebkitBackdropFilter: 'blur(0.5px)',
           zIndex: 1

@@ -3,7 +3,7 @@ import React from 'react';
 /**
  * @component SectionLoaders
  * @description Component-specific loading fallbacks for different homepage sections
- * @version 1.0.0
+ * @version 1.1.0 - Fixed JSX Literal Issue
  * @author CuriousLabs
  * 
  * Features:
@@ -11,6 +11,7 @@ import React from 'react';
  * - Size and priority indicators
  * - Performance-optimized animations
  * - Consistent design language
+ * - Proper component function exports
  */
 
 // Base loader component with common styling
@@ -88,8 +89,28 @@ export const GenericSectionLoader = ({
   </BaseLoader>
 );
 
-// Loader selector based on component name
-export const getLoaderComponent = (componentName, props = {}) => {
+// Safe mode fallback loader
+export const SafeModeLoader = ({ componentName = "Component", error = null }) => (
+  <div className="min-h-screen flex items-center justify-center bg-black/90">
+    <div className="text-center p-8 bg-gray-900/50 border border-red-400/30 rounded-lg max-w-md mx-4">
+      <div className="text-red-400 text-lg font-space mb-4">⚠️ Safe Mode</div>
+      <div className="text-white/70 text-sm mb-2">Failed to load: {componentName}</div>
+      <div className="text-white/50 text-xs mb-4">System has switched to safe mode</div>
+      {error && (
+        <details className="text-left text-xs text-white/40 bg-black/30 p-2 rounded">
+          <summary className="cursor-pointer">Error Details</summary>
+          <pre className="mt-2 whitespace-pre-wrap">{error.toString()}</pre>
+        </details>
+      )}
+      <div className="mt-4 text-white/30 text-xs">
+        Refresh page or check console for more details
+      </div>
+    </div>
+  </div>
+);
+
+// FIXED: Loader selector that returns component functions, not JSX
+export const getLoaderComponent = (componentName, performanceTier = 'moderate') => {
   const loaderMap = {
     'MissionAtomic': MissionLoader,
     'HorizontalProductScrollV6': ProductsLoader, 
@@ -97,12 +118,13 @@ export const getLoaderComponent = (componentName, props = {}) => {
     'ContactTerminalAtomic': ContactLoader
   };
 
+  // Return the component function, not JSX
   const LoaderComponent = loaderMap[componentName] || GenericSectionLoader;
   
-  return <LoaderComponent {...props} />;
+  return LoaderComponent;
 };
 
-// Performance-aware loader with reduced animations
+// Performance-aware loader component wrapper
 export const PerformanceAwareLoader = ({ 
   componentName,
   performanceTier = 'moderate',
@@ -122,7 +144,8 @@ export const PerformanceAwareLoader = ({
     );
   }
 
-  return getLoaderComponent(componentName, props);
+  const LoaderComponent = getLoaderComponent(componentName, performanceTier);
+  return <LoaderComponent {...props} />;
 };
 
 export default {
@@ -131,6 +154,7 @@ export default {
   ServicesLoader,
   ContactLoader,
   GenericSectionLoader,
+  SafeModeLoader,
   getLoaderComponent,
   PerformanceAwareLoader
 }; 

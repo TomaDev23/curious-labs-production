@@ -1,0 +1,53 @@
+{
+  "name": "final-purge",
+  "version": "1.0.0",
+  "description": "Eliminate codebase bloat by identifying and extracting only the files your production build actually uses",
+  "main": "index.js",
+  "bin": {
+    "final-purge": "./bin/final-purge.js"
+  },
+  "scripts": {
+    "test": "node test/test-runner.js",
+    "build": "node build.js",
+    "dev": "node bin/final-purge.js"
+  },
+  "keywords": [
+    "codebase",
+    "cleanup",
+    "dependency",
+    "analysis",
+    "production",
+    "optimization",
+    "bloat",
+    "purge",
+    "unused-code",
+    "tree-shaking",
+    "bundle-analyzer"
+  ],
+  "author": "The Final Purge Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "inquirer": "^9.2.0",
+    "fs-extra": "^11.1.1",
+    "glob": "^10.3.0",
+    "acorn": "^8.10.0",
+    "acorn-walk": "^8.2.0"
+  },
+  "devDependencies": {
+    "jest": "^29.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/final-purge/final-purge-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/final-purge/final-purge-cli/issues"
+  },
+  "homepage": "https://github.com/final-purge/final-purge-cli#readme"
+} 

@@ -16,7 +16,7 @@
  * @type atomic
  */
 
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy, useRef, useCallback } from 'react';
 import MoonSphereProxy from './proxies/MoonSphereProxy';
 import {  motion, useAnimation  } from '../../FramerProvider';
 
@@ -32,6 +32,206 @@ export const metadata = {
   scs: 'SCS-ATOMIC-VISUAL',
   type: 'atomic',
   doc: 'contract_mission_atomic.md'
+};
+
+// 🎯 PROGRESSIVE BACKGROUND LOADING HOOK
+const useProgressiveBackground = (componentName = 'MissionAtomic') => {
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+  const [backgroundError, setBackgroundError] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [shouldStartLoading, setShouldStartLoading] = useState(false);
+  const observerRef = useRef(null);
+  const imageRef = useRef(null);
+  
+  // Device-adaptive image quality selection
+  const getImageSrc = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    
+    const width = window.innerWidth;
+    const pixelRatio = window.devicePixelRatio || 1;
+    const connection = navigator.connection?.effectiveType || '4g';
+    const memory = navigator.deviceMemory || 4;
+    
+    // Performance-based quality selection using ACTUAL existing assets
+    if (width <= 768 || memory < 4 || ['slow-2g', '2g'].includes(connection)) {
+      return '/assets/images/planets/milkyway_Light_mobile.webp'; // 41KB - EXISTS ✅
+    }
+    if (width <= 1440 || ['3g'].includes(connection)) {
+      return '/assets/images/planets/milkyway_Light_tablet.webp'; // 97KB - EXISTS ✅
+    }
+    if (pixelRatio >= 2 && memory >= 8 && connection === '4g') {
+      return '/assets/images/planets/4k/milkyway_Light_big.webp'; // 683KB - EXISTS ✅
+    }
+    
+    return '/assets/images/planets/4k/milkyway_Light_big.webp'; // Default fallback - EXISTS ✅
+  }, []);
+
+  // Smart image preloading with error handling
+  const preloadImage = useCallback((src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      
+      const cleanup = () => {
+        img.onload = null;
+        img.onerror = null;
+        img.onabort = null;
+      };
+      
+      img.onload = () => {
+        cleanup();
+        // Track successful load for analytics
+        if (typeof window !== 'undefined' && window.lazyDebug) {
+          window.lazyDebug.trackComponentLoad?.(componentName, performance.now(), {
+            type: 'background-image',
+            src: src,
+            strategy: 'progressive-load'
+          });
+        }
+        resolve(img);
+      };
+      
+      img.onerror = img.onabort = () => {
+        cleanup();
+        reject(new Error(`Failed to load background image: ${src}`));
+      };
+      
+      // Set source to trigger load
+      img.src = src;
+      imageRef.current = img;
+    });
+  }, [componentName]);
+
+  // Initialize intersection observer for smart loading
+  useEffect(() => {
+    const imageSrc = getImageSrc();
+    if (!imageSrc) return;
+    
+    setImageUrl(imageSrc);
+    
+    // Create intersection observer to start loading when section approaches
+    observerRef.current = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // 🎯 LCP PROTECTION: Delay background loading to ensure content loads first
+          setTimeout(() => {
+            setShouldStartLoading(true);
+          }, 300); // 300ms delay ensures text content becomes LCP
+          
+          // Stop observing after first trigger
+          observerRef.current?.disconnect();
+        }
+      },
+      { 
+        rootMargin: '100px',  // Start loading 100px before visible
+        threshold: 0.01 
+      }
+    );
+    
+    return () => {
+      observerRef.current?.disconnect();
+      // Cleanup image reference
+      if (imageRef.current) {
+        imageRef.current = null;
+      }
+    };
+  }, [getImageSrc]);
+
+  // Actual image loading (only after LCP protection delay)
+  useEffect(() => {
+    if (shouldStartLoading && imageUrl) {
+      preloadImage(imageUrl)
+        .then(() => {
+          setBackgroundLoaded(true);
+          setBackgroundError(false);
+        })
+        .catch((error) => {
+          console.warn(`Background image failed to load: ${error.message}`);
+          setBackgroundError(true);
+          setBackgroundLoaded(false);
+        });
+    }
+  }, [shouldStartLoading, imageUrl, preloadImage]);
+
+  return {
+    backgroundLoaded,
+    backgroundError,
+    imageUrl,
+    observerRef: observerRef.current,
+    attachObserver: (element) => {
+      if (element && observerRef.current) {
+        observerRef.current.observe(element);
+      }
+    }
+  };
+};
+
+// 🎯 LCP PROTECTION HOOK
+const useLCPProtection = (componentName = 'MissionAtomic') => {
+  const [lcpData, setLCPData] = useState(null);
+  const [contentLoaded, setContentLoaded] = useState(false);
+  
+  useEffect(() => {
+    // LCP Performance Observer
+    const observeLCP = () => {
+      if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return;
+      
+      try {
+        const lcpObserver = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          const lastEntry = entries[entries.length - 1];
+          
+          setLCPData({
+            element: lastEntry.element?.tagName || 'unknown',
+            startTime: lastEntry.startTime,
+            renderTime: lastEntry.renderTime,
+            loadTime: lastEntry.loadTime,
+            size: lastEntry.size,
+            url: lastEntry.url || 'N/A'
+          });
+          
+          // Cosmic debug logging (only in dev)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('🎯 [LCP-MONITOR] Largest Contentful Paint detected:', {
+              element: lastEntry.element?.tagName,
+              time: `${lastEntry.startTime.toFixed(2)}ms`,
+              isBackground: lastEntry.url?.includes('milkyway'),
+              component: componentName
+            });
+          }
+          
+          // Warning if background becomes LCP (performance risk)
+          if (lastEntry.url?.includes('milkyway')) {
+            console.warn('⚠️ [LCP-WARNING] Background image became LCP - performance risk detected!');
+          }
+        });
+        
+        lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+        
+        return () => lcpObserver.disconnect();
+      } catch (error) {
+        console.warn('LCP Observer not supported:', error);
+      }
+    };
+    
+    const cleanup = observeLCP();
+    return cleanup;
+  }, [componentName]);
+  
+  // Content-first loading strategy
+  useEffect(() => {
+    // Ensure DOM content is loaded before marking as ready
+    const timer = setTimeout(() => {
+      setContentLoaded(true);
+    }, 100); // Small delay to ensure text renders first
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  return {
+    lcpData,
+    contentLoaded,
+    isLCPSafe: lcpData && !lcpData.url?.includes('milkyway')
+  };
 };
 
 // Advanced Neon Arc Animation Component
@@ -103,6 +303,13 @@ const MissionAtomic = () => {
   const [moonPhaseOverride, setMoonPhaseOverride] = useState(null);
   const [moonAnomalyMode, setMoonAnomalyMode] = useState(null);
   
+  // 🎯 PROGRESSIVE BACKGROUND LOADING
+  const { backgroundLoaded, backgroundError, imageUrl, attachObserver } = useProgressiveBackground('MissionAtomic');
+  const containerRef = useRef(null);
+  
+  // 🎯 LCP PROTECTION - Ensure content loads first
+  const { lcpData, contentLoaded, isLCPSafe } = useLCPProtection('MissionAtomic');
+  
   const controls = useAnimation();
   const moonControls = useAnimation();
   
@@ -153,11 +360,16 @@ const MissionAtomic = () => {
     const cleanupMotion = checkMotionPreference();
     window.addEventListener('resize', checkMobile);
     
+    // Attach intersection observer for background loading
+    if (containerRef.current) {
+      attachObserver(containerRef.current);
+    }
+    
     return () => {
       window.removeEventListener('resize', checkMobile);
       if (cleanupMotion) cleanupMotion();
     };
-  }, []);
+  }, [attachObserver]);
   
   useEffect(() => {
     checkDeviceCapabilities();
@@ -311,18 +523,27 @@ const MissionAtomic = () => {
     document.head.appendChild(styleSheet);
   }
 
+  // Enhanced debug indicator with strategy info - only show if explicitly debug=true
+  const debug = typeof window !== 'undefined' && window.lazyDebug && window.lazyDebug.debug === 'true';
+  const isInSafeMode = debug && !isLCPSafe;
+  const hasBeenInView = backgroundLoaded || backgroundError;
+  const strategy = { rootMargin: '100px', priority: 'high', expectedSize: 'large' };
+  const performanceTier = 'Tier 1';
+  const errorRetryCount = useRef(0);
+
   return (
     <motion.div 
+      ref={containerRef}
       className="relative w-full bg-curious-dark-900 overflow-hidden"
       style={{ 
-        minHeight: '170vh', // Correct height for proper section coverage
-        paddingTop: '6rem', // Clean rem-only padding
-        paddingBottom: '8rem', // Clean rem-only padding, no calc()
+        minHeight: '170vh', // Reserved space - prevents layout shift
+        paddingTop: '6rem',
+        paddingBottom: '8rem',
         mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
         WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
-        contain: 'layout style', // Keep performance containment
-        outline: '3px solid lime', // Green outline on ALL borders
-        outlineOffset: '-3px', // Inside the container
+        contain: 'layout style',
+        outline: '3px solid lime',
+        outlineOffset: '-3px',
         position: 'relative'
       }}
       initial="hidden"
@@ -330,93 +551,132 @@ const MissionAtomic = () => {
       viewport={{ once: true, margin: "0px 0px -20% 0px" }}
       variants={sectionVariants}
     >
-      {/* Reddish debug glassmorphism overlay */}
+      {/* 🎯 BACKGROUND LAYERS - Progressive Loading Architecture */}
+      
+      {/* Layer 1: Instant Fallback Gradient - Never blocks LCP */}
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          background: 'rgba(220, 38, 38, 0.3)',
-          backdropFilter: 'blur(0.5px)',
-          WebkitBackdropFilter: 'blur(0.5px)',
+          background: 'linear-gradient(180deg, #000814 0%, #001d3d 25%, #003566 50%, #0353a4 75%, #023e7d 100%)',
           zIndex: 1
         }}
       />
+      
+      {/* Layer 2: Progressive Milkyway Background - Loads after LCP */}
+      {backgroundLoaded && imageUrl && (
+        <div 
+          className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
+          style={{
+            backgroundImage: `url(${imageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            opacity: 1.0, // Full opacity when loaded
+            zIndex: 2,
+            willChange: 'opacity'
+          }}
+        />
+      )}
+      
+      {/* Layer 3: Error Fallback - Enhanced gradient if image fails */}
+      {backgroundError && (
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background: 'radial-gradient(ellipse at center, #001d3d 0%, #000814 40%, #000000 100%)',
+            zIndex: 2
+          }}
+        />
+      )}
+      
+      {/* Layer 4: Content Overlay - Always visible */}
+      <div 
+        className="absolute inset-0 w-full h-full"
+        style={{
+          background: 'rgba(0, 8, 20, 0.2)', // Subtle overlay for readability
+          zIndex: 3
+        }}
+      />
 
-      {/* Main content wrapper - Clean z-index */}
+      {/* Main content wrapper - Clean z-index above all backgrounds */}
       <div className="relative w-full h-full opacity-100" style={{ zIndex: 50 }}>
-        {/* Right Section with Numbered Mission Points */}
-        <div className={`${isMobile ? 'px-6' : 'md:ml-[45%] md:mr-[5%] pr-4 md:pr-8'} flex flex-col space-y-16 md:space-y-32 mt-16 md:mt-24`}>
-          {MISSION_POINTS.map((point, index) => (
-            <motion.div 
-              key={point.id}
-              className="grid grid-cols-12 items-center gap-4 group cursor-pointer relative"
-              style={{ zIndex: 60 }}
-              custom={index}
-              variants={missionPointVariants}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.3, ease: "easeOut" }
-              }}
-            >
-              {/* Hover background glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-lime-400/5 via-emerald-500/5 to-cyan-400/5 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-sm -z-10" />
-              <div className="absolute inset-0 border border-lime-400/10 rounded-xl opacity-0 group-hover:opacity-100 group-hover:border-lime-400/30 transition-all duration-500 -z-10" />
-              
-              {/* For odd indices (or all on mobile) */}
-              {(index % 2 === 0 && !isMobile) ? (
-                <>
-                  <div className="col-span-7 col-start-1 pr-4 relative z-10">
-                    <div className="text-right transform group-hover:translate-x-[-8px] transition-transform duration-300">
-                      <h3 className="text-white text-xl md:text-2xl mb-2 group-hover:text-lime-400 transition-colors duration-300 relative">
-                        {point.title}
-                        <div className="absolute bottom-0 right-0 h-0.5 bg-gradient-to-l from-lime-400 to-emerald-500 w-0 group-hover:w-full transition-all duration-500" />
-                      </h3>
-                      <p className="text-white/70 text-xs md:text-sm group-hover:text-white/90 transition-colors duration-300 leading-relaxed">
-                        {point.description}
-                      </p>
+        {/* 🎯 LCP PROTECTION: Priority content renders first */}
+        <div style={{ willChange: 'auto', contain: 'layout' }}>
+          {/* Right Section with Numbered Mission Points */}
+          <div className={`${isMobile ? 'px-6' : 'md:ml-[45%] md:mr-[5%] pr-4 md:pr-8'} flex flex-col space-y-16 md:space-y-32 mt-16 md:mt-24`}>
+            {MISSION_POINTS.map((point, index) => (
+              <motion.div 
+                key={point.id}
+                className="grid grid-cols-12 items-center gap-4 group cursor-pointer relative"
+                style={{ zIndex: 60 }}
+                custom={index}
+                variants={missionPointVariants}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+              >
+                {/* Hover background glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-lime-400/5 via-emerald-500/5 to-cyan-400/5 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-sm -z-10" />
+                <div className="absolute inset-0 border border-lime-400/10 rounded-xl opacity-0 group-hover:opacity-100 group-hover:border-lime-400/30 transition-all duration-500 -z-10" />
+                
+                {/* For odd indices (or all on mobile) */}
+                {(index % 2 === 0 && !isMobile) ? (
+                  <>
+                    <div className="col-span-7 col-start-1 pr-4 relative z-10">
+                      <div className="text-right transform group-hover:translate-x-[-8px] transition-transform duration-300">
+                        <h3 className="text-white text-xl md:text-2xl mb-2 group-hover:text-lime-400 transition-colors duration-300 relative">
+                          {point.title}
+                          <div className="absolute bottom-0 right-0 h-0.5 bg-gradient-to-l from-lime-400 to-emerald-500 w-0 group-hover:w-full transition-all duration-500" />
+                        </h3>
+                        <p className="text-white/70 text-xs md:text-sm group-hover:text-white/90 transition-colors duration-300 leading-relaxed">
+                          {point.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-span-5 col-start-8 pl-4 relative z-10">
-                    <div className="text-white text-[80px] md:text-[120px] font-light opacity-90 group-hover:opacity-100 group-hover:text-lime-400 transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]">
-                      {point.id}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {!isMobile && (
-                    <div className="col-span-5 col-start-1 pr-4 relative z-10">
-                      <div className="text-white text-[80px] md:text-[120px] font-light opacity-90 text-right group-hover:opacity-100 group-hover:text-lime-400 transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]">
+                    <div className="col-span-5 col-start-8 pl-4 relative z-10">
+                      <div className="text-white text-[80px] md:text-[120px] font-light opacity-90 group-hover:opacity-100 group-hover:text-lime-400 transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]">
                         {point.id}
                       </div>
                     </div>
-                  )}
-                  <div className={`${isMobile ? 'col-span-12' : 'col-span-7 col-start-6'} pl-4 relative z-10`}>
-                    {isMobile && (
-                      <div className="text-white text-[60px] font-light opacity-90 mb-2 group-hover:opacity-100 group-hover:text-lime-400 transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]">
-                        {point.id}
+                  </>
+                ) : (
+                  <>
+                    {!isMobile && (
+                      <div className="col-span-5 col-start-1 pr-4 relative z-10">
+                        <div className="text-white text-[80px] md:text-[120px] font-light opacity-90 text-right group-hover:opacity-100 group-hover:text-lime-400 transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]">
+                          {point.id}
+                        </div>
                       </div>
                     )}
-                    <div className="transform group-hover:translate-x-2 transition-transform duration-300">
-                      <h3 className="text-white text-xl md:text-2xl mb-2 group-hover:text-lime-400 transition-colors duration-300 relative">
-                        {point.title}
-                        <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-lime-400 to-emerald-500 w-0 group-hover:w-full transition-all duration-500" />
-                      </h3>
-                      <p className="text-white/70 text-xs md:text-sm group-hover:text-white/90 transition-colors duration-300 leading-relaxed">
-                        {point.description}
-                      </p>
+                    <div className={`${isMobile ? 'col-span-12' : 'col-span-7 col-start-6'} pl-4 relative z-10`}>
+                      {isMobile && (
+                        <div className="text-white text-[60px] font-light opacity-90 mb-2 group-hover:opacity-100 group-hover:text-lime-400 transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(132,204,22,0.6)]">
+                          {point.id}
+                        </div>
+                      )}
+                      <div className="transform group-hover:translate-x-2 transition-transform duration-300">
+                        <h3 className="text-white text-xl md:text-2xl mb-2 group-hover:text-lime-400 transition-colors duration-300 relative">
+                          {point.title}
+                          <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-lime-400 to-emerald-500 w-0 group-hover:w-full transition-all duration-500" />
+                        </h3>
+                        <p className="text-white/70 text-xs md:text-sm group-hover:text-white/90 transition-colors duration-300 leading-relaxed">
+                          {point.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
-              
-              {/* Hover particles effect */}
-              <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <div className="absolute top-4 left-8 w-1 h-1 bg-lime-400 rounded-full animate-ping" style={{ animationDelay: '0s' }} />
-                <div className="absolute top-12 right-12 w-1 h-1 bg-emerald-400 rounded-full animate-ping" style={{ animationDelay: '0.3s' }} />
-                <div className="absolute bottom-8 left-16 w-1 h-1 bg-cyan-400 rounded-full animate-ping" style={{ animationDelay: '0.6s' }} />
-              </div>
-            </motion.div>
-          ))}
+                  </>
+                )}
+                
+                {/* Hover particles effect */}
+                <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute top-4 left-8 w-1 h-1 bg-lime-400 rounded-full animate-ping" style={{ animationDelay: '0s' }} />
+                  <div className="absolute top-12 right-12 w-1 h-1 bg-emerald-400 rounded-full animate-ping" style={{ animationDelay: '0.3s' }} />
+                  <div className="absolute bottom-8 left-16 w-1 h-1 bg-cyan-400 rounded-full animate-ping" style={{ animationDelay: '0.6s' }} />
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
       
@@ -740,6 +1000,35 @@ const MissionAtomic = () => {
           zIndex: 8
         }}
       />
+
+      {/* Enhanced debug indicator with strategy info - only show if explicitly debug=true */}
+      {debug && !isInSafeMode && (
+        <div className="fixed top-4 right-4 z-[9999] bg-gray-900/95 border border-lime-400/30 text-white text-xs p-3 rounded-lg shadow-xl">
+          <div className="font-bold text-lime-400 mb-1">{componentName}</div>
+          <div className="space-y-1">
+            <div>Status: {hasBeenInView ? '✅ Loaded' : '⏳ Waiting'}</div>
+            <div>Strategy: {strategy.rootMargin}</div>
+            <div>Priority: <span className={`${strategy.priority === 'high' ? 'text-red-400' : strategy.priority === 'medium' ? 'text-yellow-400' : 'text-green-400'}`}>{strategy.priority}</span></div>
+            <div>Size: {strategy.expectedSize}</div>
+            <div>Tier: {performanceTier}</div>
+            {errorRetryCount.current > 0 && (
+              <div className="text-yellow-400">Retries: {errorRetryCount.current}</div>
+            )}
+            {/* 🎯 LCP Protection Status */}
+            <div className="border-t border-lime-400/20 pt-1 mt-1">
+              <div className="text-lime-300 font-semibold">LCP Protection:</div>
+              <div>Content: {contentLoaded ? '✅' : '⏳'}</div>
+              <div>Background: {backgroundLoaded ? '✅' : '⏳'}</div>
+              <div>LCP Safe: {isLCPSafe ? '✅' : '⚠️'}</div>
+              {lcpData && (
+                <div className="text-xs text-gray-300">
+                  LCP: {lcpData.element} ({lcpData.startTime?.toFixed(0)}ms)
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };

@@ -105,7 +105,7 @@ const HeroSection = () => {
                   animate="idle"
                   variants={floatVariants}
                 >
-                  Elite AI CodeOps
+                  Elite CodeOps
                 </motion.span>
               </motion.h1>
               
@@ -134,7 +134,7 @@ const HeroSection = () => {
                     animate={shouldReduceMotion ? {} : {
                       y: shouldReduceMotion ? 0 : [0, -8, 0],
                       transition: {
-                        duration: 5,
+                        duration: 9,
                         repeat: Infinity,
                         repeatType: "reverse",
                         ease: "easeInOut",
@@ -148,7 +148,7 @@ const HeroSection = () => {
                       overflow: "visible"
                     }}
                   >
-                    Run by Agents
+                    Run by Humans and AI
                   </motion.span>
                 </motion.span>
               </motion.h1>

@@ -53,7 +53,7 @@ const FeaturesSection = () => {
     {
       icon: "📝",
       title: "Documentation",
-      description: "Automatic generation of clean, complete documentation for all code changes."
+      description: "We generate clean, complete documentation for all code changes."
     },
     {
       icon: "📱",
@@ -79,10 +79,10 @@ const FeaturesSection = () => {
           What We Do
         </motion.span>
         <motion.h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          Agent-Powered Development
+          Agent-Enhanced Development
         </motion.h2>
         <motion.p className="max-w-2xl mx-auto text-gray-300 text-lg">
-          Our AI agents work together to solve complex coding challenges, delivering solutions that are reliable, maintainable, and properly tested.
+           We apply cutting-edge AI first engineering to solve complex coding challenges - delivering solutions that are robust, maintainable, and rigorously tested.
         </motion.p>
       </motion.div>
 
@@ -129,7 +129,7 @@ const FeaturesSection = () => {
           <div className="flex-1">
             <h3 className="text-xl md:text-2xl font-semibold text-white mb-2">Elite Agent Infrastructure</h3>
             <p className="text-gray-300">
-              Our custom agent network combines LLMs with specialized validation systems to ensure code quality meets rigorous standards. Every line is traced, tested, and validated before delivery.
+              Our systems combine agents with human-led validation and custom test loops — ensuring every line of code is traced, tested, and held to uncompromising standards.
             </p>
           </div>
           

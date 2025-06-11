@@ -96,7 +96,7 @@ export default function MoonSignal() {
     { 
       id: 'MSL-M001',
       label: 'Signal Accuracy', 
-      value: '94.7', 
+      value: '80', 
       unit: '%', 
       icon: '🎯',
       status: 'OPERATIONAL',
@@ -114,7 +114,7 @@ export default function MoonSignal() {
     { 
       id: 'MSL-M003',
       label: 'Data Sources', 
-      value: '847', 
+      value: '223', 
       unit: 'active', 
       icon: '📡',
       status: 'OPERATIONAL',

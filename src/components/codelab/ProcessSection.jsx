@@ -35,39 +35,39 @@ const ProcessSection = () => {
     {
       icon: "📋",
       title: "1. Requirement Gathering",
-      description: "Submit your code issues, feature requests, or project requirements through our intuitive interface.",
+      description: "You share a bug, feature request, or idea. We scope the work and prepare it for execution.",
       color: "from-blue-600/20 to-blue-900/20",
       borderColor: "border-blue-500/30"
     },
     {
       icon: "🤖",
-      title: "2. AI Agent Assignment",
-      description: "Our system automatically assigns the optimal AI agent team based on your specific needs and technical requirements.",
+      title: "2. Agent Routing",
+      description: "We route your task to the right AI-powered toolchain — with trace logging and human checkpoints built in.",
       color: "from-purple-600/20 to-purple-900/20",
       borderColor: "border-purple-500/30"
     },
     {
       icon: "⚙️",
       title: "3. Development & Testing",
-      description: "Agents work collaboratively to develop and test solutions, tracking every code modification through CLI traces.",
+      description: "We write and test your code with AI-assisted agents, CLI workflows, and full traceable outputs.",
       color: "from-indigo-600/20 to-indigo-900/20",
       borderColor: "border-indigo-500/30"
     },
     {
       icon: "🔍",
       title: "4. Quality Assurance",
-      description: "Specialized QA agents perform rigorous validation testing to ensure code meets our high-quality standards.",
+      description: "Outputs are checked by validation agents and manual review — ensuring clean, tested, and usable code.",
       color: "from-violet-600/20 to-violet-900/20",
       borderColor: "border-violet-500/30"
     },
     {
       icon: "🚀",
       title: "5. Delivery & Implementation",
-      description: "Receive production-ready code with complete documentation and implementation guidance.",
+      description: "You receive production-ready code with clear structure, test cases, and integration guidance.",
       color: "from-fuchsia-600/20 to-fuchsia-900/20",
       borderColor: "border-fuchsia-500/30"
     }
-  ];
+  ];  
 
   // Animation for flowing pulse effect on connector line
   const connectorVariants = {

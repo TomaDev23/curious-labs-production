@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from '../../../../FramerProvider';
+import { motion, AnimatePresence } from '../../../../FramerProvider';
 
 /**
  * AEGIS Page Component - First page in horizontal scroll sequence
@@ -255,76 +255,109 @@ export const AegisPage = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6"
             variants={itemVariants}
           >
-            {technicalSections.map((section, index) => (
-              <motion.div
-                key={section.id}
-                className={`relative p-3 md:p-4 rounded-lg backdrop-blur-sm bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300 cursor-pointer ${
-                  expandedCard === section.id ? 'ring-2 ring-lime-400/50' : ''
-                }`}
-                variants={itemVariants}
-                custom={index}
-                whileHover={{ y: -1, scale: 1.005 }}
-                whileTap={{ scale: 0.995 }}
-                onClick={() => setExpandedCard(expandedCard === section.id ? null : section.id)}
-              >
-                <div className="flex items-center space-x-2 md:space-x-3 mb-2">
-                  <div className="text-lg md:text-xl">{section.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm md:text-base font-semibold text-white">{section.title}</h3>
-                    <p className="text-xs text-white/60">{section.subtitle}</p>
-              </div>
+            {technicalSections.map((section, index) => {
+              const isExpanded = expandedCard === section.id;
+              const isLastCard = section.id === 'operational-control';
+              
+              return (
                   <motion.div
-                    className="text-white/40 flex-shrink-0"
-                    animate={{ rotate: expandedCard === section.id ? 180 : 0 }}
-                    transition={{ duration: 0.15 }}
+                  key={section.id}
+                  className={`relative rounded-lg backdrop-blur-sm bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300 cursor-pointer ${
+                    isExpanded ? 'ring-2 ring-lime-400/50' : ''
+                  } ${isLastCard ? 'overflow-visible' : 'overflow-hidden'}`}
+                  variants={itemVariants}
+                  custom={index}
+                  whileHover={{ y: -1, scale: 1.005 }}
+                  whileTap={{ scale: 0.995 }}
+                  layout
+                >
+                  {/* Main Card Content */}
+                  <div 
+                    className="p-3 md:p-4"
+                    onClick={() => setExpandedCard(expandedCard === section.id ? null : section.id)}
                   >
-                    ↓
-                  </motion.div>
-                </div>
-                <div className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r ${section.color}`} />
-                  </motion.div>
-                ))}
+                    <div className="flex items-center space-x-2 md:space-x-3 mb-2">
+                      <div className="text-lg md:text-xl">{section.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm md:text-base font-semibold text-white">{section.title}</h3>
+                        <p className="text-xs text-white/60">{section.subtitle}</p>
+                      </div>
+                        <motion.div
+                        className="text-white/40 flex-shrink-0"
+                        animate={{ 
+                          rotate: isExpanded ? 
+                            (isLastCard ? 0 : 180) : 
+                            (isLastCard ? 180 : 0) 
+                        }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <span className="md:hidden">
+                          {isLastCard ? '↑' : '↓'}
+                        </span>
+                        <span className="hidden md:inline">
+                          ↓
+                        </span>
+                      </motion.div>
+                    </div>
+                    <div className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r ${section.color}`} />
+                  </div>
+
+                  {/* Collapsible Expanded Details */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        className={`border border-white/10 bg-black/20 backdrop-blur-sm ${
+                          isLastCard ? 
+                            'md:border-t md:bg-black/20 absolute left-0 right-0 z-20 bottom-full mb-1 md:relative md:bottom-auto md:mb-0 md:mt-0 bg-black/90 md:bg-black/20 rounded-lg md:rounded-none shadow-2xl md:shadow-none' :
+                            'border-t bg-black/20'
+                        }`}
+                        initial={{ 
+                          height: 0, 
+                          opacity: 0,
+                          y: isLastCard ? 10 : 0
+                        }}
+                        animate={{ 
+                          height: 'auto', 
+                          opacity: 1,
+                          y: 0
+                        }}
+                        exit={{ 
+                          height: 0, 
+                          opacity: 0,
+                          y: isLastCard ? 10 : 0
+                        }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <div className="p-3 md:p-4 space-y-3">
+                          {/* Category badge */}
+                          <div className="text-xs text-lime-400 font-mono uppercase tracking-wider mb-2">
+                            {section.category}
+                          </div>
+                          
+                          {/* Full title */}
+                          <h4 className="text-sm md:text-base font-bold text-white mb-3">{section.fullTitle}</h4>
+                          
+                          {/* Details list */}
+                          <div className="space-y-2">
+                            {section.details.slice(0, 3).map((detail, i) => (
+                              <div key={i} className="flex items-start space-x-2">
+                                <div className="w-1 h-1 rounded-full bg-lime-400 mt-1.5 flex-shrink-0" />
+                                <p className="text-xs text-white/75 leading-relaxed">{detail}</p>
+                              </div>
+                            ))}
+                      </div>
+                    </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </motion.div>
 
-          {/* Expanded Card Details */}
-          {expandedCard && (
-                <motion.div 
-              className="mb-4 md:mb-6 p-4 md:p-6 rounded-xl backdrop-blur-sm bg-black/40 border border-lime-400/30"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {(() => {
-                const section = technicalSections.find(s => s.id === expandedCard);
-                return (
-                  <div>
-                    <div className="flex items-center space-x-3 md:space-x-4 mb-4 md:mb-6">
-                      <div className="text-xl md:text-2xl">{section.icon}</div>
-                      <div>
-                        <div className="text-xs text-lime-400 font-mono uppercase tracking-wider mb-1">
-                          {section.category}
-                      </div>
-                        <h3 className="text-lg md:text-xl font-bold text-white">{section.fullTitle}</h3>
-                      </div>
-                    </div>
-                    <div className="space-y-2 md:space-y-3">
-                      {section.details.map((detail, i) => (
-                        <div key={i} className="flex items-start space-x-2 md:space-x-3">
-                          <div className="w-1.5 h-1.5 rounded-full bg-lime-400 mt-1.5 md:mt-2 flex-shrink-0" />
-                          <p className="text-xs md:text-sm text-white/80 leading-relaxed">{detail}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })()}
-                </motion.div>
-          )}
-          
           {/* SDK CTA - Responsive */}
-          <motion.div 
-            className="bg-black/20 backdrop-blur-md rounded-xl border border-lime-500/20 p-4 md:p-6"
+                    <motion.div
+            className="bg-black/20 backdrop-blur-md rounded-xl border border-lime-500/20 p-4 md:p-6 hidden md:block"
             variants={itemVariants}
           >
             <div className="flex items-center space-x-3 mb-4">
@@ -334,8 +367,8 @@ export const AegisPage = () => {
               <div>
                 <h3 className="text-lg md:text-xl font-semibold text-cyan-400">AEGIS SDK</h3>
                 <p className="text-white/60 text-xs md:text-sm">Developer toolkit for mission-critical AI</p>
+              </div>
             </div>
-          </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 mb-4">
               {[
@@ -347,8 +380,8 @@ export const AegisPage = () => {
                   <p className="text-xs text-white/80">{feature}</p>
                 </div>
               ))}
-            </div>
-            
+              </div>
+
             <motion.button 
               className="w-full py-2 md:py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-lg text-white text-sm md:text-base font-medium transition-all duration-300"
               whileHover={{ scale: 1.02 }}
@@ -357,21 +390,110 @@ export const AegisPage = () => {
               Explore Documentation →
             </motion.button>
           </motion.div>
-          
-          {/* Navigation Hint - Mobile Responsive */}
-          <motion.div 
-            className="mt-4 md:mt-6 flex items-center space-x-2 text-white/40"
+
+          {/* Mobile-only SDK Card */}
+                <motion.div 
+            className="block md:hidden relative"
             variants={itemVariants}
           >
-            <span className="text-xs font-mono">Page 1 of 3</span>
-            <div className="flex space-x-1">
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-lime-400" />
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/20" />
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/20" />
-            </div>
-            <span className="text-xs">→</span>
+                      <motion.div
+              className={`relative rounded-lg backdrop-blur-sm bg-black/30 border border-white/10 hover:border-lime-400/30 transition-all duration-300 cursor-pointer overflow-visible ${
+                expandedCard === 'aegis-sdk-mobile' ? 'ring-2 ring-lime-400/50' : ''
+              }`}
+              whileHover={{ y: -1, scale: 1.005 }}
+              whileTap={{ scale: 0.995 }}
+              layout
+            >
+              {/* Main Card Content */}
+              <div 
+                className="p-3 relative z-10 bg-black/30 rounded-lg"
+                onClick={() => setExpandedCard(expandedCard === 'aegis-sdk-mobile' ? null : 'aegis-sdk-mobile')}
+              >
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="text-lg">🧰</div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-white">AEGIS SDK</h3>
+                    <p className="text-xs text-white/60">Developer Toolkit</p>
+                      </div>
+                  <motion.div
+                    className="text-white/40 flex-shrink-0"
+                    animate={{ rotate: expandedCard === 'aegis-sdk-mobile' ? 0 : 180 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    ↑
+                  </motion.div>
+                    </div>
+                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500" />
+                      </div>
+
+              {/* Mobile SDK Expanded Details - Expands Upward */}
+              <AnimatePresence>
+                {expandedCard === 'aegis-sdk-mobile' && (
+                  <motion.div
+                    className="absolute left-0 right-0 z-20 bottom-full mb-1 border border-white/10 bg-black/90 backdrop-blur-sm rounded-lg shadow-2xl"
+                    initial={{ 
+                      height: 0, 
+                      opacity: 0,
+                      y: 10
+                    }}
+                    animate={{ 
+                      height: 'auto', 
+                      opacity: 1,
+                      y: 0
+                    }}
+                    exit={{ 
+                      height: 0, 
+                      opacity: 0,
+                      y: 10
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    <div className="p-3 space-y-3">
+                      {/* Category badge */}
+                      <div className="text-xs text-lime-400 font-mono uppercase tracking-wider mb-2">
+                        DEVELOPER TOOLS
+                      </div>
+                      
+                      {/* Full title */}
+                      <h4 className="text-sm font-bold text-white mb-3">AEGIS SOFTWARE DEVELOPMENT KIT</h4>
+                      
+                      {/* Details list */}
+                      <div className="space-y-2">
+                        {[
+                          "Python & Node.js libraries with full TypeScript support",
+                          "CLI integration for CI/CD pipelines and local development",
+                          "Streaming API with real-time event subscriptions"
+                        ].map((detail, i) => (
+                          <div key={i} className="flex items-start space-x-2">
+                            <div className="w-1 h-1 rounded-full bg-lime-400 mt-1.5 flex-shrink-0" />
+                            <p className="text-xs text-white/75 leading-relaxed">{detail}</p>
+                            </div>
+                        ))}
+                      </div>
+
+                      {/* CTA Button */}
+                      <motion.div 
+                        className="mt-3 pt-3 border-t border-white/10"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <motion.button 
+                          className="w-full py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-lg text-white text-xs font-medium transition-all duration-300"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Explore Documentation →
+                        </motion.button>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </motion.div>
-        </motion.div>
+                </motion.div>
 
         {/* Right Column - Architecture Diagram - Hidden on mobile, responsive on larger screens */}
         <motion.div 
@@ -387,7 +509,7 @@ export const AegisPage = () => {
                 <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
                 <h4 className="text-xs md:text-sm font-mono uppercase tracking-wider text-white/80">
                   System Architecture
-                </h4>
+                  </h4>
               </div>
               <p className="text-xs text-white/60">
                 Real-time AEGIS orchestration flow

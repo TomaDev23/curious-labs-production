@@ -536,9 +536,10 @@ const MissionAtomic = () => {
       ref={containerRef}
       className="relative w-full bg-curious-dark-900 overflow-hidden"
       style={{ 
-        minHeight: '170vh', // Reserved space - prevents layout shift
-        paddingTop: '6rem',
+        minHeight: '195vh', // Increased by 15vh to extend background upward
         paddingBottom: '8rem',
+        marginTop: '-15vh', // Negative margin to extend background upward without moving content
+        paddingTop: 'calc(6rem + 15vh)', // Adjust padding to compensate for negative margin
         mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
         WebkitMask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 8%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.8) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.3) 85%, transparent 100%)',
         contain: 'layout style',
@@ -558,7 +559,7 @@ const MissionAtomic = () => {
         className="absolute inset-0 w-full h-full"
         style={{
           background: 'linear-gradient(180deg, #000814 0%, #001d3d 25%, #003566 50%, #0353a4 75%, #023e7d 100%)',
-          zIndex: 1
+          zIndex: 15 // Increased from 1 to bring above hero mask
         }}
       />
       
@@ -568,11 +569,12 @@ const MissionAtomic = () => {
           className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
           style={{
             backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
+            backgroundSize: 'cover', // Maintains aspect ratio, prevents stretching
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed', // Added for parallax effect
             opacity: 1.0, // Full opacity when loaded
-            zIndex: 2,
+            zIndex: 20, // Increased from 2 to bring above hero mask
             willChange: 'opacity'
           }}
         />
@@ -584,7 +586,7 @@ const MissionAtomic = () => {
           className="absolute inset-0 w-full h-full"
           style={{
             background: 'radial-gradient(ellipse at center, #001d3d 0%, #000814 40%, #000000 100%)',
-            zIndex: 2
+            zIndex: 20 // Increased from 2 to bring above hero mask
           }}
         />
       )}
@@ -593,8 +595,8 @@ const MissionAtomic = () => {
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          background: 'rgba(0, 8, 20, 0.2)', // Subtle overlay for readability
-          zIndex: 3
+          background: 'rgba(0, 8, 20, 0.1)', // Reduced opacity from 0.2 to 0.1 to unmute background
+          zIndex: 25 // Increased from 3 to maintain hierarchy
         }}
       />
 
@@ -684,7 +686,7 @@ const MissionAtomic = () => {
       <motion.div 
         className={`absolute ${isMobile ? 'bottom-16 left-1/2 -translate-x-1/2' : 'bottom-16 left-4 md:left-16'}`}
         variants={eclipseVariants}
-        style={{ zIndex: 3 }}
+        style={{ zIndex: 35 }}
       >
         {/* Cosmic background effects - Bottom left corner nebula */}
         <div 
@@ -761,7 +763,7 @@ const MissionAtomic = () => {
         <div className="relative flex items-center justify-center transform -translate-x-4 -translate-y-4">
           {/* Eclipse Nebula Background - CSS only, outside of Three.js */}
           {moonAnomalyMode === 'eclipse' && (
-            <div className="absolute inset-0 w-[700px] h-[700px] md:w-[780px] md:h-[780px] pointer-events-none" style={{ zIndex: 1 }}>
+            <div className="absolute inset-0 w-[700px] h-[700px] md:w-[780px] md:h-[780px] pointer-events-none" style={{ zIndex: 36 }}>
               {/* Main nebula layer */}
               <div 
                 className="absolute inset-0"
@@ -821,7 +823,7 @@ const MissionAtomic = () => {
             </div>
           )}
           
-          <div className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" style={{ zIndex: 2 }}>
+          <div className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" style={{ zIndex: 37 }}>
             <Suspense fallback={
               <div className="w-full h-full flex items-center justify-center">
                 <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
@@ -844,6 +846,7 @@ const MissionAtomic = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
             className="absolute bottom-[2%] left-[8%] z-20 text-left max-w-[460px] p-6 rounded-lg backdrop-blur-sm bg-black/10"
+            style={{ zIndex: 38 }}
           >
             <motion.p 
               initial={{ opacity: 0 }}
@@ -877,7 +880,7 @@ const MissionAtomic = () => {
       {!isMobile && (
         <div 
           className="absolute bottom-[calc(45%+48vh)] left-[44rem]"
-          style={{ zIndex: 4 }}
+          style={{ zIndex: 39 }}
         >
           <NeonArcAnimation sceneStep={6}>
             limbo<br />
@@ -905,7 +908,7 @@ const MissionAtomic = () => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.3 }}
         viewport={{ once: true }}
-        style={{ zIndex: 4 }}
+        style={{ zIndex: 40 }}
       >
         <div className="mr-3 flex space-x-1">
           <span className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-xs">⊕</span>
@@ -919,12 +922,12 @@ const MissionAtomic = () => {
       </motion.div>
       
       {/* Heart icon */}
-      <div className="absolute top-8 left-8 z-20" style={{ zIndex: 4 }}>
+      <div className="absolute top-8 left-8 z-20" style={{ zIndex: 41 }}>
         <span className="text-white/70 text-xl">♡</span>
       </div>
       
       {/* Decorative slashes */}
-      <div className="absolute top-8 right-[30%] z-20 text-white/50 font-light" style={{ zIndex: 4 }}>
+      <div className="absolute top-8 right-[30%] z-20 text-white/50 font-light" style={{ zIndex: 42 }}>
         //<br/>//<br/>//
       </div>
 
@@ -935,7 +938,7 @@ const MissionAtomic = () => {
         transition={{ duration: 1, delay: 0.3 }}
         viewport={{ once: true, margin: "-10%" }}
         className="absolute bottom-0 left-0 right-0 w-full pb-[32vh]"
-        style={{ zIndex: 10 }}
+        style={{ zIndex: 45 }}
       >
         <Suspense fallback={
           <div className="w-full h-full flex items-center justify-center">

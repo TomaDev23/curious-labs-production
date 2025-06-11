@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^7.0.2",
+    "@tailwindcss/cli": "^4.1.8",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
     "@vitejs/plugin-react": "^4.4.1",

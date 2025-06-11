@@ -92,6 +92,24 @@ const HeroAtomic = React.memo(() => {
     };
   }, [isMobile, isTablet]);
 
+  // Pre-calculated stable dimensions to prevent layout shifts - OPTIMIZED
+  const stableDimensions = React.useMemo(() => {
+    const titleHeight = isMobile ? '2.5rem' : isTablet ? '3rem' : '3.5rem';
+    const subtitleHeight = isMobile ? '4rem' : '5rem';
+    const ctaHeight = isMobile ? '3rem' : '2.5rem';
+    const statusHeight = isMobile ? '1.5rem' : '2rem';
+    const expandedContentHeight = isMobile ? '300px' : '384px';
+    
+    return {
+      titleHeight,
+      subtitleHeight,
+      ctaHeight,
+      statusHeight,
+      expandedContentHeight,
+      contentWidth: isMobile ? '100%' : '700px'
+    };
+  }, [isMobile, isTablet, isDesktop]);
+
   // Optimized planet positioning based on device
   const planetPosition = React.useMemo(() => {
     if (isMobile) return { top: '15%', right: '5%' };
@@ -191,7 +209,8 @@ const HeroAtomic = React.memo(() => {
               onClick={handleHeaderToggle}
               style={{
                 contain: 'layout style paint',
-                willChange: 'auto'
+                willChange: 'auto',
+                minHeight: stableDimensions.titleHeight
               }}
             >
               <h1 
@@ -201,7 +220,9 @@ const HeroAtomic = React.memo(() => {
                 style={{
                   fontDisplay: 'swap',
                   contain: 'layout style',
-                  priority: 'high'
+                  priority: 'high',
+                  minHeight: stableDimensions.titleHeight,
+                  aspectRatio: 'auto'
                 }}
               >
                 We bring you a <span className="bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(132,204,22,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(132,204,22,0.8)] transition-all duration-300">universe</span> of solutions
@@ -221,12 +242,16 @@ const HeroAtomic = React.memo(() => {
               />
             </div>
 
-            {/* Collapsible expanded content with responsive layout */}
+            {/* Collapsible expanded content with responsive layout - PROGRESSIVE LOADING */}
             <motion.div 
               className="overflow-hidden"
               variants={animationVariants.expandedContent}
               initial="initial"
               animate="animate"
+              style={{
+                contentVisibility: isHeaderExpanded ? 'visible' : 'auto',
+                containIntrinsicSize: `auto ${stableDimensions.expandedContentHeight}`
+              }}
             >
               <div className="bg-black/20 backdrop-blur-sm border border-lime-400/20 rounded-lg p-4 space-y-4">
                 <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-4`}>
@@ -290,9 +315,10 @@ const HeroAtomic = React.memo(() => {
               <p 
                 className={responsiveClasses.subtitle}
                 style={{
-                  minHeight: isMobile ? '3rem' : '4rem', // Prevent layout shift
+                  minHeight: stableDimensions.subtitleHeight,
                   contentVisibility: 'auto',
-                  containIntrinsicSize: 'auto 4rem'
+                  containIntrinsicSize: `auto ${stableDimensions.subtitleHeight}`,
+                  contain: 'layout style'
                 }}
               >
                 {displayText}
@@ -303,8 +329,9 @@ const HeroAtomic = React.memo(() => {
               <div 
                 className={`${isMobile ? 'justify-center flex-col space-y-3' : 'justify-between'} mt-4`}
                 style={{
-                  minHeight: isMobile ? '3rem' : '2.5rem', // Prevent layout shift
-                  contentVisibility: 'auto'
+                  minHeight: stableDimensions.ctaHeight,
+                  contentVisibility: typewriterComplete ? 'visible' : 'auto',
+                  containIntrinsicSize: `auto ${stableDimensions.ctaHeight}`
                 }}
               >
                 <AnimatePresence>
@@ -354,7 +381,15 @@ const HeroAtomic = React.memo(() => {
             </div>
 
             {/* Interactive status indicator - responsive */}
-            <div className={`${isMobile ? 'mt-3' : 'mt-4'} flex items-center ${isMobile ? 'justify-center' : ''} space-x-3`}>
+            <div 
+              className={`${isMobile ? 'mt-3' : 'mt-4'} flex items-center ${isMobile ? 'justify-center' : ''} space-x-3`}
+              style={{
+                minHeight: stableDimensions.statusHeight,
+                contentVisibility: 'auto',
+                containIntrinsicSize: `auto ${stableDimensions.statusHeight}`,
+                contain: 'layout style'
+              }}
+            >
               <div className="flex items-center space-x-2">
                 <div className={`${isMobile ? 'w-1.5 h-1.5' : 'w-2 h-2'} bg-lime-400 rounded-full ${prefersReducedMotion ? '' : 'animate-pulse'}`}></div>
                 <span className={`text-white/60 ${isMobile ? 'text-xs' : 'text-xs'} font-space`}>System Online</span>

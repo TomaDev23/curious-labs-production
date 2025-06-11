@@ -682,9 +682,9 @@ const MissionAtomic = () => {
         </div>
       </div>
       
-      {/* Eclipse/Circle with Mission Statement - Bottom Left */}
+      {/* Eclipse/Circle with Mission Statement - Moved Up 40vh */}
       <motion.div 
-        className={`absolute ${isMobile ? 'bottom-16 left-1/2 -translate-x-1/2' : 'bottom-16 left-4 md:left-16'}`}
+        className={`absolute ${isMobile ? 'top-[40vh] left-1/2 -translate-x-1/2' : 'top-[40vh] left-4 md:left-16'}`}
         variants={eclipseVariants}
         style={{ zIndex: 35 }}
       >
@@ -826,7 +826,7 @@ const MissionAtomic = () => {
           <div className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" style={{ zIndex: 37 }}>
             <Suspense fallback={
               <div className="w-full h-full flex items-center justify-center">
-                <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
+                <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
                   <div className="text-white/60 text-sm">Loading Moon...</div>
                 </div>
               </div>
@@ -941,9 +941,9 @@ const MissionAtomic = () => {
         style={{ zIndex: 45 }}
       >
         <Suspense fallback={
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="w-[400px] h-[400px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
-              <div className="text-white/60 text-sm">Loading Mission Control Board...</div>
+          <div className="w-full flex items-center justify-center mx-2 md:mx-4" style={{ height: '33vh', minHeight: '270px', maxHeight: '400px' }}>
+            <div className="w-full h-full rounded-lg bg-black/40 backdrop-blur-xl border border-white/20 flex items-center justify-center">
+              <div className="text-white/60 text-sm font-mono">Loading Mission Control Board...</div>
             </div>
           </div>
         }>

@@ -41,8 +41,9 @@ const MoonFallback = ({ className = "" }) => (
   <div 
     className={`relative rounded-full flex items-center justify-center ${className}`}
     style={{
-      width: '100%',
-      height: '100%',
+      width: '75%',
+      height: '75%',
+      transform: 'translate(70px, 70px)', // One click right (15px), two clicks down (25px)
       background: 'radial-gradient(ellipse at center, rgba(60,60,60,0.8) 30%, rgba(40,40,40,0.6) 60%, rgba(20,20,20,0.3) 80%, transparent 100%)'
     }}
   >

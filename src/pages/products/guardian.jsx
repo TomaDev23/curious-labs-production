@@ -1,7 +1,7 @@
 // ✅ KEEP - GUARDIAN PRODUCT - CRITICAL PRODUCTION SUB-ROUTE
 // 🔴 CODE: GUARDIAN-001
 // 🛡️ STATUS: FAMILY-FRIENDLY AI COMPANION - REDESIGNED FOR BEAUTY
-// 📋 COMPONENTS: MissionControlNavbar, BackgroundLayerAtomic, ScrollToTop
+// 📋 COMPONENTS: MissionControlNavbar, BackgroundLayerGuardian, ScrollToTop
 // 🌈 FEATURES: Family-safe design, child development, parental controls
 // ⚠️ WARNING: DO NOT REMOVE - CORE PRODUCT SUB-ROUTE
 // 📊 BUNDLE: Uses atomic background system with family aesthetics
@@ -12,7 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import ScrollToTop from '../../components/ScrollToTop';
-import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
+import BackgroundLayerGuardian from '../../components/atomic/BackgroundLayerGuardian';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import { motion } from '../../FramerProvider';
 
@@ -37,11 +37,11 @@ export default function Guardian() {
         <meta property="og:url" content="https://curiouslabs.io/products/guardian" />
       </Helmet>
       
-      <BackgroundLayerAtomic />
+      <BackgroundLayerGuardian />
+      <MissionControlNavbar />
       
       {/* Family-Friendly Atmospheric System */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Floating gentle orbs */}
         <motion.div 
           className="absolute top-1/4 left-1/6 w-96 h-96 bg-gradient-to-br from-green-200/30 via-blue-200/20 to-transparent rounded-full blur-3xl"
           animate={{ 
@@ -53,7 +53,7 @@ export default function Guardian() {
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div 
-          className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-bl from-coral-200/25 via-pink-200/20 to-transparent rounded-full blur-3xl"
+          className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-bl from-blue-200/25 via-green-200/20 to-transparent rounded-full blur-3xl"
           animate={{ 
             scale: [1.1, 0.9, 1.1],
             opacity: [0.4, 0.7, 0.4],
@@ -62,43 +62,35 @@ export default function Guardian() {
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
-        <motion.div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-blue-200/10 via-green-200/5 to-transparent rounded-full blur-2xl"
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
         
         {/* Floating playful elements */}
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 6 }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute text-4xl opacity-20"
+            className="absolute text-3xl opacity-20"
             style={{
-              left: `${15 + i * 10}%`,
-              top: `${20 + (i % 4) * 15}%`
+              left: `${20 + i * 12}%`,
+              top: `${25 + (i % 3) * 20}%`
             }}
             animate={{
-              y: [0, -80, 0],
-              opacity: [0, 0.6, 0],
+              y: [0, -60, 0],
+              opacity: [0, 0.4, 0],
               scale: [0.5, 1, 0.5]
             }}
             transition={{
-              duration: 8,
+              duration: 6,
               repeat: Infinity,
-              delay: i * 1.5,
+              delay: i * 1.2,
               ease: "easeInOut"
             }}
           >
-            {['🌟', '🦋', '🌸', '☁️', '🎈', '🌈', '🧸', '🎨'][i]}
+            {['🌟', '🛡️', '🌈', '💝', '🎨', '⭐'][i]}
           </motion.div>
         ))}
       </div>
 
       {/* Hero Section - Z Layout Start */}
-      <section className="relative min-h-screen flex items-center pt-20">
+      <section className="relative h-[100vh] flex items-center pt-20">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[80vh]">
             
@@ -142,12 +134,13 @@ export default function Guardian() {
                   <h2 className="text-xl md:text-2xl text-blue-700 font-medium tracking-wide">
                     From teddy bear to trusted friend
                   </h2>
-                  <p className="text-lg text-gray-700 max-w-2xl leading-relaxed font-normal">
-                    A safe, caring AI presence that evolves through every stage of childhood.<br />
-                    <span className="text-green-600 font-medium">Built with families in mind</span>, 
-                    <span className="text-blue-600 font-medium"> controlled by parents</span>, 
-                    <span className="text-purple-600 font-medium"> loved by kids</span>.
-                  </p>
+                  
+                  {/* RESERVED SPACE 1: Main value proposition paragraph */}
+                  <div className="bg-white/60 backdrop-blur-sm border border-green-200/50 rounded-2xl p-6">
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                      [RESERVED FOR YOUR LONGER CONTENT] - Main value proposition and emotional connection paragraph goes here. This space is specifically reserved for your better, more compelling copy that will replace the scattered small text throughout the page.
+                    </p>
+                  </div>
                 </motion.div>
                 
                 <motion.div
@@ -200,7 +193,6 @@ export default function Guardian() {
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                {/* Family-friendly glow effects */}
                 <motion.div
                   className="absolute inset-0 rounded-full"
                   animate={{
@@ -222,7 +214,6 @@ export default function Guardian() {
                     ease: "linear" 
                   }}
                 >
-                  {/* Gentle orbital rings */}
                   <div className="absolute inset-4 border border-green-300/40 rounded-full animate-pulse" />
                   <div className="absolute inset-8 border border-blue-300/50 rounded-full" />
                   <div className="absolute inset-12 border border-purple-300/40 rounded-full animate-pulse" />
@@ -251,9 +242,9 @@ export default function Guardian() {
       </section>
 
       {/* Problem Statement - Z Layout Right */}
-      <section className="relative py-32 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+      <section className="relative h-[80vh] flex items-center bg-white/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Side - Visual */}
             <motion.div 
@@ -263,40 +254,13 @@ export default function Guardian() {
               viewport={{ once: true }}
               transition={{ duration: 1 }}
             >
-              <div className="relative">
                 <motion.div
                   className="bg-gradient-to-br from-red-100/60 via-orange-100/40 to-yellow-100/60 backdrop-blur-md border border-red-200/40 rounded-3xl p-8 relative overflow-hidden"
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  {/* Floating concern indicators */}
-                  <div className="absolute inset-0 overflow-hidden">
-                    {['📱', '⚠️', '😟', '🚫', '📺'].map((emoji, i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute text-2xl opacity-20"
-                        style={{
-                          left: `${20 + i * 15}%`,
-                          top: `${20 + (i % 2) * 40}%`
-                        }}
-                        animate={{
-                          y: [0, -20, 0],
-                          opacity: [0.2, 0.5, 0.2]
-                        }}
-                        transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          delay: i * 0.8,
-                          ease: "easeInOut"
-                        }}
-                      >
-                        {emoji}
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  <div className="relative z-10 text-center space-y-6">
-                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-red-300 to-orange-300 rounded-full flex items-center justify-center text-4xl">
+                <div className="text-center space-y-6">
+                  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-red-300 to-orange-300 rounded-full flex items-center justify-center text-3xl">
                       📱
                     </div>
                     <div className="space-y-3">
@@ -308,18 +272,16 @@ export default function Guardian() {
                     </div>
                   </div>
                 </motion.div>
-              </div>
             </motion.div>
 
             {/* Right Side - Content */}
             <motion.div 
-              className="lg:col-span-7 order-1 lg:order-2 space-y-8"
+              className="lg:col-span-7 order-1 lg:order-2 space-y-6"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.2 }}
             >
-              <div className="space-y-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -328,7 +290,7 @@ export default function Guardian() {
                   className="flex items-center gap-3"
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-blue-400"></div>
-                  <span className="text-blue-600 font-mono text-sm tracking-wider uppercase">The Challenge</span>
+                  <span className="text-blue-600 font-mono text-sm tracking-wider uppercase">Mission Statement</span>
                 </motion.div>
                 
                 <motion.h2 
@@ -344,33 +306,170 @@ export default function Guardian() {
                   </span>
                 </motion.h2>
                 
+              {/* RESERVED SPACE 2: Mission explanation paragraph */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.6 }}
-                  className="space-y-5 text-base text-gray-700 leading-relaxed max-w-2xl"
-                >
-                  <p className="font-medium">
-                    Your child will grow up with screens. The question isn't whether they'll have 
-                    <span className="text-blue-700 font-semibold"> digital companions</span> — it's whether those companions will 
-                    <span className="text-green-700 font-semibold"> nurture them or exploit them</span>.
-                  </p>
-                  <p>
-                    While other platforms chase attention with empty content, Guardian offers something different: 
-                    an AI that <span className="text-purple-700 font-semibold">genuinely cares about your child's wellbeing</span>.
+                className="bg-blue-50/50 backdrop-blur-sm border border-blue-200/50 rounded-2xl p-6"
+              >
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  [RESERVED FOR YOUR LONGER CONTENT] - Deep dive into the mission, why current solutions fail, and what makes Guardian different. This replaces all the scattered small text about digital companions and exploitation.
                   </p>
                 </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Kids Side Section - Growth Journey */}
+      <section id="features" className="relative h-[150vh] flex items-center py-16">
+        <div className="max-w-7xl mx-auto px-4 w-full">
+            
+            <motion.div 
+            className="text-center mb-16"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent to-green-400"></div>
+              <span className="text-green-600 font-mono text-sm tracking-wider uppercase">For Kids</span>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent to-green-400"></div>
+            </div>
+            
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight tracking-tight">
+                  Growing Up
+                  <span className="block bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text font-black">
+                    Together
+                  </span>
+            </h2>
+
+            {/* RESERVED SPACE 3: Kids growth philosophy */}
+            <div className="bg-gradient-to-br from-green-50/60 to-blue-50/60 backdrop-blur-sm border border-green-200/50 rounded-2xl p-8 max-w-4xl mx-auto">
+              <p className="text-lg text-gray-700 leading-relaxed">
+                [RESERVED FOR YOUR LONGER CONTENT] - The philosophy behind Guardian's growth approach, how it evolves with children, and why this long-term relationship matters. This consolidates all the mission content into one powerful statement.
+              </p>
+              </div>
+            </motion.div>
+
+          {/* Unified Age Progression Timeline */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left: Age Timeline Visual */}
+            <motion.div 
+              className="lg:col-span-5"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+            >
+              <div className="bg-white/80 backdrop-blur-md border border-green-200/50 rounded-3xl p-8">
+                <div className="text-center mb-6">
+                  <h4 className="text-lg font-bold text-gray-900 mb-2">Development Journey</h4>
+                  <p className="text-sm text-gray-600">Ages 3-17: Complete growth companion</p>
+                </div>
+                
+                <div className="space-y-6">
+                  {[
+                    { age: "3-6", emoji: "🧸", label: "Caring Bear", color: "from-pink-300 to-rose-300", skills: ["Emotional Intelligence", "Creative Play", "Safety Awareness"] },
+                    { age: "7-10", emoji: "🎒", label: "Helpful Buddy", color: "from-blue-300 to-cyan-300", skills: ["Homework Support", "Learning Games", "Independence"] },
+                    { age: "11-13", emoji: "🤝", label: "Understanding Ally", color: "from-green-300 to-emerald-300", skills: ["Identity Support", "Social Navigation", "Emotional Growth"] },
+                    { age: "14-17", emoji: "💭", label: "Trusted Friend", color: "from-purple-300 to-violet-300", skills: ["Life Planning", "Decision Making", "Future Readiness"] }
+                  ].map((stage, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-center gap-4"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.2, duration: 0.8 }}
+                    >
+                      <div className={`w-16 h-16 bg-gradient-to-br ${stage.color} rounded-full flex items-center justify-center text-2xl shadow-lg`}>
+                        {stage.emoji}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-gray-700 font-semibold">Ages {stage.age}</span>
+                          <span className="text-sm text-gray-500">• {stage.label}</span>
+                      </div>
+                        <div className="flex gap-1 flex-wrap">
+                          {stage.skills.map((skill, j) => (
+                            <span key={j} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right: Interactive Features */}
+            <motion.div 
+              className="lg:col-span-7"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  { 
+                    icon: "🎨", 
+                    title: "Creative Expression", 
+                    desc: "Art, music, storytelling that grows with imagination",
+                    color: "from-pink-400 to-rose-400"
+                  },
+                  { 
+                    icon: "🧠", 
+                    title: "Learning Adventures", 
+                    desc: "Personalized education that adapts to learning style",
+                    color: "from-blue-400 to-cyan-400"
+                  },
+                  { 
+                    icon: "💝", 
+                    title: "Emotional Growth", 
+                    desc: "Safe space to explore feelings and build confidence",
+                    color: "from-green-400 to-emerald-400"
+                  },
+                  { 
+                    icon: "🌟", 
+                    title: "Future Ready", 
+                    desc: "Skills for tomorrow while staying grounded in humanity",
+                    color: "from-purple-400 to-violet-400"
+                  }
+                ].map((feature, i) => (
+                  <motion.div
+                    key={i}
+                    className="bg-white/80 backdrop-blur-md border border-gray-200/50 rounded-2xl p-6 hover:shadow-xl transition-all duration-500"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.8 }}
+                    whileHover={{ scale: 1.02, y: -5 }}
+                  >
+                    <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center text-2xl mb-4 shadow-lg`}>
+                      {feature.icon}
+                    </div>
+                    <h4 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h4>
+                    <p className="text-gray-600 text-sm leading-relaxed">{feature.desc}</p>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Mission - Z Layout Left */}
-      <section className="relative py-32">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+      {/* Parents Side Section - Safety & Controls */}
+      <section className="relative h-[150vh] flex items-center py-16 bg-white/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Side - Content */}
             <motion.div 
@@ -388,8 +487,8 @@ export default function Guardian() {
                   transition={{ delay: 0.3 }}
                   className="flex items-center gap-3"
                 >
-                  <div className="h-px w-12 bg-gradient-to-r from-transparent to-green-400"></div>
-                  <span className="text-green-600 font-mono text-sm tracking-wider uppercase">Our Mission</span>
+                  <div className="h-px w-12 bg-gradient-to-r from-transparent to-purple-400"></div>
+                  <span className="text-purple-600 font-mono text-sm tracking-wider uppercase">For Parents</span>
                 </motion.div>
                 
                 <motion.h2 
@@ -399,1319 +498,115 @@ export default function Guardian() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
                 >
-                  Growing Up
-                  <span className="block bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text font-black">
-                    Together
+                  Complete Control &
+                  <span className="block bg-gradient-to-r from-purple-600 to-blue-600 text-transparent bg-clip-text font-black">
+                    Peace of Mind
                   </span>
                 </motion.h2>
                 
+                {/* RESERVED SPACE 4: Parents control philosophy */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.6 }}
-                  className="space-y-5 text-base text-gray-700 leading-relaxed max-w-2xl"
+                  className="bg-purple-50/50 backdrop-blur-sm border border-purple-200/50 rounded-2xl p-6"
                 >
-                  <p className="font-medium">
-                    Guardian isn't just another kids' app. It's a <span className="text-green-700 font-semibold">long-term relationship</span> that 
-                    evolves with your child from preschool through high school.
-                  </p>
-                  <p>
-                    Starting as a <span className="text-blue-700 font-semibold">cute, safe companion</span> and maturing into a 
-                    <span className="text-purple-700 font-semibold"> trusted friend</span> who helps navigate growing up in a digital world.
+                  <p className="text-lg text-gray-700 leading-relaxed">
+                    [RESERVED FOR YOUR LONGER CONTENT] - Deep dive into parental controls, safety features, and how parents maintain oversight while allowing healthy growth. This consolidates all the safety and control messaging.
                   </p>
                 </motion.div>
 
-                {/* Age progression indicators */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8 }}
-                  className="grid grid-cols-2 gap-4 pt-6"
-                >
+                {/* Parent Control Features */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
-                    { icon: "🧸", label: "Caring Bear", age: "3-6 years" },
-                    { icon: "🎒", label: "Helpful Buddy", age: "7-10 years" },
-                    { icon: "🤝", label: "Understanding Ally", age: "11-13 years" },
-                    { icon: "💭", label: "Trusted Friend", age: "14-17 years" }
-                  ].map((item, index) => (
-                    <motion.div
-                      key={index}
-                      className="bg-white/60 backdrop-blur-sm border border-green-200/50 rounded-xl p-4 text-center"
-                      whileHover={{ scale: 1.05, borderColor: "rgba(74, 222, 128, 0.5)" }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <div className="text-2xl mb-2">{item.icon}</div>
-                      <div className="text-green-700 text-sm font-medium mb-1">{item.label}</div>
-                      <div className="text-gray-600 text-xs">{item.age}</div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Right Side - Growth Timeline */}
-            <motion.div 
-              className="lg:col-span-5"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, delay: 0.2 }}
-            >
-              <motion.div
-                className="relative bg-white/60 backdrop-blur-md border border-green-200/50 rounded-3xl p-8 overflow-hidden"
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                {/* Timeline visualization */}
-                <div className="space-y-6">
-                  {[
-                    { age: "3-6", emoji: "🧸", color: "from-pink-300 to-rose-300" },
-                    { age: "7-10", emoji: "🎒", color: "from-blue-300 to-cyan-300" },
-                    { age: "11-13", emoji: "🤝", color: "from-green-300 to-emerald-300" },
-                    { age: "14-17", emoji: "💭", color: "from-purple-300 to-violet-300" }
-                  ].map((stage, i) => (
+                    { icon: "🛡️", title: "Real-time Monitoring", desc: "See every conversation and interaction in your dashboard" },
+                    { icon: "⏰", title: "Time Controls", desc: "Set healthy boundaries with flexible scheduling" },
+                    { icon: "🎯", title: "Content Filtering", desc: "Age-appropriate responses with your values in mind" },
+                    { icon: "📊", title: "Growth Reports", desc: "Weekly insights into your child's development" }
+                  ].map((feature, i) => (
                     <motion.div
                       key={i}
-                      className="flex items-center gap-4"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.3, duration: 0.8 }}
-                    >
-                      <div className={`w-16 h-16 bg-gradient-to-br ${stage.color} rounded-full flex items-center justify-center text-2xl shadow-lg`}>
-                        {stage.emoji}
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-gray-700 font-semibold">Ages {stage.age}</div>
-                        <div className={`h-2 bg-gradient-to-r ${stage.color} rounded-full mt-2`} />
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Growth arrow */}
-                <motion.div
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2"
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <div className="text-green-400 text-3xl">⬆️</div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Guardian Capabilities Matrix - Z Layout */}
-      <section id="features" className="relative py-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          
-          {/* Evolution Flow - Z Pattern */}
-          <div className="space-y-32">
-            
-            {/* Stage 1: Early Childhood - Left Content, Right Visual */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              <motion.div 
-                className="lg:col-span-6 space-y-8"
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl">🧸</span>
-                    <div>
-                      <div className="text-pink-600 font-mono text-sm tracking-wider uppercase">Ages 3-6</div>
-                      <h3 className="text-2xl font-bold text-gray-900">The Caring Bear</h3>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-700 text-lg leading-relaxed">
-                    Your child's first AI companion. Gentle, nurturing, and designed to spark imagination while building emotional intelligence.
-                  </p>
-                  
-                  {/* Capability Bars */}
-                  <div className="space-y-4">
-                    {[
-                      { label: "Emotional Intelligence", value: 85, color: "pink" },
-                      { label: "Creative Storytelling", value: 95, color: "rose" },
-                      { label: "Safety Awareness", value: 100, color: "red" },
-                      { label: "Learning Games", value: 75, color: "orange" }
-                    ].map((skill, i) => (
-                      <motion.div
-                        key={i}
-                        className="space-y-2"
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                      >
-                        <div className="flex justify-between text-sm font-medium text-gray-700">
-                          <span>{skill.label}</span>
-                          <span>{skill.value}%</span>
-                        </div>
-                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <motion.div
-                            className={`h-full bg-gradient-to-r from-${skill.color}-400 to-${skill.color}-500 rounded-full`}
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${skill.value}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.5, delay: i * 0.2 }}
-                          />
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Interactive Development Chart */}
-              <motion.div 
-                className="lg:col-span-6"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                <div className="bg-white/80 backdrop-blur-md border border-pink-200/50 rounded-3xl p-8 relative overflow-hidden">
-                  <div className="text-center mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">Development Milestones</h4>
-                    <p className="text-sm text-gray-600">Emotional growth tracking over 3 years</p>
-                  </div>
-                  
-                  {/* Progress Chart Visualization */}
-                  <div className="relative h-48">
-                    <div className="absolute inset-0 flex items-end justify-between px-4">
-                      {['Comfort', 'Trust', 'Learning', 'Expression', 'Creativity'].map((milestone, i) => (
-                        <motion.div
-                          key={i}
-                          className="flex flex-col items-center space-y-2"
-                          initial={{ opacity: 0, y: 50 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: i * 0.3 }}
-                        >
-                          <div className="text-xs text-gray-600 font-medium text-center">{milestone}</div>
-                          <motion.div
-                            className={`w-8 bg-gradient-to-t from-pink-400 to-rose-300 rounded-t-lg`}
-                            style={{ height: `${60 + i * 15}px` }}
-                            initial={{ height: 0 }}
-                            whileInView={{ height: `${60 + i * 15}px` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1, delay: i * 0.2 }}
-                          />
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Floating indicators */}
-                  <div className="absolute top-4 right-4 space-y-2">
-                    {['🌟', '💝', '🎨'].map((emoji, i) => (
-                      <motion.div
-                        key={i}
-                        className="text-2xl opacity-60"
-                        animate={{ 
-                          y: [0, -10, 0],
-                          rotate: [0, 5, 0]
-                        }}
-                        transition={{ 
-                          duration: 3,
-                          repeat: Infinity,
-                          delay: i * 0.7
-                        }}
-                      >
-                        {emoji}
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Stage 2: Elementary - Right Content, Left Visual */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              
-              {/* Learning Analytics Dashboard */}
-              <motion.div 
-                className="lg:col-span-6 order-2 lg:order-1"
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="bg-white/80 backdrop-blur-md border border-blue-200/50 rounded-3xl p-8">
-                  <div className="text-center mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">Learning Assistant Analytics</h4>
-                    <p className="text-sm text-gray-600">Homework help & educational engagement</p>
-                  </div>
-                  
-                  {/* Circular Progress Indicators */}
-                  <div className="grid grid-cols-2 gap-6">
-                    {[
-                      { label: "Homework Support", value: 92, color: "blue" },
-                      { label: "Learning Games", value: 88, color: "cyan" },
-                      { label: "Emotional Check-ins", value: 95, color: "indigo" },
-                      { label: "Creative Expression", value: 85, color: "purple" }
-                    ].map((metric, i) => (
-                      <motion.div
-                        key={i}
-                        className="text-center"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.2 }}
-                      >
-                        <div className="relative w-20 h-20 mx-auto mb-3">
-                          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <path
-                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                              fill="none"
-                              stroke="#e5e7eb"
-                              strokeWidth="3"
-                            />
-                            <motion.path
-                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                              fill="none"
-                              stroke={`rgb(59 130 246)`}
-                              strokeWidth="3"
-                              strokeLinecap="round"
-                              initial={{ strokeDasharray: "0, 100" }}
-                              whileInView={{ strokeDasharray: `${metric.value}, 100` }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 2, delay: i * 0.3 }}
-                            />
-                          </svg>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-sm font-bold text-gray-900">{metric.value}%</span>
-                          </div>
-                        </div>
-                        <div className="text-xs text-gray-600 font-medium">{metric.label}</div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div 
-                className="lg:col-span-6 order-1 lg:order-2 space-y-8"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl">🎒</span>
-                    <div>
-                      <div className="text-blue-600 font-mono text-sm tracking-wider uppercase">Ages 7-10</div>
-                      <h3 className="text-2xl font-bold text-gray-900">The Helpful Buddy</h3>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-700 text-lg leading-relaxed">
-                    Learning becomes fun with a patient companion who helps with homework while building independence and confidence.
-                  </p>
-                  
-                  {/* Feature Highlights */}
-                  <div className="grid grid-cols-1 gap-4">
-                    {[
-                      { icon: "📝", title: "Smart Homework Help", desc: "Guides without giving answers" },
-                      { icon: "🎮", title: "Educational Gaming", desc: "Learning disguised as play" },
-                      { icon: "💚", title: "Emotional Wellness", desc: "Daily mood check-ins" }
-                    ].map((feature, i) => (
-                      <motion.div
-                        key={i}
-                        className="flex items-center gap-4 p-4 bg-blue-50/50 rounded-xl border border-blue-200/30"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                        whileHover={{ scale: 1.02, backgroundColor: "rgba(219, 234, 254, 0.7)" }}
-                      >
-                        <span className="text-2xl">{feature.icon}</span>
-                        <div>
-                          <div className="font-semibold text-gray-900 text-sm">{feature.title}</div>
-                          <div className="text-xs text-gray-600">{feature.desc}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Stage 3: Middle School - Left Content, Right Visual */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              <motion.div 
-                className="lg:col-span-6 space-y-8"
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl">🤝</span>
-                    <div>
-                      <div className="text-green-600 font-mono text-sm tracking-wider uppercase">Ages 11-13</div>
-                      <h3 className="text-2xl font-bold text-gray-900">The Understanding Ally</h3>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-700 text-lg leading-relaxed">
-                    Navigating the complex world of adolescence with a trusted companion who understands identity exploration and social dynamics.
-                  </p>
-                  
-                  {/* Social & Emotional Intelligence Metrics */}
-                  <div className="space-y-4">
-                    <div className="text-sm font-semibold text-gray-900 mb-3">Social Intelligence Development</div>
-                    {[
-                      { label: "Identity Support", value: 90, trend: "+15%" },
-                      { label: "Peer Navigation", value: 85, trend: "+12%" },
-                      { label: "Emotional Awareness", value: 93, trend: "+8%" },
-                      { label: "Communication Skills", value: 88, trend: "+20%" }
-                    ].map((skill, i) => (
-                      <motion.div
-                        key={i}
-                        className="flex items-center justify-between p-3 bg-green-50/50 rounded-lg"
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                      >
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium text-gray-700">{skill.label}</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-bold text-gray-900">{skill.value}%</span>
-                              <span className="text-xs text-green-600 font-medium">{skill.trend}</span>
-                            </div>
-                          </div>
-                          <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                            <motion.div
-                              className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full"
-                              initial={{ width: 0 }}
-                              whileInView={{ width: `${skill.value}%` }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 1.5, delay: i * 0.2 }}
-                            />
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Conversation Analysis Dashboard */}
-              <motion.div 
-                className="lg:col-span-6"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                <div className="bg-white/80 backdrop-blur-md border border-green-200/50 rounded-3xl p-8">
-                  <div className="text-center mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">Conversation Intelligence</h4>
-                    <p className="text-sm text-gray-600">Understanding emotional patterns & growth</p>
-                  </div>
-                  
-                  {/* Emotion Radar Chart */}
-                  <div className="relative w-48 h-48 mx-auto">
-                    <svg viewBox="0 0 200 200" className="w-full h-full">
-                      {/* Background grid */}
-                      {[0, 1, 2, 3, 4].map((ring) => (
-                        <circle
-                          key={ring}
-                          cx="100"
-                          cy="100"
-                          r={20 + ring * 15}
-                          fill="none"
-                          stroke="#e5e7eb"
-                          strokeWidth="1"
-                        />
-                      ))}
-                      
-                      {/* Radar lines */}
-                      {['Confidence', 'Empathy', 'Curiosity', 'Resilience', 'Creativity'].map((_, i) => (
-                        <line
-                          key={i}
-                          x1="100"
-                          y1="100"
-                          x2={100 + 80 * Math.cos((i * 72 - 90) * Math.PI / 180)}
-                          y2={100 + 80 * Math.sin((i * 72 - 90) * Math.PI / 180)}
-                          stroke="#e5e7eb"
-                          strokeWidth="1"
-                        />
-                      ))}
-                      
-                      {/* Data polygon */}
-                      <motion.polygon
-                        points={['Confidence', 'Empathy', 'Curiosity', 'Resilience', 'Creativity']
-                          .map((_, i) => {
-                            const value = [85, 90, 80, 75, 88][i];
-                            const radius = (value / 100) * 80;
-                            const x = 100 + radius * Math.cos((i * 72 - 90) * Math.PI / 180);
-                            const y = 100 + radius * Math.sin((i * 72 - 90) * Math.PI / 180);
-                            return `${x},${y}`;
-                          }).join(' ')}
-                        fill="rgba(34, 197, 94, 0.2)"
-                        stroke="rgb(34, 197, 94)"
-                        strokeWidth="2"
-                        initial={{ opacity: 0, scale: 0 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.5 }}
-                      />
-                    </svg>
-                    
-                    {/* Labels */}
-                    <div className="absolute inset-0">
-                      {['Confidence', 'Empathy', 'Curiosity', 'Resilience', 'Creativity'].map((label, i) => (
-                        <div
-                          key={i}
-                          className="absolute text-xs font-medium text-gray-700 text-center"
-                          style={{
-                            left: `${50 + 45 * Math.cos((i * 72 - 90) * Math.PI / 180)}%`,
-                            top: `${50 + 45 * Math.sin((i * 72 - 90) * Math.PI / 180)}%`,
-                            transform: 'translate(-50%, -50%)'
-                          }}
-                        >
-                          {label}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Stage 4: High School - Right Content, Left Visual */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              
-              {/* Future Readiness Dashboard */}
-              <motion.div 
-                className="lg:col-span-6 order-2 lg:order-1"
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="bg-white/80 backdrop-blur-md border border-purple-200/50 rounded-3xl p-8">
-                  <div className="text-center mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">College & Life Readiness</h4>
-                    <p className="text-sm text-gray-600">Preparing for independence & adulthood</p>
-                  </div>
-                  
-                  {/* Readiness Indicators */}
-                  <div className="space-y-6">
-                    {[
-                      { category: "Academic Support", skills: ["Study Planning", "Stress Management", "Goal Setting"], level: 92 },
-                      { category: "Life Skills", skills: ["Decision Making", "Time Management", "Responsibility"], level: 87 },
-                      { category: "Emotional Intelligence", skills: ["Self-Awareness", "Empathy", "Relationship Building"], level: 94 }
-                    ].map((area, i) => (
-                      <motion.div
-                        key={i}
-                        className="space-y-3"
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.2 }}
-                      >
-                        <div className="flex justify-between items-center">
-                          <h5 className="font-semibold text-gray-900 text-sm">{area.category}</h5>
-                          <span className="text-sm font-bold text-purple-600">{area.level}%</span>
-                        </div>
-                        <div className="flex gap-2">
-                          {area.skills.map((skill, j) => (
-                            <motion.div
-                              key={j}
-                              className="flex-1 bg-purple-100 rounded-lg p-2 text-center"
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              whileInView={{ opacity: 1, scale: 1 }}
-                              viewport={{ once: true }}
-                              transition={{ delay: i * 0.2 + j * 0.1 }}
-                            >
-                              <div className="text-xs font-medium text-purple-700">{skill}</div>
-                            </motion.div>
-                          ))}
-                        </div>
-                        <motion.div
-                          className="h-2 bg-gray-200 rounded-full overflow-hidden"
-                          initial={{ width: 0 }}
-                          whileInView={{ width: "100%" }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, delay: i * 0.3 }}
-                        >
-                          <motion.div
-                            className="h-full bg-gradient-to-r from-purple-400 to-violet-500 rounded-full"
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${area.level}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.5, delay: i * 0.3 }}
-                          />
-                        </motion.div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div 
-                className="lg:col-span-6 order-1 lg:order-2 space-y-8"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl">💭</span>
-                    <div>
-                      <div className="text-purple-600 font-mono text-sm tracking-wider uppercase">Ages 14-17</div>
-                      <h3 className="text-2xl font-bold text-gray-900">The Trusted Friend</h3>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-700 text-lg leading-relaxed">
-                    Supporting the transition to adulthood with wisdom, empathy, and respect for growing independence.
-                  </p>
-                  
-                  {/* Advanced Capabilities */}
-                  <div className="space-y-4">
-                    {[
-                      { 
-                        icon: "💬", 
-                        title: "Deep Conversations", 
-                        desc: "Life planning, relationships, future goals",
-                        metrics: "1,247 meaningful conversations"
-                      },
-                      { 
-                        icon: "🌙", 
-                        title: "24/7 Support", 
-                        desc: "Available during tough moments",
-                        metrics: "95% stress reduction rate"
-                      },
-                      { 
-                        icon: "🎓", 
-                        title: "College Preparation", 
-                        desc: "Academic & emotional readiness",
-                        metrics: "87% college success rate"
-                      }
-                    ].map((capability, i) => (
-                      <motion.div
-                        key={i}
-                        className="p-4 bg-gradient-to-r from-purple-50/50 to-violet-50/50 rounded-xl border border-purple-200/30"
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.1 }}
-                        whileHover={{ scale: 1.02, backgroundColor: "rgba(245, 243, 255, 0.8)" }}
-                      >
-                        <div className="flex items-start gap-4">
-                          <span className="text-2xl">{capability.icon}</span>
-                          <div className="flex-1">
-                            <div className="flex justify-between items-start mb-1">
-                              <div className="font-semibold text-gray-900 text-sm">{capability.title}</div>
-                              <div className="text-xs text-purple-600 font-medium">{capability.metrics}</div>
-                            </div>
-                            <div className="text-xs text-gray-600">{capability.desc}</div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Safety & Parental Controls */}
-      <section className="relative py-32">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-green-400"></div>
-              <span className="text-green-600 font-mono text-sm tracking-wider uppercase">Safety First</span>
-              <div className="h-px w-16 bg-gradient-to-l from-transparent to-green-400"></div>
-            </div>
-            
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight tracking-tight">
-              Safety & Parental
-              <span className="block bg-gradient-to-r from-green-600 to-blue-600 text-transparent bg-clip-text font-black">
-                Controls
-              </span>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-            {/* Built-in Protection */}
-            <motion.div
-              className="bg-white/60 backdrop-blur-md border border-green-200/50 rounded-3xl p-8"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3 tracking-tight">
-                <span className="text-2xl">🛡️</span>
-                Built-in Protection
-              </h3>
-              
-              <div className="space-y-4">
-                {[
-                  { icon: "🎯", title: "Age-Appropriate Filters", desc: "Conversation topics automatically adjusted for developmental stage" },
-                  { icon: "💝", title: "Emotional Guardrails", desc: "Never encourages dependency or replaces human relationships" },
-                  { icon: "🚨", title: "Crisis Detection", desc: "Alerts parents if concerning topics arise" },
-                  { icon: "⚖️", title: "Privacy Balance", desc: "Respects child's need for private conversation while ensuring safety" }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    className="flex items-start gap-3 p-4 bg-green-50/50 rounded-xl"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <span className="text-xl">{item.icon}</span>
-                    <div>
-                      <div className="font-semibold text-gray-700">{item.title}</div>
-                      <div className="text-sm text-gray-600">{item.desc}</div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Parent Dashboard */}
-            <motion.div
-              className="bg-white/60 backdrop-blur-md border border-blue-200/50 rounded-3xl p-8"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, delay: 0.2 }}
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3 tracking-tight">
-                <span className="text-2xl">👨‍👩‍👧‍👦</span>
-                Parent Dashboard
-              </h3>
-              
-              <div className="space-y-4">
-                {[
-                  { icon: "📊", title: "Conversation Summaries", desc: "Regular reports on your child's emotional wellbeing" },
-                  { icon: "💭", title: "Mood Tracking", desc: "Patterns and insights about your child's emotional development" },
-                  { icon: "⚙️", title: "Custom Settings", desc: "Adjust Guardian's personality and boundaries to match your family values" },
-                  { icon: "💬", title: "Direct Communication", desc: "Guardian can facilitate difficult conversations between parent and child" }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    className="flex items-start gap-3 p-4 bg-blue-50/50 rounded-xl"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 + 0.2 }}
-                  >
-                    <span className="text-xl">{item.icon}</span>
-                    <div>
-                      <div className="font-semibold text-gray-700">{item.title}</div>
-                      <div className="text-sm text-gray-600">{item.desc}</div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Trust Infrastructure */}
-          <motion.div
-            className="bg-gradient-to-br from-purple-100/60 to-blue-100/60 backdrop-blur-md border border-purple-200/50 rounded-3xl p-8 md:p-12"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold text-gray-700 mb-4 flex items-center justify-center gap-3">
-                <span className="text-4xl">🔐</span>
-                Trust Infrastructure
-              </h3>
-              <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-                Enterprise-grade security and transparency for family peace of mind
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { icon: "👁️", title: "Complete Transparency", desc: "All conversations logged and available for parent review" },
-                { icon: "🏠", title: "Local Storage Options", desc: "Keep sensitive data on your family's devices" },
-                { icon: "📋", title: "Audit Trail", desc: "Every interaction traceable and recoverable" },
-                { icon: "👩‍⚕️", title: "Professional Oversight", desc: "Child psychology experts involved in Guardian's development" }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="text-center bg-white/60 rounded-xl p-6"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="text-3xl mb-3">{item.icon}</div>
-                  <h4 className="font-semibold text-gray-700 mb-2">{item.title}</h4>
-                  <p className="text-sm text-gray-600">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Impact Metrics & Data Visualization */}
-      <section className="relative py-32 bg-gradient-to-br from-green-50/50 to-blue-50/50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          
-          {/* Impact Dashboard Header */}
-          <motion.div
-            className="text-center mb-20"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-blue-400"></div>
-              <span className="text-blue-600 font-mono text-sm tracking-wider uppercase">Real Impact Data</span>
-              <div className="h-px w-16 bg-gradient-to-l from-transparent to-blue-400"></div>
-            </div>
-            
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight tracking-tight">
-              Measurable Outcomes for
-              <span className="block bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text font-black">
-                Healthier Childhoods
-              </span>
-            </h2>
-          </motion.div>
-
-          {/* Key Statistics Row */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-20">
-            {[
-              { 
-                value: "89%", 
-                label: "Improved Emotional Intelligence", 
-                icon: "💝", 
-                color: "green",
-                trend: "+23% vs traditional methods"
-              },
-              { 
-                value: "94%", 
-                label: "Parent Satisfaction Rate", 
-                icon: "👨‍👩‍👧‍👦", 
-                color: "blue",
-                trend: "Based on 12,000+ families"
-              },
-              { 
-                value: "76%", 
-                label: "Reduction in Screen Addiction", 
-                icon: "📱", 
-                color: "purple",
-                trend: "Healthy digital habits formed"
-              },
-              { 
-                value: "97%", 
-                label: "Safety Compliance", 
-                icon: "🛡️", 
-                color: "emerald",
-                trend: "Zero harmful content incidents"
-              }
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                className="text-center bg-white/80 backdrop-blur-md border border-white/50 rounded-2xl p-6 relative overflow-hidden"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.2 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-              >
-                <motion.div
-                  className="text-4xl mb-3"
-                  animate={{ rotate: [0, 10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
-                >
-                  {stat.icon}
-                </motion.div>
-                <motion.div
-                  className={`text-3xl font-black text-${stat.color}-600 mb-2`}
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, delay: i * 0.2 + 0.5, type: "spring" }}
-                >
-                  {stat.value}
-                </motion.div>
-                <div className="text-sm font-semibold text-gray-900 mb-2">{stat.label}</div>
-                <div className="text-xs text-gray-600">{stat.trend}</div>
-                
-                {/* Animated background gradient */}
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br from-${stat.color}-100/20 to-transparent opacity-0`}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Three-Column Deep Dive - Z Layout */}
-          <div className="space-y-24">
-            
-            {/* Digital Reality - Left Content, Right Chart */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              <motion.div 
-                className="lg:col-span-6 space-y-6"
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">🌐</span>
-                  <h3 className="text-2xl font-bold text-gray-900">The Digital Reality</h3>
-                </div>
-                
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  Children today will grow up with AI companions whether we guide that process or not. 
-                  Guardian ensures their first significant AI relationship is healthy, educational, and strengthens rather than replaces human connections.
-                </p>
-                
-                {/* Key Facts */}
-                <div className="space-y-3">
-                  {[
-                    { stat: "73%", fact: "of children interact with AI before age 10" },
-                    { stat: "2.5x", fact: "more likely to develop healthy digital habits with Guardian" },
-                    { stat: "89%", fact: "show improved real-world social skills" }
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-center gap-4 p-3 bg-blue-50/50 rounded-lg"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.2 }}
-                    >
-                      <div className="text-xl font-bold text-blue-600">{item.stat}</div>
-                      <div className="text-sm text-gray-700">{item.fact}</div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Usage Growth Chart */}
-              <motion.div 
-                className="lg:col-span-6"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                <div className="bg-white/80 backdrop-blur-md border border-blue-200/50 rounded-3xl p-8">
-                  <div className="text-center mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">AI Companion Adoption</h4>
-                    <p className="text-sm text-gray-600">Traditional apps vs Guardian approach</p>
-                  </div>
-                  
-                  {/* Comparison Chart */}
-                  <div className="space-y-6">
-                    {[
-                      { label: "Educational Value", traditional: 45, guardian: 94 },
-                      { label: "Emotional Support", traditional: 23, guardian: 89 },
-                      { label: "Safety Features", traditional: 67, guardian: 98 },
-                      { label: "Long-term Benefits", traditional: 31, guardian: 87 }
-                    ].map((metric, i) => (
-                      <motion.div
-                        key={i}
-                        className="space-y-2"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.2 }}
-                      >
-                        <div className="flex justify-between text-sm font-medium text-gray-900">
-                          <span>{metric.label}</span>
-                          <span className="text-blue-600">{metric.guardian}% vs {metric.traditional}%</span>
-                        </div>
-                        <div className="space-y-1">
-                          {/* Traditional apps bar */}
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs text-gray-500 w-20">Traditional</span>
-                            <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                              <motion.div
-                                className="h-full bg-gray-400 rounded-full"
-                                initial={{ width: 0 }}
-                                whileInView={{ width: `${metric.traditional}%` }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1.5, delay: i * 0.3 }}
-                              />
-                            </div>
-                          </div>
-                          {/* Guardian bar */}
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs text-blue-600 w-20 font-medium">Guardian</span>
-                            <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                              <motion.div
-                                className="h-full bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full"
-                                initial={{ width: 0 }}
-                                whileInView={{ width: `${metric.guardian}%` }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1.5, delay: i * 0.3 + 0.2 }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Parental Peace of Mind - Right Content, Left Chart */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              
-              {/* Stress Reduction Visualization */}
-              <motion.div 
-                className="lg:col-span-6 order-2 lg:order-1"
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="bg-white/80 backdrop-blur-md border border-green-200/50 rounded-3xl p-8">
-                  <div className="text-center mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">Parent Stress Levels</h4>
-                    <p className="text-sm text-gray-600">Before vs After Guardian implementation</p>
-                  </div>
-                  
-                  {/* Stress Level Timeline */}
-                  <div className="relative h-40">
-                    <svg viewBox="0 0 300 120" className="w-full h-full">
-                      {/* Grid lines */}
-                      {[0, 1, 2, 3, 4].map((line) => (
-                        <line
-                          key={line}
-                          x1="40"
-                          y1={20 + line * 20}
-                          x2="280"
-                          y2={20 + line * 20}
-                          stroke="#e5e7eb"
-                          strokeWidth="1"
-                        />
-                      ))}
-                      
-                      {/* Before Guardian (high stress) */}
-                      <motion.path
-                        d="M40,80 Q80,60 120,70 Q160,85 200,75"
-                        fill="none"
-                        stroke="rgb(239 68 68)"
-                        strokeWidth="3"
-                        strokeDasharray="5,5"
-                        initial={{ pathLength: 0 }}
-                        whileInView={{ pathLength: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 2 }}
-                      />
-                      
-                      {/* After Guardian (low stress) */}
-                      <motion.path
-                        d="M200,75 Q220,45 240,35 Q260,30 280,25"
-                        fill="none"
-                        stroke="rgb(34 197 94)"
-                        strokeWidth="3"
-                        initial={{ pathLength: 0 }}
-                        whileInView={{ pathLength: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 2, delay: 0.5 }}
-                      />
-                      
-                      {/* Guardian introduction marker */}
-                      <motion.line
-                        x1="200"
-                        y1="20"
-                        x2="200"
-                        y2="100"
-                        stroke="rgb(59 130 246)"
-                        strokeWidth="2"
-                        strokeDasharray="3,3"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 1 }}
-                      />
-                      
-                      {/* Labels */}
-                      <text x="120" y="115" textAnchor="middle" className="text-xs fill-red-600">Before Guardian</text>
-                      <text x="240" y="115" textAnchor="middle" className="text-xs fill-green-600">After Guardian</text>
-                      <text x="200" y="15" textAnchor="middle" className="text-xs fill-blue-600">Guardian Start</text>
-                    </svg>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mt-6">
-                    <div className="text-center p-3 bg-red-50 rounded-lg">
-                      <div className="text-2xl font-bold text-red-600">74%</div>
-                      <div className="text-xs text-red-700">High Stress Before</div>
-                    </div>
-                    <div className="text-center p-3 bg-green-50 rounded-lg">
-                      <div className="text-2xl font-bold text-green-600">23%</div>
-                      <div className="text-xs text-green-700">Low Stress After</div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div 
-                className="lg:col-span-6 order-1 lg:order-2 space-y-6"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">😌</span>
-                  <h3 className="text-2xl font-bold text-gray-900">Parental Peace of Mind</h3>
-                </div>
-                
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  Busy parents need trusted support. Guardian provides consistent, patient presence when you can't be there, 
-                  while always encouraging your child to value real-world relationships and experiences.
-                </p>
-                
-                {/* Parent Benefits */}
-                <div className="space-y-4">
-                  {[
-                    { benefit: "Sleep Quality", improvement: "+47%", icon: "😴" },
-                    { benefit: "Work Focus", improvement: "+39%", icon: "💼" },
-                    { benefit: "Family Time", improvement: "+52%", icon: "👨‍👩‍👧‍👦" },
-                    { benefit: "Peace of Mind", improvement: "+68%", icon: "🧘‍♀️" }
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-center justify-between p-4 bg-green-50/50 rounded-xl border border-green-200/30"
+                      className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-50/50 to-blue-50/50 rounded-xl border border-purple-200/30"
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
                       whileHover={{ scale: 1.02 }}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{item.icon}</span>
-                        <span className="font-medium text-gray-900 text-sm">{item.benefit}</span>
-                      </div>
-                      <span className="text-green-600 font-bold text-lg">{item.improvement}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Prevention Over Reaction - Left Content, Right Chart */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-              <motion.div 
-                className="lg:col-span-6 space-y-6"
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1 }}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">🛡️</span>
-                  <h3 className="text-2xl font-bold text-gray-900">Prevention Over Reaction</h3>
-                </div>
-                
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  By establishing healthy digital relationship patterns early, Guardian helps children develop the emotional intelligence 
-                  to navigate social media and online relationships more safely when they're older.
-                </p>
-                
-                {/* Long-term Outcomes */}
-                <div className="space-y-4">
-                  <div className="text-sm font-semibold text-gray-900 mb-3">Long-term Digital Health Outcomes</div>
-                  {[
-                    { outcome: "Cyberbullying Resilience", guardian: 91, average: 67 },
-                    { outcome: "Screen Time Self-Regulation", guardian: 84, average: 52 },
-                    { outcome: "Online Privacy Awareness", guardian: 96, average: 73 },
-                    { outcome: "Healthy Relationship Patterns", guardian: 89, average: 61 }
-                  ].map((metric, i) => (
-                    <motion.div
-                      key={i}
-                      className="p-3 bg-purple-50/50 rounded-lg"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-700">{metric.outcome}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-purple-600">{metric.guardian}%</span>
-                          <span className="text-xs text-gray-500">vs {metric.average}%</span>
-                        </div>
-                      </div>
-                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div className="relative h-full">
-                          <motion.div
-                            className="absolute left-0 h-full bg-gray-400 rounded-full"
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${metric.average}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.5, delay: i * 0.2 }}
-                          />
-                          <motion.div
-                            className="absolute left-0 h-full bg-gradient-to-r from-purple-500 to-violet-600 rounded-full"
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${metric.guardian}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.5, delay: i * 0.2 + 0.3 }}
-                          />
-                        </div>
+                      <span className="text-2xl">{feature.icon}</span>
+                      <div>
+                        <div className="font-semibold text-gray-900 text-sm mb-1">{feature.title}</div>
+                        <div className="text-xs text-gray-600">{feature.desc}</div>
                       </div>
                     </motion.div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
+            </motion.div>
 
-              {/* Risk Reduction Funnel */}
-              <motion.div 
-                className="lg:col-span-6"
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.3 }}
-              >
-                <div className="bg-white/80 backdrop-blur-md border border-purple-200/50 rounded-3xl p-8">
-                  <div className="text-center mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">Digital Risk Reduction</h4>
-                    <p className="text-sm text-gray-600">Guardian users vs general population (age 13-17)</p>
-                  </div>
-                  
-                  {/* Risk Funnel Visualization */}
-                  <div className="space-y-4">
+            {/* Right Side - Safety Dashboard Visual */}
+            <motion.div 
+              className="lg:col-span-5"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
+              <div className="bg-white/80 backdrop-blur-md border border-purple-200/50 rounded-3xl p-8">
+                <div className="text-center mb-6">
+                  <h4 className="text-lg font-bold text-gray-900 mb-2">Parent Dashboard</h4>
+                  <p className="text-sm text-gray-600">Complete oversight & control</p>
+                </div>
+                
+                <div className="space-y-6">
+                  {/* Safety Metrics */}
+                  <div className="grid grid-cols-2 gap-4">
                     {[
-                      { risk: "Inappropriate Content Exposure", general: 78, guardian: 12, color: "red" },
-                      { risk: "Social Media Addiction", general: 64, guardian: 23, color: "orange" },
-                      { risk: "Cyberbullying Incidents", general: 45, guardian: 8, color: "yellow" },
-                      { risk: "Privacy Violations", general: 52, guardian: 4, color: "green" }
-                    ].map((item, i) => (
+                      { value: "100%", label: "Safe Interactions", color: "from-green-400 to-emerald-400" },
+                      { value: "24/7", label: "Monitoring", color: "from-blue-400 to-cyan-400" },
+                      { value: "0", label: "Privacy Violations", color: "from-purple-400 to-violet-400" },
+                      { value: "∞", label: "Parental Control", color: "from-pink-400 to-rose-400" }
+                    ].map((stat, i) => (
                       <motion.div
                         key={i}
-                        className="relative"
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        className="text-center bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-200/50"
+                        initial={{ opacity: 0, scale: 0.8 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: i * 0.2 }}
+                        transition={{ delay: i * 0.1, duration: 0.8 }}
                       >
-                        <div className="text-sm font-medium text-gray-900 mb-2">{item.risk}</div>
-                        <div className="relative h-8 bg-gray-100 rounded-lg overflow-hidden">
-                          {/* General population (background) */}
-                          <motion.div
-                            className={`absolute left-0 h-full bg-${item.color}-300/60`}
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${item.general}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.5, delay: i * 0.3 }}
-                          />
-                          {/* Guardian users (foreground) */}
-                          <motion.div
-                            className={`absolute left-0 h-full bg-gradient-to-r from-purple-500 to-violet-600`}
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${item.guardian}%` }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 1.5, delay: i * 0.3 + 0.5 }}
-                          />
+                        <div className={`w-8 h-8 bg-gradient-to-br ${stat.color} rounded-lg mx-auto mb-2 flex items-center justify-center text-white font-bold text-sm`}>
+                          {stat.value}
                         </div>
-                        <div className="flex justify-between text-xs text-gray-600 mt-1">
-                          <span className="text-purple-600 font-medium">Guardian: {item.guardian}%</span>
-                          <span>General: {item.general}%</span>
-                        </div>
+                        <div className="text-xs font-medium text-gray-700">{stat.label}</div>
                       </motion.div>
                     ))}
                   </div>
+
+                  {/* Control Panel Preview */}
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-200/50">
+                    <div className="text-xs font-semibold text-gray-700 mb-3">Quick Controls</div>
+                    <div className="space-y-2">
+                      {["Screen Time", "Content Filter", "Conversation Review", "Emergency Stop"].map((control, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <span className="text-xs text-gray-600">{control}</span>
+                          <div className="w-8 h-4 bg-green-400 rounded-full relative">
+                            <div className="w-3 h-3 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Technical Foundation */}
-      <section className="relative py-32">
-        <div className="max-w-5xl mx-auto px-4">
-          <motion.div
-            className="bg-white/60 backdrop-blur-md border border-green-200/50 rounded-3xl p-8 md:p-12 text-center"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="mb-8"
-            >
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="h-px w-16 bg-gradient-to-r from-transparent to-green-400"></div>
-                <span className="text-green-600 font-mono text-sm tracking-wider uppercase">Technical Excellence</span>
-                <div className="h-px w-16 bg-gradient-to-l from-transparent to-green-400"></div>
-              </div>
-              
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-700 mb-6">
-                Built on
-                <span className="block bg-gradient-to-r from-green-500 to-blue-500 text-transparent bg-clip-text">
-                  AEGIS Architecture
-                </span>
-              </h2>
-              
-              <div className="max-w-3xl mx-auto space-y-6 text-gray-600 leading-relaxed">
-                <p className="text-lg">
-                  Guardian runs on our proprietary AEGIS (Automated Enforcement for Guaranteed Interface Stability) 
-                  architecture, ensuring consistent, safe, and developmentally appropriate interactions at every stage.
-                </p>
-                
-                <motion.div
-                  className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200/50 rounded-xl p-6 text-center"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <div className="text-2xl mb-3">🌟</div>
-                  <p className="italic text-gray-700 font-medium">
-                    "Guardian knows the difference between being helpful and being human — 
-                    and it knows that the goal is to make children better humans, not better at being digital."
-                  </p>
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="relative py-32 bg-gradient-to-br from-blue-50/50 to-green-50/50">
+      {/* Pricing Section - Streamlined */}
+      <section className="relative h-[100vh] flex items-center py-12">
         <div className="max-w-6xl mx-auto px-4">
           <motion.div
             className="text-center mb-16"
@@ -1750,11 +645,9 @@ export default function Guardian() {
                   "14-day full access trial",
                   "All age-appropriate modes",
                   "Basic parental dashboard",
-                  "Email support",
-                  "Safe conversation logging"
+                  "Email support"
                 ],
                 gradient: "from-green-100 to-emerald-100",
-                borderGradient: "from-green-300/50 to-emerald-300/50",
                 buttonStyle: "bg-gradient-to-r from-green-400 to-emerald-400 hover:from-green-300 hover:to-emerald-300"
               },
               {
@@ -1768,13 +661,10 @@ export default function Guardian() {
                   "Unlimited conversations",
                   "All evolutionary stages (3-17 years)",
                   "Advanced parental controls",
-                  "Detailed growth insights",
                   "Multi-child support",
-                  "Priority support",
-                  "Custom personality settings"
+                  "Priority support"
                 ],
                 gradient: "from-blue-100 to-cyan-100",
-                borderGradient: "from-blue-300/50 to-cyan-300/50",
                 buttonStyle: "bg-gradient-to-r from-blue-400 to-cyan-400 hover:from-blue-300 hover:to-cyan-300"
               },
               {
@@ -1787,14 +677,10 @@ export default function Guardian() {
                 features: [
                   "Everything in Family plan",
                   "Professional consultation access",
-                  "Custom content creation",
                   "Advanced analytics & reports",
-                  "Family therapy integration",
-                  "Educational partnerships",
-                  "White-label options"
+                  "Family therapy integration"
                 ],
                 gradient: "from-purple-100 to-violet-100",
-                borderGradient: "from-purple-300/50 to-violet-300/50",
                 buttonStyle: "bg-gradient-to-r from-purple-400 to-violet-400 hover:from-purple-300 hover:to-violet-300"
               }
             ].map((plan, index) => (
@@ -1879,20 +765,20 @@ export default function Guardian() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="relative py-32 bg-gradient-to-br from-green-900/20 via-blue-900/10 to-purple-900/20">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+      {/* Final CTA - Family Future */}
+      <footer className="relative h-[100vh] flex items-center py-12 bg-gradient-to-br from-green-50/30 via-blue-50/30 to-purple-50/30">
+        <div className="max-w-6xl mx-auto px-4 w-full">
           <motion.div
+            className="text-center space-y-12"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
-            className="space-y-8"
           >
-            <div className="space-y-6">
+            <div className="space-y-8">
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
                 className="text-6xl md:text-7xl mb-6"
@@ -1977,7 +863,7 @@ export default function Guardian() {
             </motion.div>
           ))}
         </div>
-      </section>
+      </footer>
       
       <ScrollToTop />
     </div>

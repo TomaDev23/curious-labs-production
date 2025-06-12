@@ -44,7 +44,7 @@ export default function Guardian() {
         <link rel="preload" href="/assets/images/general/Page_Logos/Guardian_logo.webp" as="image" />
         
         {/* Advanced Typography & Visual System */}
-        <style jsx>{`
+        <style jsx="true">{`
           /* Premium Typography Stack */
           .font-heading {
             font-family: 'Inter', 'Monument Extended', 'Space Grotesk', system-ui, sans-serif;
@@ -416,7 +416,7 @@ export default function Guardian() {
             </h2>
           </motion.div>
 
-          {/* Section 1: Two Connected Experiences */}
+          {/* Section 1: Guardian Parent Hero - Connection Focus */}
           <motion.div 
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20"
             initial={{ opacity: 0, y: 40 }}
@@ -424,143 +424,353 @@ export default function Guardian() {
             viewport={{ once: true }}
             transition={{ duration: 1 }}
           >
-            {/* Child Interface */}
-            <div className="glass-blue rounded-3xl p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 to-purple-100/30" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-3xl">👶</span>
-                  <h3 className="font-heading text-2xl font-bold text-slate-900">Child Interface</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  {[
-                    { icon: "🎭", text: "Personal companion that evolves from cute character to trusted friend" },
-                    { icon: "🗣️", text: "Voice-first conversations with patient, natural responses" },
-                    { icon: "🔒", text: "Age-appropriate privacy that grows with the child" },
-                    { icon: "💭", text: "Remembers interests, jokes, and important moments" }
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-start gap-3 p-3 bg-white/60 rounded-xl"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <span className="text-xl">{item.icon}</span>
-                      <p className="font-body text-slate-700 text-sm leading-relaxed">{item.text}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Parent Dashboard */}
-            <div className="glass-emerald rounded-3xl p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/40 to-blue-100/30" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-3xl">👨‍👩‍👧‍👦</span>
-                  <h3 className="font-heading text-2xl font-bold text-slate-900">Parent Dashboard</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  {[
-                    { icon: "📊", text: "Weekly emotional wellness summaries" },
-                    { icon: "🧠", text: "Conversation themes and growth insights" },
-                    { icon: "🚨", text: "Smart alerts for safety concerns or important patterns" },
-                    { icon: "💬", text: "Family discussion suggestions based on child's interests" }
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-start gap-3 p-3 bg-white/60 rounded-xl"
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <span className="text-xl">{item.icon}</span>
-                      <p className="font-body text-slate-700 text-sm leading-relaxed">{item.text}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Parent Stress Levels Graph */}
-          <motion.div 
-            className="mb-20"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2 }}
-          >
-            <div className="glass-ultra rounded-3xl p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-100/50 to-blue-100/30" />
-              <div className="relative z-10">
-                <div className="text-center mb-8">
-                  <h3 className="font-heading text-2xl font-bold text-slate-900 mb-2">Parent Stress Levels</h3>
-                  <p className="font-body text-slate-600">Before vs After Guardian Implementation</p>
-                </div>
-                
-                {/* Stress Graph */}
-                <div className="bg-white/80 rounded-2xl p-6 mb-6">
-                  <div className="flex items-end justify-center gap-8 h-32 mb-4">
-                    {/* Before Guardian */}
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-24 bg-gradient-to-t from-red-400 to-red-500 rounded-t-lg relative">
-                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-red-600 font-bold text-lg">74%</div>
-                      </div>
-                      <div className="mt-2 text-center">
-                        <div className="font-semibold text-red-700 text-sm">Before Guardian</div>
-                        <div className="text-xs text-slate-600">High Stress</div>
-                      </div>
-                    </div>
-                    
-                    {/* Arrow */}
-                    <div className="flex items-center mb-8">
-                      <div className="text-blue-500 text-2xl">→</div>
-                    </div>
-                    
-                    {/* After Guardian */}
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-8 bg-gradient-to-t from-emerald-400 to-emerald-500 rounded-t-lg relative">
-                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-emerald-600 font-bold text-lg">23%</div>
-                      </div>
-                      <div className="mt-2 text-center">
-                        <div className="font-semibold text-emerald-700 text-sm">After Guardian</div>
-                        <div className="text-xs text-slate-600">Low Stress</div>
-                      </div>
-                    </div>
+            {/* Left Side - Parent Hero Text */}
+            <div className="space-y-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="glass-emerald rounded-3xl p-8 shadow-xl relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/40 to-blue-100/30" />
+                <div className="relative z-10 space-y-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-3xl">💝</span>
+                    <h3 className="font-heading text-2xl font-bold text-slate-900">Connection, Not Surveillance</h3>
                   </div>
                   
-                  {/* Curve Line */}
-                  <div className="relative h-16 mb-4">
-                    <svg className="w-full h-full" viewBox="0 0 400 60">
-                      <path 
-                        d="M 50 10 Q 200 50 350 15" 
-                        stroke="url(#stressGradient)" 
-                        strokeWidth="3" 
-                        fill="none"
-                        className="drop-shadow-sm"
-                      />
-                      <defs>
-                        <linearGradient id="stressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#ef4444" />
-                          <stop offset="100%" stopColor="#10b981" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    <div className="absolute left-12 top-0 text-xs text-slate-600">Guardian Start</div>
+                  <div className="space-y-4 font-body text-slate-800 leading-relaxed">
+                    <p className="text-base">
+                      <span className="font-semibold text-emerald-800">Your child's emotional world is complex, and as a busy parent, it's impossible to be present for every moment that matters.</span> Guardian gives you meaningful insights into what your child is really thinking about—their worries, achievements, questions, and growth—without invading their privacy or breaking their trust.
+                    </p>
+                    
+                    <p className="text-base">
+                      Instead of wondering what's going on in their head, you'll receive thoughtful summaries that help you understand when to step in, when to celebrate, and when to simply be there.
+                    </p>
+                    
+                    <div className="bg-white/60 rounded-xl p-4 border-l-4 border-blue-500">
+                      <p className="text-base">
+                        <span className="font-semibold text-blue-800">This isn't about surveillance—it's about connection.</span> Guardian helps bridge the gap between your child's need for independence and your need to ensure they're thriving emotionally.
+                      </p>
+                    </div>
+                    
+                    <p className="text-base">
+                      When your child processes big feelings with Guardian, you get the context to have better family conversations. When they achieve something meaningful, you know to celebrate it. When they're struggling, you have the insight to offer support in exactly the way they need it.
+                    </p>
+                    
+                    <div className="bg-gradient-to-r from-purple-100/60 to-pink-100/60 rounded-xl p-4">
+                      <p className="text-base font-medium text-purple-800">
+                        Guardian turns the challenge of parenting in a digital age into an opportunity for deeper family understanding.
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+            </div>
+
+            {/* Right Side - Enhanced Mobile Phone Dashboard Mockup */}
+            <div className="relative">
+              {/* Phone Frame Container */}
+              <motion.div 
+                className="relative mx-auto"
+                style={{ 
+                  width: '320px', 
+                  height: '640px',
+                  transform: 'perspective(1000px) rotateY(-5deg) rotateX(2deg)'
+                }}
+                initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+                whileInView={{ opacity: 1, scale: 1, rotateY: -5 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+              >
+                {/* Phone Outer Frame */}
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900 rounded-[2.5rem] shadow-2xl">
+                  {/* Phone Screen */}
+                  <div className="absolute inset-2 bg-white rounded-[2rem] overflow-hidden">
+                    {/* Status Bar */}
+                    <div className="bg-white px-6 py-2 flex justify-between items-center text-xs font-mono text-slate-900 border-b border-slate-100">
+                      <span className="font-semibold">9:41</span>
+                      <div className="flex items-center gap-1">
+                        <div className="flex gap-1">
+                          <div className="w-1 h-3 bg-slate-900 rounded-full"></div>
+                          <div className="w-1 h-3 bg-slate-900 rounded-full"></div>
+                          <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
+                          <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
+                        </div>
+                        <div className="w-6 h-3 bg-emerald-500 rounded-sm ml-1"></div>
+                      </div>
+                    </div>
+
+                    {/* App Content */}
+                    <div className="h-full bg-gradient-to-br from-blue-50 to-emerald-50 overflow-y-auto">
+                      {/* App Header */}
+                      <div className="bg-white/80 backdrop-blur-sm px-4 py-4 border-b border-slate-200/50">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">📱</span>
+                            <span className="font-bold text-slate-900 text-sm">Guardian Parent App</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-600">🔔</span>
+                            <span className="text-slate-600">⚙️</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="font-bold text-slate-900 text-base">Emma (Age 9)</h4>
+                            <p className="text-xs text-slate-600">This Week • Overall Wellness</p>
+                          </div>
+                          <div className="text-right">
+                            <div className="flex items-center gap-1">
+                              <span className="text-emerald-600 font-bold text-sm">+12%</span>
+                              <span className="text-emerald-600 text-xs">↗️</span>
+                            </div>
+                            <div className="text-xs text-emerald-700 font-medium">Thriving 💚</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Dashboard Content */}
+                      <div className="p-4 space-y-4">
+                        {/* Conversation Themes - Enhanced */}
+                        <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
+                          <h5 className="font-bold text-slate-900 text-sm mb-3">This Week's Conversations (23 total)</h5>
+                          <div className="grid grid-cols-2 gap-2">
+                            {[
+                              { topic: "Friendship", count: 8, color: "bg-purple-100 text-purple-800 border-purple-200" },
+                              { topic: "School Projects", count: 6, color: "bg-blue-100 text-blue-800 border-blue-200" },
+                              { topic: "Creative Writing", count: 5, color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
+                              { topic: "Family Time", count: 4, color: "bg-yellow-100 text-yellow-800 border-yellow-200" }
+                            ].map((theme, i) => (
+                              <motion.div
+                                key={i}
+                                className={`${theme.color} border rounded-lg p-2 text-center`}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                              >
+                                <div className="font-semibold text-xs">{theme.topic}</div>
+                                <div className="font-mono text-xs">({theme.count})</div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Enhanced Mood Trend */}
+                        <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
+                          <h5 className="font-bold text-slate-900 text-sm mb-3">7-Day Emotional Pattern</h5>
+                          <div className="space-y-3">
+                            {/* Mood Chart */}
+                            <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-3">
+                              <div className="flex items-end justify-between h-16 mb-2">
+                                {[
+                                  { day: "M", mood: "Happy", height: 75, color: "bg-emerald-400" },
+                                  { day: "T", mood: "Anxious", height: 45, color: "bg-yellow-400" },
+                                  { day: "W", mood: "Curious", height: 85, color: "bg-blue-400" },
+                                  { day: "T", mood: "Excited", height: 90, color: "bg-purple-400" },
+                                  { day: "F", mood: "Happy", height: 80, color: "bg-emerald-400" },
+                                  { day: "S", mood: "Calm", height: 70, color: "bg-blue-300" },
+                                  { day: "S", mood: "Excited", height: 88, color: "bg-purple-400" }
+                                ].map((day, i) => (
+                                  <motion.div
+                                    key={i}
+                                    className="flex flex-col items-center flex-1"
+                                    initial={{ height: 0 }}
+                                    whileInView={{ height: 'auto' }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                  >
+                                    <motion.div
+                                      className={`${day.color} rounded-t w-full mb-1`}
+                                      style={{ height: `${day.height}%` }}
+                                      initial={{ height: 0 }}
+                                      whileInView={{ height: `${day.height}%` }}
+                                      viewport={{ once: true }}
+                                      transition={{ delay: i * 0.1, duration: 0.5 }}
+                                    />
+                                    <span className="text-xs font-mono text-slate-600">{day.day}</span>
+                                  </motion.div>
+                                ))}
+                              </div>
+                              <p className="text-xs text-slate-600 text-center">Mostly positive with Tuesday dip (school test)</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Enhanced Recent Insights */}
+                        <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
+                          <h5 className="font-bold text-slate-900 text-sm mb-3">Recent Insights</h5>
+                          <div className="space-y-3">
+                            {/* Growth Moments */}
+                            <div>
+                              <h6 className="font-semibold text-emerald-800 text-xs mb-2 flex items-center gap-1">
+                                🎯 Growth Moments
+                              </h6>
+                              <div className="space-y-1">
+                                {[
+                                  "Worked through presentation anxiety using breathing techniques",
+                                  "Used 'frustrated' instead of 'mad' - vocabulary growing",
+                                  "Asked for help with math instead of giving up"
+                                ].map((moment, i) => (
+                                  <motion.div
+                                    key={i}
+                                    className="flex items-start gap-2 text-xs text-slate-700"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                  >
+                                    <span className="text-emerald-600 mt-0.5">✅</span>
+                                    <span>{moment}</span>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Discussion Opportunities */}
+                            <div>
+                              <h6 className="font-semibold text-blue-800 text-xs mb-2 flex items-center gap-1">
+                                💡 Discussion Opportunities
+                              </h6>
+                              <div className="space-y-1">
+                                {[
+                                  "Mentioned wanting guitar lessons 3x this week 🎸",
+                                  "Curious about 'how friendships work' 📚",
+                                  "Excited about art project, wants to show family 🎨"
+                                ].map((opportunity, i) => (
+                                  <motion.div
+                                    key={i}
+                                    className="text-xs text-slate-700 flex items-start gap-1"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                  >
+                                    <span className="text-blue-600">•</span>
+                                    <span>{opportunity}</span>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Gentle Alerts */}
+                            <div>
+                              <h6 className="font-semibold text-yellow-800 text-xs mb-2 flex items-center gap-1">
+                                ⚠️ Gentle Alerts
+                              </h6>
+                              <div className="space-y-1">
+                                {[
+                                  "Mentioned feeling 'left out' during lunch twice 💭",
+                                  "Some concern about upcoming group project 🏫"
+                                ].map((alert, i) => (
+                                  <motion.div
+                                    key={i}
+                                    className="text-xs text-slate-700 flex items-start gap-1"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                  >
+                                    <span className="text-yellow-600">•</span>
+                                    <span>{alert}</span>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Family Actions - Enhanced */}
+                        <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
+                          <h5 className="font-bold text-slate-900 text-sm mb-3">🗣️ Suggested Conversations</h5>
+                          <div className="space-y-2">
+                            {[
+                              "Tell me about your creative writing story",
+                              "I heard you did great on your presentation!",
+                              "Want to look at guitar lessons together?"
+                            ].map((suggestion, i) => (
+                              <motion.div
+                                key={i}
+                                className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-2"
+                                initial={{ opacity: 0, y: 10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                              >
+                                <p className="text-xs text-slate-800 font-medium">"{suggestion}"</p>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Weekly Stats */}
+                        <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
+                          <h5 className="font-bold text-slate-900 text-sm mb-3">📊 This Week's Data</h5>
+                          <div className="grid grid-cols-2 gap-3 text-center">
+                            {[
+                              { label: "Conversations", value: "23", color: "text-blue-600" },
+                              { label: "Avg Mood", value: "4.2", color: "text-emerald-600" },
+                              { label: "Growth Moments", value: "3", color: "text-purple-600" },
+                              { label: "Safety Alerts", value: "0", color: "text-emerald-600" }
+                            ].map((stat, i) => (
+                              <motion.div
+                                key={i}
+                                className="bg-slate-50 rounded-lg p-2"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.1 }}
+                              >
+                                <div className={`font-mono font-bold text-lg ${stat.color}`}>{stat.value}</div>
+                                <div className="text-xs text-slate-600">{stat.label}</div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bottom Navigation */}
+                      <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200/50 px-4 py-3">
+                        <div className="flex justify-around">
+                          {[
+                            { icon: "📊", label: "Insights", active: true },
+                            { icon: "🗣️", label: "Conversations", active: false },
+                            { icon: "⚙️", label: "Settings", active: false },
+                            { icon: "👨‍👩‍👧‍👦", label: "Family", active: false }
+                          ].map((nav, i) => (
+                            <motion.div
+                              key={i}
+                              className={`flex flex-col items-center gap-1 ${
+                                nav.active ? 'text-blue-600' : 'text-slate-500'
+                              }`}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              <span className="text-sm">{nav.icon}</span>
+                              <span className="text-xs font-medium">{nav.label}</span>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Home Indicator */}
+                      <div className="flex justify-center py-2">
+                        <div className="w-32 h-1 bg-slate-300 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Phone Shadow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-xl transform translate-y-4 -z-10"></div>
+              </motion.div>
             </div>
           </motion.div>
 
-          {/* Section 2: Intelligent Safety System */}
+          {/* Guardian Unified Component - Investor Product Overview */}
           <motion.div 
             className="mb-20"
             initial={{ opacity: 0, y: 40 }}
@@ -568,206 +778,342 @@ export default function Guardian() {
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            <div className="text-center mb-12">
-              <h3 className="font-heading text-3xl font-bold text-slate-900 mb-4">Intelligent Safety System</h3>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Alert Types */}
-              <div className="glass-purple rounded-3xl p-8 shadow-xl">
-                <h4 className="font-heading text-xl font-bold text-slate-900 mb-6">Alert Types</h4>
-                <div className="space-y-4">
-                  {[
-                    { color: "🔴", level: "Immediate", desc: "Safety concerns, crisis language", bg: "bg-red-50 border-red-200" },
-                    { color: "🟡", level: "Important", desc: "Emotional patterns worth discussing", bg: "bg-yellow-50 border-yellow-200" },
-                    { color: "🔵", level: "Weekly", desc: "Development insights and conversation highlights", bg: "bg-blue-50 border-blue-200" },
-                    { color: "🟢", level: "Celebrations", desc: "Achievements and proud moments", bg: "bg-emerald-50 border-emerald-200" }
-                  ].map((alert, i) => (
-                    <motion.div
-                      key={i}
-                      className={`${alert.bg} border rounded-xl p-4`}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="text-lg">{alert.color}</span>
-                        <div>
-                          <div className="font-semibold text-slate-900 text-sm">{alert.level}</div>
-                          <div className="text-slate-700 text-xs">{alert.desc}</div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Privacy Levels */}
-              <div className="glass-blue rounded-3xl p-8 shadow-xl">
-                <h4 className="font-heading text-xl font-bold text-slate-900 mb-6">Privacy Levels</h4>
-                <div className="space-y-4">
-                  {[
-                    { age: "Young Kids", desc: "Open family sharing with safety focus", icon: "🧸" },
-                    { age: "School Age", desc: "Some private thoughts with clear safety rules", icon: "🎒" },
-                    { age: "Tweens/Teens", desc: "Increased privacy with protective oversight", icon: "🤝" }
-                  ].map((level, i) => (
-                    <motion.div
-                      key={i}
-                      className="bg-white/60 rounded-xl p-4"
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="text-lg">{level.icon}</span>
-                        <div>
-                          <div className="font-semibold text-slate-900 text-sm">{level.age}</div>
-                          <div className="text-slate-700 text-xs">{level.desc}</div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Section 3: Family Connection Tools */}
-          <motion.div 
-            className="mb-20"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.4 }}
-          >
-            <div className="text-center mb-12">
-              <h3 className="font-heading text-3xl font-bold text-slate-900 mb-4">Family Connection Tools</h3>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Communication Bridge */}
-              <div className="glass-emerald rounded-3xl p-8 shadow-xl">
-                <h4 className="font-heading text-xl font-bold text-slate-900 mb-6">Communication Bridge</h4>
-                <div className="space-y-3">
-                  {[
-                    "Child can ask Guardian to help approach parents about sensitive topics",
-                    "Guardian suggests family conversation starters",
-                    "Shared celebration of emotional and academic milestones",
-                    "Weekly insights help parents understand child's inner world"
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-start gap-3 text-sm text-slate-700"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <span className="text-emerald-500 mt-1">•</span>
-                      <span>{item}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Customization Options */}
-              <div className="glass-purple rounded-3xl p-8 shadow-xl">
-                <h4 className="font-heading text-xl font-bold text-slate-900 mb-6">Customization Options</h4>
-                <div className="space-y-4">
-                  {[
-                    { title: "Parent Settings", desc: "Adjust values alignment, communication style, topic boundaries" },
-                    { title: "Child Choices", desc: "Personalize appearance, interaction style, interest focus" },
-                    { title: "Safety Controls", desc: "Crisis protocols, professional integration, data privacy" }
-                  ].map((option, i) => (
-                    <motion.div
-                      key={i}
-                      className="bg-white/60 rounded-xl p-3"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <div className="font-semibold text-slate-900 text-sm mb-1">{option.title}</div>
-                      <div className="text-slate-700 text-xs">{option.desc}</div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Section 4: Crisis & Professional Support */}
-          <motion.div 
-            className="mb-20"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.5 }}
-          >
-            <div className="glass-red rounded-3xl p-8 shadow-xl">
-              <div className="text-center mb-8">
-                <h3 className="font-heading text-3xl font-bold text-slate-900 mb-4">Crisis & Professional Support</h3>
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <div className="h-[1px] w-20 bg-gradient-to-r from-transparent via-slate-400 to-slate-600"></div>
+                <span className="font-mono text-slate-700 text-sm tracking-[0.2em] uppercase font-medium bg-white px-4 py-2 rounded-full border border-slate-300 shadow-sm">
+                  Guardian Platform Overview
+                </span>
+                <div className="h-[1px] w-20 bg-gradient-to-l from-transparent via-slate-400 to-slate-600"></div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  { icon: "🚨", title: "Immediate Safety", desc: "Alerts with professional resource guidance" },
-                  { icon: "📋", title: "Documentation", desc: "Conversation records for therapeutic support" },
-                  { icon: "🏠", title: "Life Events", desc: "Support during divorce, loss, moving, stress" },
-                  { icon: "🌱", title: "Recovery", desc: "Adaptive assistance for healing process" }
-                ].map((support, i) => (
-                  <motion.div
-                    key={i}
-                    className="bg-white/80 rounded-xl p-4 text-center"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <div className="text-2xl mb-2">{support.icon}</div>
-                    <div className="font-semibold text-slate-900 text-sm mb-1">{support.title}</div>
-                    <div className="text-slate-700 text-xs">{support.desc}</div>
-                  </motion.div>
-                ))}
-              </div>
+              <h3 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 leading-tight tracking-tight mb-4">
+                Enterprise-Grade
+                <span className="block bg-gradient-to-r from-emerald-600 to-blue-600 text-transparent bg-clip-text font-black">
+                  Child Development Platform
+                </span>
+              </h3>
             </div>
-          </motion.div>
 
-          {/* Section 5: Data Privacy & Control */}
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.6 }}
-          >
-            <div className="glass-ultra rounded-3xl p-8 shadow-xl">
-              <div className="text-center mb-8">
-                <h3 className="font-heading text-3xl font-bold text-slate-900 mb-4">Data Privacy & Control</h3>
-              </div>
+            {/* Z-Pattern Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  { icon: "💻", title: "Local Processing", desc: "Device processing with minimal cloud storage" },
-                  { icon: "🔐", title: "Family Control", desc: "Complete control over data location and sharing" },
-                  { icon: "🔍", title: "Transparency", desc: "Clear safety classification system" },
-                  { icon: "📤", title: "Data Freedom", desc: "Easy export/delete options" }
-                ].map((privacy, i) => (
-                  <motion.div
-                    key={i}
-                    className="bg-white/80 rounded-xl p-4 text-center"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <div className="text-2xl mb-2">{privacy.icon}</div>
-                    <div className="font-semibold text-slate-900 text-sm mb-1">{privacy.title}</div>
-                    <div className="text-slate-700 text-xs">{privacy.desc}</div>
-                  </motion.div>
-                ))}
-              </div>
+              {/* Top Left: Impact Metrics */}
+              <motion.div 
+                className="lg:col-span-5 bg-white rounded-2xl p-8 shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-500"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                    <h4 className="font-heading text-xl font-semibold text-slate-900">Family Wellness Impact</h4>
+                  </div>
+                  
+                  <div className="text-sm text-slate-600 font-medium mb-4">Research-Backed Results</div>
+                  
+                  {/* Parent Stress Reduction */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-slate-800">Parent Stress Reduction</span>
+                      <span className="font-mono text-sm text-slate-600">74% → 23%</span>
+                    </div>
+                    <div className="relative h-3 bg-slate-100 rounded-full overflow-hidden">
+                      <motion.div 
+                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-400 via-yellow-400 to-emerald-500 rounded-full"
+                        initial={{ width: "0%" }}
+                        whileInView={{ width: "77%" }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, delay: 0.3 }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Key Metrics */}
+                  <div className="grid grid-cols-1 gap-4 pt-4">
+                    {[
+                      { label: "Child Emotional Vocabulary", value: "+67%", color: "text-blue-600" },
+                      { label: "Family Discussion Quality", value: "+340%", color: "text-purple-600" },
+                      { label: "Screen Time Value", value: "89%", color: "text-emerald-600", subtitle: "educational vs entertainment" }
+                    ].map((metric, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex justify-between items-center py-2 border-b border-slate-100 last:border-b-0"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 + 0.5 }}
+                      >
+                        <div>
+                          <div className="font-medium text-slate-800 text-sm">{metric.label}</div>
+                          {metric.subtitle && (
+                            <div className="text-xs text-slate-500">{metric.subtitle}</div>
+                          )}
+                        </div>
+                        <div className={`font-mono font-bold text-lg ${metric.color}`}>
+                          {metric.value}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100">
+                    <div className="text-xs text-slate-500 font-medium">
+                      Based on 6-month beta with 127 families
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Top Right: Conversation Intelligence */}
+              <motion.div 
+                className="lg:col-span-7 bg-white rounded-2xl p-8 shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-500"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <h4 className="font-heading text-xl font-semibold text-slate-900">Real-Time Family Bridge</h4>
+                  </div>
+                  
+                  <div className="text-sm text-slate-600 font-medium mb-4">This Week's Generated Insights:</div>
+                  
+                  {/* Insight Cards */}
+                  <div className="space-y-3">
+                    {[
+                      { icon: "💬", text: "Emma's creative confidence is building", type: "Growth" },
+                      { icon: "🎯", text: "Math anxiety decreased after Guardian support", type: "Progress" },
+                      { icon: "🎸", text: "Strong interest in music - family opportunity", type: "Opportunity" }
+                    ].map((insight, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 + 0.3 }}
+                      >
+                        <span className="text-lg flex-shrink-0">{insight.icon}</span>
+                        <div className="flex-1">
+                          <div className="font-medium text-slate-800 text-sm">"{insight.text}"</div>
+                          <div className="text-xs text-slate-500 mt-1">{insight.type}</div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {/* Summary Stats */}
+                  <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-lg p-4 border border-blue-100">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="font-mono font-bold text-xl text-blue-600">23 → 3</div>
+                        <div className="text-xs text-slate-600">conversations → actionable family moments</div>
+                      </div>
+                      <div>
+                        <div className="font-mono font-bold text-xl text-emerald-600 flex items-center justify-center gap-1">
+                          ↗️ Positive
+                        </div>
+                        <div className="text-xs text-slate-600">emotional wellness trending</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Center Diagonal: Safety Architecture */}
+              <motion.div 
+                className="lg:col-span-12 bg-white rounded-2xl p-8 shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-500"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <div className="text-center space-y-8">
+                  <div className="flex items-center justify-center gap-3 mb-6">
+                    <span className="text-2xl">🛡️</span>
+                    <h4 className="font-heading text-2xl font-bold text-slate-900">Graduated Safety System</h4>
+                  </div>
+
+                  {/* Privacy Maturation Model */}
+                  <div className="max-w-4xl mx-auto">
+                    <div className="text-sm text-slate-600 font-medium mb-6">Privacy Maturation Model</div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                      {[
+                        { 
+                          age: "Ages 3-6", 
+                          title: "Foundation", 
+                          desc: "Family transparency with safety education",
+                          color: "emerald",
+                          icon: "🧸"
+                        },
+                        { 
+                          age: "Ages 7-10", 
+                          title: "Development", 
+                          desc: "Selective privacy with clear boundaries",
+                          color: "blue",
+                          icon: "🎒"
+                        },
+                        { 
+                          age: "Ages 11-17", 
+                          title: "Maturation", 
+                          desc: "Advanced privacy with protective oversight",
+                          color: "purple",
+                          icon: "🤝"
+                        }
+                      ].map((stage, i) => (
+                        <motion.div
+                          key={i}
+                          className={`bg-${stage.color}-50 border border-${stage.color}-200 rounded-xl p-4 text-center`}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.1 + 0.5 }}
+                        >
+                          <div className="text-2xl mb-2">{stage.icon}</div>
+                          <div className="font-semibold text-slate-900 text-sm mb-1">{stage.age}</div>
+                          <div className={`font-medium text-${stage.color}-700 text-sm mb-2`}>{stage.title}</div>
+                          <div className="text-xs text-slate-600">{stage.desc}</div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Crisis Response & Professional Integration */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                        <div className="font-semibold text-slate-900 text-sm mb-2">Crisis Response Hierarchy</div>
+                        <div className="text-xs text-slate-600">Immediate → Important → Weekly → Celebration</div>
+                      </div>
+                      <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                        <div className="font-semibold text-slate-900 text-sm mb-2">Professional Integration</div>
+                        <div className="text-xs text-slate-600">Therapeutic data export capability</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Bottom Left: Technical Depth */}
+              <motion.div 
+                className="lg:col-span-5 bg-white rounded-2xl p-8 shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-500"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    <h4 className="font-heading text-xl font-semibold text-slate-900">Technical Architecture</h4>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {[
+                      "Multi-modal emotional pattern recognition",
+                      "14-year relationship continuity architecture",
+                      "Parent-child dual-interface synchronization",
+                      "COPPA-compliant data sovereignty",
+                      "Local processing with encrypted cloud backup",
+                      "Developmental psychology-informed conversation flows"
+                    ].map((feature, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex items-start gap-3 text-sm"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 + 0.7 }}
+                      >
+                        <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-slate-700 leading-relaxed">{feature}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100">
+                    <div className="text-xs text-slate-500 font-medium">
+                      Enterprise-Grade Child Development Platform
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Bottom Right: Investment Readiness */}
+              <motion.div 
+                className="lg:col-span-7 bg-white rounded-2xl p-8 shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-500"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+                    <h4 className="font-heading text-xl font-semibold text-slate-900">Market Position & Validation</h4>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Market Position */}
+                    <div className="space-y-4">
+                      <div className="text-sm font-medium text-slate-800 mb-3">Strategic Advantages</div>
+                      {[
+                        { label: "Regulatory Landscape", value: "Ahead of legislation curve" },
+                        { label: "Competitive Moat", value: "First relationship-duration platform" },
+                        { label: "Revenue Model", value: "Family SaaS + enterprise licensing" },
+                        { label: "Beta Validation", value: "94% family retention rate" }
+                      ].map((item, i) => (
+                        <motion.div
+                          key={i}
+                          className="space-y-1"
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.1 + 0.9 }}
+                        >
+                          <div className="text-xs font-medium text-slate-600">{item.label}</div>
+                          <div className="text-sm text-slate-800">{item.value}</div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* IP Portfolio */}
+                    <div className="space-y-4">
+                      <div className="text-sm font-medium text-slate-800 mb-3">Intellectual Property</div>
+                      <div className="space-y-3">
+                        <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                          <div className="font-medium text-blue-800 text-sm">Technical IP</div>
+                          <div className="text-xs text-blue-600 mt-1">Emotional memory management system</div>
+                        </div>
+                        <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
+                          <div className="font-medium text-emerald-800 text-sm">Business IP</div>
+                          <div className="text-xs text-emerald-600 mt-1">Child development safety protocols</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Key Metrics Summary */}
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200">
+                    <div className="grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <div className="font-mono font-bold text-xl text-amber-600">127</div>
+                        <div className="text-xs text-slate-600">Beta Families</div>
+                      </div>
+                      <div>
+                        <div className="font-mono font-bold text-xl text-amber-600">94%</div>
+                        <div className="text-xs text-slate-600">Retention Rate</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
             </div>
           </motion.div>
 

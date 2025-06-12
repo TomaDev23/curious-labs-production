@@ -18,7 +18,7 @@
 // 🎯 TYPE: Page-Specific Background Component
 // 🔗 DEPENDENCIES: react
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, memo } from 'react';
 
 // Internal performance detection (simplified for Guardian)
 const useDeviceCapabilities = () => {
@@ -51,17 +51,60 @@ const useDeviceCapabilities = () => {
     };
     
     detectCapabilities();
+    
+    // Create media query listeners for proper cleanup
+    const mediaQueries = [
+      window.matchMedia('(prefers-reduced-motion: reduce)'),
+      window.matchMedia('(max-width: 767px)')
+    ];
+    
+    mediaQueries.forEach(mq => mq.addEventListener('change', detectCapabilities));
     window.addEventListener('resize', detectCapabilities);
     
-    return () => window.removeEventListener('resize', detectCapabilities);
+    return () => {
+      mediaQueries.forEach(mq => mq.removeEventListener('change', detectCapabilities));
+      window.removeEventListener('resize', detectCapabilities);
+    };
   }, []);
 
   return capabilities;
 };
 
 // ✅ KEEP - GUARDIAN BACKGROUND COMPONENT
-export default function BackgroundLayerGuardian() {
+const BackgroundLayerGuardian = memo(() => {
   const { performanceTier, prefersReducedMotion } = useDeviceCapabilities();
+  
+  // Memoize expensive style calculations
+  const baseGradientStyle = useMemo(() => ({
+    background: `
+      linear-gradient(180deg, 
+        #1e3a8a 0%,           /* Deep blue at top (hero) */
+        #3b82f6 15%,          /* Medium blue */
+        #60a5fa 30%,          /* Lighter blue */
+        #93c5fd 45%,          /* Sky blue */
+        #dbeafe 60%,          /* Very light blue */
+        #f0f9ff 75%,          /* Almost white */
+        #fef3c7 85%,          /* Warm sunrise yellow */
+        #fed7aa 95%,          /* Soft peach */
+        #fecaca 100%          /* Gentle pink at bottom */
+      )
+    `,
+    zIndex: 1
+  }), []);
+
+  const sunGlareStyle = useMemo(() => ({
+    background: 'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.4) 0%, rgba(254, 243, 199, 0.3) 20%, rgba(253, 224, 71, 0.2) 40%, rgba(251, 191, 36, 0.1) 60%, transparent 80%)',
+    filter: 'blur(60px)',
+    zIndex: 10,
+    transform: 'translate(200px, -200px)'
+  }), []);
+
+  const secondaryGlowStyle = useMemo(() => ({
+    background: 'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(254, 243, 199, 0.4) 30%, rgba(253, 224, 71, 0.2) 60%, transparent 80%)',
+    filter: 'blur(40px)',
+    zIndex: 12,
+    transform: 'translate(100px, -100px)'
+  }), []);
   
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none" aria-hidden="true">
@@ -69,44 +112,19 @@ export default function BackgroundLayerGuardian() {
       {/* Base Sunrise-to-Day Sky Gradient */}
       <div 
         className="absolute inset-0 w-full h-full"
-        style={{
-          background: `
-            linear-gradient(180deg, 
-              #1e3a8a 0%,           /* Deep blue at top (hero) */
-              #3b82f6 15%,          /* Medium blue */
-              #60a5fa 30%,          /* Lighter blue */
-              #93c5fd 45%,          /* Sky blue */
-              #dbeafe 60%,          /* Very light blue */
-              #f0f9ff 75%,          /* Almost white */
-              #fef3c7 85%,          /* Warm sunrise yellow */
-              #fed7aa 95%,          /* Soft peach */
-              #fecaca 100%          /* Gentle pink at bottom */
-            )
-          `,
-          zIndex: 1
-        }}
+        style={baseGradientStyle}
       />
 
       {/* Sun Glare Effect - Positioned in upper right */}
       <div 
         className="absolute top-0 right-0 w-[800px] h-[800px] pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.4) 0%, rgba(254, 243, 199, 0.3) 20%, rgba(253, 224, 71, 0.2) 40%, rgba(251, 191, 36, 0.1) 60%, transparent 80%)',
-          filter: 'blur(60px)',
-          zIndex: 10,
-          transform: 'translate(200px, -200px)'
-        }}
+        style={sunGlareStyle}
       />
 
       {/* Secondary Sun Glow - More intense center */}
       <div 
         className="absolute top-0 right-0 w-[400px] h-[400px] pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(254, 243, 199, 0.4) 30%, rgba(253, 224, 71, 0.2) 60%, transparent 80%)',
-          filter: 'blur(40px)',
-          zIndex: 12,
-          transform: 'translate(100px, -100px)'
-        }}
+        style={secondaryGlowStyle}
       />
 
       {/* Atmospheric Light Rays - Subtle directional lighting */}
@@ -194,7 +212,7 @@ export default function BackgroundLayerGuardian() {
       />
 
       {/* CSS Animations for floating clouds */}
-      <style jsx>{`
+      <style jsx="true">{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) translateX(0px); }
           25% { transform: translateY(-10px) translateX(5px); }
@@ -205,4 +223,8 @@ export default function BackgroundLayerGuardian() {
       
     </div>
   );
-} 
+});
+
+BackgroundLayerGuardian.displayName = 'BackgroundLayerGuardian';
+
+export default BackgroundLayerGuardian; 

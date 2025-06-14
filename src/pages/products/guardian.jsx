@@ -360,24 +360,42 @@ export default function Guardian() {
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.2 }}
             >
-              <div className="flex items-center gap-4">
-                <div className="h-[1px] w-16 bg-gradient-to-r from-transparent via-blue-600/80 to-blue-800"></div>
-                <span className="font-mono text-blue-800 text-sm tracking-[0.2em] uppercase font-medium bg-blue-100/80 px-3 py-1 rounded-full border border-blue-600/30">
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <div className="h-[1px] w-20 bg-gradient-to-r from-transparent via-blue-500/60 to-blue-600"></div>
+                <span className="font-mono text-blue-700 text-xs tracking-[0.25em] uppercase font-semibold bg-blue-50/80 px-4 py-2 rounded-full border border-blue-200/60 shadow-sm">
                   Mission Statement
                 </span>
+                <div className="h-[1px] w-20 bg-gradient-to-l from-transparent via-blue-500/60 to-blue-600"></div>
               </div>
               
-              <h2 className="font-heading text-4xl md:text-5xl font-bold text-gray-900 leading-tight tracking-tight">
+              <h2 className="font-heading text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] tracking-tight mb-8">
                 Screen Time That
-                <span className="block bg-gradient-to-r from-emerald-700 to-blue-700 text-transparent bg-clip-text font-black">
+                <span className="block bg-gradient-to-r from-emerald-600 via-blue-600 to-emerald-700 text-transparent bg-clip-text font-black mt-2">
                   Actually Matters
                 </span>
               </h2>
               
-              <div className="glass-blue rounded-2xl p-6 shadow-xl">
-                <p className="font-body text-lg text-gray-800 leading-relaxed">
-                  <span className="font-medium text-blue-800">Unlike passive entertainment that isolates children behind screens</span> Guardian creates genuine connection through conversations that matter. Starting as a caring companion for bedtime stories and growing into a trusted friend for teenage challenges, Guardian remembers what's important to your child and helps them navigate each developmental stage with wisdom, humor, and appropriate boundaries.
+              <div className="glass-blue rounded-3xl p-8 shadow-xl border border-blue-100/50 backdrop-blur-sm">
+                <p className="font-body text-xl text-gray-800 leading-relaxed max-w-4xl">
+                  <span className="font-semibold text-blue-800 bg-blue-50/50 px-2 py-1 rounded-md">Unlike passive entertainment that isolates children behind screens,</span> Guardian creates genuine connection through conversations that matter. Starting as a caring companion for bedtime stories and growing into a trusted friend for teenage challenges, Guardian remembers what's important to your child and helps them navigate each developmental stage with wisdom, humor, and appropriate boundaries.
                 </p>
+                
+                <div className="mt-6 pt-6 border-t border-blue-200/30">
+                  <div className="flex items-center justify-center gap-8 text-sm text-blue-700">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                      <span className="font-medium">Nurturing AI</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span className="font-medium">Age-Appropriate</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      <span className="font-medium">Family-Focused</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>

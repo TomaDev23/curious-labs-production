@@ -180,7 +180,7 @@ export default function Guardian() {
         <BackgroundLayerGuardian />
         <div className="absolute inset-0 bg-gradient-to-t from-white/10 via-transparent to-transparent" />
       </div>
-      
+
       <MissionControlNavbar />
       
       {/* Hero Section - Fixed proportions and dark text */}
@@ -197,7 +197,7 @@ export default function Guardian() {
             >
               <div className="space-y-6">
                 {/* Premium Category Label */}
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -212,33 +212,33 @@ export default function Guardian() {
                 
                 {/* Hero Typography - Dark colors */}
                 <div className="space-y-4">
-                  <motion.h1 
+                <motion.h1 
                     className="font-heading leading-[0.85] tracking-[-0.02em]"
                     initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
                   >
                     <span className="block text-6xl md:text-7xl lg:text-8xl font-black text-gray-900 mb-2 text-shadow-soft">
                       Guardian
                     </span>
                     <span className="block text-4xl md:text-5xl lg:text-6xl font-light bg-gradient-to-r from-emerald-700 via-blue-700 to-purple-700 text-transparent bg-clip-text">
-                      Grows
-                    </span>
+                    Grows
+                  </span>
                     <span className="block text-2xl md:text-3xl lg:text-4xl font-medium text-gray-800 mt-2 tracking-wide">
                       With Your Child
                     </span>
-                  </motion.h1>
-                  
+                </motion.h1>
+                
                   {/* Subtitle */}
-                  <motion.div 
+                <motion.div
                     className="space-y-3"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8, duration: 1 }}
-                  >
+                >
                     <h2 className="font-body text-xl md:text-2xl font-light text-blue-800 tracking-wide leading-relaxed">
                       From a digital teddy bear to a trusted friend
-                    </h2>
+                  </h2>
                     
                     {/* Content Box */}
                     <div className="glass-emerald rounded-2xl p-6 relative overflow-hidden">
@@ -247,11 +247,11 @@ export default function Guardian() {
                         <span className="font-medium text-emerald-800">The next generation will grow up with AI companions - whether we guide that process or not</span> - Guardian ensures their first meaningful digital relationship is one that nurtures emotional intelligence, builds confidence, and strengthens family bonds rather than replacing them.
                       </p>
                     </div>
-                  </motion.div>
+                </motion.div>
                 </div>
                 
                 {/* Action Buttons */}
-                <motion.div 
+                <motion.div
                   className="flex flex-col sm:flex-row gap-4 pt-6"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -275,7 +275,7 @@ export default function Guardian() {
                     className="group glass-ultra font-heading font-medium text-base text-gray-800 hover:text-gray-900 py-4 px-8 rounded-xl transition-all duration-500 hover:border-emerald-600/50 hover:shadow-lg"
                   >
                     <span className="flex items-center gap-3">
-                      See How It Works
+                    See How It Works
                       <svg className="w-4 h-4 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
@@ -334,13 +334,13 @@ export default function Guardian() {
               <div className="glass-blue rounded-2xl p-8 relative overflow-hidden shadow-xl hover:scale-105 transition-transform duration-700">
                 <div className="absolute inset-0 bg-gradient-to-br from-red-100/50 via-orange-100/40 to-yellow-100/50" />
                 <div className="text-center space-y-6 relative z-10">
-                  <motion.div 
+                <motion.div
                     className="w-20 h-20 mx-auto glass-emerald rounded-full flex items-center justify-center text-3xl border-2 border-red-500/40"
                     whileHover={{ rotate: 360, scale: 1.1 }}
                     transition={{ duration: 0.8 }}
                   >
                     📱
-                  </motion.div>
+                      </motion.div>
                   <div className="space-y-10">
                     <div className="font-mono text-gray-700 text-sm uppercase tracking-[0.15em]">Current Reality</div>
                     <div className="font-heading text-red-700 font-semibold text-base">Empty Content • Attention Seeking • Exploitative</div>
@@ -348,7 +348,7 @@ export default function Guardian() {
                     <div className="font-heading text-emerald-700 font-semibold text-base">Nurturing • Educational • Safe</div>
                     <div className="font-mono text-emerald-800 text-sm tracking-wide">with Guardian AI</div>
                   </div>
-                </div>
+                    </div>
               </div>
             </motion.div>
 
@@ -369,10 +369,10 @@ export default function Guardian() {
               </div>
               
               <h2 className="font-heading text-5xl md:text-6xl font-bold text-gray-900 leading-[1.1] tracking-tight mb-8">
-                Screen Time That
+                  Screen Time That
                 <span className="block bg-gradient-to-r from-emerald-600 via-blue-600 to-emerald-700 text-transparent bg-clip-text font-black mt-2">
-                  Actually Matters
-                </span>
+                    Actually Matters
+                  </span>
               </h2>
               
               <div className="glass-blue rounded-3xl p-8 shadow-xl border border-blue-100/50 backdrop-blur-sm">
@@ -411,11 +411,11 @@ export default function Guardian() {
         <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
           
           {/* Header */}
-          <motion.div 
+            <motion.div 
             className="text-center mb-16"
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -432,22 +432,22 @@ export default function Guardian() {
                 Experiences
               </span>
             </h2>
-          </motion.div>
-
+                </motion.div>
+                
           {/* Section 1: Guardian Parent Hero - Connection Focus */}
           <motion.div 
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20"
             initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
             transition={{ duration: 1 }}
           >
             {/* Left Side - Parent Hero Text */}
             <div className="space-y-8">
-              <motion.div
+                <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
                 className="glass-emerald rounded-3xl p-8 shadow-xl relative overflow-hidden"
               >
@@ -483,14 +483,14 @@ export default function Guardian() {
                       </p>
                     </div>
                   </div>
-                </div>
-              </motion.div>
+              </div>
+            </motion.div>
             </div>
 
             {/* Right Side - Enhanced Mobile Phone Dashboard Mockup */}
             <div className="relative">
               {/* Phone Frame Container */}
-              <motion.div 
+            <motion.div 
                 className="relative mx-auto"
                 style={{ 
                   width: '320px', 
@@ -499,7 +499,7 @@ export default function Guardian() {
                 }}
                 initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
                 whileInView={{ opacity: 1, scale: 1, rotateY: -5 }}
-                viewport={{ once: true }}
+              viewport={{ once: true }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
               >
                 {/* Phone Outer Frame */}
@@ -515,10 +515,10 @@ export default function Guardian() {
                           <div className="w-1 h-3 bg-slate-900 rounded-full"></div>
                           <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
                           <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
-                        </div>
+                      </div>
                         <div className="w-6 h-3 bg-emerald-500 rounded-sm ml-1"></div>
                       </div>
-                    </div>
+                </div>
 
                     {/* App Content */}
                     <div className="h-full bg-gradient-to-br from-blue-50 to-emerald-50 overflow-y-auto">
@@ -528,15 +528,15 @@ export default function Guardian() {
                           <div className="flex items-center gap-2">
                             <span className="text-lg">📱</span>
                             <span className="font-bold text-slate-900 text-sm">Guardian Parent App</span>
-                          </div>
+          </div>
                           <div className="flex items-center gap-2">
                             <span className="text-slate-600">🔔</span>
                             <span className="text-slate-600">⚙️</span>
-                          </div>
+        </div>
                         </div>
                         
                         <div className="flex items-center justify-between">
-                          <div>
+                    <div>
                             <h4 className="font-bold text-slate-900 text-base">Emma (Age 9)</h4>
                             <p className="text-xs text-slate-600">This Week • Overall Wellness</p>
                           </div>
@@ -547,9 +547,9 @@ export default function Guardian() {
                             </div>
                             <div className="text-xs text-emerald-700 font-medium">Thriving 💚</div>
                           </div>
-                        </div>
-                      </div>
-
+                    </div>
+                  </div>
+                  
                       {/* Dashboard Content */}
                       <div className="p-4 space-y-4">
                         {/* Conversation Themes - Enhanced */}
@@ -562,20 +562,20 @@ export default function Guardian() {
                               { topic: "Creative Writing", count: 5, color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
                               { topic: "Family Time", count: 4, color: "bg-yellow-100 text-yellow-800 border-yellow-200" }
                             ].map((theme, i) => (
-                              <motion.div
-                                key={i}
+                      <motion.div
+                        key={i}
                                 className={`${theme.color} border rounded-lg p-2 text-center`}
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
-                              >
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
+                      >
                                 <div className="font-semibold text-xs">{theme.topic}</div>
                                 <div className="font-mono text-xs">({theme.count})</div>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
 
                         {/* Enhanced Mood Trend */}
                         <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
@@ -593,31 +593,31 @@ export default function Guardian() {
                                   { day: "S", mood: "Calm", height: 70, color: "bg-blue-300" },
                                   { day: "S", mood: "Excited", height: 88, color: "bg-purple-400" }
                                 ].map((day, i) => (
-                                  <motion.div
-                                    key={i}
+                        <motion.div
+                          key={i}
                                     className="flex flex-col items-center flex-1"
                                     initial={{ height: 0 }}
                                     whileInView={{ height: 'auto' }}
-                                    viewport={{ once: true }}
+                          viewport={{ once: true }}
                                     transition={{ delay: i * 0.1 }}
-                                  >
-                                    <motion.div
+                        >
+                          <motion.div
                                       className={`${day.color} rounded-t w-full mb-1`}
                                       style={{ height: `${day.height}%` }}
-                                      initial={{ height: 0 }}
+                            initial={{ height: 0 }}
                                       whileInView={{ height: `${day.height}%` }}
-                                      viewport={{ once: true }}
+                            viewport={{ once: true }}
                                       transition={{ delay: i * 0.1, duration: 0.5 }}
-                                    />
+                          />
                                     <span className="text-xs font-mono text-slate-600">{day.day}</span>
-                                  </motion.div>
-                                ))}
+                        </motion.div>
+                      ))}
                               </div>
                               <p className="text-xs text-slate-600 text-center">Mostly positive with Tuesday dip (school test)</p>
                             </div>
-                          </div>
-                        </div>
-
+                    </div>
+                  </div>
+                  
                         {/* Enhanced Recent Insights */}
                         <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
                           <h5 className="font-bold text-slate-900 text-sm mb-3">Recent Insights</h5>
@@ -633,8 +633,8 @@ export default function Guardian() {
                                   "Used 'frustrated' instead of 'mad' - vocabulary growing",
                                   "Asked for help with math instead of giving up"
                                 ].map((moment, i) => (
-                                  <motion.div
-                                    key={i}
+                      <motion.div
+                        key={i}
                                     className="flex items-start gap-2 text-xs text-slate-700"
                                     initial={{ opacity: 0, x: -10 }}
                                     whileInView={{ opacity: 1, x: 0 }}
@@ -643,10 +643,10 @@ export default function Guardian() {
                                   >
                                     <span className="text-emerald-600 mt-0.5">✅</span>
                                     <span>{moment}</span>
-                                  </motion.div>
-                                ))}
-                              </div>
-                            </div>
+                      </motion.div>
+                    ))}
+                  </div>
+            </div>
 
                             {/* Discussion Opportunities */}
                             <div>
@@ -659,12 +659,12 @@ export default function Guardian() {
                                   "Curious about 'how friendships work' 📚",
                                   "Excited about art project, wants to show family 🎨"
                                 ].map((opportunity, i) => (
-                                  <motion.div
+              <motion.div 
                                     key={i}
                                     className="text-xs text-slate-700 flex items-start gap-1"
                                     initial={{ opacity: 0, x: -10 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
                                     transition={{ delay: i * 0.1 }}
                                   >
                                     <span className="text-blue-600">•</span>
@@ -672,8 +672,8 @@ export default function Guardian() {
                                   </motion.div>
                                 ))}
                               </div>
-                            </div>
-
+                  </div>
+                  
                             {/* Gentle Alerts */}
                             <div>
                               <h6 className="font-semibold text-yellow-800 text-xs mb-2 flex items-center gap-1">
@@ -684,23 +684,23 @@ export default function Guardian() {
                                   "Mentioned feeling 'left out' during lunch twice 💭",
                                   "Some concern about upcoming group project 🏫"
                                 ].map((alert, i) => (
-                                  <motion.div
-                                    key={i}
+                      <motion.div
+                        key={i}
                                     className="text-xs text-slate-700 flex items-start gap-1"
                                     initial={{ opacity: 0, x: -10 }}
                                     whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
+                        viewport={{ once: true }}
                                     transition={{ delay: i * 0.1 }}
                                   >
                                     <span className="text-yellow-600">•</span>
                                     <span>{alert}</span>
-                                  </motion.div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+                    </div>
+                  </div>
+                  
                         {/* Family Actions - Enhanced */}
                         <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
                           <h5 className="font-bold text-slate-900 text-sm mb-3">🗣️ Suggested Conversations</h5>
@@ -710,19 +710,19 @@ export default function Guardian() {
                               "I heard you did great on your presentation!",
                               "Want to look at guitar lessons together?"
                             ].map((suggestion, i) => (
-                              <motion.div
-                                key={i}
+                      <motion.div
+                        key={i}
                                 className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-2"
                                 initial={{ opacity: 0, y: 10 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
                               >
                                 <p className="text-xs text-slate-800 font-medium">"{suggestion}"</p>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+            </div>
 
                         {/* Weekly Stats */}
                         <div className="bg-white/90 rounded-2xl p-4 shadow-sm">
@@ -734,12 +734,12 @@ export default function Guardian() {
                               { label: "Growth Moments", value: "3", color: "text-purple-600" },
                               { label: "Safety Alerts", value: "0", color: "text-emerald-600" }
                             ].map((stat, i) => (
-                              <motion.div
+              <motion.div 
                                 key={i}
                                 className="bg-slate-50 rounded-lg p-2"
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
+                viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
                               >
                                 <div className={`font-mono font-bold text-lg ${stat.color}`}>{stat.value}</div>
@@ -747,9 +747,9 @@ export default function Guardian() {
                               </motion.div>
                             ))}
                           </div>
-                        </div>
-                      </div>
-
+                    </div>
+                  </div>
+                  
                       {/* Bottom Navigation */}
                       <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200/50 px-4 py-3">
                         <div className="flex justify-around">
@@ -759,8 +759,8 @@ export default function Guardian() {
                             { icon: "⚙️", label: "Settings", active: false },
                             { icon: "👨‍👩‍👧‍👦", label: "Family", active: false }
                           ].map((nav, i) => (
-                            <motion.div
-                              key={i}
+                      <motion.div
+                        key={i}
                               className={`flex flex-col items-center gap-1 ${
                                 nav.active ? 'text-blue-600' : 'text-slate-500'
                               }`}
@@ -771,31 +771,31 @@ export default function Guardian() {
                               <span className="text-xs font-medium">{nav.label}</span>
                             </motion.div>
                           ))}
-                        </div>
-                      </div>
+                            </div>
+                          </div>
 
                       {/* Home Indicator */}
                       <div className="flex justify-center py-2">
                         <div className="w-32 h-1 bg-slate-300 rounded-full"></div>
-                      </div>
-                    </div>
+                          </div>
+                        </div>
                   </div>
                 </div>
 
                 {/* Phone Shadow */}
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-xl transform translate-y-4 -z-10"></div>
               </motion.div>
-            </div>
-          </motion.div>
+                </div>
+              </motion.div>
 
           {/* Guardian Unified Component - Investor Product Overview */}
-          <motion.div 
+              <motion.div 
             className="mb-20"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.3 }}
-          >
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.3 }}
+              >
             {/* Section Header */}
             <div className="text-center mb-16">
               <div className="flex items-center justify-center gap-4 mb-6">
@@ -804,8 +804,8 @@ export default function Guardian() {
                   Guardian Platform Overview
                 </span>
                 <div className="h-[1px] w-20 bg-gradient-to-l from-transparent via-slate-400 to-slate-600"></div>
-              </div>
-              
+                  </div>
+                  
               <h3 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 leading-tight tracking-tight mb-4">
                 Enterprise-Grade
                 <span className="block bg-gradient-to-r from-emerald-600 to-blue-600 text-transparent bg-clip-text font-black">
@@ -835,20 +835,20 @@ export default function Guardian() {
                   
                   {/* Parent Stress Reduction */}
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center">
                       <span className="font-medium text-slate-800">Parent Stress Reduction</span>
                       <span className="font-mono text-sm text-slate-600">74% → 23%</span>
-                    </div>
+                        </div>
                     <div className="relative h-3 bg-slate-100 rounded-full overflow-hidden">
-                      <motion.div 
+                            <motion.div
                         className="absolute inset-y-0 left-0 bg-gradient-to-r from-red-400 via-yellow-400 to-emerald-500 rounded-full"
                         initial={{ width: "0%" }}
                         whileInView={{ width: "77%" }}
-                        viewport={{ once: true }}
+                              viewport={{ once: true }}
                         transition={{ duration: 1.5, delay: 0.3 }}
                       />
-                    </div>
                   </div>
+                </div>
 
                   {/* Key Metrics */}
                   <div className="grid grid-cols-1 gap-4 pt-4">
@@ -870,7 +870,7 @@ export default function Guardian() {
                           {metric.subtitle && (
                             <div className="text-xs text-slate-500">{metric.subtitle}</div>
                           )}
-                        </div>
+                            </div>
                         <div className={`font-mono font-bold text-lg ${metric.color}`}>
                           {metric.value}
                         </div>
@@ -881,17 +881,17 @@ export default function Guardian() {
                   <div className="pt-4 border-t border-slate-100">
                     <div className="text-xs text-slate-500 font-medium">
                       Based on 6-month beta with 127 families
-                    </div>
-                  </div>
                 </div>
-              </motion.div>
+            </div>
+          </div>
+          </motion.div>
 
               {/* Top Right: Conversation Intelligence */}
-              <motion.div 
+            <motion.div
                 className="lg:col-span-7 bg-white rounded-2xl p-8 shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-500"
                 initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 <div className="space-y-6">
@@ -909,55 +909,55 @@ export default function Guardian() {
                       { icon: "🎯", text: "Math anxiety decreased after Guardian support", type: "Progress" },
                       { icon: "🎸", text: "Strong interest in music - family opportunity", type: "Opportunity" }
                     ].map((insight, i) => (
-                      <motion.div
+                  <motion.div
                         key={i}
                         className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100"
                         initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                         transition={{ delay: i * 0.1 + 0.3 }}
                       >
                         <span className="text-lg flex-shrink-0">{insight.icon}</span>
                         <div className="flex-1">
                           <div className="font-medium text-slate-800 text-sm">"{insight.text}"</div>
                           <div className="text-xs text-slate-500 mt-1">{insight.type}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
 
                   {/* Summary Stats */}
                   <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-lg p-4 border border-blue-100">
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
+                    <div>
                         <div className="font-mono font-bold text-xl text-blue-600">23 → 3</div>
                         <div className="text-xs text-slate-600">conversations → actionable family moments</div>
-                      </div>
+                    </div>
                       <div>
                         <div className="font-mono font-bold text-xl text-emerald-600 flex items-center justify-center gap-1">
                           ↗️ Positive
-                        </div>
+              </div>
                         <div className="text-xs text-slate-600">emotional wellness trending</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          </div>
+            </div>
+            </div>
+        </div>
               </motion.div>
 
               {/* Center Diagonal: Safety Architecture */}
-              <motion.div 
+          <motion.div
                 className="lg:col-span-12 bg-white rounded-2xl p-8 shadow-lg border border-slate-200/50 hover:shadow-xl transition-all duration-500"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-              >
+          >
                 <div className="text-center space-y-8">
-                  <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="flex items-center justify-center gap-3 mb-6">
                     <span className="text-2xl">🛡️</span>
                     <h4 className="font-heading text-2xl font-bold text-slate-900">Graduated Safety System</h4>
-                  </div>
-
+            </div>
+            
                   {/* Privacy Maturation Model */}
                   <div className="max-w-4xl mx-auto">
                     <div className="text-sm text-slate-600 font-medium mb-6">Privacy Maturation Model</div>
@@ -975,39 +975,39 @@ export default function Guardian() {
                           age: "Ages 7-10", 
                           title: "Development", 
                           desc: "Selective privacy with clear boundaries",
-                          color: "blue",
+                color: "blue",
                           icon: "🎒"
                         },
                         { 
                           age: "Ages 11-17", 
                           title: "Maturation", 
                           desc: "Advanced privacy with protective oversight",
-                          color: "purple",
+                color: "purple",
                           icon: "🤝"
                         }
                       ].map((stage, i) => (
-                        <motion.div
-                          key={i}
+              <motion.div
+                key={i}
                           className={`bg-${stage.color}-50 border border-${stage.color}-200 rounded-xl p-4 text-center`}
                           initial={{ opacity: 0, scale: 0.9 }}
                           whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
+                viewport={{ once: true }}
                           transition={{ delay: i * 0.1 + 0.5 }}
                         >
                           <div className="text-2xl mb-2">{stage.icon}</div>
                           <div className="font-semibold text-slate-900 text-sm mb-1">{stage.age}</div>
                           <div className={`font-medium text-${stage.color}-700 text-sm mb-2`}>{stage.title}</div>
                           <div className="text-xs text-slate-600">{stage.desc}</div>
-                        </motion.div>
-                      ))}
-                    </div>
+              </motion.div>
+            ))}
+          </div>
 
                     {/* Crisis Response & Professional Integration */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                         <div className="font-semibold text-slate-900 text-sm mb-2">Crisis Response Hierarchy</div>
                         <div className="text-xs text-slate-600">Immediate → Important → Weekly → Celebration</div>
-                      </div>
+                </div>
                       <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                         <div className="font-semibold text-slate-900 text-sm mb-2">Professional Integration</div>
                         <div className="text-xs text-slate-600">Therapeutic data export capability</div>
@@ -1052,12 +1052,12 @@ export default function Guardian() {
                         <span className="text-slate-700 leading-relaxed">{feature}</span>
                       </motion.div>
                     ))}
-                  </div>
+            </div>
 
                   <div className="pt-4 border-t border-slate-100">
                     <div className="text-xs text-slate-500 font-medium">
                       Enterprise-Grade Child Development Platform
-                    </div>
+                  </div>
                   </div>
                 </div>
               </motion.div>
@@ -1074,34 +1074,34 @@ export default function Guardian() {
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
                     <h4 className="font-heading text-xl font-semibold text-slate-900">Market Position & Validation</h4>
-                  </div>
-                  
+                </div>
+                
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Market Position */}
-                    <div className="space-y-4">
+                <div className="space-y-4">
                       <div className="text-sm font-medium text-slate-800 mb-3">Strategic Advantages</div>
                       {[
                         { label: "Regulatory Landscape", value: "Ahead of legislation curve" },
                         { label: "Competitive Moat", value: "First relationship-duration platform" },
                         { label: "Revenue Model", value: "Family SaaS + enterprise licensing" },
                         { label: "Beta Validation", value: "94% family retention rate" }
-                      ].map((item, i) => (
-                        <motion.div
-                          key={i}
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
                           className="space-y-1"
                           initial={{ opacity: 0, y: 10 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                           transition={{ delay: i * 0.1 + 0.9 }}
                         >
                           <div className="text-xs font-medium text-slate-600">{item.label}</div>
                           <div className="text-sm text-slate-800">{item.value}</div>
-                        </motion.div>
-                      ))}
-                    </div>
+                    </motion.div>
+                  ))}
+            </div>
 
                     {/* IP Portfolio */}
-                    <div className="space-y-4">
+                <div className="space-y-4">
                       <div className="text-sm font-medium text-slate-800 mb-3">Intellectual Property</div>
                       <div className="space-y-3">
                         <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
@@ -1111,10 +1111,10 @@ export default function Guardian() {
                         <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
                           <div className="font-medium text-emerald-800 text-sm">Business IP</div>
                           <div className="text-xs text-emerald-600 mt-1">Child development safety protocols</div>
+                      </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
+                </div>
 
                   {/* Key Metrics Summary */}
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200">
@@ -1122,18 +1122,18 @@ export default function Guardian() {
                       <div>
                         <div className="font-mono font-bold text-xl text-amber-600">127</div>
                         <div className="text-xs text-slate-600">Beta Families</div>
-                      </div>
+                  </div>
                       <div>
                         <div className="font-mono font-bold text-xl text-amber-600">94%</div>
                         <div className="text-xs text-slate-600">Retention Rate</div>
-                      </div>
-                    </div>
+                        </div>
+                        </div>
                   </div>
                 </div>
               </motion.div>
 
-            </div>
-          </motion.div>
+              </div>
+                </motion.div>
 
         </div>
       </section>
@@ -1359,12 +1359,12 @@ export default function Guardian() {
               <div className="glass-emerald rounded-2xl p-6 md:p-8 max-w-4xl mx-auto relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/50 to-blue-100/50" />
                 <p className="font-body text-lg md:text-xl text-gray-800 leading-relaxed relative z-10">
-                  Give your child the gift of a healthy first AI relationship. 
+                Give your child the gift of a healthy first AI relationship. 
                   <span className="text-emerald-700 font-medium"> Guardian grows with them</span>, 
                   <span className="text-blue-700 font-medium"> protects them</span>, and 
                   <span className="text-purple-700 font-medium"> prepares them</span> for a digital world 
-                  where they'll always value human connection above all else.
-                </p>
+                where they'll always value human connection above all else.
+              </p>
               </div>
             </div>
             

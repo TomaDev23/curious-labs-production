@@ -1,9 +1,9 @@
 /**
  * @component HeroAtomic
- * @description Self-contained hero section with planet visual and static content - ANIMATION PURGED
+ * @description Self-contained hero section with planet visual and static content - 3D EARTH INTEGRATED
  * 
  * @metadata
- * @version 1.0.0
+ * @version 2.0.0
  * @author CuriousLabs
  * @legit true
  */
@@ -12,18 +12,21 @@
 // 🔴 CODE: HERO-ATOMIC-001
 // 🏠 STATUS: ATOMIC HOMEPAGE HERO SECTION
 // 📋 USED_IN: v6_atomic.jsx (Main Homepage)
-// 🧬 FEATURES: Hero section with 3D planet, intro text, call-to-action
+// 🧬 FEATURES: Hero section with 3D Earth, intro text, call-to-action
 // ⚠️ WARNING: DO NOT REMOVE - MAIN HOMEPAGE HERO
 // 📊 BUNDLE: Lazy loaded for performance (Three.js content)
 // 🎯 TYPE: Homepage Hero Component
-//  DEPENDENCIES: Hero3DPlanet (simplified), BackgroundLayerAtomic, HeroStageManager
+// 🌍 NEW: 3D Earth integration with React Three Fiber
 
 import React, { useState, Suspense, lazy, useEffect, useCallback } from 'react';
+// Remove direct Canvas import - will be dynamically imported
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
 import MissionControlNavbar from '../navigation/MissionControlNavbar';
 import {  motion, AnimatePresence  } from '../../FramerProvider';
 
-// TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../Hero3DPlanet'));
+// Lazy imports for performance
+const CanvasWrapper = lazy(() => import('./hero/CanvasWrapper'));
+const HeroEarth = lazy(() => import('../../3d/components/earth/HeroEarth'));
 
 import BackgroundLayerAtomic from './BackgroundLayerAtomic';
 import HeroStageManager from './hero/HeroStageManager';
@@ -31,6 +34,9 @@ import HeroStageManager from './hero/HeroStageManager';
 // Typewriter functionality - CLEAN IMPORTS
 import { useTypewriter } from './hero/hooks/useTypewriter';
 import useCoordinatedHeroLoading from './hero/hooks/useCoordinatedHeroLoading';
+
+// Client-side only check for SSR compatibility
+const isClient = typeof window !== 'undefined';
 
 // Export metadata for LEGIT compliance
 // export const metadata = {
@@ -114,7 +120,7 @@ const HeroAtomic = React.memo(() => {
   const planetPosition = React.useMemo(() => {
     if (isMobile) return { top: '15%', right: '5%' };
     if (isTablet) return { top: '18%', right: '8%' };
-    return { top: '60%', left: '75%', transform: 'translate(-50%, -50%)' };
+    return { top: '20%', right: '10%' };
   }, [isMobile, isTablet]);
 
   // Optimized planet size
@@ -171,21 +177,50 @@ const HeroAtomic = React.memo(() => {
         {/* Background layer - Loads immediately */}
         <BackgroundLayerAtomic />
         
-        {/* TEMPORARILY DISABLED: 3D Planet with delayed entrance (1.5s after content) */}
+        {/* 3D Earth with delayed entrance (1.5s after content) */}
         <AnimatePresence>
-          {show3D && (
-            <div
+          {show3D && isClient && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               style={{
                 position: 'absolute',
                 ...planetPosition,
-                zIndex: 20
+                zIndex: 20,
+                width: `${planetSize}px`,
+                height: `${planetSize}px`
               }}
             >
-              {/* TEMPORARILY DISABLED: <Hero3DPlanet /> */}
-              <div className="flex items-center justify-center h-full">
-                <div className="text-lime-400/60 text-sm">Planet View Disabled</div>
-              </div>
-            </div>
+              <Suspense 
+                fallback={
+                  <div className="flex items-center justify-center h-full">
+                    <div className="w-16 h-16 border-2 border-lime-400/30 border-t-lime-400 rounded-full animate-spin"></div>
+                  </div>
+                }
+              >
+                <CanvasWrapper
+                  camera={{ 
+                    position: [0, 0, 12], 
+                    fov: 45 
+                  }}
+                  style={{ 
+                    width: '100%', 
+                    height: '100%',
+                    background: 'transparent'
+                  }}
+                  gl={{ 
+                    antialias: performanceTier !== 'minimal',
+                    alpha: true,
+                    powerPreference: 'high-performance'
+                  }}
+                  dpr={performanceTier === 'minimal' ? 1 : Math.min(window.devicePixelRatio, 2)}
+                >
+                  <HeroEarth />
+                </CanvasWrapper>
+              </Suspense>
+            </motion.div>
           )}
         </AnimatePresence>
         

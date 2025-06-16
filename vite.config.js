@@ -33,6 +33,17 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  
+  // 🔥 KEEP: SSR Configuration to exclude R3F from server-side
+  ssr: {
+    external: [
+      '@react-three/fiber',
+      '@react-three/drei',
+      'three'
+    ],
+    noExternal: []
+  },
+
   optimizeDeps: {
     exclude: [
       'mermaid',
@@ -41,6 +52,10 @@ export default defineConfig({
       'cytoscape-cose-bilkent',
       'dagre',
       'd3'
+      // 🔧 REMOVED: Allow R3F for client-side dynamic imports
+      // '@react-three/fiber',
+      // '@react-three/drei', 
+      // 'three'
     ],
     include: [
       'react', 
@@ -67,11 +82,32 @@ export default defineConfig({
     target: 'esnext',
     sourcemap: false,
     rollupOptions: {
+      // 🔧 FIXED: Only exclude from SSR context, allow for client builds
+      external: (id, importer, isResolved) => {
+        // Only exclude during SSR build, not client build
+        if (process.env.VITE_SSR_BUILD) {
+          if (id.includes('@react-three/fiber')) return true;
+          if (id.includes('@react-three/drei')) return true;
+          if (id.includes('three') && !id.includes('src/')) return true;
+        }
+        return false;
+      },
       output: {
         manualChunks(id) {
           // ✅ SPLIT framer-motion into separate chunk
           if (id.includes('framer-motion')) {
             return 'framer-motion';
+          }
+          
+          // 🔧 CHANGED: Create chunks for R3F when dynamically loaded
+          if (id.includes('@react-three/fiber')) {
+            return 'three-fiber';
+          }
+          if (id.includes('@react-three/drei')) {
+            return 'three-drei';
+          }
+          if (id.includes('three') && !id.includes('src/')) {
+            return 'three-core';
           }
           
           // 🚀 SKIP HEAVY LIBRARIES: Don't pre-bundle visualization libraries

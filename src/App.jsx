@@ -31,9 +31,6 @@ const NotFound = lazy(() => import('./pages/404.jsx'));
 // ✅ CONTRACTS DASHBOARD - DEV TOOL
 const ContractsDashboard = lazy(() => import('./pages/contracts.jsx'));
 
-// ✅ 3D TEST PAGE - Infrastructure validation
-const Test3DPage = lazy(() => import('./pages/3d-test.jsx'));
-
 // ✅ 3D ROUTES: Only these 3 pages need 3D
 // 🎯 V7 UPDATE: Homepage now uses wrapper for 3D isolation
 const HomePage_v7_wrapper = lazy(() => import('./pages/HomePage_v7_wrapper.jsx')); // Homepage - 3D isolated to component level
@@ -490,11 +487,11 @@ const AppRoutes = () => (
       } /> */}
       
       {/* 🗑️ GO: 3D test pages - bye */}
-      <Route path="/3d-test" element={
+      {/* <Route path="/3d-test" element={
         <Suspense fallback={<SimpleLoader />}>
           <Test3DPage />
         </Suspense>
-      } />
+      } /> */}
       
       {/* <Route path="/3d-test-simple" element={
         <Suspense fallback={<LoadingFallback />}>

@@ -30,7 +30,6 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useLoader, useFrame, useThree } from '@react-three/fiber';
-import { Sphere } from '@react-three/drei';
 import { 
   TextureLoader, 
   LinearMipmapLinearFilter, 
@@ -677,14 +676,15 @@ const MissionMoon = ({
       <MoonLighting debugPhase={debugPhase} anomalyMode={anomalyMode} />
       
       {/* Soft atmospheric haze - PRESERVED */}
-      <Sphere args={[4.25, 32, 32]}>
+      <mesh>
+        <sphereGeometry args={[4.25, 32, 32]} />
         <meshBasicMaterial
           color={isSupermoon ? "#fff2d6" : "#ffffff"}
           transparent
           opacity={isSupermoon ? 0.08 : 0.04}
           side={BackSide}
         />
-      </Sphere>
+      </mesh>
       
       {/* Main Moon Mesh - PRESERVED EXACTLY */}
       <mesh 

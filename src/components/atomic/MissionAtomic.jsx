@@ -6,7 +6,7 @@
  * Warning: DO NOT REMOVE - CORE ATOMIC MISSION SECTION
  * Bundle: Core atomic homepage bundle
  * Type: Atomic Mission Component
- * Dependencies: framer-motion, MoonSphereProxy, MissionControlBoard
+ * Dependencies: framer-motion, MissionControlBoard
  */
 
 /**

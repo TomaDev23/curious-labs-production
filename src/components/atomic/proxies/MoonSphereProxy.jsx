@@ -80,9 +80,104 @@ const MoonSphereProxy = ({
   fallbackToEclipse = false,
   ...otherProps // ⭐ NEW: Forward all other props to MoonSphere
 }) => {
-  // ✅ SURGICAL FIX: Since 3D is completely disabled, return fallback immediately
-  // No hooks, no state, no device detection - prevents all update loops
-  return <MoonFallback className={className} />;
+  // BYPASS: Enable 3D Moon loading instead of hardcoded fallback
+  const [MoonComponent, setMoonComponent] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  
+  // Check 3D capability (but we'll bypass it anyway due to our earlier fix)
+  const has3DCapability = use3DCapability();
+  
+  // 🚀 TEMPORARY BYPASS: Force 3D loading to debug white disk issue
+  const force3D = true; // Always load 3D for debugging
+  
+  useEffect(() => {
+    // Force load the 3D Moon component
+    const loadMoonComponent = async () => {
+      try {
+        setIsLoading(true);
+        
+        // 🚀 BYPASS: Skip capability check and force load 3D
+        if (!force3D) {
+          console.log('3D capability check failed, using fallback');
+          setHasError(true);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Import the MissionMoon component and Canvas wrapper
+        const [
+          { default: MissionMoon },
+          { Canvas },
+          { OrbitControls }
+        ] = await Promise.all([
+          import('../../../3d/components/moon/MissionMoon'),
+          import('@react-three/fiber'),
+          import('@react-three/drei')
+        ]);
+        
+        // Create a Canvas-wrapped version of MissionMoon
+        const MissionMoonWithCanvas = (props) => {
+          console.log('🌙 Rendering MissionMoon with Canvas wrapper', props);
+          return (
+            <Canvas
+              shadows
+              camera={{ position: [0, 0, 25], fov: 25 }}
+              gl={{ antialias: true, alpha: true }}
+              style={{ width: '100%', height: '100%' }}
+            >
+              <OrbitControls 
+                enableZoom={false}
+                enablePan={false}
+                enableRotate={true}
+                autoRotate={false}
+                autoRotateSpeed={0}
+              />
+              <Suspense fallback={null}>
+                <MissionMoon {...props} />
+              </Suspense>
+            </Canvas>
+          );
+        };
+        
+        console.log('🌙 MissionMoon component loaded successfully');
+        setMoonComponent(() => MissionMoonWithCanvas);
+        setHasError(false);
+      } catch (error) {
+        console.error('🚨 Failed to load 3D Moon component:', error);
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadMoonComponent();
+  }, []);
+  
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className={`relative rounded-full flex items-center justify-center ${className}`}>
+        <div className="text-white/60 text-sm animate-pulse">🌙 Loading Moon...</div>
+      </div>
+    );
+  }
+  
+  // Show error fallback
+  if (hasError || !MoonComponent) {
+    return <MoonFallback className={className} />;
+  }
+  
+  // Render the actual 3D Moon component
+  return (
+    <Suspense fallback={<MoonFallback className={className} />}>
+      <MoonComponent 
+        className={className}
+        fallbackToEclipse={fallbackToEclipse}
+        {...otherProps}
+      />
+    </Suspense>
+  );
 };
 
 export default MoonSphereProxy; 

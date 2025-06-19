@@ -17,14 +17,14 @@
  */
 
 import React, { useState, useEffect, Suspense, lazy, useRef, useCallback } from 'react';
-import MoonSphereProxy from './proxies/MoonSphereProxy';
 import {  motion, useAnimation  } from '../../FramerProvider';
 
 // 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
 const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
 
-// Lazy load MoonSphere to prevent Three.js contamination
-// const MoonSphere = lazy(() => import('./Planetary/MoonSphere'));
+// Lazy imports for performance
+const CanvasWrapper = lazy(() => import('./hero/CanvasWrapper'));
+const MissionMoon = lazy(() => import('../../3d/components/moon/MissionMoon'));
 
 // Component metadata for LEGIT compliance
 export const metadata = {
@@ -831,12 +831,30 @@ const MissionAtomic = () => {
                 </div>
               </div>
             }>
-              <MoonSphereProxy 
-                className="w-[400px] h-[400px]" 
-                showDebugHUD={false}
-                debugPhase={moonPhaseOverride}
-                anomalyMode={moonAnomalyMode}
-              />
+              <CanvasWrapper
+                camera={{ 
+                  position: [0, 0, 25], 
+                  fov: 25 
+                }}
+                style={{ 
+                  width: '100%', 
+                  height: '100%',
+                  background: 'transparent'
+                }}
+                gl={{ 
+                  antialias: true,
+                  alpha: true,
+                  powerPreference: 'high-performance'
+                }}
+                dpr={Math.min(window.devicePixelRatio, 2)}
+              >
+                <MissionMoon 
+                  className="w-[400px] h-[400px]" 
+                  showDebugHUD={false}
+                  debugPhase={moonPhaseOverride}
+                  anomalyMode={moonAnomalyMode}
+                />
+              </CanvasWrapper>
             </Suspense>
           </div>
           

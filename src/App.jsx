@@ -319,7 +319,7 @@ const AppRoutes = () => (
       
       {/* Our Products - New unified products page */}
       {/* <Route path="/our-products" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <OurProductsPage />
         </Suspense>
       } /> */}
@@ -366,35 +366,35 @@ const AppRoutes = () => (
       } />
       {/* 🗑️ GO: /universe - bye */}
       {/* <Route path="/universe" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <UniverseExperience />
         </Suspense>
       } /> */}
       
       {/* 🗑️ GO: /dev main index - bye */}
       {/* <Route path="/dev" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <DevPage />
         </Suspense>
       } /> */}
       
       {/* 🗑️ GO: All dev routes except the KEEP ones */}
       {/* <Route path="/dev/index" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <DevIndex />
         </Suspense>
       } /> */}
       
       {/* 🗑️ GO: /dev/parallax-test - bye */}
       {/* <Route path="/dev/parallax-test" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <ParallaxTest />
         </Suspense>
       } /> */}
       
       {/* 🗑️ GO: /dev/mouse-parallax-test - bye */}
       {/* <Route path="/dev/mouse-parallax-test" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <MouseParallaxTest />
         </Suspense>
       } /> */}
@@ -410,7 +410,7 @@ const AppRoutes = () => (
       
       {/* 🔍 LEGACY REVIEW: Mount old index.jsx for examination */}
       {/* <Route path="/dev/legacy-index-review" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <ErrorBoundary fallback={<SafeV4CosmicPage />}>
             <LegacyIndexSafeReview />
           </ErrorBoundary>
@@ -419,14 +419,14 @@ const AppRoutes = () => (
       
       {/* 🗑️ GO: /dev/stellar-ab-test - bye */}
       {/* <Route path="/dev/stellar-ab-test" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <StellarABTest />
         </Suspense>
       } /> */}
       
       {/* 🗑️ GO: /background-final - bye */}
       {/* <Route path="/background-final" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <BackgroundFinal />
         </Suspense>
       } /> */}
@@ -474,14 +474,14 @@ const AppRoutes = () => (
       
       {/* 🗑️ GO: /process-comparison - bye */}
       {/* <Route path="/process-comparison" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <ProcessComparisonPage />
         </Suspense>
       } /> */}
       
       {/* 🗑️ GO: /demo/scroll-test - bye */}
       {/* <Route path="/demo/scroll-test" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <ScrollTestPage />
         </Suspense>
       } /> */}
@@ -494,13 +494,13 @@ const AppRoutes = () => (
       } /> */}
       
       {/* <Route path="/3d-test-simple" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Test3DPageSimple />
         </Suspense>
       } /> */}
       
       {/* <Route path="/3d-test-debug" element={
-        <Suspense fallback={<LoadingFallback />}>
+        <Suspense fallback={<SimpleLoader />}>
           <Test3DPageDebug />
         </Suspense>
       } /> */}

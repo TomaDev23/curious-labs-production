@@ -513,15 +513,18 @@ const MissionMoon = ({
   const [prevAnomalyMode, setPrevAnomalyMode] = useState(null);
   const animationRef = useRef(null);
   
-  // Texture loading - PRESERVED
-  const moonTexture = useLoader(TextureLoader, '/assets/images/planets/4k/moonmap2k.jpg');
-  const moonBumpMap = useLoader(TextureLoader, '/assets/images/planets/4k/moonbump2k.jpg');
+  // Texture loading - OPTIMIZED for WebP and mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const textureBasePath = '/assets/images/planets/2k/';
   
-  // Texture configuration - PRESERVED EXACTLY
+  const moonTexture = useLoader(TextureLoader, `${textureBasePath}moonmap2k.webp`);
+  const moonBumpMap = useLoader(TextureLoader, `${textureBasePath}moonbump2k.webp`);
+  
+  // Texture configuration - ENHANCED for WebP optimization
   useEffect(() => {
-    // Set proper anisotropic filtering
-    moonTexture.anisotropy = 16;
-    moonBumpMap.anisotropy = 16;
+    // Set proper anisotropic filtering - reduced for mobile
+    moonTexture.anisotropy = isMobile ? 8 : 16;
+    moonBumpMap.anisotropy = isMobile ? 8 : 16;
     
     // Enable mipmapping
     moonTexture.generateMipmaps = true;
@@ -544,7 +547,7 @@ const MissionMoon = ({
     moonTexture.offset.set(0, 0);  // No offset to prevent scrolling effect
     moonBumpMap.repeat.set(1, 1);
     moonBumpMap.offset.set(0, 0);
-  }, [moonTexture, moonBumpMap]);
+  }, [moonTexture, moonBumpMap, isMobile]);
   
   // Rotation animation - REDUCED: Slower rotation to minimize stitch line visibility
   useFrame(() => {

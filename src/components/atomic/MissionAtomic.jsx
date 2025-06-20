@@ -303,6 +303,10 @@ const MissionAtomic = () => {
   const [moonPhaseOverride, setMoonPhaseOverride] = useState(null);
   const [moonAnomalyMode, setMoonAnomalyMode] = useState(null);
   
+  // Simple moon loading with elegant transition
+  const [moonLoaded, setMoonLoaded] = useState(false);
+  const [moonFadeIn, setMoonFadeIn] = useState(false);
+  
   // 🎯 PROGRESSIVE BACKGROUND LOADING
   const { backgroundLoaded, backgroundError, imageUrl, attachObserver } = useProgressiveBackground('MissionAtomic');
   const containerRef = useRef(null);
@@ -317,6 +321,23 @@ const MissionAtomic = () => {
   const checkMobile = () => {
     setIsMobile(window.innerWidth < 768);
   };
+  
+  // Elegant moon loading with proper timing
+  useEffect(() => {
+    // Start loading moon after a short delay to prioritize other content
+    const loadTimer = setTimeout(() => {
+      setMoonLoaded(true);
+      
+      // Add fade-in effect after moon is loaded
+      const fadeTimer = setTimeout(() => {
+        setMoonFadeIn(true);
+      }, 300);
+      
+      return () => clearTimeout(fadeTimer);
+    }, 2000);
+    
+    return () => clearTimeout(loadTimer);
+  }, []);
   
   // Check if user prefers reduced motion
   const checkMotionPreference = () => {
@@ -827,34 +848,55 @@ const MissionAtomic = () => {
             <Suspense fallback={
               <div className="w-full h-full flex items-center justify-center">
                 <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
-                  <div className="text-white/60 text-sm">Loading Moon...</div>
+                  <div className="flex flex-col items-center space-y-3">
+                    <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
+                    <div className="text-white/60 text-sm">Loading Moon...</div>
+                  </div>
                 </div>
               </div>
             }>
-              <CanvasWrapper
-                camera={{ 
-                  position: [0, 0, 25], 
-                  fov: 25 
-                }}
-                style={{ 
-                  width: '100%', 
-                  height: '100%',
-                  background: 'transparent'
-                }}
-                gl={{ 
-                  antialias: true,
-                  alpha: true,
-                  powerPreference: 'high-performance'
-                }}
-                dpr={Math.min(window.devicePixelRatio, 2)}
-              >
-                <MissionMoon 
-                  className="w-[400px] h-[400px]" 
-                  showDebugHUD={false}
-                  debugPhase={moonPhaseOverride}
-                  anomalyMode={moonAnomalyMode}
-                />
-              </CanvasWrapper>
+              {moonLoaded ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: moonFadeIn ? 1 : 0 }}
+                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  className="w-full h-full"
+                >
+                  <CanvasWrapper
+                    camera={{ 
+                      position: [0, 0, 25], 
+                      fov: 25 
+                    }}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%',
+                      background: 'transparent'
+                    }}
+                    gl={{ 
+                      antialias: true,
+                      alpha: true,
+                      powerPreference: 'high-performance'
+                    }}
+                    dpr={Math.min(window.devicePixelRatio, 2)}
+                  >
+                    <MissionMoon 
+                      className="w-[400px] h-[400px]" 
+                      showDebugHUD={false}
+                      debugPhase={moonPhaseOverride}
+                      anomalyMode={moonAnomalyMode}
+                    />
+                  </CanvasWrapper>
+                </motion.div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
+                      <div className="text-white/60 text-sm">Preparing Moon...</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </Suspense>
           </div>
           

@@ -18,7 +18,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useLoader, useFrame } from '@react-three/fiber';
-import { TextureLoader } from 'three';
+import { TextureLoader, LinearMipmapLinearFilter, LinearFilter, ClampToEdgeWrapping } from 'three';
 
 // Earth mesh component - optimized for performance tiers
 const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' }) => {
@@ -45,10 +45,40 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
     }
   });
 
-  // Load texture maps with error handling
-  const surfaceMap = useLoader(TextureLoader, '/assets/images/planets/4k/earthmap1k_LE_upscale_balanced_x4.jpg');
-  const bumpMap = useLoader(TextureLoader, '/assets/images/planets/4k/earthbump1k_LE_upscale_balanced_x4.jpg');
-  const cloudMap = useLoader(TextureLoader, '/assets/images/planets/4k/earthcloudmap_LE_upscale_balanced_x4.jpg');
+  // Load texture maps with error handling and mobile optimization
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const textureBasePath = '/assets/images/planets/2k/';
+  
+  const surfaceMap = useLoader(TextureLoader, `${textureBasePath}earthmap1k_LE_upscale_balanced_x4.webp`);
+  const bumpMap = useLoader(TextureLoader, `${textureBasePath}earthbump1k_LE_upscale_balanced_x4.webp`);
+  const cloudMap = useLoader(TextureLoader, `${textureBasePath}earthcloudmap_LE_upscale_balanced_x4.webp`);
+  
+  // Optimize texture settings for WebP and performance
+  useEffect(() => {
+    // Configure surface map
+    surfaceMap.anisotropy = isMobile ? 8 : 16;
+    surfaceMap.generateMipmaps = true;
+    surfaceMap.minFilter = LinearMipmapLinearFilter;
+    surfaceMap.magFilter = LinearFilter;
+    surfaceMap.wrapS = ClampToEdgeWrapping;
+    surfaceMap.wrapT = ClampToEdgeWrapping;
+    
+    // Configure bump map
+    bumpMap.anisotropy = isMobile ? 8 : 16;
+    bumpMap.generateMipmaps = true;
+    bumpMap.minFilter = LinearMipmapLinearFilter;
+    bumpMap.magFilter = LinearFilter;
+    bumpMap.wrapS = ClampToEdgeWrapping;
+    bumpMap.wrapT = ClampToEdgeWrapping;
+    
+    // Configure cloud map
+    cloudMap.anisotropy = isMobile ? 8 : 16;
+    cloudMap.generateMipmaps = true;
+    cloudMap.minFilter = LinearMipmapLinearFilter;
+    cloudMap.magFilter = LinearFilter;
+    cloudMap.wrapS = ClampToEdgeWrapping;
+    cloudMap.wrapT = ClampToEdgeWrapping;
+  }, [surfaceMap, bumpMap, cloudMap, isMobile]);
   
   // Responsive geometry settings
   const geometryDetail = performanceMode === 'minimal' ? 32 : performanceMode === 'low' ? 48 : 64;

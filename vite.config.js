@@ -52,17 +52,20 @@ export default defineConfig({
       'cytoscape-cose-bilkent',
       'dagre',
       'd3'
-      // 🔧 REMOVED: Allow R3F for client-side dynamic imports
-      // '@react-three/fiber',
-      // '@react-three/drei', 
-      // 'three'
     ],
     include: [
       'react', 
       'react-dom', 
       'react-dom/client',
       'react/jsx-runtime'
-    ]
+    ],
+    // 🔧 NEW: Optimize Three.js dependencies
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      },
+      plugins: []
+    }
   },
   server: {
     open: true,
@@ -99,15 +102,38 @@ export default defineConfig({
             return 'framer-motion';
           }
           
-          // 🔧 CHANGED: Create chunks for R3F when dynamically loaded
+          // 🔧 OPTIMIZED: More granular Three.js chunking for better loading
           if (id.includes('@react-three/fiber')) {
             return 'three-fiber';
           }
+          
+          // 🔧 NEW: Split drei into smaller chunks for better loading
           if (id.includes('@react-three/drei')) {
+            if (id.includes('drei/core')) {
+              return 'three-drei-core';
+            }
+            if (id.includes('drei/helpers') || id.includes('drei/utils')) {
+              return 'three-drei-utils';
+            }
             return 'three-drei';
           }
+          
+          // 🔧 NEW: Split Three.js core into smaller chunks
           if (id.includes('three') && !id.includes('src/')) {
+            if (id.includes('three/examples')) {
+              return 'three-examples';
+            }
+            if (id.includes('three/addons')) {
+              return 'three-addons';
+            }
             return 'three-core';
+          }
+          
+          // 🔧 NEW: Dedicated chunk for moon models and textures
+          if (id.includes('src/3d/components/moon') || 
+              id.includes('src/3d/models/moon') || 
+              id.includes('assets/images/planets')) {
+            return 'moon-assets';
           }
           
           // 🚀 SKIP HEAVY LIBRARIES: Don't pre-bundle visualization libraries

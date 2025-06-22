@@ -3,17 +3,37 @@
  * @description Interactive globe with country polygons and connection arcs for unified 3D engine
  * @migration_source src/components/ui/globe.tsx + globe-demo.tsx
  * @priority P1 CRITICAL - V6 Atomic Contact Terminal
+ * @fixed Circular dependency with three-examples resolved
  */
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useThree, extend } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Color, Group } from 'three';
-import ThreeGlobe from 'three-globe';
 import countries from '../../../../data/globe.json';
 
-// Extend R3F with ThreeGlobe (JSX compatible)
-extend({ ThreeGlobe: ThreeGlobe });
+// 🔧 FIXED: Dynamic import to prevent circular dependency
+let ThreeGlobe = null;
+let globeLoaded = false;
+
+// Lazy load ThreeGlobe to prevent circular dependency
+const loadThreeGlobe = async () => {
+  if (globeLoaded && ThreeGlobe) return ThreeGlobe;
+  
+  try {
+    const module = await import('three-globe');
+    ThreeGlobe = module.default;
+    globeLoaded = true;
+    
+    // Extend R3F with ThreeGlobe (JSX compatible) after loading
+    extend({ ThreeGlobe: ThreeGlobe });
+    
+    return ThreeGlobe;
+  } catch (error) {
+    console.error('Failed to load ThreeGlobe:', error);
+    throw error;
+  }
+};
 
 // Device optimization hook
 const useDeviceOptimization = () => {
@@ -46,6 +66,8 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
   const globeRef = useRef(null);
   const groupRef = useRef(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const { isMobile } = useDeviceOptimization();
 
   const defaultProps = {
@@ -65,28 +87,44 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
     ...globeConfig,
   };
 
-  // Initialize globe only once
+  // 🔧 FIXED: Async initialization to prevent circular dependency
   useEffect(() => {
-    if (!globeRef.current && groupRef.current) {
-      globeRef.current = new ThreeGlobe();
-      groupRef.current.add(globeRef.current);
-      setIsInitialized(true);
-    }
+    const initializeGlobe = async () => {
+      if (globeRef.current || !groupRef.current) return;
+      
+      try {
+        setIsLoading(true);
+        const GlobeClass = await loadThreeGlobe();
+        
+        if (GlobeClass && groupRef.current) {
+          globeRef.current = new GlobeClass();
+          groupRef.current.add(globeRef.current);
+          setIsInitialized(true);
+        }
+      } catch (error) {
+        console.error('Failed to initialize globe:', error);
+        setLoadError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeGlobe();
   }, []);
 
   // Rotate the globe
   useEffect(() => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !isInitialized) return;
 
     const animate = () => {
-      if (groupRef.current) {
+      if (groupRef.current && isInitialized) {
         groupRef.current.rotation.y += 0.001; // Slow rotation
       }
       requestAnimationFrame(animate);
     };
 
     animate();
-  }, []);
+  }, [isInitialized]);
 
   // Build material when globe is initialized
   useEffect(() => {

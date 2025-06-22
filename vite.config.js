@@ -3,10 +3,45 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
 
+// Performance Optimization Plugin
+const performanceOptimizationPlugin = () => {
+  return {
+    name: 'performance-optimization',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        if (ctx.bundle) {
+          // Add preload for critical chunks
+          const criticalChunks = Object.keys(ctx.bundle).filter(key => 
+            key.includes('homepage-critical') || 
+            key.includes('vendor-react') ||
+            key.includes('vendor-router') ||
+            key.includes('index-')
+          );
+          
+          let preloadLinks = '';
+          criticalChunks.forEach(chunk => {
+            if (chunk.endsWith('.js')) {
+              preloadLinks += `<link rel="modulepreload" href="/assets/${chunk}" crossorigin>\n    `;
+            } else if (chunk.endsWith('.css')) {
+              preloadLinks += `<link rel="preload" href="/assets/${chunk}" as="style" crossorigin>\n    `;
+            }
+          });
+          
+          // Insert preload links before closing head tag
+          return html.replace('</head>', `    ${preloadLinks}</head>`);
+        }
+        return html;
+      }
+    }
+  };
+};
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    // performanceOptimizationPlugin(), // DISABLED - Causing 404 errors
     {
       name: 'handle-client-side-routing',
       configureServer(server) {
@@ -39,7 +74,9 @@ export default defineConfig({
     external: [
       '@react-three/fiber',
       '@react-three/drei',
-      'three'
+      'three',
+      'three-globe',
+      'three/examples/jsm/controls/OrbitControls'
     ],
     noExternal: []
   },
@@ -57,7 +94,10 @@ export default defineConfig({
       'react', 
       'react-dom', 
       'react-dom/client',
-      'react/jsx-runtime'
+      'react/jsx-runtime',
+      // 🔧 FIXED: Pre-bundle Three.js dependencies to prevent circular deps
+      'three',
+      'three-globe'
     ],
     // 🔧 NEW: Optimize Three.js dependencies
     esbuildOptions: {
@@ -84,6 +124,13 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: false,
+    outDir: 'dist',
+    // 🔧 NEW: Enable CSS code splitting
+    cssCodeSplit: true,
+    // 🔧 NEW: CSS optimization settings
+    cssMinify: 'esbuild',
+    minify: 'esbuild',
+    chunkSizeWarningLimit: 800, // Increase limit for homepage chunks
     rollupOptions: {
       // 🔧 FIXED: Only exclude from SSR context, allow for client builds
       external: (id, importer, isResolved) => {
@@ -96,121 +143,77 @@ export default defineConfig({
         return false;
       },
       output: {
-        manualChunks(id) {
-          // ✅ SPLIT framer-motion into separate chunk
-          if (id.includes('framer-motion')) {
-            return 'framer-motion';
+        // 🔧 NEW: Aggressive CSS chunking to reduce main bundle
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            // Split CSS by route/component
+            if (assetInfo.name.includes('guardian')) return 'css/guardian-[hash][extname]';
+            if (assetInfo.name.includes('curious')) return 'css/curious-[hash][extname]';
+            if (assetInfo.name.includes('aegis')) return 'css/aegis-[hash][extname]';
+            if (assetInfo.name.includes('opspipe')) return 'css/opspipe-[hash][extname]';
+            if (assetInfo.name.includes('moonsignal')) return 'css/moonsignal-[hash][extname]';
+            if (assetInfo.name.includes('final')) return 'css/final-[hash][extname]';
+            if (assetInfo.name.includes('codelab')) return 'css/codelab-[hash][extname]';
+            if (assetInfo.name.includes('museum')) return 'css/museum-[hash][extname]';
+            return 'css/[name]-[hash][extname]';
           }
-          
-          // 🔧 OPTIMIZED: More granular Three.js chunking for better loading
-          if (id.includes('@react-three/fiber')) {
-            return 'three-fiber';
-          }
-          
-          // 🔧 NEW: Split drei into smaller chunks for better loading
-          if (id.includes('@react-three/drei')) {
-            if (id.includes('drei/core')) {
-              return 'three-drei-core';
-            }
-            if (id.includes('drei/helpers') || id.includes('drei/utils')) {
-              return 'three-drei-utils';
-            }
-            return 'three-drei';
-          }
-          
-          // 🔧 NEW: Split Three.js core into smaller chunks
-          if (id.includes('three') && !id.includes('src/')) {
-            if (id.includes('three/examples')) {
-              return 'three-examples';
-            }
-            if (id.includes('three/addons')) {
-              return 'three-addons';
-            }
-            return 'three-core';
-          }
-          
-          // 🔧 NEW: Dedicated chunk for moon models and textures
-          if (id.includes('src/3d/components/moon') || 
-              id.includes('src/3d/models/moon') || 
-              id.includes('assets/images/planets')) {
-            return 'moon-assets';
-          }
-          
-          // 🚀 SKIP HEAVY LIBRARIES: Don't pre-bundle visualization libraries
-          // They should only load via dynamic import()
-          if (id.includes('mermaid') || 
-              id.includes('cytoscape') || 
-              id.includes('dagre') ||
-              id.includes('d3') ||
-              id.includes('chart.js') ||
-              id.includes('plotly')) {
-            // Return undefined to let them be handled individually
-            return undefined;
-          }
-          
-          // ✅ Math libraries - Only loads when needed
-          if (id.includes('katex') || id.includes('mathjs')) {
-            return 'vendor-math';
-          }
-          
-          // 🎯 NEW: Split React Router into separate chunk
-          if (id.includes('react-router') || id.includes('@remix-run')) {
-            return 'vendor-router';
-          }
-          
-          // 🎯 NEW: Split React Helmet into separate chunk  
-          if (id.includes('react-helmet')) {
-            return 'vendor-helmet';
-          }
-          
-          // 🎯 NEW: Split utility libraries
-          if (id.includes('dompurify') || 
-              id.includes('tailwind-merge') || 
-              id.includes('clsx')) {
-            return 'vendor-utils';
-          }
-          
-          // 🎯 PHASE 3: Split React ecosystem into smaller chunks
-          if (id.includes('react-dom')) {
-            return 'vendor-react-dom';
-          }
-          
-          if (id.includes('react') && !id.includes('react-dom')) {
+          return 'assets/[name]-[hash][extname]';
+        },
+        manualChunks: (id) => {
+          // 🔥 VENDOR CHUNKS - Consolidate React ecosystem into single chunk
+          if (id.includes('node_modules/react') || 
+              id.includes('node_modules/react-dom')) {
             return 'vendor-react';
           }
-          
-          // 🎯 PHASE 3: Split heavy node modules
-          if (id.includes('node_modules')) {
-            // Heavy animation/motion libraries  
-            if (id.includes('gsap') || id.includes('lottie') || id.includes('animate')) {
-              return 'vendor-animation';
-            }
-            
-            // Heavy math/computation libraries
-            if (id.includes('lodash') || id.includes('underscore') || id.includes('ramda')) {
-              return 'vendor-functional';
-            }
-            
-            // Heavy UI libraries
-            if (id.includes('styled-components') || id.includes('emotion') || id.includes('@mui')) {
-              return 'vendor-styling';
-            }
-            
-            // Core utilities that are always needed
-            if (id.includes('prop-types') || 
-                id.includes('invariant') || 
-                id.includes('warning') ||
-                id.includes('scheduler') ||
-                id.includes('object-assign')) {
-              return 'vendor-core';
-            }
-            
-            // Everything else from node_modules
-            return 'vendor-misc';
+          if (id.includes('node_modules/react-router')) {
+            return 'vendor-router';
           }
+
+          // 🔧 FIXED: Proper Three.js chunking to prevent circular dependencies
+          if (id.includes('node_modules/three-globe')) {
+            return 'vendor-three-globe';
+          }
+          if (id.includes('node_modules/three') && !id.includes('three-globe')) {
+            return 'vendor-three';
+          }
+          if (id.includes('@react-three/fiber')) {
+            return 'vendor-three-fiber';
+          }
+          if (id.includes('@react-three/drei')) {
+            return 'vendor-three-drei';
+          }
+
+          // 🔥 HOMEPAGE CRITICAL PATH - Only essential homepage components
+          if (id.includes('src/components/atomic/HeroAtomic') ||
+              id.includes('src/components/navigation/MissionControlNavbar')) {
+            return 'homepage-critical';
+          }
+
+          // 🔥 HOMEPAGE SECONDARY - Important homepage components but lazy loaded
+          if (id.includes('src/components/atomic/MissionAtomic') ||
+              id.includes('src/components/atomic/ProcessLegacyAtomic') ||
+              id.includes('src/components/atomic/ServicesOrbitalAtomic')) {
+            return 'homepage-secondary';
+          }
+
+          // 🔧 FIXED: Contact Globe gets its own chunk to prevent conflicts
+          if (id.includes('src/3d/components/contact') ||
+              id.includes('src/components/atomic/ContactTerminalAtomic')) {
+            return 'contact-globe';
+          }
+
+          // 🔥 PRODUCT PAGES - Keep individual product pages separate
+          if (id.includes('src/pages/products/guardian')) return 'guardian-page';
+          if (id.includes('src/pages/products/curious')) return 'curious-page';
+          if (id.includes('src/pages/products/aegis')) return 'aegis-page';
+          if (id.includes('src/pages/products/opspipe')) return 'opspipe-page';
+          if (id.includes('src/pages/products/moonsignal')) return 'moonsignal-page';
+          if (id.includes('src/pages/FinalPurgePage')) return 'final-page';
+
+          // Let Vite handle everything else naturally
+          return undefined;
         },
       },
     },
-    chunkSizeWarningLimit: 600, // Slightly higher for vendor chunks
   }
 });

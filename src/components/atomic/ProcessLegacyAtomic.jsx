@@ -8,14 +8,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {  motion, useAnimation, useInView  } from '../../FramerProvider';
 
-// Component metadata for LEGIT compliance
-export const metadata = {
-  id: 'process_legacy_atomic',
-  scs: 'SCS-PROCESS-ORBITAL',
-  type: 'atomic',
-  doc: 'contract_process_legacy_atomic.md'
-};
-
 // Enhanced process steps data with cosmic theming
 const PROCESS_STEPS = [
   {
@@ -448,6 +440,14 @@ const ProcessLegacyAtomic = () => {
       <OrbitalConnections activeStep={activeStep} isMobile={isMobile} prefersReducedMotion={prefersReducedMotion} />
     </motion.section>
   );
+};
+
+// Component metadata for LEGIT compliance (internal to prevent HMR issues)
+ProcessLegacyAtomic.metadata = {
+  id: 'process_legacy_atomic',
+  scs: 'SCS-PROCESS-ORBITAL',
+  type: 'atomic',
+  doc: 'contract_process_legacy_atomic.md'
 };
 
 export default ProcessLegacyAtomic; 

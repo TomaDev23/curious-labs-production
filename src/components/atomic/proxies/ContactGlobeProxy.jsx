@@ -1,11 +1,14 @@
 /**
  * @component ContactGlobeProxy
  * @description Safety proxy for ContactGlobe with automatic fallback
- * @version 1.0.0
- * @migration_safety CRITICAL - Implements 100% fallback reliability
+ * @version 2.0.0
+ * @restored CRITICAL - 3D Globe functionality restored for v6_atomic homepage
  */
 
-import React from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
+
+// 🌍 RESTORED: Lazy load the actual 3D ContactGlobe
+const ContactGlobeWithCanvas = lazy(() => import('../../../3d/components/contact/ContactGlobeWithCanvas'));
 
 // Smart Fallback Component with visual continuity
 const ContactGlobeFallback = () => (
@@ -48,9 +51,39 @@ const ContactGlobeFallback = () => (
 );
 
 const ContactGlobeProxy = () => {
-  // ✅ SURGICAL FIX: Since 3D is disabled, immediately return fallback
-  // No useState, no useEffect, no console spam, no mounting cycles
-  return <ContactGlobeFallback />;
+  const [shouldLoad3D, setShouldLoad3D] = useState(false);
+  const [deviceCapable, setDeviceCapable] = useState(true);
+
+  // Device capability check
+  useEffect(() => {
+    const checkDevice = () => {
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isLowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      // Only load 3D if device is capable
+      const capable = !prefersReducedMotion && !isLowMemory;
+      setDeviceCapable(capable);
+      
+      // Auto-load 3D after a brief delay if device is capable
+      if (capable) {
+        setTimeout(() => setShouldLoad3D(true), 500);
+      }
+    };
+
+    checkDevice();
+  }, []);
+
+  // 🚀 RESTORED: Return actual 3D globe or fallback based on capability
+  if (!deviceCapable || !shouldLoad3D) {
+    return <ContactGlobeFallback />;
+  }
+
+  return (
+    <Suspense fallback={<ContactGlobeFallback />}>
+      <ContactGlobeWithCanvas />
+    </Suspense>
+  );
 };
 
 export default ContactGlobeProxy; 

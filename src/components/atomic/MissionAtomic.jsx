@@ -22,9 +22,8 @@ import {  motion, useAnimation  } from '../../FramerProvider';
 // 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
 const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
 
-// Lazy imports for performance
-const CanvasWrapper = lazy(() => import('./hero/CanvasWrapper'));
-const MissionMoon = lazy(() => import('../../3d/components/moon/MissionMoon'));
+// 🌙 NEW: Lazy Moon loading with viewport detection
+import { useInViewLazy } from '../../hooks/useInViewLazy';
 
 // Component metadata for LEGIT compliance
 export const metadata = {
@@ -303,9 +302,11 @@ const MissionAtomic = () => {
   const [moonPhaseOverride, setMoonPhaseOverride] = useState(null);
   const [moonAnomalyMode, setMoonAnomalyMode] = useState(null);
   
-  // Simple moon loading with elegant transition
-  const [moonLoaded, setMoonLoaded] = useState(false);
-  const [moonFadeIn, setMoonFadeIn] = useState(false);
+  // 🌙 NEW: Lazy Moon loading with viewport detection
+  const { ref: moonRef, Comp: LazyMoon } = useInViewLazy(
+    () => import('../../3d/components/moon/MissionMoonWithCanvas'),
+    { rootMargin: '200px' }
+  );
   
   // 🎯 PROGRESSIVE BACKGROUND LOADING
   const { backgroundLoaded, backgroundError, imageUrl, attachObserver } = useProgressiveBackground('MissionAtomic');
@@ -321,23 +322,6 @@ const MissionAtomic = () => {
   const checkMobile = () => {
     setIsMobile(window.innerWidth < 768);
   };
-  
-  // Elegant moon loading with proper timing
-  useEffect(() => {
-    // Start loading moon after a short delay to prioritize other content
-    const loadTimer = setTimeout(() => {
-      setMoonLoaded(true);
-      
-      // Add fade-in effect after moon is loaded
-      const fadeTimer = setTimeout(() => {
-        setMoonFadeIn(true);
-      }, 300);
-      
-      return () => clearTimeout(fadeTimer);
-    }, 2000);
-    
-    return () => clearTimeout(loadTimer);
-  }, []);
   
   // Check if user prefers reduced motion
   const checkMotionPreference = () => {
@@ -844,60 +828,45 @@ const MissionAtomic = () => {
             </div>
           )}
           
-          <div className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" style={{ zIndex: 37 }}>
-            <Suspense fallback={
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
-                    <div className="text-white/60 text-sm">Loading Moon...</div>
-                  </div>
-                </div>
-              </div>
-            }>
-              {moonLoaded ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: moonFadeIn ? 1 : 0 }}
-                  transition={{ duration: 1.2, ease: "easeInOut" }}
-                  className="w-full h-full"
-                >
-                  <CanvasWrapper
-                    camera={{ 
-                      position: [0, 0, 25], 
-                      fov: 25 
-                    }}
-                    style={{ 
-                      width: '100%', 
-                      height: '100%',
-                      background: 'transparent'
-                    }}
-                    gl={{ 
-                      antialias: true,
-                      alpha: true,
-                      powerPreference: 'high-performance'
-                    }}
-                    dpr={Math.min(window.devicePixelRatio, 2)}
-                  >
-                    <MissionMoon 
-                      className="w-[400px] h-[400px]" 
-                      showDebugHUD={false}
-                      debugPhase={moonPhaseOverride}
-                      anomalyMode={moonAnomalyMode}
-                    />
-                  </CanvasWrapper>
-                </motion.div>
-              ) : (
+          <div 
+            ref={moonRef}
+            className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" 
+            style={{ zIndex: 37 }}
+          >
+            {LazyMoon ? (
+              <Suspense fallback={
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
                     <div className="flex flex-col items-center space-y-3">
                       <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
-                      <div className="text-white/60 text-sm">Preparing Moon...</div>
+                      <div className="text-white/60 text-sm">Loading Moon...</div>
                     </div>
                   </div>
                 </div>
-              )}
-            </Suspense>
+              }>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  className="w-full h-full"
+                >
+                  <LazyMoon 
+                    className="w-[400px] h-[400px]" 
+                    debugPhase={moonPhaseOverride}
+                    anomalyMode={moonAnomalyMode}
+                  />
+                </motion.div>
+              </Suspense>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
+                  <div className="flex flex-col items-center space-y-3">
+                    <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
+                    <div className="text-white/60 text-sm">Preparing Moon...</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Text content container - MOVED TO BOTTOM LEFT */}

@@ -7,9 +7,10 @@
 
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useInViewLazy } from '../../hooks/useInViewLazy';
 
-// 🎯 CONDITIONAL 3D: Only import ContactGlobeProxy when actually needed
-// This prevents the massive 3D bundle from loading on non-3D routes
+// 🎯 INTERSECTION-BASED 3D: Only load ContactGlobeProxy when user scrolls to contact section
+// This removes 362KB from critical path, loading only when needed
 const ContactGlobeProxy = lazy(() => import('./proxies/ContactGlobeProxy'));
 
 // Component metadata for LEGIT compliance
@@ -21,10 +22,16 @@ export const metadata = {
 };
 
 const ContactTerminalAtomic = () => {
-  // 🎯 CONDITIONAL 3D: Check if current route should have 3D
+  // 🎯 INTERSECTION-BASED 3D: Load globe when contact section comes into view
   const location = useLocation();
   const routes3D = ['/']; // Only homepage needs 3D currently
   const should3D = routes3D.includes(location.pathname);
+  
+  // Use intersection observer to load globe only when contact section is visible
+  const { ref: contactRef, Comp: LazyContactGlobe } = useInViewLazy(
+    () => import('./proxies/ContactGlobeProxy'),
+    { rootMargin: '200px' }
+  );
   
   // Self-contained responsive state
   const [isMobile, setIsMobile] = useState(false);
@@ -119,6 +126,7 @@ const ContactTerminalAtomic = () => {
   
   return (
     <section 
+      ref={contactRef}
       id="contact" 
       className="min-h-screen flex flex-col md:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 py-20 bg-curious-dark-900"
       aria-labelledby="contact-heading"
@@ -339,11 +347,17 @@ const ContactTerminalAtomic = () => {
       {/* Right Side - Visual */}
       {!isMobile && should3D && (
         <div className="w-full md:w-1/2 flex justify-center items-center">
-          {/* Interactive Globe Visualization - Now using unified 3D architecture with automatic fallback */}
+          {/* Interactive Globe Visualization - Now loads only when contact section is visible */}
           <div className="relative w-full h-96">
-            <Suspense fallback={<div>Loading...</div>}>
-              <ContactGlobeProxy />
-            </Suspense>
+            {LazyContactGlobe ? (
+              <Suspense fallback={<div className="flex items-center justify-center h-full text-gray-400">Loading globe...</div>}>
+                <LazyContactGlobe />
+              </Suspense>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                <div className="animate-pulse">Globe loading when visible...</div>
+              </div>
+            )}
           </div>
         </div>
       )}

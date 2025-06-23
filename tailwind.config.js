@@ -3,6 +3,17 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./Docs/**/*.md",        // Include markdown files for class scanning
+  ],
+  safelist: [
+    // Dynamic color classes found in codebase
+    { pattern: /^bg-(green|red|yellow|blue|purple|gray)-(400|500|600)$/ },
+    { pattern: /^text-(green|red|yellow|blue|purple|gray)-(400|500|600)$/ },
+    { pattern: /^border-(green|red|yellow|blue|purple|gray)-(400|500|600)$/ },
+    // Custom curious color patterns
+    { pattern: /^(bg|text|border|from|to|via)-curious-(blue|purple|dark)-(100|200|300|400|500|600|700|800|900)$/ },
+    // Gradient patterns used in template literals
+    { pattern: /^(from|to|via)-(purple|blue|cyan|pink|green)-(400|500|600|700)$/ },
   ],
   theme: {
     extend: {

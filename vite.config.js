@@ -94,10 +94,8 @@ export default defineConfig({
       'react', 
       'react-dom', 
       'react-dom/client',
-      'react/jsx-runtime',
-      // 🔧 FIXED: Pre-bundle Three.js dependencies to prevent circular deps
-      'three',
-      'three-globe'
+      'react/jsx-runtime'
+      // 🔧 REMOVED: Don't pre-bundle Three.js to avoid SSR conflicts
     ],
     // 🔧 NEW: Optimize Three.js dependencies
     esbuildOptions: {
@@ -132,7 +130,7 @@ export default defineConfig({
     minify: 'esbuild',
     chunkSizeWarningLimit: 800, // Increase limit for homepage chunks
     rollupOptions: {
-      // 🔧 FIXED: Only exclude from SSR context, allow for client builds
+      // 🔧 FIXED: Conservative Three.js exclusion - only during actual SSR build
       external: (id, importer, isResolved) => {
         // Only exclude during SSR build, not client build
         if (process.env.VITE_SSR_BUILD) {
@@ -160,6 +158,9 @@ export default defineConfig({
           return 'assets/[name]-[hash][extname]';
         },
         manualChunks: (id) => {
+          // 🚨 EMERGENCY FIX: Disable Three.js chunking to prevent SSR forwardRef error
+          // Let Vite handle Three.js naturally until we can fix SSR properly
+          
           // 🔥 VENDOR CHUNKS - Consolidate React ecosystem into single chunk
           if (id.includes('node_modules/react') || 
               id.includes('node_modules/react-dom')) {
@@ -169,19 +170,19 @@ export default defineConfig({
             return 'vendor-router';
           }
 
-          // 🔧 FIXED: Proper Three.js chunking to prevent circular dependencies
-          if (id.includes('node_modules/three-globe')) {
-            return 'vendor-three-globe';
-          }
-          if (id.includes('node_modules/three') && !id.includes('three-globe')) {
-            return 'vendor-three';
-          }
-          if (id.includes('@react-three/fiber')) {
-            return 'vendor-three-fiber';
-          }
-          if (id.includes('@react-three/drei')) {
-            return 'vendor-three-drei';
-          }
+          // 🚨 DISABLED: Three.js chunking causing SSR forwardRef errors
+          // if (id.includes('node_modules/three-globe')) {
+          //   return 'vendor-three-globe';
+          // }
+          // if (id.includes('node_modules/three') && !id.includes('three-globe')) {
+          //   return 'vendor-three';
+          // }
+          // if (id.includes('@react-three/fiber')) {
+          //   return 'vendor-three-fiber';
+          // }
+          // if (id.includes('@react-three/drei')) {
+          //   return 'vendor-three-drei';
+          // }
 
           // 🔥 HOMEPAGE CRITICAL PATH - Only essential homepage components
           if (id.includes('src/components/atomic/HeroAtomic') ||
@@ -196,11 +197,23 @@ export default defineConfig({
             return 'homepage-secondary';
           }
 
-          // 🔧 FIXED: Contact Globe gets its own chunk to prevent conflicts
-          if (id.includes('src/3d/components/contact') ||
-              id.includes('src/components/atomic/ContactTerminalAtomic')) {
-            return 'contact-globe';
-          }
+          // 🚨 DISABLED: 3D chunking causing SSR issues
+          // if (id.includes('src/3d/components/contact') ||
+          //     id.includes('ContactGlobe')) {
+          //   return 'contact-globe';
+          // }
+          
+          // if (id.includes('src/3d/components/moon') || 
+          //     id.includes('useMoonLighting') ||
+          //     id.includes('MissionMoon')) {
+          //   return 'mission-moon-system';
+          // }
+          
+          // if (id.includes('src/3d/components/earth') ||
+          //     id.includes('HeroEarth') ||
+          //     id.includes('EarthMesh')) {
+          //   return 'hero-earth-system';
+          // }
 
           // 🔥 PRODUCT PAGES - Keep individual product pages separate
           if (id.includes('src/pages/products/guardian')) return 'guardian-page';
@@ -210,7 +223,7 @@ export default defineConfig({
           if (id.includes('src/pages/products/moonsignal')) return 'moonsignal-page';
           if (id.includes('src/pages/FinalPurgePage')) return 'final-page';
 
-          // Let Vite handle everything else naturally
+          // Let Vite handle everything else naturally (including all Three.js)
           return undefined;
         },
       },

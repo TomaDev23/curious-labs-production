@@ -1,6 +1,26 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { FramerProvider } from './FramerProvider';
+
+// 🚀 OPTIMIZATION: Lazy load FramerProvider to reduce initial bundle
+const LazyFramerProvider = lazy(() => import('./FramerProvider'));
+
+// 🎯 ConditionalFramer: Delays Framer Motion loading until after first paint
+function ConditionalFramer({ children }) {
+  const [ready, setReady] = useState(false);
+  
+  useEffect(() => {
+    // Load Framer Motion 100ms after component mount (post first-paint)
+    const timer = setTimeout(() => setReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Render without animations initially, then with FramerProvider
+  return ready ? (
+    <Suspense fallback={children}>
+      <LazyFramerProvider>{children}</LazyFramerProvider>
+    </Suspense>
+  ) : children;
+}
 
 // 🚀 LAZY LOAD EVERYTHING - Even basic components for maximum optimization
 const ScrollToTop = lazy(() => import('./components/ScrollToTop'));
@@ -219,7 +239,7 @@ export default function App() {
   }, [metrics]);
 
   return (
-    <FramerProvider>
+    <ConditionalFramer>
       <PerformanceContext.Provider value={{ metrics, addMetric }}>
         <Suspense fallback={<SimpleLoader />}>
           <ErrorBoundary>
@@ -227,7 +247,7 @@ export default function App() {
           </ErrorBoundary>
         </Suspense>
       </PerformanceContext.Provider>
-    </FramerProvider>
+    </ConditionalFramer>
   );
 }
 

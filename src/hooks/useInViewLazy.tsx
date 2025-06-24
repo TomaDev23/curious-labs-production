@@ -17,10 +17,10 @@ export const useInViewLazy = <T,>(
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          console.log('🌙 Moon section in view - Loading 3D scene...');
+          console.log('🌍 3D section in view - Loading 3D scene...');
           const lazyComponent = lazy(importFn);
           setComp(lazyComponent);
-          console.log('🌙 Moon 3D scene loaded successfully');
+          console.log('🌍 3D scene loaded successfully');
           obs.disconnect();
         }
       },
@@ -29,7 +29,7 @@ export const useInViewLazy = <T,>(
 
     obs.observe(ref.current);
     return () => obs.disconnect();
-  }, [importFn, rootMargin]);
+  }, [rootMargin]);
 
   return { ref, Comp: comp };
-}; 
+};

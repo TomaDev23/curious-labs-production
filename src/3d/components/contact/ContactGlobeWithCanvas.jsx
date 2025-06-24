@@ -131,48 +131,24 @@ const GlobeFallback = ({ isLoading }) => (
 );
 
 const ContactGlobeWithCanvas = () => {
-  const [shouldLoadGlobe, setShouldLoadGlobe] = useState(false);
-  const [isGlobeReady, setIsGlobeReady] = useState(false);
-  const [loadingStarted, setLoadingStarted] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const capabilities = useDeviceCapabilities();
 
   // ✅ FIX: Skip 3D entirely during Lighthouse audits
   const skipCanvas = isLighthouseAudit();
+  const shouldShowGlobe = capabilities.canHandle3D && !skipCanvas;
 
-  // Intelligent loading strategy - loads during browser idle time
+  // Simplified loading - just wait for capabilities to be ready
   useEffect(() => {
-    if (!capabilities.canHandle3D || skipCanvas) return;
+    if (!shouldShowGlobe) return;
 
-    const loadGlobeWhenIdle = () => {
-      setLoadingStarted(true);
-      
-      // Use requestIdleCallback for non-blocking load
-      const idleCallback = (deadline) => {
-        if (deadline.timeRemaining() > 0 || deadline.didTimeout) {
-          setShouldLoadGlobe(true);
-          // Small delay for smooth transition
-          setTimeout(() => setIsGlobeReady(true), 300);
-        } else {
-          // Retry if no idle time available
-          requestIdleCallback(idleCallback, { timeout: 2000 });
-        }
-      };
+    // Simple delay to let the component settle
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 200);
 
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(idleCallback, { timeout: 1500 });
-      } else {
-        // Fallback for browsers without requestIdleCallback
-        setTimeout(() => {
-          setShouldLoadGlobe(true);
-          setTimeout(() => setIsGlobeReady(true), 300);
-        }, 400);
-      }
-    };
-
-    // Start loading after component mounts and settles
-    const timer = setTimeout(loadGlobeWhenIdle, 150);
     return () => clearTimeout(timer);
-  }, [capabilities.canHandle3D, skipCanvas]);
+  }, [shouldShowGlobe]);
 
   // Performance-optimized configuration based on device capabilities
   const globeConfig = {
@@ -335,8 +311,8 @@ const ContactGlobeWithCanvas = () => {
         transition={{ duration: 0.5 }}
         className="w-full h-full"
       >
-        {capabilities.canHandle3D && shouldLoadGlobe ? (
-          <Suspense fallback={<GlobeFallback isLoading={!isGlobeReady} />}>
+        {shouldShowGlobe && isReady ? (
+          <Suspense fallback={<GlobeFallback isLoading={!isReady} />}>
             {/* ✅ FIX: Reverted to own Canvas for performance isolation */}
             <Canvas
               camera={{ 
@@ -351,9 +327,11 @@ const ContactGlobeWithCanvas = () => {
               gl={{ 
                 antialias: capabilities.isHighPerformance,
                 alpha: true,
-                powerPreference: capabilities.isHighPerformance ? 'high-performance' : 'low-power'
+                powerPreference: capabilities.isHighPerformance ? 'high-performance' : 'low-power',
+                preserveDrawingBuffer: false
               }}
               dpr={capabilities.isLowMemory ? 1 : Math.min(window.devicePixelRatio, 2)}
+              resize={{ scroll: false, debounce: { scroll: 50, resize: 0 } }}
             >
               <ContactGlobe
                 {...globeConfig}
@@ -362,7 +340,7 @@ const ContactGlobeWithCanvas = () => {
             </Canvas>
           </Suspense>
         ) : (
-          <GlobeFallback isLoading={loadingStarted && !shouldLoadGlobe} />
+          <GlobeFallback isLoading={!isReady} />
         )}
       </motion.div>
     </div>

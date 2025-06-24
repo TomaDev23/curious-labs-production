@@ -346,9 +346,9 @@ const ContactTerminalAtomic = () => {
       </div>
       {/* Right Side - Visual */}
       {!isMobile && should3D && (
-        <div className="w-full md:w-1/2 flex justify-center items-center">
+        <div className="w-full h-screen flex justify-center items-center relative">
           {/* Interactive Globe Visualization - Now loads only when contact section is visible */}
-          <div className="relative w-full h-96">
+          <div className="w-full h-full">
             {LazyContactGlobe ? (
               <Suspense fallback={<div className="flex items-center justify-center h-full text-gray-400">Loading globe...</div>}>
                 <LazyContactGlobe />

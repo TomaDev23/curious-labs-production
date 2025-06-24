@@ -76,8 +76,8 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
     showAtmosphere: true,
     atmosphereAltitude: 0.1,
     polygonColor: "rgba(255,255,255,0.7)",
-    globeColor: "#1d072e",
-    emissive: "#000000",
+    globeColor: "#062056",
+    emissive: "#062056",
     emissiveIntensity: 0.1,
     shininess: 0.9,
     arcTime: 2000,
@@ -240,13 +240,14 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
   );
 };
 
-const LightingSetup = ({ performanceMode = 'high' }) => {
+const LightingSetup = ({ performanceMode }) => {
   const isHighPerf = performanceMode === 'high';
+  const ambientIntensity = isHighPerf ? 0.8 : 0.4;
   
   return (
     <>
       <ambientLight 
-        intensity={isHighPerf ? 0.6 : 0.4} 
+        intensity={ambientIntensity} 
         color="#ffffff" 
       />
       <directionalLight
@@ -279,22 +280,22 @@ const ContactGlobe = ({
   const { isMobile } = useDeviceOptimization();
 
   useEffect(() => {
-    // Device capability detection
-    const checkCapabilities = () => {
-      const isLowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
+    const checkDeviceCapabilities = () => {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const hasLowMemory = navigator.deviceMemory && navigator.deviceMemory < 4;
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       
-      if (isMobile || isLowMemory || prefersReducedMotion) {
+      if (isMobile || hasLowMemory || prefersReducedMotion) {
         setDevicePerformance('low');
       } else {
         setDevicePerformance('high');
       }
     };
 
-    checkCapabilities();
-  }, [isMobile]);
+    checkDeviceCapabilities();
+  }, []);
 
-  const finalPerformanceMode = performanceMode === 'auto' ? devicePerformance : performanceMode;
+  const finalPerformanceMode = performanceMode || devicePerformance;
 
   return (
     <>

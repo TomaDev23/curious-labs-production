@@ -90,8 +90,8 @@ const HeroAtomic = React.memo(() => {
     return {
       container: `relative min-h-screen overflow-hidden`,
       section: `relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden ${isMobile ? 'pt-16' : 'pt-14'}`,
-      planetBloom: `absolute z-[15] ${isMobile ? 'w-[300px] h-[300px]' : isTablet ? 'w-[450px] h-[450px]' : 'w-[600px] h-[600px]'} rounded-full blur-3xl pointer-events-none`,
-      planetContainer: `w-${isMobile ? '[250px] h-[250px]' : isTablet ? '[350px] h-[350px]' : '[400px] h-[400px]'}`,
+      planetBloom: `absolute z-[15] ${isMobile ? 'w-[450px] h-[450px]' : isTablet ? 'w-[675px] h-[675px]' : 'w-[1200px] h-[1200px]'} rounded-full blur-3xl pointer-events-none`,
+      planetContainer: `absolute z-[20] ${isMobile ? 'w-[375px] h-[375px]' : isTablet ? 'w-[525px] h-[525px]' : 'w-[800px] h-[800px]'}`,
       contentWrapper: `absolute ${isMobile ? 'bottom-[8%] left-[4%] right-[4%] max-w-none' : 'bottom-[4%] left-[4%] max-w-[700px]'} z-[250]`,
       title: `font-space ${isMobile ? 'text-xl' : isTablet ? 'text-2xl' : 'text-2xl md:text-3xl'} font-semibold text-white leading-tight tracking-tight ${isMobile ? '' : 'whitespace-nowrap'} transition-all duration-300 group-hover:text-shadow-lg`,
       subtitle: `font-space ${isMobile ? 'text-sm' : isTablet ? 'text-base' : 'text-base md:text-lg'} text-white/85 leading-relaxed tracking-wide mb-4 transition-all duration-300 group-hover:text-white/95`
@@ -120,14 +120,14 @@ const HeroAtomic = React.memo(() => {
   const planetPosition = React.useMemo(() => {
     if (isMobile) return { top: '15%', right: '5%' };
     if (isTablet) return { top: '18%', right: '8%' };
-    return { top: '20%', right: '10%' };
+    return { top: '10%', right: '20%' };
   }, [isMobile, isTablet]);
 
-  // Optimized planet size
+  // Optimized planet size - INCREASED BY +50% FOR BETTER VISUAL IMPACT
   const planetSize = React.useMemo(() => {
-    if (isMobile) return 250;
-    if (isTablet) return 350;
-    return 400;
+    if (isMobile) return '375px';     // Was 250 → +50% = 375
+    if (isTablet) return '525px';     // Was 350 → +50% = 525  
+    return '800px';                   // Was 600 → +25% = 750px (BIGGER)
   }, [isMobile, isTablet]);
 
   // Handle header toggle with performance consideration
@@ -177,20 +177,26 @@ const HeroAtomic = React.memo(() => {
         {/* Background layer - Loads immediately */}
         <BackgroundLayerAtomic />
         
-        {/* 3D Earth with delayed entrance (1.5s after content) */}
+        {/* 3D Earth with delayed entrance (1.5s after content) - SMOOTH FADE-IN */}
         <AnimatePresence>
           {show3D && isClient && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ 
+                duration: 1.2, 
+                ease: "easeInOut",
+                opacity: { duration: 1.0, ease: "easeIn" },
+                y: { duration: 1.2, ease: "easeOut" },
+                scale: { duration: 1.1, ease: "easeInOut" }
+              }}
               style={{
                 position: 'absolute',
                 ...planetPosition,
                 zIndex: 20,
-                width: `${planetSize}px`,
-                height: `${planetSize}px`
+                width: planetSize,
+                height: planetSize
               }}
             >
               <Suspense 

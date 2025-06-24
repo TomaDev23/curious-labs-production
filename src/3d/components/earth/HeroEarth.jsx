@@ -116,21 +116,21 @@ const EarthLighting = ({ performanceMode = 'high' }) => {
   return (
     <>
       {/* Ambient light (subtle) */}
-      <ambientLight intensity={0.3} />
+      <ambientLight intensity={0.25} />
       
-      {/* Main sunlight from the left (where nebula is) */}
+      {/* Main sunlight from the left center - creates proper day/night terminator */}
       <directionalLight
-        position={[-8, 2, 5]} // From left side, slightly elevated
-        intensity={2.8}
+        position={[-10, 0, 3]} // From left center, same height as Earth center
+        intensity={3.2}
         color="#ffffff"
         castShadow={false}
       />
       
-      {/* Secondary light from left-front for atmosphere */}
+      {/* Secondary light from left-front for subtle atmosphere */}
       {performanceMode !== 'minimal' && (
         <directionalLight
-          position={[-5, 0, 8]} // From left-front, same height as Earth center
-          intensity={0.4}
+          position={[-6, 0, 6]} // From left-front, same height as Earth center
+          intensity={0.3}
           color="#fff8e0"
         />
       )}
@@ -138,8 +138,8 @@ const EarthLighting = ({ performanceMode = 'high' }) => {
       {/* Subtle rim light from behind for atmospheric glow */}
       {performanceMode === 'high' && (
         <directionalLight
-          position={[3, 1, -6]} // From right-rear for rim lighting
-          intensity={0.2}
+          position={[4, 0, -8]} // From right-rear, same height for consistent lighting
+          intensity={0.15}
           color="#e6f3ff"
         />
       )}

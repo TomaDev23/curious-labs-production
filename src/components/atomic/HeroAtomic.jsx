@@ -18,11 +18,12 @@
 // 🎯 TYPE: Homepage Hero Component
 // 🌍 NEW: 3D Earth integration with React Three Fiber
 
-import React, { useState, Suspense, lazy, useEffect, useCallback } from 'react';
+import React, { useState, Suspense, lazy, useEffect, useCallback, useRef, useMemo } from 'react';
 // Remove direct Canvas import - will be dynamically imported
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
 import MissionControlNavbar from '../navigation/MissionControlNavbar';
 import {  motion, AnimatePresence  } from '../../FramerProvider';
+import { Link } from 'react-router-dom';
 
 // Lazy imports for performance
 const CanvasWrapper = lazy(() => import('./hero/CanvasWrapper'));
@@ -387,8 +388,9 @@ const HeroAtomic = React.memo(() => {
                       }}
                     >
                       <div className={`flex items-center ${isMobile ? 'space-x-3' : 'space-x-4'}`}>
-                        <button 
-                          className={`group/btn relative ${isMobile ? 'px-3 py-2 text-xs' : 'px-4 py-2 text-sm'} bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-space font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-98 tracking-wide overflow-hidden`}
+                        <Link 
+                          to="/products"
+                          className={`group/btn relative ${isMobile ? 'px-3 py-2 text-xs' : 'px-4 py-2 text-sm'} bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-space font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-98 tracking-wide overflow-hidden inline-block`}
                           onMouseEnter={() => setActiveSection('cta')}
                           onMouseLeave={() => setActiveSection(null)}
                           aria-label="Explore our products and services"
@@ -403,17 +405,18 @@ const HeroAtomic = React.memo(() => {
                               <div className={`absolute bottom-1 right-3 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full animate-ping`} style={{ animationDelay: '0.5s' }}></div>
                             </div>
                           )}
-                        </button>
+                        </Link>
 
                         {/* Secondary action button - responsive size */}
-                        <button 
-                          className={`${isMobile ? 'p-1.5' : 'p-2'} border border-lime-400/30 rounded-full text-lime-400 hover:bg-lime-400/10 hover:border-lime-400/60 transition-all duration-300 hover:scale-110 active:scale-95`}
-                          aria-label="Open help or support information"
+                        <Link 
+                          to="/blog"
+                          className={`${isMobile ? 'p-1.5' : 'p-2'} border border-lime-400/30 rounded-full text-lime-400 hover:bg-lime-400/10 hover:border-lime-400/60 transition-all duration-300 hover:scale-110 active:scale-95 inline-block`}
+                          aria-label="Visit our blog"
                         >
                           <svg className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                        </button>
+                        </Link>
                       </div>
                     </motion.div>
                   )}

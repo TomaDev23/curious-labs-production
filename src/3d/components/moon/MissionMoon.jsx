@@ -35,6 +35,7 @@ import {
   LinearMipmapLinearFilter, 
   LinearFilter, 
   ClampToEdgeWrapping,
+  RepeatWrapping,
   BackSide,
   DoubleSide,
   CanvasTexture,
@@ -122,7 +123,7 @@ const MoonLighting = ({ debugPhase = null, anomalyMode = null }) => {
     };
     
     const mission = missionStatus[phaseConfig] || { 
-      emoji: '🌙', 
+      emoji: '��', 
       status: 'UNKNOWN PHASE DETECTED', 
       code: 'LUNA-ERR' 
     };
@@ -537,9 +538,9 @@ const MissionMoon = ({
     moonBumpMap.magFilter = LinearFilter;
     
     // Set proper wrapping mode
-    moonTexture.wrapS = ClampToEdgeWrapping;
+    moonTexture.wrapS = RepeatWrapping;
     moonTexture.wrapT = ClampToEdgeWrapping;
-    moonBumpMap.wrapS = ClampToEdgeWrapping;
+    moonBumpMap.wrapS = RepeatWrapping;
     moonBumpMap.wrapT = ClampToEdgeWrapping;
     
     // Apply texture scaling - FIXED: Reset to proper sphere mapping
@@ -696,11 +697,11 @@ const MissionMoon = ({
         castShadow={true}
         {...otherProps}
       >
-        <icosahedronGeometry args={[4.16, 8]} />
+        <sphereGeometry args={[4.16, 64, 64]} />
         <meshStandardMaterial 
           map={moonTexture}
           bumpMap={moonBumpMap}
-          bumpScale={0.015}
+          bumpScale={0.005}
           color={isSupermoon ? "#f8e0b0" : "#f5f5f5"}
           metalness={isSupermoon ? 0.15 : 0.1}
           roughness={isSupermoon ? 0.65 : 0.7}

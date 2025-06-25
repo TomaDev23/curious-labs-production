@@ -68,7 +68,6 @@ const CombinedParallaxTest = lazy(() => import('./pages/dev/combined-parallax-te
 // TEMPORARILY DISABLED: const PlanetSandboxPage = lazy(() => import('./pages/dev/planet-sandbox.jsx'));
 
 // 🚀 LAZY LOAD HEAVY UTILS - Only load when needed
-const loadThoughtTrails = () => import('./lib/thoughtTrails');
 const loadPerformanceMonitor = () => import('./lib/performanceMonitor');
 
 // Performance monitoring context
@@ -151,43 +150,6 @@ const BackgroundManagerWrapper = () => {
       <BackgroundManager />
     </Suspense>
   ) : null;
-};
-
-// 🚀 OPTIMIZED: Lazy load ThoughtTrails system only when needed
-const useThoughtTrails = () => {
-  const location = useLocation();
-  const [thoughtTrails, setThoughtTrails] = useState(null);
-  
-  useEffect(() => {
-    // Only load ThoughtTrails on specific pages that need it
-    const pagesNeedingTrails = ['/products', '/tools'];
-    const needsTrails = pagesNeedingTrails.some(path => location.pathname.startsWith(path));
-    
-    if (needsTrails && !thoughtTrails) {
-      console.log('🌟 Loading ThoughtTrails system for:', location.pathname);
-      
-      loadThoughtTrails().then(({ default: thoughtTrailsModule }) => {
-        setThoughtTrails(thoughtTrailsModule);
-        thoughtTrailsModule.init();
-        
-        window.addEventListener('thoughtTrailsReady', () => {
-          console.log('🌟 ThoughtTrails ready for:', location.pathname);
-        });
-      });
-    } else if (!needsTrails && thoughtTrails) {
-      console.log('🌟 Cleaning up ThoughtTrails for:', location.pathname);
-      thoughtTrails.destroy();
-      setThoughtTrails(null);
-    }
-    
-    return () => {
-      if (thoughtTrails) {
-        thoughtTrails.destroy();
-      }
-    };
-  }, [location.pathname, thoughtTrails]);
-  
-  return thoughtTrails;
 };
 
 export default function App() {

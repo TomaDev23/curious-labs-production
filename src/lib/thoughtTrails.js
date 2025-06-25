@@ -1,7 +1,7 @@
 /**
  * @file thoughtTrails.js
- * @description Lightweight, dynamic cosmic trail system using Canvas
- * @version 3.0.0 - "Organic Cosmic Flow"
+ * @description Optimized cosmic trail system with mobile responsiveness and performance scaling
+ * @version 3.1.0 - "Performance Optimized"
  * @legit true
  */
 
@@ -18,30 +18,143 @@ class ThoughtTrails {
     this.lastUpdate = 0;
     this.width = 400;
     this.height = 300;
-    this._lastPageState = false;
+    
+    // Performance and mobile optimization properties
+    this.performanceTier = 'high';
+    this.isMobile = false;
+    this.isTablet = false;
+    this.pixelRatio = 1;
+    this.maxTrails = 2;
+    this.frameRate = 60;
+    this.lastFrameTime = 0;
+    
+    // Resource management
+    this.isDestroyed = false;
+    this.resizeTimeout = null;
+    
+    // Bind methods for proper context
+    this.handleResize = this.handleResize.bind(this);
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
   }
 
+  /**
+   * Initialize the ThoughtTrails system with device-aware settings
+   */
   init() {
-    if (this.isInitialized) return;
+    if (this.isInitialized || this.isDestroyed) return;
 
-    console.log('🌟 Initializing Lightweight ThoughtTrails...');
+    try {
+      // Detect device capabilities
+      this.detectDeviceCapabilities();
+      
+      // Adjust settings based on device
+      this.adjustPerformanceSettings();
+      
+      // Create container with optimized settings
+      this.createContainer();
+      
+      // Create canvas with proper scaling
+      this.createCanvas();
+      
+      // Initialize trails based on performance tier
+      this.createTrails();
+      
+      // Setup event listeners
+      this.setupEventListeners();
+      
+      this.isInitialized = true;
+      
+      // Dispatch ready event
+      window.dispatchEvent(new CustomEvent('thoughtTrailsReady'));
+      
+    } catch (error) {
+      console.warn('ThoughtTrails initialization failed:', error);
+      this.cleanup();
+    }
+  }
 
-    // Create container
+  /**
+   * Detect device capabilities for performance optimization
+   */
+  detectDeviceCapabilities() {
+    if (typeof window === 'undefined') return;
+    
+    // Screen size detection
+    const width = window.innerWidth;
+    this.isMobile = width < 768;
+    this.isTablet = width >= 768 && width < 1024;
+    
+    // Pixel ratio for high-DPI displays
+    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    
+    // Performance tier detection
+    const memory = navigator.deviceMemory || 4;
+    const connection = navigator.connection?.effectiveType || '4g';
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReducedMotion) {
+      this.performanceTier = 'minimal';
+    } else if (this.isMobile || memory <= 2 || connection === 'slow-2g') {
+      this.performanceTier = 'low';
+    } else if (this.isTablet || memory <= 4 || connection === '3g') {
+      this.performanceTier = 'medium';
+    } else {
+      this.performanceTier = 'high';
+    }
+  }
+
+  /**
+   * Adjust performance settings based on device capabilities
+   */
+  adjustPerformanceSettings() {
+    switch (this.performanceTier) {
+      case 'minimal':
+        this.maxTrails = 0; // Disable trails for reduced motion
+        this.frameRate = 30;
+        break;
+      case 'low':
+        this.maxTrails = 1;
+        this.frameRate = 30;
+        this.pixelRatio = 1;
+        break;
+      case 'medium':
+        this.maxTrails = this.isMobile ? 1 : 2;
+        this.frameRate = this.isMobile ? 30 : 45;
+        break;
+      case 'high':
+        this.maxTrails = this.isMobile ? 1 : 2;
+        this.frameRate = 60;
+        break;
+    }
+  }
+
+  /**
+   * Create optimized container element
+   */
+  createContainer() {
     this.container = document.createElement('div');
     this.container.id = 'cosmic-trails-container';
     this.container.style.cssText = `
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
+      z-index: 1000;
+      will-change: opacity;
     `;
+    
+    // Add to body initially (will be moved to proper container on activation)
     document.body.appendChild(this.container);
+  }
 
-    // Create Canvas
+  /**
+   * Create canvas with proper scaling and optimization
+   */
+  createCanvas() {
     this.canvas = document.createElement('canvas');
     this.canvas.style.cssText = `
       position: absolute;
@@ -49,83 +162,132 @@ class ThoughtTrails {
       left: 0;
       width: 100%;
       height: 100%;
+      will-change: transform;
     `;
-    this.ctx = this.canvas.getContext('2d');
+    
+    this.ctx = this.canvas.getContext('2d', {
+      alpha: true,
+      desynchronized: true, // Better performance for animations
+      powerPreference: this.isMobile ? 'low-power' : 'default'
+    });
+    
     this.container.appendChild(this.canvas);
-
-    // Initialize trails
-    this.createTrails();
-
-    // Setup event listeners
-    this.setupEventListeners();
-
-    this.isInitialized = true;
-
-    window.dispatchEvent(new CustomEvent('thoughtTrailsReady'));
-    console.log('🌟 Lightweight ThoughtTrails system is ready');
   }
 
+  /**
+   * Create trails with performance-optimized settings
+   */
   createTrails() {
-    // Initialize 2 trails with dynamic properties (reduced from 3)
-    this.trails = Array.from({ length: 2 }, (_, i) => ({
-      points: [], // Trail history for smooth curves
-      dustParticles: [], // NEW: Array to store fading dust particles
+    if (this.maxTrails === 0) return; // Skip trail creation for minimal performance
+    
+    this.trails = Array.from({ length: this.maxTrails }, (_, i) => ({
+      points: [],
+      dustParticles: [],
       x: Math.random() * 100,
       y: Math.random() * 100,
-      speed: Math.random() * 0.3 + 0.15, // 0.15 to 0.45 (slower than before)
+      speed: this.isMobile ? 
+        Math.random() * 0.2 + 0.1 : // Slower on mobile
+        Math.random() * 0.3 + 0.15,
       angle: Math.random() * Math.PI * 2,
-      noiseOffset: Math.random() * 1000, // For Perlin noise
+      noiseOffset: Math.random() * 1000,
       opacity: 0,
-      maxLength: Math.random() * 20 + 10, // 10 to 30 points
-      delay: Math.random() * 2 + 1, // 1 to 3 seconds
+      maxLength: this.isMobile ? 
+        Math.random() * 15 + 8 : // Shorter trails on mobile
+        Math.random() * 20 + 10,
+      delay: Math.random() * 2 + 1,
       time: 0,
     }));
   }
 
-  // Simple Perlin-like noise for organic motion
+  /**
+   * Simple Perlin-like noise for organic motion
+   */
   simpleNoise(x) {
     return Math.sin(x) * Math.sin(x * 0.1) * 0.5;
   }
 
+  /**
+   * Activate trails with proper positioning
+   */
   activate() {
-    if (!this.container || this.isActive) return;
+    if (!this.container || this.isActive || this.isDestroyed) return;
+    if (this.performanceTier === 'minimal') return; // Skip activation for reduced motion
 
-    console.log('🌟 Activating ThoughtTrails for products page');
     this.isActive = true;
 
-    setTimeout(() => {
+    // Use requestAnimationFrame for smooth activation
+    requestAnimationFrame(() => {
       this.updatePosition();
       this.container.style.opacity = '1';
       this.startAnimationLoop();
-    }, 100);
+    });
   }
 
+  /**
+   * Deactivate trails with cleanup
+   */
   deactivate() {
     if (!this.container || !this.isActive) return;
 
-    console.log('🌟 Deactivating ThoughtTrails');
     this.isActive = false;
     this.container.style.opacity = '0';
+    
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    
+    // Clear canvas
+    if (this.ctx) {
+      this.ctx.clearRect(0, 0, this.width, this.height);
+    }
   }
 
+  /**
+   * Update position with improved container detection
+   */
   updatePosition() {
-    if (!this.container || !this.isActive) return;
+    if (!this.container || !this.isActive || this.isDestroyed) return;
 
-    // Find the ThoughtTrails layer in the Products page
-    const trailsLayer = document.querySelector('[data-thought-trails-layer="true"]');
+    // Find the active ThoughtTrails layer
+    const trailsLayers = document.querySelectorAll('[data-thought-trails-layer="true"]');
+    let visibleLayer = null;
     
-    if (trailsLayer) {
-      const rect = trailsLayer.getBoundingClientRect();
-      this.width = rect.width;
-      this.height = rect.height;
+    for (const layer of trailsLayers) {
+      const rect = layer.getBoundingClientRect();
+      const style = window.getComputedStyle(layer);
+      
+      // Check if layer is visible and has proper dimensions
+      if (rect.width > 0 && 
+          rect.height > 0 && 
+          style.display !== 'none' && 
+          style.visibility !== 'hidden' &&
+          rect.left >= -window.innerWidth && 
+          rect.left < window.innerWidth) {
+        visibleLayer = layer;
+        break;
+      }
+    }
+    
+    if (visibleLayer) {
+      const rect = visibleLayer.getBoundingClientRect();
+      
+      // Update dimensions with pixel ratio consideration
+      this.width = Math.floor(rect.width * this.pixelRatio);
+      this.height = Math.floor(rect.height * this.pixelRatio);
+      
+      // Set canvas dimensions
       this.canvas.width = this.width;
       this.canvas.height = this.height;
+      
+      // Scale context for high-DPI displays
+      if (this.pixelRatio !== 1) {
+        this.ctx.scale(this.pixelRatio, this.pixelRatio);
+        this.canvas.style.width = rect.width + 'px';
+        this.canvas.style.height = rect.height + 'px';
+      }
 
+      // Position container
       this.container.style.cssText = `
         position: absolute;
         top: 0;
@@ -135,373 +297,319 @@ class ThoughtTrails {
         pointer-events: none;
         opacity: 1;
         transition: opacity 0.3s ease;
+        z-index: 1000;
+        will-change: opacity;
       `;
       
-      // Append to the trails layer instead of body
-      if (this.container.parentNode !== trailsLayer) {
+      // Move container to visible layer
+      if (this.container.parentNode !== visibleLayer) {
         if (this.container.parentNode) {
           this.container.parentNode.removeChild(this.container);
         }
-        trailsLayer.appendChild(this.container);
+        visibleLayer.appendChild(this.container);
       }
-      
-      console.log('🌟 Positioned trails in ThoughtTrails layer:', rect);
     } else {
-      // Fallback to products page if trails layer not found
-      const productsPage = document.querySelector('[data-page="products"]');
-      
-      if (productsPage) {
-        const rect = productsPage.getBoundingClientRect();
-        this.width = rect.width;
-        this.height = rect.height;
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
-
-        this.container.style.cssText = `
-          position: fixed;
-          top: ${rect.top}px;
-          left: ${rect.left}px;
-          width: ${rect.width}px;
-          height: ${rect.height}px;
-          pointer-events: none;
-          opacity: 1;
-          transition: opacity 0.3s ease;
-        `;
-        
-        // Make sure container is in body
-        if (!this.container.parentNode) {
-          document.body.appendChild(this.container);
-        }
-        
-        console.log('🌟 Positioned trails on Products page (fallback):', rect);
-      } else {
-        // Default invisible fallback
-        this.container.style.opacity = '0';
-        console.log('🌟 No suitable container found, hiding trails');
-      }
+      // Hide if no suitable container found
+      this.container.style.opacity = '0';
     }
   }
 
+  /**
+   * Optimized animation loop with frame rate control
+   */
   startAnimationLoop() {
-    if (!this.isActive) return;
+    if (!this.isActive || this.isDestroyed) return;
 
-    const animate = (time) => {
-      if (!this.isActive) return;
+    const frameInterval = 1000 / this.frameRate;
 
-      // Throttle updates to 60 FPS
-      if (time - this.lastUpdate < 16.67) {
+    const animate = (currentTime) => {
+      if (!this.isActive || this.isDestroyed) return;
+
+      // Frame rate throttling
+      if (currentTime - this.lastFrameTime < frameInterval) {
         this.animationId = requestAnimationFrame(animate);
         return;
       }
-      this.lastUpdate = time;
+      this.lastFrameTime = currentTime;
 
-      this.ctx.clearRect(0, 0, this.width, this.height);
+      // Clear canvas with proper scaling
+      this.ctx.clearRect(0, 0, this.width / this.pixelRatio, this.height / this.pixelRatio);
 
       // Update and draw trails
-      this.trails.forEach((trail, index) => {
-        trail.time += 0.015;
-
-        // Apply delay before starting animation
-        if (trail.time < trail.delay) {
-          trail.opacity = 0;
-          return;
-        }
-
-        // Update opacity for fade-in/fade-out
-        const phase = (trail.time - trail.delay) % 5;
-        trail.opacity = phase < 2.5 ? phase / 2.5 : 1 - (phase - 2.5) / 2.5;
-
-        // Update position with organic motion (slower noise)
-        trail.noiseOffset += 0.03;
-        const noise = this.simpleNoise(trail.noiseOffset);
-        trail.angle += noise * 0.08;
-        const speed = trail.speed * (this.width / 400); // Scale speed with container size
-
-        trail.x += Math.cos(trail.angle) * speed;
-        trail.y += Math.sin(trail.angle) * speed;
-
-        // Normalize coordinates to canvas dimensions (0-100 range)
-        const normX = (trail.x % 100 + 100) % 100;
-        const normY = (trail.y % 100 + 100) % 100;
-        const canvasX = (normX / 100) * this.width;
-        const canvasY = (normY / 100) * this.height;
-
-        // Add point to trail
-        trail.points.push({ x: canvasX, y: canvasY, opacity: trail.opacity });
-        if (trail.points.length > trail.maxLength) {
-          trail.points.shift();
-        }
-
-        // Draw trail with shorter, more natural segments
-        if (trail.points.length > 1) {
-          this.ctx.beginPath();
-          this.ctx.strokeStyle = this.currentAccentColor;
-          this.ctx.lineWidth = 1;
-          this.ctx.shadowBlur = 3;
-          this.ctx.shadowColor = this.currentAccentColor;
-
-          trail.points.forEach((point, i) => {
-            if (i === 0) {
-              this.ctx.moveTo(point.x, point.y);
-            } else {
-              const prev = trail.points[i - 1];
-              const distance = Math.sqrt(
-                Math.pow(point.x - prev.x, 2) + Math.pow(point.y - prev.y, 2)
-              );
-              
-              // Only draw if points are close enough (prevents long lines)
-              if (distance < 50) {
-                const opacity = point.opacity * (i / trail.points.length) * 0.8;
-                this.ctx.globalAlpha = opacity;
-                this.ctx.lineTo(point.x, point.y);
-              } else {
-                // Start new path segment for distant points
-                this.ctx.stroke();
-                this.ctx.beginPath();
-                this.ctx.moveTo(point.x, point.y);
-              }
-            }
-          });
-          this.ctx.stroke();
-
-          // Generate dust particles along the trail
-          if (trail.points.length > 1 && Math.random() < 0.5) { // 50% chance
-            const lastPoint = trail.points[trail.points.length - 1];
-            const prevPoint = trail.points[trail.points.length - 2];
-            const dustCount = Math.floor(Math.random() * 2) + 1; // 1-2 particles
-            
-            for (let i = 0; i < dustCount; i++) {
-              const t = Math.random();
-              const dustX = prevPoint.x + (lastPoint.x - prevPoint.x) * t + (Math.random() - 0.5) * 5;
-              const dustY = prevPoint.y + (lastPoint.y - prevPoint.y) * t + (Math.random() - 0.5) * 5;
-              
-              trail.dustParticles.push({
-                x: dustX,
-                y: dustY,
-                size: Math.random() * 2 + 1,
-                life: Math.random() * 2 + 1, // 1-3 seconds
-                maxLife: Math.random() * 2 + 1,
-              });
-            }
-          }
-        }
-
-        // Draw comet head with enhanced glow
-        if (trail.points.length > 0) {
-          const head = trail.points[trail.points.length - 1];
-          
-          // Outer glow
-          this.ctx.beginPath();
-          this.ctx.arc(head.x, head.y, 4, 0, Math.PI * 2);
-          this.ctx.fillStyle = this.currentAccentColor;
-          this.ctx.globalAlpha = trail.opacity * 0.3;
-          this.ctx.shadowBlur = 8;
-          this.ctx.shadowColor = this.currentAccentColor;
-          this.ctx.fill();
-          
-          // Inner core
-          this.ctx.beginPath();
-          this.ctx.arc(head.x, head.y, 2, 0, Math.PI * 2);
-          this.ctx.fillStyle = this.currentAccentColor;
-          this.ctx.globalAlpha = trail.opacity;
-          this.ctx.shadowBlur = 4;
-          this.ctx.shadowColor = this.currentAccentColor;
-          this.ctx.fill();
-          
-          // Draw sparks at the comet head
-          if (Math.random() < 0.6) { // 60% chance per frame to spawn sparks
-            const sparkCount = Math.floor(Math.random() * 4) + 2; // 2-5 sparks
-            for (let i = 0; i < sparkCount; i++) {
-              const angle = Math.random() * Math.PI * 2;
-              const speed = Math.random() * 4 + 2; // 2-6 pixels per frame
-              const sparkX = head.x + Math.cos(angle) * speed;
-              const sparkY = head.y + Math.sin(angle) * speed;
-              const sparkSize = Math.random() * 3 + 1; // 1-4 pixels
-              const sparkLife = Math.random() * 0.8 + 0.4; // 0.4-1.2 opacity
-              
-              this.ctx.beginPath();
-              this.ctx.arc(sparkX, sparkY, sparkSize, 0, Math.PI * 2);
-              this.ctx.fillStyle = this.currentAccentColor;
-              this.ctx.globalAlpha = trail.opacity * sparkLife;
-              this.ctx.shadowBlur = 8; // Add glow to sparks
-              this.ctx.shadowColor = this.currentAccentColor;
-              this.ctx.fill();
-            }
-          }
-        }
-      });
+      this.updateTrails();
 
       this.animationId = requestAnimationFrame(animate);
     };
 
-    this.lastUpdate = 0;
+    this.lastFrameTime = 0;
     this.animationId = requestAnimationFrame(animate);
   }
 
+  /**
+   * Update trails with mobile-optimized rendering
+   */
+  updateTrails() {
+    if (!this.trails.length) return;
+
+    this.trails.forEach((trail, index) => {
+      trail.time += 0.015;
+
+      // Apply delay before starting animation
+      if (trail.time < trail.delay) {
+        trail.opacity = 0;
+        return;
+      }
+
+      // Update opacity for fade-in/fade-out
+      const phase = (trail.time - trail.delay) % 5;
+      trail.opacity = phase < 2.5 ? phase / 2.5 : 1 - (phase - 2.5) / 2.5;
+
+      // Update position with organic motion
+      trail.noiseOffset += 0.03;
+      const noise = this.simpleNoise(trail.noiseOffset);
+      trail.angle += noise * 0.08;
+      const speed = trail.speed * (this.width / this.pixelRatio / 400);
+
+      trail.x += Math.cos(trail.angle) * speed;
+      trail.y += Math.sin(trail.angle) * speed;
+
+      // Normalize coordinates
+      const normX = (trail.x % 100 + 100) % 100;
+      const normY = (trail.y % 100 + 100) % 100;
+      const canvasX = (normX / 100) * (this.width / this.pixelRatio);
+      const canvasY = (normY / 100) * (this.height / this.pixelRatio);
+
+      // Add point to trail
+      trail.points.push({ x: canvasX, y: canvasY, opacity: trail.opacity });
+      if (trail.points.length > trail.maxLength) {
+        trail.points.shift();
+      }
+
+      // Draw trail
+      this.drawTrail(trail);
+    });
+  }
+
+  /**
+   * Draw individual trail with performance optimizations
+   */
+  drawTrail(trail) {
+    if (trail.points.length < 2) return;
+
+    // Set up drawing context
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = this.currentAccentColor;
+    this.ctx.lineWidth = this.isMobile ? 0.8 : 1;
+    this.ctx.shadowBlur = this.isMobile ? 2 : 3;
+    this.ctx.shadowColor = this.currentAccentColor;
+
+    // Draw trail path
+    trail.points.forEach((point, i) => {
+      if (i === 0) {
+        this.ctx.moveTo(point.x, point.y);
+      } else {
+        const prev = trail.points[i - 1];
+        const distance = Math.sqrt(
+          Math.pow(point.x - prev.x, 2) + Math.pow(point.y - prev.y, 2)
+        );
+        
+        // Only draw if points are close enough
+        if (distance < 50) {
+          const opacity = point.opacity * (i / trail.points.length) * 0.8;
+          this.ctx.globalAlpha = opacity;
+          this.ctx.lineTo(point.x, point.y);
+        } else {
+          this.ctx.stroke();
+          this.ctx.beginPath();
+          this.ctx.moveTo(point.x, point.y);
+        }
+      }
+    });
+    this.ctx.stroke();
+
+    // Draw comet head with mobile optimization
+    if (trail.points.length > 0) {
+      const head = trail.points[trail.points.length - 1];
+      const headSize = this.isMobile ? 3 : 4;
+      const coreSize = this.isMobile ? 1.5 : 2;
+      
+      // Outer glow
+      this.ctx.beginPath();
+      this.ctx.arc(head.x, head.y, headSize, 0, Math.PI * 2);
+      this.ctx.fillStyle = this.currentAccentColor;
+      this.ctx.globalAlpha = trail.opacity * 0.3;
+      this.ctx.shadowBlur = this.isMobile ? 6 : 8;
+      this.ctx.shadowColor = this.currentAccentColor;
+      this.ctx.fill();
+      
+      // Inner core
+      this.ctx.beginPath();
+      this.ctx.arc(head.x, head.y, coreSize, 0, Math.PI * 2);
+      this.ctx.fillStyle = this.currentAccentColor;
+      this.ctx.globalAlpha = trail.opacity;
+      this.ctx.shadowBlur = this.isMobile ? 3 : 4;
+      this.ctx.shadowColor = this.currentAccentColor;
+      this.ctx.fill();
+      
+      // Sparks (reduced on mobile for performance)
+      if (!this.isMobile && Math.random() < 0.4) {
+        this.drawSparks(head, trail.opacity);
+      }
+    }
+  }
+
+  /**
+   * Draw sparks at comet head
+   */
+  drawSparks(head, opacity) {
+    const sparkCount = Math.floor(Math.random() * 3) + 1;
+    for (let i = 0; i < sparkCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 3 + 1;
+      const sparkX = head.x + Math.cos(angle) * speed;
+      const sparkY = head.y + Math.sin(angle) * speed;
+      const sparkSize = Math.random() * 2 + 1;
+      const sparkLife = Math.random() * 0.6 + 0.3;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(sparkX, sparkY, sparkSize, 0, Math.PI * 2);
+      this.ctx.fillStyle = this.currentAccentColor;
+      this.ctx.globalAlpha = opacity * sparkLife;
+      this.ctx.shadowBlur = 6;
+      this.ctx.shadowColor = this.currentAccentColor;
+      this.ctx.fill();
+    }
+  }
+
+  /**
+   * Update accent colors
+   */
   updateColors(newAccentColor) {
     if (newAccentColor === this.currentAccentColor) return;
     this.currentAccentColor = newAccentColor;
   }
 
+  /**
+   * Handle window resize with debouncing
+   */
+  handleResize() {
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
+    
+    this.resizeTimeout = setTimeout(() => {
+      if (this.isActive && !this.isDestroyed) {
+        // Re-detect device capabilities on resize
+        this.detectDeviceCapabilities();
+        this.adjustPerformanceSettings();
+        this.updatePosition();
+      }
+    }, 150);
+  }
+
+  /**
+   * Handle visibility change to pause/resume animation
+   */
+  handleVisibilityChange() {
+    if (document.hidden && this.isActive) {
+      // Pause animation when tab is hidden
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+        this.animationId = null;
+      }
+    } else if (!document.hidden && this.isActive && !this.animationId) {
+      // Resume animation when tab becomes visible
+      this.startAnimationLoop();
+    }
+  }
+
+  /**
+   * Setup event listeners with proper cleanup
+   */
   setupEventListeners() {
+    // Color updates
     window.addEventListener('updateAccentColor', (event) => {
       const { color } = event.detail;
       this.updateColors(color);
     });
 
-    // Listen for custom event that signals page change in horizontal scroll
+    // Page change handling
     window.addEventListener('horizontalPageChange', (event) => {
       const { pageIndex } = event.detail || {};
-      console.log(`🌟 Horizontal page changed to: ${pageIndex}`);
       
-      // Check if we're actually on the horizontal scroll page
-      const isOnHorizontalScrollPage = this.isOnHorizontalScrollPage();
-      
-      // Only activate on the second page (index 1) AND when on horizontal scroll page
-      if (pageIndex === 1 && isOnHorizontalScrollPage && !this.isActive) {
-        console.log('🌟 Activating ThoughtTrails - on horizontal scroll page');
+      if ((pageIndex === 0 || pageIndex === 1) && !this.isActive) {
         this.activate();
-      } else if ((pageIndex !== 1 || !isOnHorizontalScrollPage) && this.isActive) {
-        console.log('🌟 Deactivating ThoughtTrails - not on horizontal scroll page or wrong page index');
+      } else if (pageIndex !== 0 && pageIndex !== 1 && this.isActive) {
         this.deactivate();
+      }
+      
+      if (this.isActive && (pageIndex === 0 || pageIndex === 1)) {
+        setTimeout(() => this.updatePosition(), 100);
       }
     });
 
-    // Listen for route changes to deactivate when leaving horizontal scroll page
-    window.addEventListener('popstate', () => {
-      const isOnHorizontalScrollPage = this.isOnHorizontalScrollPage();
-      if (!isOnHorizontalScrollPage && this.isActive) {
-        console.log('🌟 Route changed - deactivating ThoughtTrails');
-        this.deactivate();
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      if (this.isActive) this.updatePosition();
-    });
-
-    window.addEventListener('scroll', () => {
-      if (this.isActive) this.updatePosition();
-    });
-
-    const originalPushState = history.pushState;
-    const originalReplaceState = history.replaceState;
-
-    history.pushState = (...args) => {
-      originalPushState.apply(history, args);
-      setTimeout(() => {
-        const isOnHorizontalScrollPage = this.isOnHorizontalScrollPage();
-        if (!isOnHorizontalScrollPage && this.isActive) {
-          console.log('🌟 Navigation detected - deactivating ThoughtTrails');
-          this.deactivate();
-        }
-      }, 100);
-    };
-
-    history.replaceState = (...args) => {
-      originalReplaceState.apply(history, args);
-      setTimeout(() => {
-        const isOnHorizontalScrollPage = this.isOnHorizontalScrollPage();
-        if (!isOnHorizontalScrollPage && this.isActive) {
-          console.log('🌟 Navigation detected - deactivating ThoughtTrails');
-          this.deactivate();
-        }
-      }, 100);
-    };
+    // Resize handling
+    window.addEventListener('resize', this.handleResize);
+    
+    // Visibility change handling
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
   }
 
-  // Check if we're currently on the horizontal scroll page
-  isOnHorizontalScrollPage() {
-    // Check for the horizontal scroll component container
-    const horizontalScrollContainer = document.querySelector('[class*="w-[300vw]"]') || 
-                                    document.querySelector('[data-component="horizontal-scroll"]') ||
-                                    document.querySelector('#horizontal-product-scroll') ||
-                                    document.querySelector('.horizontal-product-scroll');
-    
-    // Check for products page specifically within horizontal scroll
-    const productsPageInHorizontal = document.querySelector('[data-page="products"]');
-    
-    // Check if the horizontal scroll component is visible and active
-    const isHorizontalScrollVisible = horizontalScrollContainer && 
-                                    horizontalScrollContainer.offsetParent !== null;
-    
-    const isOnPage = isHorizontalScrollVisible && productsPageInHorizontal;
-    
-    // Only log when state changes to prevent console spam
-    if (this._lastPageState !== isOnPage) {
-      console.log('🌟 Page context check:', {
-        horizontalScrollContainer: !!horizontalScrollContainer,
-        productsPageInHorizontal: !!productsPageInHorizontal,
-        isHorizontalScrollVisible,
-        isOnPage
-      });
-      this._lastPageState = isOnPage;
-    }
-    
-    return isOnPage;
-  }
-
-  destroy() {
+  /**
+   * Clean up resources
+   */
+  cleanup() {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = null;
     }
 
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container);
     }
 
-    this.isInitialized = false;
-    this.isActive = false;
-    console.log('🌟 Lightweight ThoughtTrails destroyed');
+    // Remove event listeners
+    window.removeEventListener('resize', this.handleResize);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
   }
 
-  // Manual test method for debugging
+  /**
+   * Destroy the ThoughtTrails instance
+   */
+  destroy() {
+    this.isDestroyed = true;
+    this.isActive = false;
+    this.isInitialized = false;
+    
+    this.cleanup();
+    
+    // Clear arrays
+    this.trails = [];
+  }
+
+  /**
+   * Force activate for debugging (with safety checks)
+   */
   forceActivate() {
-    console.log('🌟 Force activating ThoughtTrails...');
+    if (this.isDestroyed) {
+      console.warn('Cannot activate destroyed ThoughtTrails instance');
+      return;
+    }
     
     if (!this.isInitialized) {
-      console.log('🌟 Not initialized, calling init first...');
       this.init();
     }
     
-    this.isActive = true;
-    this.updatePosition();
-    this.container.style.opacity = '1';
-    this.startAnimationLoop();
-    
-    console.log('🌟 ThoughtTrails force activated:', {
-      container: !!this.container,
-      canvas: !!this.canvas,
-      isActive: this.isActive,
-      opacity: this.container?.style.opacity,
-      trails: this.trails.length
-    });
-    
-    // Add a visible test element
-    const testDiv = document.createElement('div');
-    testDiv.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${this.currentAccentColor};
-      color: white;
-      padding: 10px;
-      z-index: 9999;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 12px;
-    `;
-    testDiv.textContent = 'ThoughtTrails Active';
-    document.body.appendChild(testDiv);
-    
-    setTimeout(() => {
-      if (testDiv.parentNode) {
-        testDiv.parentNode.removeChild(testDiv);
-      }
-    }, 3000);
+    this.activate();
   }
 }
 
+// Create singleton instance
 const thoughtTrails = new ThoughtTrails();
 
 // Expose globally for debugging

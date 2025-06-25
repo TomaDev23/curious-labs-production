@@ -14,67 +14,143 @@
  * @component HorizontalProductScrollV6
  * @description Unified horizontal scroll section with AEGIS intro, Products carousel, and Services outro
  * @legit true
- * @version 2.0.0
+ * @version 2.1.0 - "Mobile Optimized"
  * @author CuriousLabs
  * @scs SCS5
  * @doc contract_horizontal_product_scroll_v6.md
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from '../../../FramerProvider';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from '../../../FramerProvider';
 import { useResponsive, useDeviceCapabilities } from '../../../hooks/useBreakpoint';
 
-// Import all page components
+// Import page components
 import { AegisPage } from './components/AegisPage';
 import { ProductsPage } from './components/ProductsPage';
-import { ServicesPage } from './components/ServicesPage';
+// COMMENTED OUT - ServicesPage needs work, temporarily disabled
+// import { ServicesPage } from './components/ServicesPage';
 
 // Import shared utilities and hooks
 import { useDebugMode } from './components/useDebugMode';
 import { pageVariants } from './components/imports_shared';
 
+// Optimized ThoughtTrails hook with mobile awareness
+const useThoughtTrails = () => {
+  const [thoughtTrails, setThoughtTrails] = useState(null);
+  const { isMobile, isTablet } = useResponsive();
+  const { prefersReducedMotion, performanceTier } = useDeviceCapabilities();
+  const isActivatedRef = useRef(false);
+  const initTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    let trailsInstance = null;
+    
+    const initializeTrails = async () => {
+      if (isActivatedRef.current) return;
+      
+      // Skip initialization for reduced motion preference
+      if (prefersReducedMotion) {
+        console.log('ThoughtTrails disabled due to reduced motion preference');
+        return;
+      }
+      
+      try {
+        // Add delay for mobile devices to ensure DOM is ready
+        if (isMobile && initTimeoutRef.current) {
+          clearTimeout(initTimeoutRef.current);
+        }
+        
+        const initDelay = isMobile ? 300 : 100;
+        
+        initTimeoutRef.current = setTimeout(async () => {
+          // Lazy import the ThoughtTrails
+          const { default: ThoughtTrails } = await import('../../../lib/thoughtTrails.js');
+          trailsInstance = ThoughtTrails;
+          
+          // Initialize if not already done
+          if (!trailsInstance.isInitialized && !trailsInstance.isDestroyed) {
+            trailsInstance.init();
+          }
+          
+          // Listen for the ready event
+          const handleReady = () => {
+            setThoughtTrails(trailsInstance);
+            isActivatedRef.current = true;
+          };
+          
+          if (trailsInstance.isInitialized) {
+            handleReady();
+          } else {
+            window.addEventListener('thoughtTrailsReady', handleReady, { once: true });
+          }
+        }, initDelay);
+        
+      } catch (error) {
+        console.warn('Failed to load ThoughtTrails:', error);
+      }
+    };
+
+    // Initialize trails when component mounts
+    initializeTrails();
+
+    // Cleanup when component unmounts
+    return () => {
+      if (initTimeoutRef.current) {
+        clearTimeout(initTimeoutRef.current);
+      }
+      
+      if (trailsInstance && isActivatedRef.current) {
+        trailsInstance.deactivate();
+        isActivatedRef.current = false;
+      }
+    };
+  }, [isMobile, isTablet, prefersReducedMotion, performanceTier]);
+
+  return thoughtTrails;
+};
+
 /**
- * Main Component - Lightweight container that orchestrates the three pages
+ * Main Component - Optimized container with mobile responsiveness
  */
 const HorizontalProductScrollV6 = ({ className = '' }) => {
   // Use unified responsive and capability hooks
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile, isTablet, isDesktop } = useResponsive();
   const { prefersReducedMotion, performanceTier } = useDeviceCapabilities();
   
   const [currentPage, setCurrentPage] = useState(0);
   const [isScrollLocked, setIsScrollLocked] = useState(false);
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 });
+  const [touchEnd, setTouchEnd] = useState({ x: 0, y: 0 });
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
   const containerRef = useRef(null);
+  const lastWheelTime = useRef(0);
+  const wheelThrottle = useRef(null);
   const isDebug = useDebugMode();
 
-  // Component mount effect - ensure ThoughtTrails detects the page
-  useEffect(() => {
-    // Initial ThoughtTrails detection when component mounts
-    const initThoughtTrails = () => {
-      if (window.thoughtTrails && typeof window.thoughtTrails.checkRouteAndActivate === 'function') {
-        console.log('🌟 Initial ThoughtTrails detection on component mount');
-        window.thoughtTrails.checkRouteAndActivate();
-      }
-    };
+  // Initialize ThoughtTrails for this component
+  const thoughtTrails = useThoughtTrails();
 
-    // Run immediately and after a delay to ensure DOM is ready
-    initThoughtTrails();
-    const timer = setTimeout(initThoughtTrails, 500);
+  // Page data attributes for event dispatch - Updated for 2 pages
+  const pageDataAttributes = ['aegis', 'products']; // Removed 'services'
+
+  // Mobile-optimized page change handler
+  const handlePageChange = useCallback((newPage) => {
+    if (isTransitioning || newPage === currentPage) return;
     
-    return () => clearTimeout(timer);
-  }, []);
+    setIsTransitioning(true);
+    setCurrentPage(newPage);
+    
+    // Reset transition lock after animation completes
+    const transitionDelay = isMobile ? 600 : 400;
+    setTimeout(() => setIsTransitioning(false), transitionDelay);
+  }, [currentPage, isTransitioning, isMobile]);
 
-  // Page data attributes mapping
-  const pageDataAttributes = {
-    0: 'aegis',
-    1: 'products', 
-    2: 'services'
-  };
-
-  // Handle stellar sequence completion
+  // Handle stellar sequence completion - COMMENTED OUT for 2-page system
+  /*
   useEffect(() => {
     const handleStellarComplete = () => {
       if (currentPage === 2) {
-        console.log('🌌 Stellar sequence completed - releasing scroll lock');
         setIsScrollLocked(false);
       }
     };
@@ -82,34 +158,82 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
     window.addEventListener('stellarSequenceComplete', handleStellarComplete);
     return () => window.removeEventListener('stellarSequenceComplete', handleStellarComplete);
   }, [currentPage]);
+  */
 
-  // Scroll handling
+  // Optimized wheel handling with throttling - Updated for 2 pages
+  const handleWheel = useCallback((e) => {
+    if (!isScrollLocked || isTransitioning) return;
+    
+    e.preventDefault();
+    
+    const now = Date.now();
+    if (now - lastWheelTime.current < (isMobile ? 200 : 150)) return;
+    lastWheelTime.current = now;
+    
+    const delta = e.deltaY || e.deltaX;
+    if (delta > 0 && currentPage < 1) { // Changed from 2 to 1
+      handlePageChange(currentPage + 1);
+    } else if (delta < 0 && currentPage > 0) {
+      handlePageChange(currentPage - 1);
+    }
+  }, [currentPage, isScrollLocked, isTransitioning, isMobile, handlePageChange]);
+
+  // Mobile touch handling
+  const handleTouchStart = useCallback((e) => {
+    if (!isScrollLocked || isTransitioning) return;
+    
+    const touch = e.touches[0];
+    setTouchStart({ x: touch.clientX, y: touch.clientY });
+  }, [isScrollLocked, isTransitioning]);
+
+  const handleTouchMove = useCallback((e) => {
+    if (!isScrollLocked || isTransitioning) return;
+    e.preventDefault();
+  }, [isScrollLocked, isTransitioning]);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (!isScrollLocked || isTransitioning) return;
+    
+    const touch = e.changedTouches[0];
+    setTouchEnd({ x: touch.clientX, y: touch.clientY });
+    
+    const deltaX = touchStart.x - touch.clientX;
+    const deltaY = Math.abs(touchStart.y - touch.clientY);
+    
+    // Minimum swipe distance and ensure horizontal swipe
+    const minSwipeDistance = isMobile ? 50 : 75;
+    if (Math.abs(deltaX) > minSwipeDistance && deltaY < Math.abs(deltaX) * 0.5) {
+      if (deltaX > 0 && currentPage < 1) { // Changed from 2 to 1
+        handlePageChange(currentPage + 1);
+      } else if (deltaX < 0 && currentPage > 0) {
+        handlePageChange(currentPage - 1);
+      }
+    }
+  }, [touchStart, currentPage, isMobile, isTransitioning, handlePageChange]);
+
+  // Event listeners setup
   useEffect(() => {
-    const handleWheel = (e) => {
-      if (!isScrollLocked) return;
-      e.preventDefault();
-      const delta = e.deltaY || e.deltaX;
-      if (delta > 0 && currentPage < 2) setCurrentPage((prev) => prev + 1);
-      else if (delta < 0 && currentPage > 0) setCurrentPage((prev) => prev - 1);
-    };
+    const container = containerRef.current;
+    if (!container) return;
 
-    const handleTouchMove = (e) => {
-      if (!isScrollLocked) return;
-      e.preventDefault();
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    // Add passive: false for preventDefault to work
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('wheel', handleWheel);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [currentPage, isScrollLocked]);
+  }, [handleWheel, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
-  const handleScrollRelease = () => {
-    if (currentPage === 2) setIsScrollLocked(false);
-  };
+  const handleScrollRelease = useCallback(() => {
+    // COMMENTED OUT - no longer needed for 2-page system
+    // if (currentPage === 2) setIsScrollLocked(false);
+  }, [currentPage]);
 
   // Dispatch event when page changes to control ThoughtTrails visibility
   useEffect(() => {
@@ -118,29 +242,63 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
       detail: { 
         pageIndex: currentPage,
         pageName: pageDataAttributes[currentPage],
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        isMobile,
+        isTablet,
+        performanceTier
       }
     }));
     
-    console.log(`🌟 Horizontal page changed: ${currentPage} (${pageDataAttributes[currentPage]})`);
-    
-    // Add data attribute to the current page for easier selection
-    const pages = document.querySelectorAll('section > .flex > .w-screen');
-    pages.forEach((page, index) => {
-      if (index === 1) { // Products page (second page)
-        page.setAttribute('data-page', 'products');
-      } else {
-        page.removeAttribute('data-page');
-      }
-    });
+    // Control ThoughtTrails activation based on current page and device capabilities
+    if (thoughtTrails && !prefersReducedMotion) {
+      if (currentPage === 0 || currentPage === 1) {
+        // Activate on AEGIS (0) and Products (1) pages
+        if (!thoughtTrails.isActive) {
+          // Add slight delay on mobile for smoother transitions
+          const activationDelay = isMobile ? 200 : 50;
+          setTimeout(() => {
+            if (thoughtTrails && !thoughtTrails.isDestroyed) {
+              thoughtTrails.activate();
+            }
+          }, activationDelay);
+        }
+      } 
+      // REMOVED: Services page deactivation logic since we only have 2 pages now
+      // else {
+      //   // Deactivate on Services (2) page
+      //   if (thoughtTrails.isActive) {
+      //     thoughtTrails.deactivate();
+      //   }
+      // }
+    }
+  }, [currentPage, thoughtTrails, isMobile, isTablet, prefersReducedMotion, performanceTier]);
 
-    // Trigger ThoughtTrails detection after a short delay to ensure DOM is ready
-    setTimeout(() => {
-      if (window.thoughtTrails && typeof window.thoughtTrails.checkRouteAndActivate === 'function') {
-        window.thoughtTrails.checkRouteAndActivate();
+  // Animation variants optimized for different devices
+  const containerVariants = {
+    animate: {
+      x: `-${currentPage * 100}vw`,
+      transition: {
+        type: 'spring',
+        stiffness: isMobile ? 80 : 100,
+        damping: isMobile ? 25 : 20,
+        mass: isMobile ? 1.2 : 1,
+        duration: isMobile ? 0.6 : 0.4
       }
-    }, 100);
-  }, [currentPage]);
+    }
+  };
+
+  const backgroundVariants = {
+    animate: {
+      x: `-${currentPage * 100}vw`,
+      transition: {
+        type: 'spring',
+        stiffness: isMobile ? 80 : 100,
+        damping: isMobile ? 25 : 20,
+        mass: isMobile ? 1.2 : 1,
+        duration: isMobile ? 0.6 : 0.4
+      }
+    }
+  };
 
   return (
     <section 
@@ -148,11 +306,11 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
       style={{ marginTop: '-10vh' }}
       ref={containerRef}
     >
-      {/* Spanning Background Gradient - Smooth transitions across all three pages */}
+      {/* Spanning Background Gradient - Optimized for mobile - Updated for 2 pages */}
       <motion.div 
-        className="absolute inset-0 w-[300vw] h-full z-[-10]"
-        animate={{ x: `-${currentPage * 100}vw` }}
-        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+        className="absolute inset-0 w-[200vw] h-full z-[-10]"
+        variants={backgroundVariants}
+        animate="animate"
       >
         <div
           className="absolute inset-0"
@@ -160,47 +318,36 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
             background: `
               linear-gradient(
                 to right,
-                /* AEGIS Page (0-33.33%) */
+                /* AEGIS Page (0-50%) */
                 #060b14 0%,
-                #0a1120 8%,
-                #131c2f 16%,
-                rgba(98, 153, 16, 0.15) 25%,
-                rgba(19, 28, 47, 0.8) 30%,
+                #0a1120 12%,
+                #131c2f 25%,
+                rgba(98, 153, 16, 0.15) 35%,
+                rgba(19, 28, 47, 0.8) 45%,
                 
-                /* Transition to Products (30-40%) */
-                rgba(15, 23, 42, 0.9) 33.33%,
-                rgba(30, 41, 59, 0.8) 35%,
-                rgba(45, 27, 79, 0.7) 38%,
+                /* Transition to Products (45-55%) */
+                rgba(15, 23, 42, 0.9) 50%,
+                rgba(30, 41, 59, 0.8) 52%,
+                rgba(45, 27, 79, 0.7) 55%,
                 
-                /* Products Page (33.33-66.66%) */
-                #0f172a 40%,
-                #1e293b 45%,
-                #2d1b4f 55%,
-                rgba(162, 52, 179, 0.4) 60%,
-                rgba(186, 86, 16, 0.3) 63%,
-                
-                /* Transition to Services (63-70%) */
-                rgba(15, 23, 42, 0.8) 66.66%,
-                rgba(30, 41, 59, 0.7) 68%,
-                rgba(45, 27, 79, 0.6) 70%,
-                
-                /* Services Page (66.66-100%) */
-                #0f172a 72%,
-                #1e293b 78%,
-                #2d1b4f 85%,
-                rgba(255, 107, 53, 0.15) 92%,
-                rgba(255, 140, 66, 0.1) 100%
+                /* Products Page (50-100%) */
+                #0f172a 60%,
+                #1e293b 70%,
+                #2d1b4f 80%,
+                rgba(162, 52, 179, 0.4) 90%,
+                rgba(186, 86, 16, 0.3) 100%
               )
-            `,
+            `
           }}
         />
         
-        {/* Spanning Noise Texture - Consistent across all pages */}
+        {/* Noise Texture - Reduced complexity on mobile */}
         <div 
-          className="absolute inset-0 opacity-20 mix-blend-overlay"
+          className="absolute inset-0 mix-blend-overlay"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='spanningNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23spanningNoise)' opacity='0.8'/%3E%3C/svg%3E")`,
-            backgroundSize: '180px 180px'
+            opacity: isMobile ? 0.15 : 0.20,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='${isMobile ? '120' : '180'}' height='${isMobile ? '120' : '180'}' viewBox='0 0 ${isMobile ? '120' : '180'} ${isMobile ? '120' : '180'}' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='spanningNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='${isMobile ? '0.7' : '0.85'}' numOctaves='${isMobile ? '2' : '4'}' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23spanningNoise)' opacity='0.8'/%3E%3C/svg%3E")`,
+            backgroundSize: `${isMobile ? '120px 120px' : '180px 180px'}`
           }}
         />
       </motion.div>
@@ -214,18 +361,20 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
             ))}
           </div>
           <div className="absolute top-4 right-4 bg-black/80 text-white p-2 rounded text-xs">
-            Debug Mode: Page {currentPage + 1}/3<br />
+            Debug Mode: Page {currentPage + 1}/2<br />
             Scroll Lock: {isScrollLocked ? 'On' : 'Off'}<br />
+            Device: {isMobile ? 'Mobile' : isTablet ? 'Tablet' : 'Desktop'}<br />
+            Performance: {performanceTier}<br />
             Press Ctrl+D to toggle debug
           </div>
         </div>
       )}
       
-      {/* Horizontal Scroll Container */}
-      <motion.div
-        className="flex w-[300vw] h-full"
-        animate={{ x: `-${currentPage * 100}vw` }}
-        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+      {/* Pages Container - Updated for 2 pages */}
+      <motion.div 
+        className="flex w-[200vw] h-full z-[1]"
+        variants={containerVariants}
+        animate="animate"
       >
         {/* Page 1: AEGIS */}
         <motion.div 
@@ -251,6 +400,7 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
         </motion.div>
 
         {/* Page 3: Services */}
+        {/* COMMENTED OUT - ServicesPage needs work, temporarily disabled
         <motion.div 
           className="w-screen h-screen z-[3]" 
           data-page="services" 
@@ -261,21 +411,45 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
         >
           <ServicesPage onScrollRelease={handleScrollRelease} />
         </motion.div>
+        */}
       </motion.div>
 
-      {/* Navigation Pagination */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-[30]">
-        {[0, 1, 2].map((index) => (
+      {/* Navigation Pagination - Mobile optimized - Updated for 2 pages */}
+      <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-[30] ${isMobile ? 'bottom-6' : 'bottom-8'}`}>
+        {[0, 1].map((index) => (
           <motion.div
             key={index}
-            className="w-3 h-3 rounded-full cursor-pointer"
-            animate={{ backgroundColor: currentPage === index ? '#d946ef' : 'rgba(255,255,255,0.2)' }}
-            onClick={() => setCurrentPage(index)}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
+            className={`rounded-full cursor-pointer ${isMobile ? 'w-4 h-4' : 'w-3 h-3'}`}
+            animate={{ 
+              backgroundColor: currentPage === index ? '#d946ef' : 'rgba(255,255,255,0.2)',
+              scale: currentPage === index ? (isMobile ? 1.3 : 1.2) : 1
+            }}
+            onClick={() => !isTransitioning && handlePageChange(index)}
+            whileHover={{ scale: isMobile ? 1.4 : 1.2 }}
+            whileTap={{ scale: isMobile ? 1.1 : 0.9 }}
+            transition={{ duration: 0.2 }}
           />
         ))}
       </div>
+
+      {/* Mobile swipe indicator (only show on first visit) */}
+      {isMobile && currentPage === 0 && (
+        <motion.div
+          className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 text-white/60 text-sm z-[30]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ delay: 2, duration: 0.5 }}
+        >
+          <span>Swipe to explore</span>
+          <motion.div
+            animate={{ x: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            →
+          </motion.div>
+        </motion.div>
+      )}
     </section>
   );
 };
@@ -303,9 +477,13 @@ const debugStyles = `
 
 // Inject debug styles if needed
 if (typeof document !== 'undefined') {
-  const styleElement = document.createElement('style');
-  styleElement.innerHTML = debugStyles;
-  document.head.appendChild(styleElement);
+  const existingStyle = document.getElementById('horizontal-scroll-debug-styles');
+  if (!existingStyle) {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'horizontal-scroll-debug-styles';
+    styleElement.innerHTML = debugStyles;
+    document.head.appendChild(styleElement);
+  }
 }
 
 HorizontalProductScrollV6.displayName = 'HorizontalProductScrollV6';
@@ -315,6 +493,7 @@ export const metadata = {
   scs: 'SCS5',
   type: 'visual',
   doc: 'contract_horizontal_product_scroll_v6.md',
+  version: '2.1.0'
 };
 
 export default HorizontalProductScrollV6;

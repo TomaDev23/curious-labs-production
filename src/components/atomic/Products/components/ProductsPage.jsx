@@ -311,6 +311,82 @@ const ProductDetailModal = ({ product, onClose }) => {
   );
 };
 
+// Mobile-optimized ThoughtTrails hook
+const useThoughtTrails = () => {
+  const [thoughtTrails, setThoughtTrails] = useState(null);
+  const { isMobile, isTablet } = useResponsive();
+  const { prefersReducedMotion, performanceTier } = useDeviceCapabilities();
+  const isActivatedRef = useRef(false);
+  const initTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    let trailsInstance = null;
+    
+    const initializeTrails = async () => {
+      if (isActivatedRef.current || prefersReducedMotion) return;
+      
+      try {
+        // Add delay for mobile devices to ensure DOM is ready
+        const initDelay = isMobile ? 500 : 200;
+        
+        if (initTimeoutRef.current) {
+          clearTimeout(initTimeoutRef.current);
+        }
+        
+        initTimeoutRef.current = setTimeout(async () => {
+          // Lazy import the ThoughtTrails
+          const { default: ThoughtTrails } = await import('../../../../lib/thoughtTrails.js');
+          trailsInstance = ThoughtTrails;
+          
+          // Initialize if not already done
+          if (!trailsInstance.isInitialized && !trailsInstance.isDestroyed) {
+            trailsInstance.init();
+          }
+          
+          // Listen for the ready event
+          const handleReady = () => {
+            setThoughtTrails(trailsInstance);
+            isActivatedRef.current = true;
+            
+            // Auto-activate for standalone products page
+            if (window.location.pathname === '/products') {
+              setTimeout(() => {
+                if (trailsInstance && !trailsInstance.isDestroyed) {
+                  trailsInstance.forceActivate();
+                }
+              }, 100);
+            }
+          };
+          
+          if (trailsInstance.isInitialized) {
+            handleReady();
+          } else {
+            window.addEventListener('thoughtTrailsReady', handleReady, { once: true });
+          }
+        }, initDelay);
+        
+      } catch (error) {
+        console.warn('Failed to load ThoughtTrails:', error);
+      }
+    };
+
+    initializeTrails();
+
+    return () => {
+      if (initTimeoutRef.current) {
+        clearTimeout(initTimeoutRef.current);
+      }
+      
+      if (trailsInstance && isActivatedRef.current) {
+        trailsInstance.deactivate();
+        isActivatedRef.current = false;
+      }
+    };
+  }, [isMobile, isTablet, prefersReducedMotion, performanceTier]);
+
+  return thoughtTrails;
+};
+
 /**
  * Products Page Component (Enhanced Mission Control Version)
  * Main products showcase with grid layout and detailed modals
@@ -319,6 +395,13 @@ export const ProductsPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [expandedProduct, setExpandedProduct] = useState(null);
   const [activeSystem, setActiveSystem] = useState('opspipe');
+
+  // Mobile responsiveness hooks
+  const { isMobile, isTablet, isDesktop } = useResponsive();
+  const { prefersReducedMotion, performanceTier } = useDeviceCapabilities();
+  
+  // Initialize ThoughtTrails with mobile optimization
+  const thoughtTrails = useThoughtTrails();
 
   // Memoized system configs
   const systemConfigs = useMemo(() => [
@@ -506,7 +589,7 @@ export const ProductsPage = () => {
                           { 
                   text: 'Complete audit trail for every execution',
                             status: 'MONITORING',
-                            metric: '2.3M events'
+                            metric: '1.3M events'
                           }
                         ].map((principle, index) => (
                           <div
@@ -608,22 +691,6 @@ export const ProductsPage = () => {
                 {activeSystem === 'moonsignal' && 'Analyzing market data streams with GPT-enhanced algorithms...'}
               </p>
             </motion.div>
-          </motion.div>
-
-          {/* Navigation Hint - Mobile Responsive */}
-          <motion.div 
-            className="mt-4 md:mt-6 flex items-center space-x-2 text-white/40"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            <span className="text-xs font-mono">Page 2 of 3</span>
-            <div className="flex space-x-1">
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/20" />
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-lime-400" />
-              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/20" />
-            </div>
-            <span className="text-xs">→</span>
           </motion.div>
         </motion.div>
 

@@ -5,10 +5,10 @@
  */
 
 import React, { lazy, Suspense, useState } from 'react';
-import { useInView } from 'framer-motion';
 
 // 🚀 LAZY IMPORT - 3D scene only loads when needed
-const AegisPlanet3DScene = lazy(() => import('../../3d/scenes/home/AegisPlanet3DScene.jsx'));
+// DISABLED: 3D scene removed during surgical cleanup - prevents runtime crash
+// const AegisPlanet3DScene = lazy(() => import('../../3d/scenes/home/AegisPlanet3DScene.jsx'));
 
 // 📱 Loading fallback
 const Planet3DLoader = () => (
@@ -46,10 +46,18 @@ const ContactGlobeWithCanvas = ({
     <div ref={ref} className={`relative w-full h-full ${className}`}>
       {shouldLoad ? (
         <Suspense fallback={<Planet3DLoader />}>
-          <AegisPlanet3DScene 
-            interactive={interactive}
-            scale={scale}
-          />
+          {/* DISABLED: 3D Scene temporarily disabled during rebuild */}
+          <div className="w-full h-64 bg-gradient-to-br from-indigo-900/30 to-purple-900/30 rounded-lg flex items-center justify-center text-white">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 border-2 border-indigo-400 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 2L3 7v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7l-7-5z"/>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-indigo-300 mb-2">3D Scene Temporarily Disabled</h3>
+              <p className="text-sm text-indigo-400">Will be restored in next update</p>
+            </div>
+          </div>
         </Suspense>
       ) : (
         <div 

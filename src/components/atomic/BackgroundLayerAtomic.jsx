@@ -19,7 +19,6 @@
 // 🔗 DEPENDENCIES: framer-motion, react
 
 import React, { useEffect, useState, useRef, useId } from 'react';
-import { motion } from 'framer-motion';
 
 // Internal performance detection
 const useDeviceCapabilities = () => {
@@ -389,14 +388,16 @@ export default function BackgroundLayerAtomic() {
         />
       )}
       
-      {/* Main Full Page Black Mask - Primary page darkening overlay - z-[25] */}
+      {/* FINAL FIX - Properly sized mask - z-[25] */}
       <div
-        className="fixed w-[100vw] h-[300vh] pointer-events-none"
+        className="fixed w-[100vw] h-[120vh] pointer-events-none"
         style={{
           top: '0',
           left: '0',
           background: 'radial-gradient(ellipse 65% 60% at 75% 45%, transparent 5%, rgba(0,0,0,0.3) 25%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.8) 65%, rgba(0,0,0,0.95) 80%)',
-          zIndex: 25
+          zIndex: 25,
+          contain: 'strict',
+          willChange: 'auto'
         }}
       />
       

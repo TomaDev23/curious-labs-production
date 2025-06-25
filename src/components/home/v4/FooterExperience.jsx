@@ -10,8 +10,8 @@
  */
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { motion } from '../../../FramerProvider';
 import MagneticButton from '../../ui/MagneticButton';
 import CosmicNoiseOverlay from '../../ui/CosmicNoiseOverlay';
 import ParticleField from '../../ui/ParticleField';
@@ -57,10 +57,10 @@ const FooterExperience = () => {
       { name: 'Guardian', path: '/products/guardian' },
     ],
     resources: [
-      { name: 'Documentation', path: '/docs' },
-      { name: 'Tutorials', path: '/docs/tutorials' },
+      { name: 'Instruments', path: '/tools' },
+      { name: 'Contracts', path: '/dev/contracts' },
       { name: 'Blog', path: '/blog' },
-      { name: 'Community', path: '/community' },
+      { name: 'Museum', path: '/museum' },
     ],
     company: [
       { name: 'About', path: '/about' },
@@ -71,19 +71,19 @@ const FooterExperience = () => {
   };
 
   return (
-    <footer className="relative pt-12 bg-gradient-to-t from-black via-gray-900/90 to-transparent overflow-hidden pb-12">
-      {/* Background enhancements */}
+    <footer className="relative pt-12 bg-gradient-to-t from-black via-gray-900/90 to-transparent overflow-hidden pb-12 z-[100]">
+      {/* Background enhancements - ensure they don't block clicks */}
       <CosmicNoiseOverlay opacity={0.03} blendMode="overlay" />
       <ParticleField density="low" yDirection="down" zIndex={0} />
       
-      {/* Ambient background glow */}
-      <div className="absolute bottom-0 left-1/4 w-1/2 h-96 rounded-full opacity-10 blur-[100px]" 
+      {/* Ambient background glow - ensure it's behind content */}
+      <div className="absolute bottom-0 left-1/4 w-1/2 h-96 rounded-full opacity-10 blur-[100px] pointer-events-none z-0" 
         style={{ background: 'radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, rgba(17, 24, 39, 0) 70%)' }} 
       />
       
       {/* CTA Bridge Section */}
       <motion.div 
-        className="container mx-auto px-4 text-center mb-16 relative z-10"
+        className="container mx-auto px-4 text-center mb-16 relative z-20"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -107,33 +107,35 @@ const FooterExperience = () => {
         </motion.p>
         
         <motion.div variants={itemVariants}>
-          <MagneticButton
-            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl text-white font-medium relative overflow-hidden group shadow-[0_0_15px_rgba(139,92,246,0.5)] hover:shadow-[0_0_25px_rgba(139,92,246,0.7)] transition-shadow duration-300"
-            aria-label="Start Your Journey - Begin your AI-driven development journey"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.currentTarget.click();
-              }
-            }}
-          >
-            <span className="relative z-10 animate-glow-text">Start Your Journey</span>
-            <div className="absolute inset-0 opacity-0 bg-gradient-to-r from-purple-700 to-blue-700 transition-opacity duration-300 group-hover:opacity-100 group-focus:opacity-100"></div>
-            <div className="absolute -inset-1 rounded-xl opacity-0 group-hover:opacity-70 group-focus:opacity-70 blur-md bg-gradient-to-r from-purple-600/50 via-blue-500/50 to-purple-600/50 group-hover:animate-pulse-subtle group-focus:animate-pulse-subtle transition-opacity duration-300"></div>
-          </MagneticButton>
+          <Link to="/contact">
+            <MagneticButton
+              className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl text-white font-medium relative overflow-hidden group shadow-[0_0_15px_rgba(139,92,246,0.5)] hover:shadow-[0_0_25px_rgba(139,92,246,0.7)] transition-shadow duration-300 z-10"
+              aria-label="Start Your Journey - Begin your AI-driven development journey"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.currentTarget.click();
+                }
+              }}
+            >
+              <span className="relative z-10 animate-glow-text">Start Your Journey</span>
+              <div className="absolute inset-0 opacity-0 bg-gradient-to-r from-purple-700 to-blue-700 transition-opacity duration-300 group-hover:opacity-100 group-focus:opacity-100 pointer-events-none"></div>
+              <div className="absolute -inset-1 rounded-xl opacity-0 group-hover:opacity-70 group-focus:opacity-70 blur-md bg-gradient-to-r from-purple-600/50 via-blue-500/50 to-purple-600/50 group-hover:animate-pulse-subtle group-focus:animate-pulse-subtle transition-opacity duration-300 pointer-events-none"></div>
+            </MagneticButton>
+          </Link>
         </motion.div>
       </motion.div>
       
-      {/* Glowing divider */}
-      <div className="relative h-px mb-16">
+      {/* Glowing divider - ensure it doesn't block clicks */}
+      <div className="relative h-px mb-16 pointer-events-none">
         <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
         <div className="absolute inset-x-0 h-[2px] blur-sm bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
       </div>
       
-      {/* Footer Grid */}
-      <div className="container mx-auto px-4 py-16">
+      {/* Footer Grid - ensure proper z-index */}
+      <div className="container mx-auto px-4 py-16 relative z-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
           {/* Company Info */}
           <motion.div
@@ -162,18 +164,18 @@ const FooterExperience = () => {
           </motion.div>
           
           {/* Products */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} className="relative z-10">
             <h3 className="text-xl font-bold text-white mb-6">Products</h3>
             <ul className="space-y-3" role="list">
               {links.products.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path} 
-                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2"
+                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer"
                     aria-label={`${link.name} product page`}
                   >
                     <motion.span 
-                      className="block w-1 h-1 rounded-full bg-purple-500 mr-2"
+                      className="block w-1 h-1 rounded-full bg-purple-500 mr-2 pointer-events-none"
                       whileHover={{ scale: 2 }}
                       whileFocus={{ scale: 2 }}
                       transition={{ duration: 0.2 }}
@@ -187,18 +189,18 @@ const FooterExperience = () => {
           </motion.div>
           
           {/* Resources */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} className="relative z-10">
             <h3 className="text-xl font-bold text-white mb-6">Resources</h3>
             <ul className="space-y-3" role="list">
               {links.resources.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path} 
-                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2"
+                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer"
                     aria-label={`${link.name} resource page`}
                   >
                     <motion.span 
-                      className="block w-1 h-1 rounded-full bg-blue-500 mr-2"
+                      className="block w-1 h-1 rounded-full bg-blue-500 mr-2 pointer-events-none"
                       whileHover={{ scale: 2 }}
                       whileFocus={{ scale: 2 }}
                       transition={{ duration: 0.2 }}
@@ -212,18 +214,18 @@ const FooterExperience = () => {
           </motion.div>
           
           {/* Company */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} className="relative z-10">
             <h3 className="text-xl font-bold text-white mb-6">Company</h3>
             <ul className="space-y-3" role="list">
               {links.company.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path} 
-                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2"
+                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer"
                     aria-label={`${link.name} company page`}
                   >
                     <motion.span 
-                      className="block w-1 h-1 rounded-full bg-purple-500 mr-2"
+                      className="block w-1 h-1 rounded-full bg-purple-500 mr-2 pointer-events-none"
                       whileHover={{ scale: 2 }}
                       whileFocus={{ scale: 2 }}
                       transition={{ duration: 0.2 }}
@@ -239,7 +241,7 @@ const FooterExperience = () => {
         
         {/* Copyright */}
         <motion.div 
-          className="text-center text-gray-500 mt-16 pt-8 pb-8 border-t border-gray-800"
+          className="text-center text-gray-500 mt-16 pt-8 pb-8 border-t border-gray-800 relative z-10"
           variants={itemVariants}
         >
           <p>© {new Date().getFullYear()} CuriousLabs. All rights reserved.</p>
@@ -250,6 +252,7 @@ const FooterExperience = () => {
       </div>
 
       {/* Add Legacy View Easter Egg */}
+      {/* TODO: Uncomment when legacy solar system is ready
       <motion.div 
         className="fixed bottom-8 left-8 z-50"
         initial={{ opacity: 0, y: 20 }}
@@ -266,6 +269,7 @@ const FooterExperience = () => {
           <span className="font-mono">Solar Preview</span>
         </Link>
       </motion.div>
+      */}
     </footer>
   );
 };

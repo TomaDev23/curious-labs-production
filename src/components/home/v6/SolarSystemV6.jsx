@@ -1,5 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import {  motion, useScroll  } from '../../../FramerProvider';
+
 
 /**
  * SolarSystemV6 - A collection of animated space-themed visual effects

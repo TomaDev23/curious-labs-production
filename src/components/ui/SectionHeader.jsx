@@ -1,6 +1,7 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { useBreakpoint } from "../../hooks/useBreakpoint.js";
+import {  motion  } from '../../FramerProvider';
+
 
 /**
  * SectionHeader component

@@ -1,7 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useBreakpoint } from '../../hooks/useBreakpoint.js';
 import { getTouchTargetClass } from '../../utils/responsive';
+import {  motion  } from '../../FramerProvider';
+
 
 /**
  * ResponsiveButton - Button component with responsive sizing and touch targets

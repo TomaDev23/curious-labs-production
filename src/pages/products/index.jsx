@@ -9,7 +9,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import ScrollToTop from '../../components/ScrollToTop';
@@ -17,6 +16,8 @@ import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic
 import SolarSystemLayout from '../../components/SolarSystemLayout';
 
 // Product data for mobile view
+import {  motion  } from '../../FramerProvider';
+
 const productData = [
   { 
     icon: "/assets/images/general/Page_Logos/Aegis_logo.webp", 
@@ -142,19 +143,6 @@ export default function ProductsPortal() {
       
       {/* Mission Control Navbar */}
       <MissionControlNavbar />
-      
-      {/* 🔴 VISIBLE RED DEBUG MARKER - MOVED TO CORNER 🔴 */}
-      <div className="fixed bottom-4 right-4 z-[9999] bg-red-600/95 backdrop-blur-sm border-2 border-red-400 rounded-lg px-3 py-2 shadow-xl">
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-          <span className="text-white font-bold text-xs">
-            🛍️ PROD-PORTAL-001
-          </span>
-        </div>
-        <div className="text-red-200 text-xs font-mono mt-1">
-          Products Portal - KEEP
-        </div>
-      </div>
       
       {/* Atmospheric glow effects */}
       <div

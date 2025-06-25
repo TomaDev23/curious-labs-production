@@ -11,7 +11,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import { IMAGES } from '../../utils/assets';
 import ScrollToTop from '../../components/ScrollToTop';
@@ -19,6 +18,8 @@ import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic
 import './aegis.css'; // Add CSS import for custom animations
 
 // ✅ KEEP - AEGIS PRODUCT COMPONENT
+import {  motion  } from '../../FramerProvider';
+
 export default function Aegis() {
   const [activeTab, setActiveTab] = useState('features');
   const [selectedFeature, setSelectedFeature] = useState(0);
@@ -47,55 +48,55 @@ export default function Aegis() {
   // Define the use cases array with enhanced data
   const useCases = [
     {
-      title: "Food & Beverage Ops",
-      description: "Run AI-driven kitchens with zero chaos. Aegis ingests operational files, recipes, and shift logs — turning them into structured cards, pricing metrics, and staff dashboards. Built for franchise scaling and lean food labs.\n\nBuilt to International F&B standards. State-synced. Trace-locked.",
-      icon: "🍜",
+      title: "Core Platform for All CuriousLabs Products",
+      description: "AEGIS isn’t just a backend — it’s the mission runtime. Every intelligent product we build, from Curious to OpsPipe, runs through its contract-driven state machine. Shared memory. Fallback logic. Real trace control.\n\nAEGIS is the soul of the system.",
+      icon: "🧠",
       coordinates: "AEG-001",
-      status: "OPERATIONAL",
-      classification: "CRITICAL"
+      status: "CORE",
+      classification: "FOUNDATIONAL"
     },
     {
-      title: "Corporate Ops",
-      description: "Financial workflows you can trust. Aegis parses receipts, batches documents, applies schema validation, and syncs with tools like Xero. Rejects fuzzy results. Flags edge cases for review.\n\nEvery transaction traceable. Every sync verified.",
-      icon: "📊",
+      title: "Agentic Software Planning & Build System",
+      description: "AEGIS coordinates multi-agent teams for planning, building, testing, and validating full-stack applications. This is the backbone of CodeLab — where human users can spin up SaaS platforms with real audits, fallbacks, and memory — not brittle scripts.\n\nIt’s AI-assisted software creation, done right.",
+      icon: "🧪",
       coordinates: "AEG-002",
-      status: "ACTIVE",
-      classification: "HIGH"
-    },
-    {
-      title: "Entertainment Ops",
-      description: "Curate thousands of guest uploads automatically. Used in weddings and corporate events, Aegis ranks images by quality, screens content, and renders a polished feed in real-time — all AI-managed.\n\nBeautiful results. No moderation stress.",
-      icon: "📸",
-      coordinates: "AEG-003",
-      status: "MONITORING",
-      classification: "MEDIUM"
-    },
-    {
-      title: "Ops & Debug Automation",
-      description: "See your pipeline like a control tower. Aegis runs internal tests before execution, simulates fallback chains, and reports visual traces of how phases flow. Useful in dev, ops, and AI workflows.\n\nFails safely. Replays clearly. Logs everything.",
-      icon: "🛠",
-      coordinates: "AEG-004",
       status: "OPERATIONAL",
       classification: "CRITICAL"
     },
     {
-      title: "Internal Tooling / Microtools",
-      description: "Build fast, clean internal workflows. Plug AI into HR forms, admin panels, or CLI jobs — without fragile scripts. Aegis handles routing, agents, state, and outputs.\n\nCleaner than RPA. Safer than code hacks.",
-      icon: "💼",
-      coordinates: "AEG-005",
-      status: "STANDBY",
-      classification: "MEDIUM"
-    },
-    {
-      title: "Modular AI Infrastructure",
-      description: "White-label your own agent system. Aegis can power your startup or SaaS backend. Use the same architecture: FSM, trace logs, config-driven agent slots.\n\nYour product. Our mission core.",
-      icon: "🧱",
-      coordinates: "AEG-006",
+      title: "Autonomous Manufacturing Logic",
+      description: "From procurement to production, AEGIS can run workflows that span multiple systems and AI agents. Each phase is state-tracked, decision-routed, and validated by function-specific models. Ideal for precision manufacturing and industrial AI.\n\nAutonomous doesn’t mean blind — it means accountable.",
+      icon: "🏭",
+      coordinates: "AEG-003",
       status: "RESEARCH",
       classification: "HIGH"
+    },
+    {
+      title: "Secure CorporateOps Layer",
+      description: "Deploy an LLM environment with strict trace controls, agent restrictions, and on-premise compliance. AEGIS enables enterprises to run smart workflows without ever exposing data to outside APIs.\n\nPrivacy first. Full control. Fully internal.",
+      icon: "🏢",
+      coordinates: "AEG-004",
+      status: "ACTIVE",
+      classification: "SECURE"
+    },
+    {
+      title: "Scientific Discovery Engine",
+      description: "AEGIS supports iterative, multi-agent loops for material science, pharmaceutical modeling, and lab data interpretation. AI is changing the pace of R&D in frontier labs.\n\nStructured exploration, backed by agent-grade reasoning.",
+      icon: "🔬",
+      coordinates: "AEG-005",
+      status: "EXPERIMENTAL",
+      classification: "TRANSFORMATIVE"
+    },
+    {
+      title: "Developer SDK & Integration Layer",
+      description: "Companies can embed AEGIS as the core runtime of their own products. Bring your own agents. Use our FSM, logging, and validator stack. Build safer apps, faster — without starting from scratch.\n\nYour stack. Our agentic foundation.",
+      icon: "📦",
+      coordinates: "AEG-006",
+      status: "PREVIEW",
+      classification: "PARTNER"
     }
   ];
-
+  
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden relative font-['Space_Grotesk']">
       <Helmet>
@@ -405,28 +406,28 @@ export default function Aegis() {
               },
               {
                 title: 'Agent Orchestration',
-                description: 'Powers AI modules like GPT, Claude, Gemini, Grok in unified logic.',
+                description: 'Powers an array of mission-appropriate AI modules in unified logic.',
                 icon: '⚙️',
                 coordinates: 'CAP-002',
                 status: 'ACTIVE'
               },
               {
                 title: 'Signal Integration',
-                description: 'Accepts inbound data from tools like MoonSignal and OpsPipe.',
+                description: 'Accepts inbound data from a wide range of sources and formats.',
                 icon: '📡',
                 coordinates: 'CAP-003',
                 status: 'MONITORING'
               },
               {
                 title: 'Contract Enforcement',
-                description: 'Validates transitions and actions with declarative schemas.',
+                description: 'Validates transitions and actions with declarative schemas, never fails silently.',
                 icon: '🔒',
                 coordinates: 'CAP-004',
                 status: 'OPERATIONAL'
               },
               {
                 title: 'Memory & Telemetry',
-                description: 'Tracks every state, transition, and variable at runtime.',
+                description: 'Tracks every state, transition, and variable at runtime, with full traceability.',
                 icon: '🔄',
                 coordinates: 'CAP-005',
                 status: 'ACTIVE'
@@ -786,19 +787,6 @@ export default function Aegis() {
       
       <ScrollToTop />
       <MissionControlNavbar />
-      
-      {/* 🔴 VISIBLE RED DEBUG MARKER - AEGIS 🔴 */}
-      <div className="fixed bottom-4 right-4 z-[9999] bg-red-600/95 backdrop-blur-sm border-2 border-red-400 rounded-lg px-3 py-2 shadow-xl">
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-          <span className="text-white font-bold text-xs">
-            🛡️ AEGIS-001
-          </span>
-        </div>
-        <div className="text-red-200 text-xs font-mono mt-1">
-          Product Page - KEEP
-        </div>
-      </div>
     </div>
   );
 } 

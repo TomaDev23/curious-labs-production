@@ -1,3 +1,5 @@
+import {  motion  } from '../../../FramerProvider';
+
 /**
  * @metadata
  * @component ProductSectionV6
@@ -8,7 +10,6 @@
  */
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useScene } from './SceneControllerV6';
 import PlanetVisualizationV6 from './PlanetVisualizationV6';
 import SolarSystemV6 from './SolarSystemV6';

@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {  motion, AnimatePresence  } from '../../FramerProvider';
 import { useMoonLighting } from '../../utils/useMoonLighting';
 import lune from 'lune';
 import { getDistanceToEarth, getTideInfluence, getNextLunarEvents, updateEventDays } from '../../utils/luneBridge';

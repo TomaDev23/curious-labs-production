@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
 
 // Simple hook for animating number counting with performance optimizations
+import {  motion, useReducedMotion, useInView  } from '../../FramerProvider';
+
 const useCountAnimation = (targetValue, duration = 2, start = 0) => {
   const [count, setCount] = useState(start);
   const shouldReduceMotion = useReducedMotion();
@@ -44,8 +45,9 @@ const useCountAnimation = (targetValue, duration = 2, start = 0) => {
   return [count, setIsInView];
 };
 
-const MetricsLogsSection = ({ isLowPerf }) => {
+const MetricsLogsSection = () => {
   const shouldReduceMotion = useReducedMotion();
+  const isLowPerf = typeof window !== 'undefined' && window.navigator?.hardwareConcurrency < 4;
   const simplifiedAnimation = shouldReduceMotion || isLowPerf;
   
   const sectionRef = useRef(null);
@@ -54,8 +56,8 @@ const MetricsLogsSection = ({ isLowPerf }) => {
   // Metrics data
   const metrics = [
     { id: 1, value: 98, suffix: "%", label: "Quality Assurance Rate" },
-    { id: 2, value: 340, suffix: "+", label: "Projects Completed" },
-    { id: 3, value: 65, suffix: "%", label: "Faster Development" },
+    { id: 2, value: 12, suffix: "+", label: "Projects Completed" },
+    { id: 3, value: 85, suffix: "%", label: "Faster Development" },
     { id: 4, value: 24, suffix: "/7", label: "Support Availability" }
   ];
   

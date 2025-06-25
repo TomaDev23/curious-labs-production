@@ -1,0 +1,553 @@
+import React, { memo, useMemo } from 'react';
+import { motion } from '../../FramerProvider';
+
+// Static data to prevent re-renders
+const ANALYSIS_ITEMS = [
+  "✓ Emotional State Recognition",
+  "✓ Vocabulary Growth Tracking", 
+  "✓ Social Skill Development",
+  "✓ Creative Expression Patterns",
+  "✓ Safety & Wellbeing Monitoring"
+];
+
+const RESPONSE_OPTIONS = [
+  { emoji: "😊", text: "It was amazing! I painted a sunset", color: "bg-pink-100 border-pink-300 hover:bg-pink-200" },
+  { emoji: "🤔", text: "Pretty good, but I messed up the trees", color: "bg-blue-100 border-blue-300 hover:bg-blue-200" },
+  { emoji: "💭", text: "Can we talk about something else?", color: "bg-purple-100 border-purple-300 hover:bg-purple-200" }
+];
+
+const RECENT_ACTIVITIES = [
+  { icon: "🎨", text: "Creative writing story", time: "Yesterday" },
+  { icon: "📚", text: "Math homework help", time: "2 days ago" },
+  { icon: "👥", text: "Friendship question", time: "3 days ago" }
+];
+
+const BOTTOM_NAV_BUTTONS = [
+  { icon: "🎤", label: "Talk", color: "bg-emerald-100 hover:bg-emerald-200" },
+  { icon: "✏️", label: "Draw", color: "bg-blue-100 hover:bg-blue-200" },
+  { icon: "📚", label: "Story", color: "bg-purple-100 hover:bg-purple-200" },
+  { icon: "⚙️", label: "Settings", color: "bg-slate-100 hover:bg-slate-200" }
+];
+
+const JOURNEY_PHASES = [
+  {
+    stage: "Foundation",
+    ages: "Ages 3-6",
+    icon: "🐻",
+    title: "Caring Bear Companion",
+    status: "current",
+    features: ["Trust & Safety Building", "Basic Emotional Vocabulary", "Bedtime Stories & Comfort"]
+  },
+  {
+    stage: "Competence", 
+    ages: "Ages 7-10",
+    icon: "🤖",
+    title: "Helpful Learning Buddy",
+    status: "active",
+    features: ["Homework Support", "Social Skill Development", "Creative Collaboration"]
+  },
+  {
+    stage: "Identity",
+    ages: "Ages 11-13",
+    icon: "💎",
+    title: "Understanding Ally",
+    status: "future",
+    features: []
+  },
+  {
+    stage: "Autonomy",
+    ages: "Ages 14-17",
+    icon: "💬",
+    title: "Trusted Future-Focused Friend", 
+    status: "future",
+    features: []
+  }
+];
+
+const ARCHITECTURE_CARDS = [
+  {
+    icon: "🧠",
+    title: "Memory Continuity",
+    desc: "14-year relationship span with contextual recall",
+    color: "emerald"
+  },
+  {
+    icon: "🛡️", 
+    title: "Safety Protocols",
+    desc: "Multi-layer content filtering & crisis detection",
+    color: "blue"
+  },
+  {
+    icon: "📈",
+    title: "Adaptive Development",
+    desc: "Psychology-informed response evolution",
+    color: "purple"
+  },
+  {
+    icon: "👨‍👩‍👧‍👦",
+    title: "Family Bridge",
+    desc: "Transparent insights without surveillance",
+    color: "pink"
+  },
+  {
+    icon: "🔒",
+    title: "Local Processing", 
+    desc: "89% on-device with encrypted cloud sync",
+    color: "amber"
+  },
+  {
+    icon: "❤️",
+    title: "Relationship Intelligence",
+    desc: "Trust-building with appropriate boundaries",
+    color: "red"
+  }
+];
+
+// Memoized sub-components for better performance
+const AnalysisItem = memo(({ item, index }) => (
+  <motion.li
+    className="text-slate-700 font-medium flex items-center gap-3"
+    initial={{ opacity: 0, x: -10 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: index * 0.1 }}
+  >
+    <span className="text-emerald-600">{item.split(' ')[0]}</span>
+    <span>{item.substring(2)}</span>
+  </motion.li>
+));
+
+AnalysisItem.displayName = 'AnalysisItem';
+
+const ResponseOption = memo(({ option, index }) => (
+  <motion.button
+    className={`response-btn w-full ${option.color} border-2 rounded-2xl p-4 text-left transition-all duration-300 cursor-pointer`}
+    style={{ minHeight: '56px' }}
+    initial={{ opacity: 0, x: 20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: index * 0.2 }}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <div className="flex items-center gap-4">
+      <span className="text-2xl">{option.emoji}</span>
+      <span className="font-medium text-slate-800">{option.text}</span>
+    </div>
+  </motion.button>
+));
+
+ResponseOption.displayName = 'ResponseOption';
+
+const JourneyStage = memo(({ phase, index }) => (
+  <motion.div
+    className={`journey-stage ${phase.status} relative`}
+    initial={{ opacity: 0, x: 30 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: index * 0.2 }}
+  >
+    <div className={`
+      ${phase.status === 'active' ? 'bg-emerald-50 border-emerald-300 border-2' : 
+        phase.status === 'current' ? 'bg-blue-50 border-blue-300 border-2' : 
+        'bg-slate-50 border-slate-200 border'} 
+      rounded-xl p-5 transition-all duration-300 hover:shadow-md
+    `}>
+      <div className="flex items-start gap-4">
+        <div className={`
+          stage-icon w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm
+          ${phase.status === 'active' ? 'bg-emerald-100' : 
+            phase.status === 'current' ? 'bg-blue-100' : 
+            'bg-slate-100'}
+        `}>
+          {phase.icon}
+        </div>
+        <div className="stage-content flex-1">
+          <div className="mb-2">
+            <h4 className="font-bold text-slate-900 text-lg">{phase.stage} ({phase.ages})</h4>
+            <p className={`font-medium text-sm ${
+              phase.status === 'active' ? 'text-emerald-700' : 
+              phase.status === 'current' ? 'text-blue-700' : 
+              'text-slate-600'
+            }`}>{phase.title}</p>
+          </div>
+          {phase.features.length > 0 && (
+            <ul className="space-y-1">
+              {phase.features.map((feature, j) => (
+                <li key={j} className="text-sm text-slate-600 flex items-center gap-2">
+                  <span className="text-slate-400">•</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  </motion.div>
+));
+
+JourneyStage.displayName = 'JourneyStage';
+
+const ArchitectureCard = memo(({ card, index }) => (
+  <motion.div
+    className={`arch-card bg-white/80 backdrop-blur-sm border border-${card.color}-200/50 rounded-2xl p-6 hover:shadow-lg transition-all duration-300`}
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: index * 0.1 + 0.7 }}
+    whileHover={{ scale: 1.02, y: -5 }}
+  >
+    <div className="card-icon text-3xl mb-4">{card.icon}</div>
+    <h4 className="font-bold text-slate-900 text-lg mb-3">{card.title}</h4>
+    <p className="text-slate-700 leading-relaxed">{card.desc}</p>
+  </motion.div>
+));
+
+ArchitectureCard.displayName = 'ArchitectureCard';
+
+const GuardianKidsSection = memo(() => {
+  // Memoize expensive style calculations
+  const phoneStyle = useMemo(() => ({
+    width: '380px',
+    height: '820px',
+    background: 'linear-gradient(145deg, #1d1d1f, #2d2d30)',
+    borderRadius: '55px',
+    padding: '8px',
+    boxShadow: `
+      0 0 0 2px #86868b,
+      0 25px 80px rgba(0,0,0,0.3),
+      inset 0 0 0 1px rgba(255,255,255,0.1)
+    `,
+    transform: 'perspective(1000px) rotateY(-8deg) rotateX(2deg)'
+  }), []);
+
+  const dynamicIslandStyle = useMemo(() => ({
+    width: '126px',
+    height: '37px',
+    background: '#000',
+    borderRadius: '19px'
+  }), []);
+
+  const guardianInterfaceStyle = useMemo(() => ({
+    background: 'linear-gradient(180deg, #dbeafe 0%, #fef3cd 100%)',
+    padding: '60px 24px 24px'
+  }), []);
+
+  const guardianBearStyle = useMemo(() => ({
+    width: '140px',
+    height: '140px',
+    borderRadius: '50%',
+    background: 'radial-gradient(circle, #f59e0b, #d97706)',
+    boxShadow: '0 12px 30px rgba(245, 158, 11, 0.4)'
+  }), []);
+
+  return (
+    <section id="kids-methodology" className="relative py-20">
+      <div className="max-w-[1400px] mx-auto px-10">
+        
+        {/* Header */}
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-emerald-600"></div>
+            <span className="text-emerald-700 font-mono text-sm tracking-wider uppercase font-medium">Guardian Child Experience</span>
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-emerald-600"></div>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 leading-tight tracking-tight">
+            Unified Child Development
+            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text font-black">
+              Architecture
+            </span>
+          </h2>
+
+          <p className="text-xl text-gray-700 leading-relaxed max-w-4xl mx-auto">
+            A sophisticated AI companion that grows with your child through every developmental stage, 
+            <strong className="text-emerald-700"> combining cutting-edge technology with child psychology</strong> to create 
+            meaningful, lasting relationships that support healthy emotional development.
+          </p>
+        </motion.div>
+
+        {/* Main Grid Layout */}
+        <div className="guardian-child-section grid grid-cols-[1fr_380px_1fr] grid-rows-[auto_1fr_auto] gap-10 items-start">
+          
+          {/* Left Panel: Development Engine */}
+          <motion.div 
+            className="development-panel self-center space-y-6"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+          >
+            <div className="bg-white/90 backdrop-blur-sm border border-blue-200/50 rounded-2xl p-8 shadow-lg">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="text-3xl">🧠</span>
+                <h3 className="font-bold text-slate-900 text-xl">Child Development Engine</h3>
+              </div>
+              
+              <div className="analysis-section mb-8">
+                <h4 className="font-semibold text-slate-800 text-lg mb-4">Real-Time Analysis:</h4>
+                <ul className="analysis-list space-y-3">
+                  {ANALYSIS_ITEMS.map((item, i) => (
+                    <AnalysisItem key={i} item={item} index={i} />
+                  ))}
+                </ul>
+              </div>
+
+              <div className="current-insights">
+                <h4 className="font-semibold text-slate-800 text-lg mb-4">Current Session:</h4>
+                <div className="space-y-3">
+                  <div className="insight-item positive bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                    <span className="font-medium text-emerald-800">Confidence: High</span>
+                    <span className="text-emerald-600 text-sm ml-2">(art discussion)</span>
+                  </div>
+                  <div className="insight-item growth bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <span className="font-medium text-blue-800">Vocabulary: "frustrated" → "disappointed"</span>
+                  </div>
+                  <div className="insight-item social bg-purple-50 border border-purple-200 rounded-lg p-3">
+                    <span className="font-medium text-purple-800">Social awareness: Mentioned helping friend</span>
+                  </div>
+                  <div className="insight-item creative bg-amber-50 border border-amber-200 rounded-lg p-3">
+                    <span className="font-medium text-amber-800">Creative engagement: 340% above baseline</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Central Phone Mockup */}
+          <motion.div 
+            className="phone-container col-start-2 row-start-1 row-end-3 z-10 relative flex justify-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            {/* iPhone 15 Pro Frame */}
+            <motion.div 
+              className="iphone-mockup relative"
+              style={phoneStyle}
+              animate={{ 
+                rotateY: [-8, -6, -8],
+                rotateX: [2, 1, 2]
+              }}
+              transition={{ 
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              {/* Screen */}
+              <div className="screen w-full h-full bg-black rounded-[47px] overflow-hidden relative">
+                
+                {/* Dynamic Island */}
+                <div 
+                  className="dynamic-island absolute top-[11px] left-1/2 transform -translate-x-1/2 z-20"
+                  style={dynamicIslandStyle}
+                ></div>
+
+                {/* Guardian Interface */}
+                <div className="guardian-interface h-full overflow-y-auto" style={guardianInterfaceStyle}>
+                  
+                  {/* Status Bar */}
+                  <div className="status-bar flex justify-between items-center mb-6 text-sm font-semibold text-slate-700">
+                    <span>9:41</span>
+                    <div className="battery flex items-center gap-2">
+                      <div className="w-6 h-3 bg-emerald-500 rounded-sm"></div>
+                      <span>94%</span>
+                    </div>
+                  </div>
+
+                  {/* App Header */}
+                  <div className="app-header text-center mb-8">
+                    <div className="child-profile">
+                      <h2 className="text-2xl font-bold text-slate-900 mb-2">Hi Emma! 👋</h2>
+                      <p className="text-sm text-slate-600">Age 9 • Safe Mode Active</p>
+                    </div>
+                  </div>
+
+                  {/* Guardian Avatar */}
+                  <div className="guardian-avatar-container relative flex justify-center mb-8">
+                    <motion.div 
+                      className="guardian-bear relative flex items-center justify-center"
+                      style={guardianBearStyle}
+                      animate={{ 
+                        scale: [1, 1.05, 1],
+                        boxShadow: [
+                          '0 12px 30px rgba(245, 158, 11, 0.4)',
+                          '0 16px 40px rgba(245, 158, 11, 0.5)',
+                          '0 12px 30px rgba(245, 158, 11, 0.4)'
+                        ]
+                      }}
+                      transition={{ 
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <span className="text-5xl">🐻</span>
+                      
+                      {/* Sparkles */}
+                      <motion.div
+                        className="sparkles absolute -top-3 -right-3 text-yellow-300 text-xl"
+                        animate={{ 
+                          rotate: [0, 360],
+                          scale: [0.8, 1.3, 0.8]
+                        }}
+                        transition={{ 
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      >
+                        ✨
+                      </motion.div>
+                      <motion.div
+                        className="sparkles absolute -bottom-2 -left-3 text-yellow-200 text-lg"
+                        animate={{ 
+                          rotate: [360, 0],
+                          scale: [1, 0.7, 1]
+                        }}
+                        transition={{ 
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: 1.5
+                        }}
+                      >
+                        ✨
+                      </motion.div>
+                    </motion.div>
+                  </div>
+
+                  {/* Conversation Bubble */}
+                  <div className="conversation-bubble bg-white/90 rounded-3xl p-6 mb-6 shadow-sm">
+                    <p className="text-slate-800 font-medium text-lg mb-3 leading-relaxed">
+                      "How was art class today? I love hearing about your creative projects!"
+                    </p>
+                    <div className="typing-indicator text-slate-500 text-sm flex items-center gap-2">
+                      <div className="flex gap-1">
+                        <motion.div 
+                          className="w-2 h-2 bg-slate-400 rounded-full"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0 }}
+                        ></motion.div>
+                        <motion.div 
+                          className="w-2 h-2 bg-slate-400 rounded-full"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                        ></motion.div>
+                        <motion.div 
+                          className="w-2 h-2 bg-slate-400 rounded-full"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                        ></motion.div>
+                      </div>
+                      <span>Guardian is listening...</span>
+                    </div>
+                  </div>
+
+                  {/* Response Options */}
+                  <div className="response-options space-y-4 mb-8">
+                    {RESPONSE_OPTIONS.map((option, i) => (
+                      <ResponseOption key={i} option={option} index={i} />
+                    ))}
+                  </div>
+
+                  {/* Recent Activities */}
+                  <div className="recent-activities bg-white/70 rounded-2xl p-5 mb-8">
+                    <h4 className="font-semibold text-slate-800 text-lg mb-4">Recent Chats</h4>
+                    <div className="space-y-3">
+                      {RECENT_ACTIVITIES.map((activity, i) => (
+                        <div key={i} className="activity-item flex items-center justify-between py-2">
+                          <div className="flex items-center gap-3">
+                            <span className="text-lg">{activity.icon}</span>
+                            <span className="text-slate-700 font-medium">{activity.text}</span>
+                          </div>
+                          <span className="text-slate-500 text-sm">{activity.time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bottom Navigation */}
+                  <div className="bottom-nav grid grid-cols-4 gap-3">
+                    {BOTTOM_NAV_BUTTONS.map((button, i) => (
+                      <motion.button
+                        key={i}
+                        className={`${button.color} rounded-2xl p-4 text-center transition-all duration-300 cursor-pointer`}
+                        style={{ minHeight: '56px' }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <div className="text-2xl mb-1">{button.icon}</div>
+                        <div className="text-xs font-semibold text-slate-700">{button.label}</div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Phone Shadow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[55px] blur-3xl transform translate-y-12 translate-x-8 -z-10"></div>
+          </motion.div>
+
+          {/* Right Panel: Developmental Journey */}
+          <motion.div 
+            className="journey-panel self-center space-y-6"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
+            <div className="bg-white/90 backdrop-blur-sm border border-purple-200/50 rounded-2xl p-8 shadow-lg">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="text-3xl">🚀</span>
+                <h3 className="font-bold text-slate-900 text-xl">14-Year Journey</h3>
+              </div>
+              
+              <div className="space-y-6">
+                {JOURNEY_PHASES.map((phase, i) => (
+                  <JourneyStage key={i} phase={phase} index={i} />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Bottom: Technical Architecture */}
+          <motion.div
+            className="architecture-grid col-span-3 mt-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.6 }}
+          >
+            <div className="bg-gradient-to-r from-slate-900/5 to-blue-900/10 backdrop-blur-md border border-gray-300/40 rounded-3xl p-10">
+              <div className="text-center mb-10">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Runtime Architecture Supporting Every Conversation</h3>
+                <p className="text-gray-600 max-w-3xl mx-auto">Enterprise-grade technology designed specifically for child development and family relationships</p>
+              </div>
+              
+              <div className="arch-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {ARCHITECTURE_CARDS.map((card, i) => (
+                  <ArchitectureCard key={i} card={card} index={i} />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+GuardianKidsSection.displayName = 'GuardianKidsSection';
+
+export default GuardianKidsSection; 

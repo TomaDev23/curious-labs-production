@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {  motion, AnimatePresence  } from '../../FramerProvider';
 
 export interface MissionTask {
   id: string;
@@ -161,59 +161,52 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   return (
     <MissionContext.Provider value={{ tasks, updateTaskStatus, updateSubtaskStatus, devMode, toggleDevMode }}>
       {children}
-      <AnimatePresence>
-        {devMode && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="fixed top-4 right-4 bg-black/90 p-4 rounded-lg text-white text-sm z-50 w-64"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-purple-400">V6 Mission Tracker</h3>
-              <button 
-                onClick={toggleDevMode}
-                className="text-gray-400 hover:text-white text-xs"
+      {devMode && (
+        <div
+          className="fixed top-4 right-4 bg-black/90 p-4 rounded-lg text-white text-sm z-50 w-64"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-purple-400">V6 Mission Tracker</h3>
+            <button 
+              onClick={toggleDevMode}
+              className="text-gray-400 hover:text-white text-xs"
+            >
+              Hide
+            </button>
+          </div>
+          <div className="space-y-4">
+            {tasks.map(task => (
+              <div 
+                key={task.id}
+                className="space-y-2"
               >
-                Hide
-              </button>
-            </div>
-            <div className="space-y-4">
-              {tasks.map(task => (
-                <motion.div 
-                  key={task.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="space-y-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${
-                      task.completed ? 'bg-green-500' : 'bg-gray-500'
-                    }`} />
-                    <span className="font-medium">{task.title}</span>
-                  </div>
-                  <div className="text-xs text-gray-400 ml-5 mb-2">
-                    {task.description}
-                  </div>
-                  <div className="ml-5 space-y-1">
-                    {task.subtasks.map(subtask => (
-                      <div key={subtask.id} className="flex items-start gap-2">
-                        <div className={`w-2 h-2 rounded-full mt-1 ${
-                          subtask.completed ? 'bg-green-400/50' : 'bg-gray-600'
-                        }`} />
-                        <div>
-                          <div className="text-gray-300">{subtask.title}</div>
-                          <div className="text-xs text-gray-500">{subtask.description}</div>
-                        </div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${
+                    task.completed ? 'bg-green-500' : 'bg-gray-500'
+                  }`} />
+                  <span className="font-medium">{task.title}</span>
+                </div>
+                <div className="text-xs text-gray-400 ml-5 mb-2">
+                  {task.description}
+                </div>
+                <div className="ml-5 space-y-1">
+                  {task.subtasks.map(subtask => (
+                    <div key={subtask.id} className="flex items-start gap-2">
+                      <div className={`w-2 h-2 rounded-full mt-1 ${
+                        subtask.completed ? 'bg-green-400/50' : 'bg-gray-600'
+                      }`} />
+                      <div>
+                        <div className="text-gray-300">{subtask.title}</div>
+                        <div className="text-xs text-gray-500">{subtask.description}</div>
                       </div>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </MissionContext.Provider>
   );
 };

@@ -1,3 +1,5 @@
+import { useAnimation } from '../FramerProvider';
+
 /**
  * AnimationController.js
  * Central orchestration for animation frames across cosmic backgrounds

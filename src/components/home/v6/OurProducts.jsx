@@ -1,3 +1,6 @@
+import React, { useState, useRef, useEffect } from 'react';
+import {  motion, useReducedMotion  } from '../../../FramerProvider';
+
 /**
  * @metadata
  * @component OurProducts
@@ -8,9 +11,6 @@
  * @scs SCS5
  * @doc contract_our_products.md
  */
-
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 // Define product card data
 const PRODUCT_CARDS = [
@@ -94,25 +94,10 @@ const cardVariants = {
   },
 };
 
-// Reduced motion hook
-const useReducedMotion = () => {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  return { prefersReducedMotion };
-};
-
 // ProductCard component
 const ProductCard = ({ product, className = '' }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { prefersReducedMotion } = useReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <motion.div
@@ -205,7 +190,7 @@ const ProductCard = ({ product, className = '' }) => {
 
 // Main component
 const OurProducts = ({ className = '' }) => {
-  const { prefersReducedMotion } = useReducedMotion();
+  const prefersReducedMotion = useReducedMotion();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {

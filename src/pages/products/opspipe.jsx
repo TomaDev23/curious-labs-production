@@ -1,3 +1,5 @@
+import {  motion  } from '../../FramerProvider';
+
 /**
  * 🛡️ KEEP - CRITICAL PRODUCTION SUB-ROUTE
  * Code: OPSPIPE-001
@@ -10,7 +12,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
@@ -732,40 +733,40 @@ export default function OpsPipe() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                title: "Ghost Kitchen Operations",
-                description: "Streamline receipt processing, inventory management, and order fulfillment in ghost kitchens. OpsPipe ingests supplier invoices, collates inventory data, and synchronizes with delivery platforms—all in one audit-ready system.\n\nCompletely transforms F&B back-office operations with minimal staff overhead.",
-                icon: "🧾",
-                coordinates: "GK-001"
+                title: "Financial Document Processing",
+                description: "Ideal for growing businesses buried in receipts and invoices. OpsPipe parses documents, checks for errors, and auto-generates summaries — ready to sync with Xero, QuickBooks, or local accountants.\n\nCloses the gap between small ops and real bookkeeping, with zero manual entry.",
+                icon: "💼",
+                coordinates: "FDP-001"
               },
               {
-                title: "Event Photo Management",
-                description: "Automate guest photo collection and curation for weddings and corporate events. OpsPipe filters submissions by quality, applies moderation rules, and distributes approved images to real-time displays, galleries and participant feeds.\n\nNo more manual photo sorting or lost memories.",
-                icon: "📸",
-                coordinates: "EPM-002"
+                title: "F&B Back-Office Automation",
+                description: "Streamline supplier invoices, inventory counts, and delivery platform sync. OpsPipe runs loops for restaurant chains, cafes, and hotels — no full-time admin needed.\n\nYou stay focused on food, we handle the paperwork.",
+                icon: "🍽️",
+                coordinates: "FNB-002"
               },
               {
-                title: "Financial Batch Processing",
-                description: "Simplify bookkeeping workflows with intelligent receipt and invoice processing. OpsPipe parses financial documents, validates data against accounting rules, and syncs directly with Xero, QuickBooks and other platforms.\n\nReduces accounting overhead by 60% with error-validation built in.",
-                icon: "💹",
-                coordinates: "FBP-003"
-              },
-              {
-                title: "Telegram OpsBot",
-                description: "Deploy custom Telegram bots for shift management, reporting, and alerts. Field staff can submit reports, check schedules, and receive notifications directly in chat—while managers get real-time analytics and compliance data.\n\nConnects remote teams with mission control effortlessly.",
-                icon: "💬",
-                coordinates: "TOB-004"
-              },
-              {
-                title: "Document Processing Pipeline",
-                description: "Transform document processing for SMEs and legal firms. OpsPipe creates extraction workflows that parse contracts, invoices, and forms—routing data to the right systems while maintaining document integrity.\n\nFully traceable document journeys with compliance built-in.",
-                icon: "📄",
-                coordinates: "DPP-005"
-              },
-              {
-                title: "Healthcare Patient Intake",
-                description: "Streamline patient registration and record management for clinics. OpsPipe processes intake forms, validates insurance information, and routes patient data securely through compliant channels with privacy controls.\n\nReduces administrative burden while enhancing data security.",
+                title: "Clinic Intake & Record Flow",
+                description: "Simplifies form intake, ID validation, and patient routing. Clinics use OpsPipe to collect and process patient data while staying compliant and secure.\n\nCuts down wait times and admin load without touching your EMR.",
                 icon: "🏥",
-                coordinates: "HPI-006"
+                coordinates: "HCR-003"
+              },
+              {
+                title: "Academic Data Management",
+                description: "Researchers and departments use OpsPipe to process survey data, lab reports, and grant paperwork. Auto-tagged, versioned, and export-ready — without spending hours on formatting.\n\nPerfect for teams who publish, not wrangle PDFs.",
+                icon: "🎓",
+                coordinates: "ADM-004"
+              },
+              {
+                title: "Retail Ops + Metrics Loop",
+                description: "Daily receipts, stock counts, vendor slips — OpsPipe turns it all into structured dashboards. Supports POS exports, trend snapshots, and alert flags for busy stores.\n\nNo more waiting for accounting to understand what’s happening in your own shop.",
+                icon: "🛍️",
+                coordinates: "RTL-005"
+              },
+              {
+                title: "Personal Doc Manager",
+                description: "A future consumer app powered by OpsPipe — designed to manage life’s paperwork with zero stress. From receipts and bills to school forms and IDs, everything is auto-sorted, summarized, and searchable.\n\nOps-grade infrastructure, simplified for everyday use.",
+                icon: "📂",
+                coordinates: "PDM-006"
               }
             ].map((useCase, index) => (
               <motion.div
@@ -913,19 +914,6 @@ export default function OpsPipe() {
       
       <ScrollToTop />
       <MissionControlNavbar />
-      
-      {/* 🔴 VISIBLE RED DEBUG MARKER - OPSPIPE 🔴 */}
-      <div className="fixed bottom-4 right-4 z-[9999] bg-red-600/95 backdrop-blur-sm border-2 border-red-400 rounded-lg px-3 py-2 shadow-xl">
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-          <span className="text-white font-bold text-xs">
-            ⚡ OPSPIPE-001
-          </span>
-        </div>
-        <div className="text-red-200 text-xs font-mono mt-1">
-          Product Page - KEEP
-        </div>
-      </div>
     </div>
   );
 } 

@@ -21,13 +21,17 @@ const LayoutWrapper = ({ children }) => {
           {/* Background System */}
           <CosmicBackgroundSystemV6 />
           
-          {/* Planet Lighting Effect - Atmospheric illumination around planet area */}
+          {/* Planet Lighting Effect - OPTIMIZED SIZE - Atmospheric illumination */}
           <div
-            className="fixed z-[11] w-[100vw] h-[300vh] pointer-events-none"
+            className="fixed z-[11] w-[100vw] h-[200vh] pointer-events-none"
             style={{
               top: '0',
               left: '0',
-              background: 'radial-gradient(ellipse 65% 60% at 75% 45%, transparent 5%, rgba(255,0,0,0.3) 25%, rgba(255,0,0,0.6) 45%, rgba(255,0,0,0.8) 65%, rgba(255,0,0,0.95) 80%)'
+              zIndex: -2, // Behind everything to avoid LCP competition
+              contain: 'strict', // Stronger containment for better performance
+              willChange: 'auto', // Optimize rendering
+              transform: 'translateZ(0)', // GPU acceleration
+              background: 'radial-gradient(ellipse 65% 40% at 75% 30%, transparent 5%, rgba(255,0,0,0.3) 25%, rgba(255,0,0,0.6) 45%, rgba(255,0,0,0.8) 65%, rgba(255,0,0,0.95) 85%)'
             }}
           />
           

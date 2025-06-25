@@ -1,5 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import {  motion  } from '../../../FramerProvider';
+
 
 /**
  * ServiceCardShell - Enhanced card component with hover effects and visual polish

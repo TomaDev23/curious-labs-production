@@ -1,3 +1,5 @@
+import {  motion  } from '../../FramerProvider';
+
 /**
  * @component ProductScrollAtomic
  * @description Self-contained horizontal product carousel with snap scrolling
@@ -6,7 +8,6 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 
 // Component metadata for LEGIT compliance
 export const metadata = {

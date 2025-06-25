@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import withDraggable from '../../../components/ui/DraggableHOC';
 
 // Import HUDContext directly from HUDHub

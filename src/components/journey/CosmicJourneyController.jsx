@@ -12,7 +12,6 @@ import { useParticlePerformanceConfig } from './hooks/useParticlePerformanceConf
 import { useSceneVisibility } from './hooks/useSceneVisibility';
 import { getDissolveOpacity, getDissolveZIndex, getFadeBlendClass } from '../../utils/dissolveEngine';
 import PersistentElements from './PersistentElements';
-import GlobalParticleSystem from './visual/GlobalParticleSystem';
 import withDraggable from '../../components/ui/DraggableHOC';
 import { useHUDContext } from '../../components/ui/HUDHub';
 import { ScrollPipeline } from '../../utils/scrollPipeline';
@@ -445,6 +444,9 @@ export default function CosmicJourneyController({ children }) {
 
   // Performance monitoring
   const checkPerformance = useCallback(() => {
+    // ⛔ DISABLED: Performance monitoring temporarily disabled for audit
+    return;
+    
     if (process.env.NODE_ENV === 'development') {
       const report = performanceMonitor.getReport(metadata.id);
       if (report) {
@@ -467,25 +469,19 @@ export default function CosmicJourneyController({ children }) {
     ScrollPipeline.init();
     const cleanup = ScrollPipeline.subscribe(setScrollProgress);
     
-    // Setup performance check interval
-    const perfInterval = setInterval(checkPerformance, 5000);
+    // ⛔ DISABLED: Performance check interval temporarily disabled for audit
+    // const perfInterval = setInterval(checkPerformance, 5000);
     
     return () => {
       cleanup();
       ScrollPipeline.cleanup();
-      clearInterval(perfInterval);
+      // clearInterval(perfInterval);
       performanceMonitor.reset(metadata.id);
     };
   }, [checkPerformance]);
 
   return (
     <div className="w-full text-white">
-      <GlobalParticleSystem 
-        scrollProgress={scrollProgress} 
-        activeScene={currentSceneKey}
-        sceneProgress={sceneProgress}
-      />
-      
       <ColorOverlay />
       
       <div className="relative">

@@ -148,16 +148,22 @@ export const performanceMonitor = new PerformanceMonitor();
  * @returns {number} Start time for the render
  */
 export const startComponentRender = (componentName) => {
+  // ⛔ DISABLED: Performance tracking temporarily disabled for audit
+  return 0;
+  
   if (!componentName) return 0;
   return performance.now();
 };
 
 /**
- * End tracking a component render and store metrics
- * @param {string} componentName - The name of the component being rendered
+ * End tracking a component render
+ * @param {string} componentName - The name of the component that finished rendering
  * @param {number} startTime - The start time returned from startComponentRender
  */
 export const endComponentRender = (componentName, startTime) => {
+  // ⛔ DISABLED: Performance tracking temporarily disabled for audit
+  return;
+  
   if (!componentName || !startTime) return;
   
   const renderTime = performance.now() - startTime;

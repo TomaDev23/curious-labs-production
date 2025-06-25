@@ -125,9 +125,25 @@ export function useDeviceCapabilities() {
       // Check WebGL support for 3D capability
       let canUse3D = true;
       try {
+        // DISABLED: WebGL context creation conflicts with 3D system
+        // const canvas = document.createElement('canvas');
+        // const webgl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        // canUse3D = !!webgl;
+        
+        // SAFE: Use feature detection without creating WebGL context
         const canvas = document.createElement('canvas');
-        const webgl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-        canUse3D = !!webgl;
+        const context2d = canvas.getContext('2d');
+        
+        // Check for basic canvas support and WebGL availability without creating context
+        canUse3D = !!(context2d && 
+                     canvas.getContext && 
+                     (window.WebGLRenderingContext || window.WebGL2RenderingContext));
+        
+        // Clean up 2D context
+        if (context2d) {
+          canvas.width = 1;
+          canvas.height = 1;
+        }
       } catch (e) {
         canUse3D = false;
       }

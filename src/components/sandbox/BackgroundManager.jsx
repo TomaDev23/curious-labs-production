@@ -3,8 +3,6 @@ import ParticleField from '../../components/ui/ParticleField';
 import SpaceCanvas from '../../components/visual/SpaceCanvas';
 // No longer a TODO - we have implemented SpaceCanvas
 
-console.log("✅ SANDBOX BackgroundManager.jsx FILE LOADED");
-
 // Simple throttle implementation to avoid lodash dependency
 function throttle(func, limit) {
   let inThrottle;
@@ -42,8 +40,6 @@ const ZONE_TRANSITION_CONFIG = {
 };
 
 export const BackgroundManager = ({ children }) => {
-  console.log("✅ SANDBOX BackgroundManager COMPONENT MOUNTED");
-  
   const [scrollY, setScrollY] = useState(0);
   const [activeZones, setActiveZones] = useState({});
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -52,7 +48,6 @@ export const BackgroundManager = ({ children }) => {
   // Calculate viewport height once component mounts
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      console.log("✅ SANDBOX BackgroundManager useEffect EXECUTED");
       setViewportHeight(window.innerHeight);
       
       const handleResize = throttle(() => {
@@ -184,6 +179,9 @@ export const BackgroundManager = ({ children }) => {
   
   // Debug overlay
   const DebugOverlay = () => {
+    // ✅ SURGICAL FIX: Disable debug overlay in production to prevent DOM pollution
+    return null;
+    /*
     return (
       <div className="fixed top-4 right-4 z-50 bg-black/70 p-2 rounded text-xs text-white">
         <div>Scroll: {Math.round((scrollY / viewportHeight) * 100)}vh</div>
@@ -195,6 +193,7 @@ export const BackgroundManager = ({ children }) => {
         </div>
       </div>
     );
+    */
   };
   
   return (

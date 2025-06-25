@@ -9,8 +9,8 @@
 // 🔗 DEPENDENCIES: react-router-dom, framer-motion
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { IMAGES } from '../../utils/assets';
+import {  motion, AnimatePresence  } from '../../FramerProvider';
 
 /**
  * MissionControlNavbar - Standalone Mission Control themed navigation bar
@@ -152,10 +152,6 @@ const MissionControlNavbar = ({
 
   return (
     <nav className={navbarClasses}>
-      {/* CLEAN VERSION VALIDATION MARKER */}
-      <div className="bg-lime-400/20 text-lime-400 text-xs px-2 py-1 text-center font-mono border-b border-lime-400/30">
-        🧹 CLEAN VERSION ACTIVE | 261 FILES | 98.9% REDUCTION | PORT 5174
-      </div>
       {/* Hidden Navbar with Angled Design */}
       <motion.div 
         className="relative"

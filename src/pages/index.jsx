@@ -1,7 +1,6 @@
 // DO NOT MODIFY THIS FILE WITHOUT COMMANDER APPROVAL — TILE 4.1
 import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import HomeFloatflowLayout from '../layouts/HomeFloatflowLayout';
 import EnhancedSolarSystem from '../components/home/EnhancedSolarSystem';
 import StarfieldBackground from '../components/home/StarfieldBackground';
@@ -10,6 +9,8 @@ import AboutSection from '../components/home/AboutSection';
 import { useUnifiedDeviceCapabilities } from '../hooks/useUnifiedDeviceCapabilities';
 
 // Lazy load below-the-fold components for better performance
+import { motion } from '../FramerProvider';
+
 const ServicesFloatLayer = lazy(() => import('../components/home/ServicesFloatLayer'));
 const ProjectsSection = lazy(() => import('../components/home/ProjectsSection'));
 const CTASection = lazy(() => import('../components/home/CTASection'));

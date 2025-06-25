@@ -4,10 +4,11 @@
  * 🚨 DO NOT REMOVE - THIS IS THE LIVE HOMEPAGE
  * 
  * @page v6_atomic.jsx
- * @desc Atomic rebuild of CuriousLabs V6 homepage
- * @status Experimental – In development
- * @structure Flat scene-based components, no nested layout controllers
+ * @desc Atomic rebuild of CuriousLabs V6 homepage with Smart Lazy Loading
+ * @status Production Ready - Smart Loading Integrated
+ * @structure Flat scene-based components with intelligent loading strategies
  * @source Forked from: v6_home.jsx
+ * @performance Smart lazy loading with viewport-based strategies
  */
 
 import React, { Suspense, lazy } from 'react';
@@ -16,6 +17,13 @@ import { Helmet } from 'react-helmet-async';
 import SceneControllerV6 from '../components/home/v6/SceneControllerV6'; // CODE: ATOMIC-CTRL-001
 import LayoutWrapper from '../components/home/v6/LayoutWrapper'; // CODE: ATOMIC-CTRL-002
 import CosmicBackgroundSystemV6 from '../components/home/v6/CosmicBackgroundSystemV6'; // CODE: ATOMIC-CTRL-003
+
+// 🚀 NEW - SMART LAZY LOADING SYSTEM
+import SmartLazySection from '../components/lazy/SmartLazySection';
+
+// 🔴 KEEP - SHARED COMPONENTS 🔴
+import FooterExperience from '../components/home/v4/FooterExperience'; // CODE: FOOTER-001
+import ScrollToTop from '../components/ScrollToTop'; // CODE: SCROLL-001
 
 // --- TEMPORARY: Scene imports will be replaced one by one ---
 // import HeroSequenceV6 from '../components/home/v6/HeroSequenceV6'; // Removed
@@ -26,76 +34,92 @@ import CosmicBackgroundSystemV6 from '../components/home/v6/CosmicBackgroundSyst
 // import ContactTerminal from '../components/home/v6/ContactTerminal'; // Removed
 
 // --- 🔴 KEEP - ATOMIC COMPONENTS 🔴 ---
-// 🚀 OPTIMIZED: Lazy load critical components for better bundle splitting
+// 🚀 OPTIMIZED: Smart lazy load critical components with strategic loading distances
 const HeroAtomic = lazy(() => import('../components/atomic/HeroAtomic')); // CODE: ATOMIC-COMP-001
-const MissionAtomic = lazy(() => import('../components/atomic/MissionAtomic')); // CODE: ATOMIC-COMP-003 - Convert to lazy
-const OurProducts_newV6 = lazy(() => import('../components/atomic/OurProducts_newV6')); // CODE: ATOMIC-COMP-004 (102KB - MUST be lazy)
-const ServicesOrbitalAtomic = lazy(() => import('../components/atomic/ServicesOrbitalAtomic')); // CODE: ATOMIC-COMP-005 - Convert to lazy
-const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTerminalAtomic')); // CODE: ATOMIC-COMP-006 - Convert to lazy
+const MissionAtomic = lazy(() => import('../components/atomic/MissionAtomic')); // CODE: ATOMIC-COMP-003 - Smart lazy loading
+const HorizontalProductScrollV6 = lazy(() => import('../components/atomic/Products/HorizontalProductScrollV6')); // CODE: ATOMIC-COMP-004 - Preemptive loading
+const ServicesOrbitalAtomic = lazy(() => import('../components/atomic/ServicesOrbitalAtomic')); // CODE: ATOMIC-COMP-005 - Standard lazy loading
+const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTerminalAtomic')); // CODE: ATOMIC-COMP-006 - Late loading
 
-// Keep ProcessLegacyAtomic eager since it's smaller and less likely to cause issues
+// Keep ProcessLegacyAtomic eager since it's smaller and configured as non-lazy
 import ProcessLegacyAtomic from '../components/atomic/ProcessLegacyAtomic'; // CODE: ATOMIC-COMP-002
 
-// Optimized loading component
-const AtomicSectionLoader = ({ children, sectionName }) => (
-  <Suspense fallback={
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
-      <div className="flex flex-col items-center space-y-4">
-        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-        <div className="text-white/60 text-sm font-mono tracking-wider">
-          Loading {sectionName}...
-        </div>
-      </div>
-    </div>
-  }>
-    {children}
-  </Suspense>
-);
+// 🚀 PERFORMANCE MONITORING - Track loading performance
+const usePerformanceMonitoring = () => {
+  React.useEffect(() => {
+    // Mark homepage navigation start
+    if (typeof performance !== 'undefined' && performance.mark) {
+      performance.mark('homepage-start');
+      
+      // Track when page is fully interactive
+      const markInteractive = () => {
+        performance.mark('homepage-interactive');
+        if (performance.measure) {
+          try {
+            performance.measure('homepage-load-time', 'homepage-start', 'homepage-interactive');
+            const measure = performance.getEntriesByName('homepage-load-time')[0];
+            console.log(`📊 Homepage Load Time: ${Math.round(measure.duration)}ms`);
+          } catch (e) {
+            // Ignore measurement errors
+          }
+        }
+      };
+
+      // Mark interactive after a small delay to ensure components are ready
+      const timer = setTimeout(markInteractive, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+};
 
 const V6AtomicPage = () => {
+  // Initialize performance monitoring
+  usePerformanceMonitoring();
+
   return (
     <SceneControllerV6>
       <LayoutWrapper>
         <CosmicBackgroundSystemV6 />
 
-        {/* 🔴 VISIBLE RED DEBUG MARKER - MOVED TO CORNER 🔴 */}
-        <div className="fixed bottom-4 right-4 z-[9999] bg-red-600/95 backdrop-blur-sm border-2 border-red-400 rounded-lg px-3 py-2 shadow-xl">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-            <span className="text-white font-bold text-xs">
-              🏠 ATOMIC-HOME-001
-            </span>
+        {/* 🔴 ATOMIC SCENES WITH SMART LOADING - ALL KEEP 🔴 */}
+        
+        {/* Hero - Immediate load (no lazy loading wrapper) */}
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center bg-black">
+            <div className="w-8 h-8 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <div className="text-red-200 text-xs font-mono mt-1">
-            Main Homepage - KEEP
-          </div>
-        </div>
-
-        {/* 🔴 ATOMIC SCENES START HERE - ALL KEEP 🔴 */}
-        <AtomicSectionLoader sectionName="Hero">
+        }>
           <HeroAtomic />
-        </AtomicSectionLoader>
+        </Suspense>
         
-        <AtomicSectionLoader sectionName="Mission">
+        {/* Mission - Early loading strategy */}
+        <SmartLazySection componentName="MissionAtomic">
           <MissionAtomic />
-        </AtomicSectionLoader>
+        </SmartLazySection>
         
-        <AtomicSectionLoader sectionName="Products">
-          <OurProducts_newV6 />
-        </AtomicSectionLoader>
+        {/* Products - Preemptive loading for heavy component */}
+        <SmartLazySection componentName="HorizontalProductScrollV6">
+          <HorizontalProductScrollV6 />
+        </SmartLazySection>
         
-        <AtomicSectionLoader sectionName="Services">
+        {/* Services - Standard loading strategy */}
+        <SmartLazySection componentName="ServicesOrbitalAtomic">
           <ServicesOrbitalAtomic />
-        </AtomicSectionLoader>
+        </SmartLazySection>
         
+        {/* Process - Keep eager (no lazy loading) */}
         <ProcessLegacyAtomic />
         
-        <AtomicSectionLoader sectionName="Contact">
+        {/* Contact - Late loading strategy */}
+        <SmartLazySection componentName="ContactTerminalAtomic">
           <ContactTerminalAtomic />
-        </AtomicSectionLoader>
+        </SmartLazySection>
+        
         {/* 🔴 ATOMIC SCENES END 🔴 */}
 
       </LayoutWrapper>
+      <FooterExperience />
+      <ScrollToTop />
     </SceneControllerV6>
   );
 };

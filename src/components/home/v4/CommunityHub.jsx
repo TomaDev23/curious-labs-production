@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollReveal, sectionVariants, itemVariants } from '../../../utils/animation';
 import MagneticButton from '../../ui/MagneticButton';
 import { useBreakpoint } from '../../../hooks/useBreakpoint.js';
 import { createPortal } from 'react-dom';
 import { useMediaQuery } from '../../../hooks/useMediaQuery.js';
+import {  motion, AnimatePresence, useScroll  } from '../../../FramerProvider';
+
 
 /**
  * CommunityHub Component

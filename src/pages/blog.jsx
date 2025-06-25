@@ -9,7 +9,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 // LEGACY: import NavBar from '../components/NavBar';
@@ -19,6 +18,8 @@ import { IMAGES } from '../utils/assets';
 import ScrollToTop from '../components/ScrollToTop';
 
 // ✅ KEEP - BLOG PAGE COMPONENT
+import { motion, AnimatePresence } from '../FramerProvider';
+
 export default function Blog() {
   const [activeSection, setActiveSection] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -177,19 +178,6 @@ Who knows? It might just be the secret to making enterprise software actually un
       
       <ScrollToTop />
       <MissionControlNavbar />
-      
-      {/* 🔴 VISIBLE RED DEBUG MARKER - BLOG 🔴 */}
-      <div className="fixed bottom-4 right-4 z-[9999] bg-red-600/95 backdrop-blur-sm border-2 border-red-400 rounded-lg px-3 py-2 shadow-xl">
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-          <span className="text-white font-bold text-xs">
-            📝 BLOG-001
-          </span>
-        </div>
-        <div className="text-red-200 text-xs font-mono mt-1">
-          Production Page - KEEP
-        </div>
-      </div>
 
       <BackgroundLayerAtomic />
       

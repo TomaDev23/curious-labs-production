@@ -1,6 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useLazyLoad } from '../../hooks/useLazyLoad';
+import {  motion  } from '../../FramerProvider';
+
 
 /**
  * LazyImage - Only loads the image when it's about to enter the viewport

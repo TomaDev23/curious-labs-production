@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 import BackgroundLayerAtomic from '../components/atomic/BackgroundLayerAtomic';
+import { motion } from '../FramerProvider';
+
 
 export default function Museum() {
   const museumPieces = [

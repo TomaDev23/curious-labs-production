@@ -1,10 +1,11 @@
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
+import {  motion, useReducedMotion  } from '../../FramerProvider';
 
-const CTASection = ({ isLowPerf }) => {
+
+const CTASection = () => {
   const shouldReduceMotion = useReducedMotion();
-  const simplifiedAnimation = shouldReduceMotion || isLowPerf;
+  const simplifiedAnimation = shouldReduceMotion;
 
   // Simplified animation variants
   const containerVariants = {

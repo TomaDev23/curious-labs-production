@@ -17,8 +17,8 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
+import {  useInView, motion, AnimatePresence  } from '../../FramerProvider';
 
 // Component metadata for LEGIT compliance
 export const metadata = {
@@ -32,7 +32,7 @@ export const metadata = {
 const SERVICES = [
   {
     id: 'ai',
-    title: 'AI Development',
+    title: 'Systems Development',
     subtitle: 'Neural Architecture',
     description: 'Advanced artificial intelligence solutions with multi-agent systems, LLMs, and knowledge graph integration.',
     longDescription: 'Cutting-edge AI development featuring autonomous agents, large language models, neural networks, and sophisticated knowledge graphs for enterprise-grade intelligence systems.',
@@ -48,7 +48,7 @@ const SERVICES = [
     id: 'product',
     title: 'Product Launches',
     subtitle: 'Mission Deployment',
-    description: 'We take your product from zero to launch with design, development, and branding strategies.',
+    description: 'We take your ideas from zero to launch with design, development, and branding strategies.',
     longDescription: 'Complete product lifecycle management from concept to market launch, including strategic planning, design systems, development, and go-to-market execution.',
     color: '#0d9488', // teal
     gradient: 'from-teal-500/20 to-cyan-700/20',
@@ -73,17 +73,17 @@ const SERVICES = [
     icon: '☁️'
   },
   {
-    id: 'consulting',
-    title: 'Consulting',
-    subtitle: 'Strategic Command',
-    description: 'We advise founders on strategy, design, and technical direction to accelerate growth and innovation.',
-    longDescription: 'Executive-level strategic consulting for technology leaders, covering business strategy, technical architecture, team scaling, and innovation roadmaps.',
-    color: '#d97706', // amber
-    gradient: 'from-amber-500/20 to-orange-700/20',
-    orbitColor: 'bg-amber-400',
-    glowColor: 'shadow-amber-400/50',
-    coordinates: 'STRATEGY-SECTOR-04',
-    status: 'ADVISING',
+    id: 'optimization',
+    title: 'Code Optimization',
+    subtitle: 'Performance Engineering',
+    description: 'We transform underperforming websites into lightning-fast experiences through systematic optimization, refactoring, and modernization.',
+    longDescription: 'Enterprise-grade performance engineering services including bundle optimization, memory leak detection, dead code elimination, build modernization, and Lighthouse score improvements. We take sites from poor performance to 95+ scores consistently.',
+    color: '#059669', // emerald
+    gradient: 'from-emerald-500/20 to-teal-700/20',
+    orbitColor: 'bg-emerald-400',
+    glowColor: 'shadow-emerald-400/50',
+    coordinates: 'PERFORMANCE-SECTOR-04',
+    status: 'OPTIMIZING',
     icon: '⚡'
   }
 ];
@@ -354,7 +354,17 @@ const ServicesOrbitalAtomic = () => {
       <CosmicParticles activeService={activeService} prefersReducedMotion={prefersReducedMotion} />
       
       {/* PRESERVED: Enhanced orbital background rings with kinetic effect */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div 
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{
+          // Scale down the entire orbital system to reduce LCP footprint
+          // while preserving the beautiful "broken rings" kinetic effect
+          transform: 'scale(0.99)', // 95% scale - perfect balance: fits container better while maintaining overflow
+          transformOrigin: 'center center',
+          contain: 'layout style paint', // Isolate the scaled container
+          willChange: 'transform' // Optimize for scaling
+        }}
+      >
         {SERVICES.map((service, index) => (
           <motion.div
             key={`orbit-${index}`}

@@ -1,3 +1,5 @@
+import { motion } from '../FramerProvider';
+
 /**
  * ✅ KEEP - CODELAB-001
  * 
@@ -11,10 +13,9 @@
  * ⚠️ DO NOT REMOVE - MAIN CODELAB PAGE
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
 import { services } from '../../data/services';
 import { useReveal } from '../utils/useReveal.js';
 
@@ -37,23 +38,96 @@ import CTASection from '../components/codelab/CTASection';
 import LegitSection from '../components/codelab/LegitSection';
 import MetricsLogsSection from '../components/codelab/MetricsLogsSection';
 
+// 🚀 COSMIC MISSION CONTROL - Smart logging system (moved outside component)
+const createMissionLog = (() => {
+  let initialized = false;
+  let lastRenderCount = 0;
+  const renderThreshold = 5; // Alert after 5+ rapid renders
+  
+  return {
+    initiate: () => {
+      if (!initialized) {
+        console.log('🚀 [MISSION CONTROL] Engineering Bay initializing...');
+        console.log('🛰️ [COSMIC-NET] Establishing quantum link to developer arsenal');
+        console.log('⚡ [POWER-CORE] All systems nominal - Welcome, Commander');
+        initialized = true;
+      }
+    },
+    renderAlert: () => {
+      lastRenderCount++;
+      if (lastRenderCount === renderThreshold) {
+        console.warn('⚠️ [MISSION CONTROL] Excessive render cycles detected - Check for infinite loops, Commander');
+        console.log('🔧 [AUTO-REPAIR] Temporal stabilizers engaged');
+      }
+    },
+    serviceDeployment: (services) => {
+      if (!initialized) return;
+      console.log(`🎯 [DEPLOYMENT] ${services.length} engineering modules loaded and ready for deployment`);
+      console.log('🌌 [COSMIC-GRID] All service coordinates locked and verified');
+    }
+  };
+})();
+
 // ✅ KEEP - CODELAB COMPONENT
 export default function CodeLab() {
-  console.log('🧪 CodeLab component rendering...');
+  // Initialize mission only once
+  createMissionLog.initiate();
+  createMissionLog.renderAlert();
+  
+  // 🎮 COSMIC DEVELOPER CONSOLE EASTER EGG
+  useEffect(() => {
+    // Add a special developer command to the global scope
+    if (typeof window !== 'undefined' && !window.cosmicProtocol) {
+      window.cosmicProtocol = {
+        activate: () => {
+          console.log('🌌 [COSMIC PROTOCOL ACTIVATED]');
+          console.log('🚀 Welcome to the hidden developer dimension, Commander!');
+          console.log('⚡ Your coding powers have been enhanced beyond mortal limits');
+          console.log('🎯 Available cosmic commands:');
+          console.log('   • cosmicProtocol.boost() - Temporary productivity surge');
+          console.log('   • cosmicProtocol.status() - Check cosmic developer status');
+          console.log('   • cosmicProtocol.wisdom() - Receive cosmic coding wisdom');
+          console.log('💫 May the code be with you, always.');
+        },
+        boost: () => {
+          console.log('⚡ [COSMIC BOOST] Developer efficiency increased to 200%!');
+          console.log('🔥 All bugs will fear your presence for the next 30 minutes');
+        },
+        status: () => {
+          console.log('🛰️ [COSMIC STATUS] Developer Level: Legendary');
+          console.log('🌟 Mission Completion Rate: 99.97%');
+          console.log('🚀 Code Quality Index: Transcendent');
+        },
+        wisdom: () => {
+          const wisdoms = [
+            '🔮 "The best code is written not just for machines, but for future developers"',
+            '⚡ "Debug with patience, for every bug teaches cosmic lessons"',
+            '🌌 "In the vast universe of code, simplicity is the ultimate sophistication"',
+            '💫 "A well-named variable is worth a thousand comments"',
+            '🚀 "Code fearlessly, but test even more fearlessly"'
+          ];
+          const wisdom = wisdoms[Math.floor(Math.random() * wisdoms.length)];
+          console.log(`🧙 [COSMIC WISDOM] ${wisdom}`);
+        }
+      };
+      console.log('🎮 [EASTER EGG] Try typing "cosmicProtocol.activate()" in the console!');
+    }
+  }, []);
   
   const [activeService, setActiveService] = useState(null);
   const [missionTime, setMissionTime] = useState(new Date());
   
-  console.log('🧪 CodeLab state initialized, services:', services);
-  
-  // Update mission time every second
+  // Fix the infinite render loop - memoize the timer setup
   useEffect(() => {
-    console.log('🧪 CodeLab useEffect running...');
+    console.log('⏰ [CHRONOMETER] Mission time synchronization initiated');
     const timer = setInterval(() => {
       setMissionTime(new Date());
     }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    return () => {
+      clearInterval(timer);
+      console.log('🛑 [SHUTDOWN] Chronometer offline - Mission phase complete');
+    };
+  }, []); // Empty dependency array to prevent re-runs
   
   // Animation variants for staggered row animations
   const containerVariants = {
@@ -84,7 +158,11 @@ export default function CodeLab() {
     classification: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'][index % 4]
   }));
   
-  console.log('🧪 Enhanced services:', enhancedServices);
+  // Log service deployment only once per initialization
+  useMemo(() => {
+    createMissionLog.serviceDeployment(enhancedServices);
+    return enhancedServices;
+  }, []); // Only run once
   
   // Status color mapping
   const getStatusColor = (status) => {
@@ -96,6 +174,28 @@ export default function CodeLab() {
       case 'RESEARCH': return 'text-purple-400 bg-purple-400/20';
       default: return 'text-gray-400 bg-gray-400/20';
     }
+  };
+  
+  // 🎮 COSMIC EASTER EGGS - Developer interaction rewards
+  const cosmicEasterEggs = [
+    '🌟 [QUANTUM-LINK] Tool accessed - Neural pathways synchronized, Commander',
+    '⚡ [ENERGY-SURGE] Developer powers amplified by 127%',
+    '🔮 [COSMIC-WISDOM] The universe smiles upon your code choices',
+    '🚀 [HYPERDRIVE] Productivity engines at maximum efficiency',
+    '🛸 [ALIEN-TECH] Unknown beneficial side effects detected',
+    '🌌 [STELLAR-BOOST] Your code now has cosmic significance',
+    '💫 [STARDUST] Legacy code transformed into pure art',
+    '🔥 [PHOENIX-MODE] Your debugging skills have transcended reality',
+    '🎯 [BULLSEYE] Target locked - Mission success probability: 99.97%',
+    '🌈 [RAINBOW-BRIDGE] Connection to developer nirvana established'
+  ];
+  
+  const handleServiceAccess = (serviceId, serviceName) => {
+    setActiveService(serviceId);
+    // Random cosmic easter egg
+    const randomEgg = cosmicEasterEggs[Math.floor(Math.random() * cosmicEasterEggs.length)];
+    console.log(randomEgg);
+    console.log(`🎯 [TOOL-ACCESS] ${serviceName} module engaged - Prepare for enhanced development`);
   };
   
   // Divide services into tiers
@@ -185,8 +285,8 @@ export default function CodeLab() {
                       className="bg-black/40 backdrop-blur-md border border-lime-400/20 rounded-2xl p-8 shadow-2xl 
                                  transition-all duration-300 hover:border-lime-400/50 hover:shadow-lime-400/20
                                  w-full sm:w-[47%] md:w-[45%] relative group cursor-pointer"
-                      onClick={() => setActiveService(service.id)}
-                      onKeyDown={(e) => e.key === "Enter" && setActiveService(service.id)}
+                      onClick={() => handleServiceAccess(service.id, service.title)}
+                      onKeyDown={(e) => e.key === "Enter" && handleServiceAccess(service.id, service.title)}
                       tabIndex={0}
                       role="button"
                     >
@@ -256,8 +356,8 @@ export default function CodeLab() {
                       className="bg-black/30 backdrop-blur-md border border-cyan-400/20 rounded-2xl p-6 shadow-xl 
                                  transition-all duration-300 hover:border-cyan-400/50 hover:shadow-cyan-400/20
                                  w-full sm:w-[45%] md:w-[40%] relative group cursor-pointer"
-                      onClick={() => setActiveService(service.id)}
-                      onKeyDown={(e) => e.key === "Enter" && setActiveService(service.id)}
+                      onClick={() => handleServiceAccess(service.id, service.title)}
+                      onKeyDown={(e) => e.key === "Enter" && handleServiceAccess(service.id, service.title)}
                       tabIndex={0}
                       role="button"
                     >
@@ -326,8 +426,8 @@ export default function CodeLab() {
                       className="bg-black/25 backdrop-blur-md border border-purple-400/20 rounded-2xl p-5 shadow-lg 
                                  transition-all duration-300 hover:border-purple-400/50 hover:shadow-purple-400/20
                                  w-full sm:w-[43%] md:w-[38%] relative group cursor-pointer"
-                      onClick={() => setActiveService(service.id)}
-                      onKeyDown={(e) => e.key === "Enter" && setActiveService(service.id)}
+                      onClick={() => handleServiceAccess(service.id, service.title)}
+                      onKeyDown={(e) => e.key === "Enter" && handleServiceAccess(service.id, service.title)}
                       tabIndex={0}
                       role="button"
                     >
@@ -375,6 +475,307 @@ export default function CodeLab() {
                       <div className="absolute inset-0 bg-gradient-to-r from-purple-400/5 to-pink-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </motion.div>
                   ))}
+                </motion.div>
+              </section>
+              
+              {/* Contract System in Action Section */}
+              <section className="py-20 relative overflow-hidden">
+                {/* Animated background elements */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <motion.div 
+                    className="absolute top-1/4 left-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl"
+                    animate={{ 
+                      scale: [1, 1.2, 1],
+                      opacity: [0.3, 0.6, 0.3]
+                    }}
+                    transition={{ 
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  <motion.div 
+                    className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-purple-500/10 rounded-full blur-2xl"
+                    animate={{ 
+                      scale: [1.2, 1, 1.2],
+                      opacity: [0.4, 0.2, 0.4]
+                    }}
+                    transition={{ 
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 1
+                    }}
+                  />
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.8 }}
+                  className="text-center mb-12"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 
+                               border border-cyan-400/30 rounded-full backdrop-blur-sm"
+                  >
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                      className="text-2xl"
+                    >
+                      🧬
+                    </motion.div>
+                    <span className="text-cyan-400 font-mono text-sm tracking-wider">CONTRACT-SYS-001</span>
+                  </motion.div>
+                  
+                  <h2 className="text-4xl sm:text-5xl font-bold text-white tracking-tight mb-4">
+                    <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-cyan-500 text-transparent bg-clip-text">
+                      Contract System
+                    </span>
+                    <br />
+                    <span className="text-white">in Action</span>
+                    <motion.div 
+                      className="h-1 w-32 bg-gradient-to-r from-cyan-400 to-purple-400 mx-auto mt-3 rounded-full"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: 128 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                    />
+                  </h2>
+                  <motion.p 
+                    className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                  >
+                    Witness our advanced contract validation system in real-time. Monitor schema compliance, 
+                    performance budgets, and system health with live debugging capabilities.
+                  </motion.p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  className="max-w-4xl mx-auto"
+                >
+                  <Link 
+                    to="/dev/contracts"
+                    className="group block relative"
+                  >
+                    <motion.div
+                      className="bg-gradient-to-br from-black/60 via-black/40 to-black/60 backdrop-blur-xl 
+                                 border border-cyan-400/30 rounded-3xl p-8 sm:p-12 shadow-2xl 
+                                 transition-all duration-500 group-hover:border-cyan-400/60 
+                                 group-hover:shadow-cyan-400/20 relative overflow-hidden"
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -8
+                      }}
+                      transition={{ 
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20
+                      }}
+                    >
+                      {/* Animated gradient overlay */}
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 via-purple-400/5 to-cyan-400/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        animate={{
+                          background: [
+                            "linear-gradient(90deg, rgba(34, 211, 238, 0.05) 0%, rgba(168, 85, 247, 0.05) 50%, rgba(34, 211, 238, 0.05) 100%)",
+                            "linear-gradient(90deg, rgba(168, 85, 247, 0.05) 0%, rgba(34, 211, 238, 0.05) 50%, rgba(168, 85, 247, 0.05) 100%)"
+                          ]
+                        }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      />
+                      
+                      {/* Status indicators */}
+                      <div className="flex flex-wrap justify-between items-start mb-8 relative z-10">
+                        <div className="flex flex-wrap gap-3">
+                          <motion.div
+                            className="flex items-center gap-2 px-3 py-1 bg-lime-400/20 border border-lime-400/30 rounded-full"
+                            animate={{ opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
+                            <span className="text-lime-400 font-mono text-xs">OPERATIONAL</span>
+                          </motion.div>
+                          <motion.div
+                            className="flex items-center gap-2 px-3 py-1 bg-cyan-400/20 border border-cyan-400/30 rounded-full"
+                            animate={{ opacity: [1, 0.7, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                          >
+                            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                            <span className="text-cyan-400 font-mono text-xs">MONITORING</span>
+                          </motion.div>
+                        </div>
+                        <motion.div
+                          className="text-right"
+                          animate={{ opacity: [0.5, 1, 0.5] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          <div className="text-white/60 font-mono text-xs">SYSTEM STATUS</div>
+                          <div className="text-cyan-400 font-mono text-sm">99.97% UPTIME</div>
+                        </motion.div>
+                      </div>
+
+                      {/* Main content */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
+                        <div>
+                          <motion.h3 
+                            className="text-2xl sm:text-3xl font-bold text-white mb-4 group-hover:text-cyan-400 transition-colors duration-300"
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                          >
+                            Live Dashboard Access
+                          </motion.h3>
+                          <motion.p 
+                            className="text-gray-300 text-base leading-relaxed mb-6"
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.3 }}
+                          >
+                            Experience real-time contract validation, performance monitoring, and system health 
+                            tracking. Debug schema compliance, export metrics, and monitor violations as they happen.
+                          </motion.p>
+                          
+                          <motion.div 
+                            className="space-y-3"
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.4 }}
+                          >
+                            {[
+                              "Real-time schema validation",
+                              "Performance budget monitoring", 
+                              "Live violation tracking",
+                              "Debug export capabilities"
+                            ].map((feature, index) => (
+                              <motion.div 
+                                key={index}
+                                className="flex items-center gap-3"
+                                initial={{ opacity: 0, x: -10 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
+                              >
+                                <motion.div
+                                  className="w-2 h-2 bg-cyan-400 rounded-full"
+                                  animate={{ scale: [1, 1.2, 1] }}
+                                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
+                                />
+                                <span className="text-gray-300 text-sm">{feature}</span>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        </div>
+
+                        <div className="relative">
+                          <motion.div
+                            className="bg-black/60 border border-cyan-400/20 rounded-2xl p-6 backdrop-blur-sm"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.4 }}
+                          >
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="text-cyan-400 font-mono text-sm">CONTRACT_DASHBOARD</span>
+                              <motion.div
+                                className="flex gap-1"
+                                animate={{ opacity: [0.5, 1, 0.5] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                              >
+                                <div className="w-2 h-2 bg-lime-400 rounded-full" />
+                                <div className="w-2 h-2 bg-yellow-400 rounded-full" />
+                                <div className="w-2 h-2 bg-red-400 rounded-full" />
+                              </motion.div>
+                            </div>
+                            
+                            <div className="space-y-3 font-mono text-xs">
+                              <motion.div 
+                                className="text-lime-400"
+                                animate={{ opacity: [0.7, 1, 0.7] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                              >
+                                ✓ Schema Validation: ACTIVE
+                              </motion.div>
+                              <motion.div 
+                                className="text-cyan-400"
+                                animate={{ opacity: [1, 0.7, 1] }}
+                                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                              >
+                                📊 Performance: 12ms render
+                              </motion.div>
+                              <motion.div 
+                                className="text-purple-400"
+                                animate={{ opacity: [0.7, 1, 0.7] }}
+                                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                              >
+                                🔍 Debug Export: READY
+                              </motion.div>
+                              <div className="text-gray-400">
+                                🧬 Contracts: 13 schemas loaded
+                              </div>
+                            </div>
+                          </motion.div>
+                        </div>
+                      </div>
+
+                      {/* Call to action */}
+                      <motion.div 
+                        className="mt-8 flex items-center justify-between relative z-10"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.6 }}
+                      >
+                        <div className="flex items-center gap-4">
+                          <motion.span 
+                            className="text-cyan-400 font-mono text-lg group-hover:text-white transition-colors duration-300"
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            → LAUNCH DASHBOARD
+                          </motion.span>
+                          <motion.div 
+                            className="flex items-center gap-1"
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                          >
+                            <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse" />
+                            <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse delay-200" />
+                            <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse delay-400" />
+                          </motion.div>
+                        </div>
+                        
+                        <motion.div
+                          className="px-4 py-2 bg-gradient-to-r from-cyan-400/10 to-purple-400/10 
+                                     border border-cyan-400/30 rounded-full text-cyan-400 font-mono text-xs
+                                     group-hover:from-cyan-400/20 group-hover:to-purple-400/20 
+                                     group-hover:border-cyan-400/50 transition-all duration-300"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          /dev/contracts
+                        </motion.div>
+                      </motion.div>
+
+                      {/* Subtle grid pattern overlay */}
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[length:20px_20px] pointer-events-none" />
+                    </motion.div>
+                  </Link>
                 </motion.div>
               </section>
               
@@ -446,19 +847,6 @@ export default function CodeLab() {
         
         <FooterExperience />
         <ScrollToTop />
-        
-        {/* 🔴 VISIBLE RED DEBUG MARKER - CODELAB 🔴 */}
-        <div className="fixed bottom-4 right-4 z-[9999] bg-red-600/95 backdrop-blur-sm border-2 border-red-400 rounded-lg px-3 py-2 shadow-xl">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-            <span className="text-white font-bold text-xs">
-              🧪 CODELAB-001
-            </span>
-          </div>
-          <div className="text-red-200 text-xs font-mono mt-1">
-            Dev Sandbox - KEEP
-          </div>
-        </div>
       </div>
     </>
   );

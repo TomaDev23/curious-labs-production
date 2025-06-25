@@ -1,7 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import OurProducts from '../components/home/v6/OurProducts';
+import { motion } from '../FramerProvider';
+
 
 const HomeLayout = () => {
   return (

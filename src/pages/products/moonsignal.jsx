@@ -15,10 +15,11 @@ import MissionControlNavbar from '../../components/navigation/MissionControlNavb
 // import Footer from '../../components/Footer_legacy';
 import { IMAGES } from '../../utils/assets';
 import ScrollToTop from '../../components/ScrollToTop';
-import { motion } from 'framer-motion';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 
 // ✅ KEEP - MOONSIGNAL PRODUCT COMPONENT
+import {  motion  } from '../../FramerProvider';
+
 export default function MoonSignal() {
   const [missionTime, setMissionTime] = useState(new Date());
 
@@ -95,7 +96,7 @@ export default function MoonSignal() {
     { 
       id: 'MSL-M001',
       label: 'Signal Accuracy', 
-      value: '94.7', 
+      value: '80', 
       unit: '%', 
       icon: '🎯',
       status: 'OPERATIONAL',
@@ -113,7 +114,7 @@ export default function MoonSignal() {
     { 
       id: 'MSL-M003',
       label: 'Data Sources', 
-      value: '847', 
+      value: '223', 
       unit: 'active', 
       icon: '📡',
       status: 'OPERATIONAL',
@@ -134,19 +135,6 @@ export default function MoonSignal() {
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <ScrollToTop />
       <MissionControlNavbar />
-      
-      {/* 🔴 VISIBLE RED DEBUG MARKER - MOONSIGNAL 🔴 */}
-      <div className="fixed bottom-4 right-4 z-[9999] bg-red-600/95 backdrop-blur-sm border-2 border-red-400 rounded-lg px-3 py-2 shadow-xl">
-        <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-          <span className="text-white font-bold text-xs">
-            🌙 MOONSIGNAL-001
-          </span>
-        </div>
-        <div className="text-red-200 text-xs font-mono mt-1">
-          Product Page - KEEP
-        </div>
-      </div>
 
       <BackgroundLayerAtomic />
       <Helmet>

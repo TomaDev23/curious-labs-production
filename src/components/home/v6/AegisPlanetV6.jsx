@@ -9,12 +9,12 @@
  */
 
 import React, { Suspense, lazy } from 'react';
-// import { Canvas } from '@react-three/fiber'; // REMOVED: Unused import causing Three.js contamination
+// THREE.JS: Only loaded dynamically when needed
 import { useScene } from './SceneControllerV6';
+// import { Canvas } from '@react-three/fiber'; // REMOVED: Unused import causing Three.js contamination
 // import EarthSphere from '../../atomic/Planetary/EarthSphere';
 
-// Using EarthSphereProxy to handle the migration automatically
-const EarthSphere = lazy(() => import('../../proxies/EarthSphereProxy'));
+// TEMPORARILY DISABLED: const Hero3DPlanet = lazy(() => import('../../Hero3DPlanet'));
 
 // TEMPORARY: Using fallback only until EarthSphere integration
 // const AegisPlanet3DV6 = lazy(() => import('./AegisPlanet3DV6'));
@@ -59,7 +59,10 @@ const AegisPlanetV6 = ({ className = '', size = 300 }) => {
     return (
       <div style={{ width: size, height: size }} className={className}>
         <Suspense fallback={<LoadingPlaceholder />}>
-          <EarthSphere className="w-full h-full" />
+          {/* TEMPORARILY DISABLED: <Hero3DPlanet /> */}
+          <div className="flex items-center justify-center h-full">
+            <div className="text-lime-400/40 text-xs">Aegis 3D Disabled</div>
+          </div>
         </Suspense>
       </div>
     );

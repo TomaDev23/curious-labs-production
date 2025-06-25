@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import {  motion  } from '../../FramerProvider';
 
 /**
  * CuriousBot component - a floating assistant in the bottom-right corner

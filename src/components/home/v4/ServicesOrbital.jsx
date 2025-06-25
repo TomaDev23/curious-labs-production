@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollReveal, sectionVariants, itemVariants } from '../../../utils/animation';
 import MagneticButton from '../../ui/MagneticButton';
 import CosmicNoiseOverlay from '../../ui/CosmicNoiseOverlay';
@@ -7,6 +6,8 @@ import { useBreakpoint, useLegacyBreakpoint } from '../../../hooks/useBreakpoint
 import { startComponentRender, endComponentRender } from '../../../utils/performanceMonitor';
 import { useLazyLoad } from '../../../hooks/useLazyLoad';
 import { useScroll } from '../../../context/ScrollContext';
+import { motion, AnimatePresence } from '../../../FramerProvider';
+
 
 /**
  * ServicesOrbital - Enhanced services section with orbiting service cards

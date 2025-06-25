@@ -2,13 +2,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import CelestialController from '../../components/journey/celestial/CelestialController';
-import Mars from '../../components/journey/celestial/bodies/Mars';
-import Moon from '../../components/journey/celestial/bodies/Moon';
-import Jupiter from '../../components/journey/celestial/bodies/Jupiter';
-import Saturn from '../../components/journey/celestial/bodies/Saturn';
-import Venus from '../../components/journey/celestial/bodies/Venus';
-import Neptune from '../../components/journey/celestial/bodies/Neptune';
-import Uranus from '../../components/journey/celestial/bodies/Uranus';
+// TEMPORARILY DISABLED: import Mars from '../../components/journey/celestial/bodies/Mars';
+// TEMPORARILY DISABLED: import Moon from '../../components/journey/celestial/bodies/Moon';
+// TEMPORARILY DISABLED: import Jupiter from '../../components/journey/celestial/bodies/Jupiter';
+// TEMPORARILY DISABLED: import Saturn from '../../components/journey/celestial/bodies/Saturn';
+// TEMPORARILY DISABLED: import Venus from '../../components/journey/celestial/bodies/Venus';
+// TEMPORARILY DISABLED: import Neptune from '../../components/journey/celestial/bodies/Neptune';
+// TEMPORARILY DISABLED: import Uranus from '../../components/journey/celestial/bodies/Uranus';
 
 // Metadata for the component
 const metadata = {
@@ -18,6 +18,8 @@ const metadata = {
   doc: 'dev_testing.md'
 };
 
+// TEMPORARILY DISABLED: Component verification logs
+/*
 // Log Mars component to verify it's imported correctly
 console.log('Mars component imported:', Mars);
 console.log('Mars metadata:', Mars.metadata);
@@ -33,6 +35,7 @@ console.log('Neptune component imported:', Neptune);
 console.log('Neptune metadata:', Neptune.metadata);
 console.log('Uranus component imported:', Uranus);
 console.log('Uranus metadata:', Uranus.metadata);
+*/
 
 // Mouse parallax hook
 const useMouseParallax = (sensitivity = 0.05, easing = 0.1) => {
@@ -543,15 +546,8 @@ export default function CombinedParallaxTestPage() {
   }, []);
   
   // Add celestialBodies array for Mars and Moon
-  const celestialBodies = [
-    { id: 'moon', component: Moon, props: { position: { x: 45, y: 25 }, size: 90, parallaxFactor: 1.2, parallaxStyle: 'combined' } },
-    { id: 'mars', component: Mars, props: { position: { x: 60, y: 30 }, size: 100, parallaxFactor: 0.9 } },
-    { id: 'jupiter', component: Jupiter, props: { position: { x: 30, y: 40 }, size: 160, parallaxFactor: 0.5 } },
-    { id: 'saturn', component: Saturn, props: { position: { x: 20, y: 60 }, size: 180, parallaxFactor: 0.4 } },
-    { id: 'venus', component: Venus, props: { position: { x: 70, y: 50 }, size: 80, parallaxFactor: 1.1 } },
-    { id: 'neptune', component: Neptune, props: { position: { x: 55, y: 70 }, size: 110, parallaxFactor: 0.6 } },
-    { id: 'uranus', component: Uranus, props: { position: { x: 80, y: 80 }, size: 100, parallaxFactor: 0.7 } }
-  ];
+  // TEMPORARILY DISABLED: All 3D celestial bodies removed
+  const celestialBodies = [];
   
   // Keep the rest of the component implementation
   const mousePosition = useMouseParallax(settings.moonMouseSensitivity);

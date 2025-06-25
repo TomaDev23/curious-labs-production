@@ -1,3 +1,5 @@
+import {  useAnimation  } from '../../../FramerProvider';
+
 /**
  * @module AnimationCurveTest
  * @version 1.0.0

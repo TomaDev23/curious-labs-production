@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useScroll } from '../../context/ScrollContext';
+import { motion, AnimatePresence } from '../../FramerProvider';
+
 
 /**
  * CosmicHUD - A space-themed heads-up display showing scroll position and active section

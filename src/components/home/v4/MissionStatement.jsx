@@ -1,6 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useScrollReveal, sectionVariants, itemVariants } from '../../../utils/animation';
+import {  motion, useScroll  } from '../../../FramerProvider';
+
 
 /**
  * MissionStatement - "Our Mission" section

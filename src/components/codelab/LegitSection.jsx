@@ -1,8 +1,10 @@
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import {  motion, useReducedMotion  } from '../../FramerProvider';
 
-const LegitSection = ({ isLowPerf }) => {
+
+const LegitSection = () => {
   const shouldReduceMotion = useReducedMotion();
+  const isLowPerf = typeof window !== 'undefined' && window.navigator?.hardwareConcurrency < 4;
   const simplifiedAnimation = shouldReduceMotion || isLowPerf;
 
   // Simplified animation variants

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback, memo } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
 import SpaceCanvas from './SpaceCanvas';
 import { sectionVariants, itemVariants } from '../../../utils/animation';
 import MagneticButton from '../../ui/MagneticButton';
@@ -13,6 +12,8 @@ import useAccessibilityCheck from '../../../hooks/useAccessibilityCheck';
 import { useLazyLoad } from '../../../hooks/useLazyLoad';
 import LazyImage from '../../ui/LazyImage';
 import LogoStrip from '../../../components/LogoStrip';
+import {  motion, useScroll, useTransform  } from '../../../FramerProvider';
+
 
 /**
  * HeroPortal - Space-themed hero section

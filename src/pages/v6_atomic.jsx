@@ -21,6 +21,10 @@ import CosmicBackgroundSystemV6 from '../components/home/v6/CosmicBackgroundSyst
 // 🚀 NEW - SMART LAZY LOADING SYSTEM
 import SmartLazySection from '../components/lazy/SmartLazySection';
 
+// 🔴 KEEP - SHARED COMPONENTS 🔴
+import FooterExperience from '../components/home/v4/FooterExperience'; // CODE: FOOTER-001
+import ScrollToTop from '../components/ScrollToTop'; // CODE: SCROLL-001
+
 // --- TEMPORARY: Scene imports will be replaced one by one ---
 // import HeroSequenceV6 from '../components/home/v6/HeroSequenceV6'; // Removed
 // import HorizontalProductScrollV6 from '../components/home/v6/HorizontalProductScrollV6'; // Removed
@@ -114,6 +118,8 @@ const V6AtomicPage = () => {
         {/* 🔴 ATOMIC SCENES END 🔴 */}
 
       </LayoutWrapper>
+      <FooterExperience />
+      <ScrollToTop />
     </SceneControllerV6>
   );
 };

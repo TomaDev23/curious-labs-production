@@ -184,16 +184,29 @@ export default defineConfig({
           //   return 'vendor-three-drei';
           // }
 
-          // 🔥 HOMEPAGE CRITICAL PATH - Only essential homepage components
+          // 🔥 MOBILE-SPECIFIC OPTIMIZATION: Critical mobile chunks
+          if (id.includes('src/hooks/useBreakpoint') ||
+              id.includes('src/utils/responsive') ||
+              id.includes('src/config/responsiveImages')) {
+            return 'mobile-core';
+          }
+
+          // 🔥 HOMEPAGE CRITICAL PATH - Mobile-optimized
           if (id.includes('src/components/atomic/HeroAtomic') ||
               id.includes('src/components/navigation/MissionControlNavbar')) {
             return 'homepage-critical';
           }
 
-          // 🔥 HOMEPAGE SECONDARY - Important homepage components but lazy loaded
-          if (id.includes('src/components/atomic/MissionAtomic') ||
+          // 🔥 MOBILE-OPTIMIZED CHUNKS: Separate mobile-heavy components
+          if (id.includes('src/components/atomic/ContactTerminalAtomic') ||
+              id.includes('src/components/atomic/MissionAtomic') ||
               id.includes('src/components/atomic/ProcessLegacyAtomic') ||
-              id.includes('src/components/atomic/ServicesOrbitalAtomic')) {
+              id.includes('src/components/atomic/ProductScrollAtomic')) {
+            return 'mobile-optimized';
+          }
+
+          // 🔥 HOMEPAGE SECONDARY - Important homepage components but lazy loaded
+          if (id.includes('src/components/atomic/ServicesOrbitalAtomic')) {
             return 'homepage-secondary';
           }
 

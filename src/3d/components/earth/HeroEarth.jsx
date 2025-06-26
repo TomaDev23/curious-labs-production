@@ -25,6 +25,10 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
   const earthRef = useRef();
   const cloudsRef = useRef();
   
+  // ✅ TILE MR-3.0 PHASE 4: Mobile-only effect suppression
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const shouldSuppressEffects = isMobile && performanceMode !== 'high';
+  
   // Rotation animation with optional override
   useFrame(() => {
     if (earthRef.current) {
@@ -39,14 +43,14 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
     }
     
     // Rotate clouds slightly faster for realistic effect, but still very slow
-    if (cloudsRef.current) {
+    // ✅ Mobile: Reduce cloud animation to save GPU cycles
+    if (cloudsRef.current && !shouldSuppressEffects) {
       const cloudSpeed = performanceMode === 'minimal' ? 0.00015 : 0.0003;
       cloudsRef.current.rotation.y += cloudSpeed;
     }
   });
 
   // Load texture maps with error handling and mobile optimization
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const textureBasePath = '/assets/images/planets/2k/';
   
   const surfaceMap = useLoader(TextureLoader, `${textureBasePath}earthmap1k_LE_upscale_balanced_x4.webp`);
@@ -55,8 +59,12 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
   
   // Optimize texture settings for WebP and performance
   useEffect(() => {
+    // ✅ TILE MR-3.0 PHASE 4: Mobile-specific texture optimization
+    const mobileAnisotropy = shouldSuppressEffects ? 4 : 8; // Further reduce on mobile
+    const desktopAnisotropy = 16;
+    
     // Configure surface map
-    surfaceMap.anisotropy = isMobile ? 8 : 16;
+    surfaceMap.anisotropy = isMobile ? mobileAnisotropy : desktopAnisotropy;
     surfaceMap.generateMipmaps = true;
     surfaceMap.minFilter = LinearMipmapLinearFilter;
     surfaceMap.magFilter = LinearFilter;
@@ -64,7 +72,7 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
     surfaceMap.wrapT = ClampToEdgeWrapping;
     
     // Configure bump map
-    bumpMap.anisotropy = isMobile ? 8 : 16;
+    bumpMap.anisotropy = isMobile ? mobileAnisotropy : desktopAnisotropy;
     bumpMap.generateMipmaps = true;
     bumpMap.minFilter = LinearMipmapLinearFilter;
     bumpMap.magFilter = LinearFilter;
@@ -72,13 +80,13 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
     bumpMap.wrapT = ClampToEdgeWrapping;
     
     // Configure cloud map
-    cloudMap.anisotropy = isMobile ? 8 : 16;
+    cloudMap.anisotropy = isMobile ? mobileAnisotropy : desktopAnisotropy;
     cloudMap.generateMipmaps = true;
     cloudMap.minFilter = LinearMipmapLinearFilter;
     cloudMap.magFilter = LinearFilter;
     cloudMap.wrapS = ClampToEdgeWrapping;
     cloudMap.wrapT = ClampToEdgeWrapping;
-  }, [surfaceMap, bumpMap, cloudMap, isMobile]);
+  }, [surfaceMap, bumpMap, cloudMap, isMobile, shouldSuppressEffects]);
   
   // Responsive geometry settings
   const geometryDetail = performanceMode === 'minimal' ? 32 : performanceMode === 'low' ? 48 : 64;
@@ -154,6 +162,9 @@ const HeroEarth = ({
   className = ""
 }) => {
   const [performanceMode, setPerformanceMode] = useState('high');
+  
+  // ✅ REMOVED PHASE 2: Texture preloader causing double loading and main thread blocking
+  // The R3F useLoader below handles texture loading efficiently without duplication
   
   // Device capability detection
   useEffect(() => {

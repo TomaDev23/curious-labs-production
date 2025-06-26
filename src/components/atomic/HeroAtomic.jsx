@@ -20,7 +20,7 @@
 
 import React, { useState, Suspense, lazy, useEffect, useCallback, useRef, useMemo } from 'react';
 // Remove direct Canvas import - will be dynamically imported
-import { useResponsive, useDeviceCapabilities } from '../../hooks/useBreakpoint';
+import { useResponsive, useDeviceCapabilities, useUnifiedMobile } from '../../hooks/useBreakpoint';
 import MissionControlNavbar from '../navigation/MissionControlNavbar';
 import {  motion, AnimatePresence  } from '../../FramerProvider';
 import { Link } from 'react-router-dom';
@@ -52,9 +52,10 @@ const HeroAtomic = React.memo(() => {
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
   const [show3D, setShow3D] = useState(false);
+  const [showTypewriter, setShowTypewriter] = useState(false);
 
-  // Use unified responsive hooks
-  const { isMobile, isTablet, isDesktop } = useResponsive();
+  // Use unified responsive hooks - FIXED: Hydration-safe mobile detection
+  const { isMobile, isTablet, isDesktop, isHydrated } = useUnifiedMobile();
   const { prefersReducedMotion, performanceTier } = useDeviceCapabilities();
 
   // Typewriter coordination - CLEAN STATE MANAGEMENT
@@ -73,18 +74,33 @@ const HeroAtomic = React.memo(() => {
     onComplete: handleTypewriterComplete
   });
 
-  // ✅ NEW: Content-first loading sequence
-  useEffect(() => {    
-    // Start typewriter effect immediately
-    start();
+  // ✅ FIXED: Proper typewriter and 3D loading sequence with hydration safety
+  useEffect(() => {
+    // Wait for hydration to complete before applying mobile-specific logic
+    if (!isHydrated) return;
     
-    // 3D planet delays 1.5 seconds (as requested)
-    const timer = setTimeout(() => {
-      setShow3D(true);
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, [start]);
+    let typewriterTimer; // ✅ FIXED: Declare outside conditional to fix scope issue
+    
+    // Start typewriter on desktop, skip on mobile
+    if (!isMobile) {
+      typewriterTimer = setTimeout(() => {
+        setShowTypewriter(true);
+        start(); // Start the typewriter effect
+      }, 500);
+    }
+    
+    // Mobile: Simple delayed loading, Desktop: Keep original behavior
+    const show3DTimer = isMobile 
+      ? setTimeout(() => setShow3D(true), 1200) // Mobile: Simple 1.2s delay
+      : setTimeout(() => setShow3D(true), 1500); // Desktop: Original timing
+    
+    return () => {
+      if (typewriterTimer) { // ✅ FIXED: Check if timer exists before clearing
+        clearTimeout(typewriterTimer);
+      }
+      clearTimeout(show3DTimer);
+    };
+  }, [isMobile, isHydrated, start]);
 
   // Memoized responsive classes for performance
   const responsiveClasses = React.useMemo(() => {
@@ -93,21 +109,35 @@ const HeroAtomic = React.memo(() => {
       section: `relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden ${isMobile ? 'pt-16' : 'pt-14'}`,
       planetBloom: `absolute z-[15] ${isMobile ? 'w-[450px] h-[450px]' : isTablet ? 'w-[675px] h-[675px]' : 'w-[1200px] h-[1200px]'} rounded-full blur-3xl pointer-events-none`,
       planetContainer: `absolute z-[20] ${isMobile ? 'w-[375px] h-[375px]' : isTablet ? 'w-[525px] h-[525px]' : 'w-[800px] h-[800px]'}`,
-      contentWrapper: `absolute ${isMobile ? 'bottom-[8%] left-[4%] right-[4%] max-w-none' : 'bottom-[4%] left-[4%] max-w-[700px]'} z-[250]`,
-      title: `font-space ${isMobile ? 'text-xl' : isTablet ? 'text-2xl' : 'text-2xl md:text-3xl'} font-semibold text-white leading-tight tracking-tight ${isMobile ? '' : 'whitespace-nowrap'} transition-all duration-300 group-hover:text-shadow-lg`,
-      subtitle: `font-space ${isMobile ? 'text-sm' : isTablet ? 'text-base' : 'text-base md:text-lg'} text-white/85 leading-relaxed tracking-wide mb-4 transition-all duration-300 group-hover:text-white/95`
+      // ✅ FIXED: Stabilized contentWrapper to prevent 0.279 CLS
+      contentWrapper: `absolute z-[250] ${
+        isMobile 
+          ? 'bottom-[8%] left-[4%] right-[4%] max-w-none' 
+          : 'bottom-[4%] left-[4%] max-w-[700px]'
+      }`,
+      title: `font-space font-semibold text-white leading-tight tracking-tight ${isMobile ? '' : 'whitespace-nowrap'} ${isMobile ? 'transition-opacity duration-300' : 'transition-all duration-300 group-hover:text-shadow-lg'}`,
+      subtitle: `font-space text-white/85 leading-relaxed tracking-wide mb-4 ${isMobile ? 'transition-opacity duration-300' : 'transition-all duration-300 group-hover:text-white/95'}`
     };
   }, [isMobile, isTablet]);
 
   // Pre-calculated stable dimensions to prevent layout shifts - OPTIMIZED
   const stableDimensions = React.useMemo(() => {
-    const titleHeight = isMobile ? '2.5rem' : isTablet ? '3rem' : '3.5rem';
-    const subtitleHeight = isMobile ? '4rem' : '5rem';
+    const titleFontSize = isMobile ? '1.5rem' : isTablet ? '1.875rem' : '2.25rem'; // 24px, 30px, 36px
+    const titleLineHeight = isMobile ? '2rem' : isTablet ? '2.5rem' : '3rem'; // 32px, 40px, 48px
+    const subtitleFontSize = isMobile ? '0.875rem' : '1rem'; // 14px, 16px
+    const subtitleLineHeight = isMobile ? '1.25rem' : '1.5rem'; // 20px, 24px
+    
+    const titleHeight = isMobile ? '2rem' : isTablet ? '2.5rem' : '3rem';
+    const subtitleHeight = isMobile ? '5rem' : '6rem'; // Increased for multi-line
     const ctaHeight = isMobile ? '3rem' : '2.5rem';
     const statusHeight = isMobile ? '1.5rem' : '2rem';
     const expandedContentHeight = isMobile ? '300px' : '384px';
     
     return {
+      titleFontSize,
+      titleLineHeight,
+      subtitleFontSize,
+      subtitleLineHeight,
       titleHeight,
       subtitleHeight,
       ctaHeight,
@@ -178,26 +208,35 @@ const HeroAtomic = React.memo(() => {
         {/* Background layer - Loads immediately */}
         <BackgroundLayerAtomic />
         
-        {/* 3D Earth with delayed entrance (1.5s after content) - SMOOTH FADE-IN */}
+        {/* 3D Earth with delayed entrance (1.5s after content) - MOBILE-GATED ANIMATION */}
         <AnimatePresence>
           {show3D && isClient && (
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              initial={{ opacity: 0, y: isMobile ? 0 : 20, scale: isMobile ? 1 : 0.95 }} // Mobile: No scale/y animation
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              exit={{ opacity: 0, y: isMobile ? 0 : 20, scale: isMobile ? 1 : 0.95 }} // Mobile: No scale/y animation
               transition={{ 
-                duration: 1.2, 
+                duration: isMobile ? 0.8 : 1.2, // Mobile: Faster, simpler transition
                 ease: "easeInOut",
-                opacity: { duration: 1.0, ease: "easeIn" },
-                y: { duration: 1.2, ease: "easeOut" },
-                scale: { duration: 1.1, ease: "easeInOut" }
+                opacity: { duration: isMobile ? 0.8 : 1.0, ease: "easeIn" },
+                y: { duration: isMobile ? 0 : 1.2, ease: "easeOut" }, // Mobile: No y animation
+                scale: { duration: isMobile ? 0 : 1.1, ease: "easeInOut" } // Mobile: No scale animation
               }}
               style={{
                 position: 'absolute',
                 ...planetPosition,
                 zIndex: 20,
                 width: planetSize,
-                height: planetSize
+                height: planetSize,
+                // ✅ TILE MR-3.0 PHASE 1: Mobile-only layout anchoring
+                ...(isMobile && {
+                  minHeight: '360px',
+                  contain: 'layout paint',
+                  aspectRatio: '1 / 1',
+                  overflow: 'hidden'
+                }),
+                // ✅ MOBILE-ONLY: Prevent transform-based layout shifts
+                willChange: isMobile ? 'opacity' : 'transform, opacity'
               }}
             >
               <Suspense 
@@ -243,28 +282,46 @@ const HeroAtomic = React.memo(() => {
         )}
         
         {/* Enhanced Interactive Text content - responsive positioning - LOADS FIRST */}
-        <div className={responsiveClasses.contentWrapper}>
+        <div 
+          className={responsiveClasses.contentWrapper}
+          style={{
+            // ✅ FIXED: Explicit dimensions to prevent layout shifts
+            minHeight: isMobile ? '200px' : '250px',
+            contain: 'layout style',
+            willChange: 'auto'
+          }}
+        >
           <div className={isMobile ? 'mb-3' : 'mb-4'}>
             {/* Interactive header with hover effects - LCP OPTIMIZED */}
             <div 
-              className="group cursor-pointer transition-all duration-500 hover:scale-[1.02] mb-6"
+              className={`group cursor-pointer mb-6 ${
+                isMobile 
+                  ? 'transition-opacity duration-300' // Mobile: No scale, opacity only
+                  : 'transition-all duration-500 hover:scale-[1.02]' // Desktop: Keep scale effect
+              }`}
               onClick={handleHeaderToggle}
               style={{
                 contain: 'layout style paint',
-                willChange: 'auto',
-                minHeight: stableDimensions.titleHeight
+                willChange: isMobile ? 'auto' : 'transform', // Mobile: No will-change for transform
+                minHeight: stableDimensions.titleHeight,
+                // ✅ MOBILE-ONLY: Prevent scale-based layout shifts
+                transform: isMobile ? 'none' : undefined
               }}
             >
               <h1 
-                className={responsiveClasses.title}
+                className={`${responsiveClasses.title} hero-title-stable`}
                 role="heading"
                 aria-level={1}
                 style={{
-                  fontDisplay: 'swap',
+                  fontDisplay: 'optional',
                   contain: 'layout style',
                   priority: 'high',
                   minHeight: stableDimensions.titleHeight,
-                  aspectRatio: 'auto'
+                  aspectRatio: 'auto',
+                  fontSize: stableDimensions.titleFontSize,
+                  lineHeight: stableDimensions.titleLineHeight,
+                  fontOpticalSizing: 'auto',
+                  textSizeAdjust: 'none'
                 }}
               >
                 We bring you a <span className="bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(132,204,22,0.6)] group-hover:drop-shadow-[0_0_12px_rgba(132,204,22,0.8)] transition-all duration-300">universe</span> of solutions
@@ -354,74 +411,92 @@ const HeroAtomic = React.memo(() => {
             
             {/* Enhanced subheader with responsive text */}
             <div className="relative">
-              <p 
-                className={responsiveClasses.subtitle}
-                style={{
-                  minHeight: stableDimensions.subtitleHeight,
-                  contentVisibility: 'auto',
-                  containIntrinsicSize: `auto ${stableDimensions.subtitleHeight}`,
-                  contain: 'layout style'
-                }}
-              >
-                {displayText}
-                {!isComplete && <span className="inline-block w-0.5 h-5 bg-lime-400 ml-1 animate-pulse">|</span>}
-              </p>
+              {isMobile ? (
+                // Mobile: Static text with fade-in to eliminate CLS
+                <motion.p 
+                  className={responsiveClasses.subtitle}
+                  style={{
+                    minHeight: stableDimensions.subtitleHeight,
+                    contain: 'layout style',
+                    fontSize: stableDimensions.subtitleFontSize,
+                    lineHeight: stableDimensions.subtitleLineHeight,
+                    textSizeAdjust: 'none'
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                >
+                  We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.
+                </motion.p>
+              ) : (
+                // Desktop: Keep typewriter effect
+                <p 
+                  className={responsiveClasses.subtitle}
+                  style={{
+                    minHeight: stableDimensions.subtitleHeight,
+                    contentVisibility: 'auto',
+                    containIntrinsicSize: `auto ${stableDimensions.subtitleHeight}`,
+                    contain: 'layout style',
+                    fontSize: stableDimensions.subtitleFontSize,
+                    lineHeight: stableDimensions.subtitleLineHeight,
+                    textSizeAdjust: 'none'
+                  }}
+                >
+                  {displayText}
+                  {!isComplete && <span className="inline-block w-0.5 h-5 bg-lime-400 ml-1 animate-pulse">|</span>}
+                </p>
+              )}
               
-              {/* Enhanced CTA with responsive layout - SHOWS AFTER TYPEWRITER */}
-              <div 
-                className={`${isMobile ? 'justify-center flex-col space-y-3' : 'justify-between'} mt-4`}
-                style={{
-                  minHeight: stableDimensions.ctaHeight,
-                  contentVisibility: typewriterComplete ? 'visible' : 'auto',
-                  containIntrinsicSize: `auto ${stableDimensions.ctaHeight}`
-                }}
-              >
-                <AnimatePresence>
-                  {typewriterComplete && (
-                    <motion.div 
-                      className={`flex items-center ${isMobile ? 'justify-center flex-col space-y-3' : 'justify-between'}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ 
-                        duration: 0.5, 
-                        ease: "easeOut"
-                      }}
-                    >
-                      <div className={`flex items-center ${isMobile ? 'space-x-3' : 'space-x-4'}`}>
-                        <Link 
-                          to="/products"
-                          className={`group/btn relative ${isMobile ? 'px-3 py-2 text-xs' : 'px-4 py-2 text-sm'} bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-space font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-98 tracking-wide overflow-hidden inline-block`}
-                          onMouseEnter={() => setActiveSection('cta')}
-                          onMouseLeave={() => setActiveSection(null)}
-                          aria-label="Explore our products and services"
-                        >
-                          <span className="relative z-10">Explore Our Universe</span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-lime-400 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                          
-                          {/* Animated particles on hover - Skip on reduced motion */}
-                          {!prefersReducedMotion && (
-                            <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300">
-                              <div className={`absolute top-1 left-2 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full animate-ping`}></div>
-                              <div className={`absolute bottom-1 right-3 ${isMobile ? 'w-0.5 h-0.5' : 'w-1 h-1'} bg-white/60 rounded-full animate-ping`} style={{ animationDelay: '0.5s' }}></div>
-                            </div>
-                          )}
-                        </Link>
+              {/* Enhanced CTA with responsive layout - SHOWS AFTER TYPEWRITER OR IMMEDIATELY ON MOBILE */}
+              <AnimatePresence>
+                {(isComplete || isMobile) && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{
+                      minHeight: stableDimensions.ctaHeight,
+                      contain: 'layout style'
+                    }}
+                  >
+                    <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'flex-row space-x-4'} items-center justify-center mt-6`}>
+                      {/* Primary CTA - Restored original design with mobile-optimized functionality */}
+                      <Link
+                        to="/tools"
+                        className={`group/btn relative px-6 py-3 bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-medium rounded-full hover:shadow-lg hover:shadow-lime-400/20 transition-shadow inline-block ${
+                          isMobile 
+                            ? 'transition-opacity duration-300 active:opacity-75' // Mobile: No scale, opacity only
+                            : 'transition-all duration-300 hover:scale-105 active:scale-98' // Desktop: Keep scale
+                        }`}
+                        style={{
+                          willChange: isMobile ? 'auto' : 'transform',
+                          transform: isMobile ? 'none' : undefined
+                        }}
+                      >
+                        <span className="relative z-10">Explore Our Universe</span>
+                      </Link>
 
-                        {/* Secondary action button - responsive size */}
-                        <Link 
-                          to="/blog"
-                          className={`${isMobile ? 'p-1.5' : 'p-2'} border border-lime-400/30 rounded-full text-lime-400 hover:bg-lime-400/10 hover:border-lime-400/60 transition-all duration-300 hover:scale-110 active:scale-95 inline-block`}
-                          aria-label="Visit our blog"
-                        >
-                          <svg className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </Link>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      {/* Secondary CTA - Restored original design with mobile-optimized functionality */}
+                      <Link
+                        to="/products"
+                        className={`group/btn2 relative px-6 py-3 bg-transparent border border-lime-400/30 text-lime-400 font-medium rounded-full tracking-wide inline-block flex items-center gap-2 ${
+                          isMobile 
+                            ? 'transition-colors duration-300 active:bg-lime-400/10' // Mobile: No scale, colors only
+                            : 'transition-all duration-300 hover:scale-110 active:scale-95 hover:border-lime-400/60' // Desktop: Keep scale
+                        }`}
+                        style={{
+                          willChange: isMobile ? 'auto' : 'transform',
+                          transform: isMobile ? 'none' : undefined
+                        }}
+                      >
+                        <span className="w-2 h-2 bg-lime-400 rounded-full"></span>
+                        <span className="relative z-10">System Online</span>
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Interactive status indicator - responsive */}

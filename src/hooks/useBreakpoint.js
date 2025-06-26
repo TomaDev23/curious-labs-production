@@ -194,4 +194,70 @@ export const useLegacyBreakpoint = () => {
 };
 
 // Default export for backwards compatibility
-export default useBreakpoint; 
+export default useBreakpoint;
+
+// 🔥 NEW: Unified Mobile Detection System - SSR-Safe & Consistent
+let cachedMobileState = null;
+let isInitialized = false;
+
+/**
+ * Unified mobile detection that prevents hydration mismatches
+ * Use this instead of direct window.innerWidth checks
+ */
+export function getUnifiedMobileState() {
+  // Server-side: Always return false for mobile (conservative approach)
+  if (typeof window === 'undefined') {
+    return {
+      isMobile: false,
+      isTablet: false,
+      isDesktop: true,
+      breakpoint: 'desktop'
+    };
+  }
+  
+  // Client-side: Cache the result to prevent multiple calculations
+  if (cachedMobileState && isInitialized) {
+    return cachedMobileState;
+  }
+  
+  const width = window.innerWidth;
+  cachedMobileState = {
+    isMobile: width < 768,
+    isTablet: width >= 768 && width < 1024,
+    isDesktop: width >= 1024,
+    breakpoint: width < 768 ? 'mobile' : width < 1024 ? 'tablet' : 'desktop'
+  };
+  
+  isInitialized = true;
+  return cachedMobileState;
+}
+
+/**
+ * Hook for unified mobile detection with hydration safety
+ * Prevents layout shifts caused by mobile detection mismatches
+ */
+export function useUnifiedMobile() {
+  const [mobileState, setMobileState] = useState(() => getUnifiedMobileState());
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  useEffect(() => {
+    // Mark as hydrated and update state
+    setIsHydrated(true);
+    setMobileState(getUnifiedMobileState());
+    
+    const handleResize = () => {
+      // Invalidate cache on resize
+      cachedMobileState = null;
+      isInitialized = false;
+      setMobileState(getUnifiedMobileState());
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return {
+    ...mobileState,
+    isHydrated
+  };
+} 

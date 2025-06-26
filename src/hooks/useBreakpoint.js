@@ -237,23 +237,69 @@ export function getUnifiedMobileState() {
  * Prevents layout shifts caused by mobile detection mismatches
  */
 export function useUnifiedMobile() {
-  const [mobileState, setMobileState] = useState(() => getUnifiedMobileState());
+  // Use optimized version to prevent assembly bloat
+  return useOptimizedMobile();
+}
+
+// Global mobile state singleton to prevent assembly bloat
+let globalMobileState = null;
+let globalMobileListeners = [];
+let isGlobalInitialized = false;
+
+/**
+ * Singleton mobile state manager - prevents assembly bloat
+ * Only initializes once across entire app
+ */
+function getGlobalMobileState() {
+  if (!isGlobalInitialized && typeof window !== 'undefined') {
+    const checkMobile = () => {
+      const width = window.innerWidth;
+      return {
+        isMobile: width < 768,
+        isTablet: width >= 768 && width < 1024,
+        isDesktop: width >= 1024,
+        width
+      };
+    };
+    
+    globalMobileState = checkMobile();
+    
+    // Single global resize listener
+    const handleGlobalResize = () => {
+      const newState = checkMobile();
+      if (JSON.stringify(globalMobileState) !== JSON.stringify(newState)) {
+        globalMobileState = newState;
+        // Notify all subscribers
+        globalMobileListeners.forEach(callback => callback(newState));
+      }
+    };
+    
+    window.addEventListener('resize', handleGlobalResize);
+    isGlobalInitialized = true;
+  }
+  
+  return globalMobileState || { isMobile: false, isTablet: false, isDesktop: true, width: 1024 };
+}
+
+/**
+ * Optimized mobile hook - uses global singleton
+ * Prevents mobile assembly bloat by sharing state
+ */
+export function useOptimizedMobile() {
+  const [mobileState, setMobileState] = useState(() => getGlobalMobileState());
   const [isHydrated, setIsHydrated] = useState(false);
   
   useEffect(() => {
-    // Mark as hydrated and update state
     setIsHydrated(true);
-    setMobileState(getUnifiedMobileState());
+    setMobileState(getGlobalMobileState());
     
-    const handleResize = () => {
-      // Invalidate cache on resize
-      cachedMobileState = null;
-      isInitialized = false;
-      setMobileState(getUnifiedMobileState());
+    // Subscribe to global state changes
+    const handleUpdate = (newState) => setMobileState(newState);
+    globalMobileListeners.push(handleUpdate);
+    
+    return () => {
+      globalMobileListeners = globalMobileListeners.filter(cb => cb !== handleUpdate);
     };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
   
   return {

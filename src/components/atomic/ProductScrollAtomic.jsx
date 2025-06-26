@@ -1,4 +1,5 @@
 import {  motion  } from '../../FramerProvider';
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
 
 /**
  * @component ProductScrollAtomic
@@ -7,7 +8,7 @@ import {  motion  } from '../../FramerProvider';
  * @type atomic
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // Component metadata for LEGIT compliance
 export const metadata = {
@@ -128,8 +129,9 @@ const NebulaEffect = ({ color }) => {
 };
 
 const ProductScrollAtomic = () => {
-  // Self-contained responsive state
-  const [isMobile, setIsMobile] = useState(false);
+  // 🎯 UNIFIED MOBILE DETECTION: Replace useState pattern
+  const { isMobile, isHydrated } = useUnifiedMobile();
+  
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   
@@ -138,9 +140,7 @@ const ProductScrollAtomic = () => {
   
   // Handle responsive behavior and reduced motion preference
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    // 🎯 REMOVED: checkMobile function - now using unified system
     
     const checkMotionPreference = () => {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -153,17 +153,14 @@ const ProductScrollAtomic = () => {
         return () => mediaQuery.removeEventListener('change', handleChange);
       }
     };
+
+    // 🎯 HYDRATION SAFETY: Only run motion preference check after hydration
+    if (isHydrated) {
+      checkMotionPreference();
+    }
     
-    // Initial checks
-    checkMobile();
-    checkMotionPreference();
-    
-    // Add resize listener
-    window.addEventListener('resize', checkMobile);
-    
-    // Cleanup
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+    // 🎯 REMOVED: resize listener for mobile detection
+  }, [isHydrated]);
   
   // Handle scroll events
   useEffect(() => {

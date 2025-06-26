@@ -6,11 +6,12 @@
  * @legit true - Mission Control protocol compliant with real lunar data
  */
 
-import React, { useState, useEffect } from 'react';
-import {  motion, AnimatePresence  } from '../../FramerProvider';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from '../../FramerProvider';
 import { useMoonLighting } from '../../utils/useMoonLighting';
 import lune from 'lune';
 import { getDistanceToEarth, getTideInfluence, getNextLunarEvents, updateEventDays } from '../../utils/luneBridge';
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
 
 // CSS animations for tidal effects
 const tidalAnimations = `
@@ -221,6 +222,7 @@ const MissionControlBoard = ({
   className = "",
   showSlidingControl = false
 }) => {
+  const { isMobile, isHydrated } = useUnifiedMobile();
   const [missionTime, setMissionTime] = useState(new Date());
   const [controlMode, setControlMode] = useState('AUTO'); // AUTO or MANUAL
   const [manualPhase, setManualPhase] = useState(null);
@@ -228,9 +230,6 @@ const MissionControlBoard = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [lunarEvents, setLunarEvents] = useState(null);
   const [anomalyMode, setAnomalyMode] = useState(null);
-  
-  // Responsive hook
-  const { isMobile } = useResponsive();
   
   // Get real lunar data from our lighting system with error handling
   const { 

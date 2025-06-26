@@ -25,6 +25,9 @@ const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
 // 🌙 NEW: Lazy Moon loading with viewport detection
 import { useInViewLazy } from '../../hooks/useInViewLazy';
 
+// 🎯 UNIFIED MOBILE DETECTION: Replace inconsistent patterns
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
+
 // Component metadata for LEGIT compliance
 export const metadata = {
   id: 'mission_atomic',
@@ -293,7 +296,9 @@ const NeonArcAnimation = ({ children, sceneStep }) => {
 };
 
 const MissionAtomic = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  // 🎯 UNIFIED MOBILE DETECTION: Replace useState pattern
+  const { isMobile, isHydrated } = useUnifiedMobile();
+  
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [useSimpleEclipse, setUseSimpleEclipse] = useState(false);
   const [isHighEnd, setIsHighEnd] = useState(true);
@@ -318,11 +323,6 @@ const MissionAtomic = () => {
   const controls = useAnimation();
   const moonControls = useAnimation();
   
-  // Check if mobile device
-  const checkMobile = () => {
-    setIsMobile(window.innerWidth < 768);
-  };
-  
   // Check if user prefers reduced motion
   const checkMotionPreference = () => {
     if (typeof window !== 'undefined') {
@@ -337,6 +337,9 @@ const MissionAtomic = () => {
   
   // Check device performance capabilities
   const checkDeviceCapabilities = () => {
+    // 🎯 HYDRATION SAFETY: Only run after hydration
+    if (!isHydrated) return;
+    
     // Simple heuristic: mobile + reduced motion preference
     // A more sophisticated implementation could check for GPU capabilities
     setUseSimpleEclipse(isMobile && prefersReducedMotion);
@@ -361,9 +364,8 @@ const MissionAtomic = () => {
   };
   
   useEffect(() => {
-    checkMobile();
+    // 🎯 UNIFIED MOBILE DETECTION: Removed checkMobile calls
     const cleanupMotion = checkMotionPreference();
-    window.addEventListener('resize', checkMobile);
     
     // Attach intersection observer for background loading
     if (containerRef.current) {
@@ -371,14 +373,16 @@ const MissionAtomic = () => {
     }
     
     return () => {
-      window.removeEventListener('resize', checkMobile);
       if (cleanupMotion) cleanupMotion();
     };
   }, [attachObserver]);
   
   useEffect(() => {
-    checkDeviceCapabilities();
-  }, [isMobile, prefersReducedMotion]);
+    // 🎯 HYDRATION SAFETY: Only run device capabilities check after hydration
+    if (isHydrated) {
+      checkDeviceCapabilities();
+    }
+  }, [isMobile, prefersReducedMotion, isHydrated]);
 
   // Add CSS animation for eclipse nebula effect
   useEffect(() => {

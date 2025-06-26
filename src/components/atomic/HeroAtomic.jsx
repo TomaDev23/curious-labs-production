@@ -147,6 +147,16 @@ const HeroAtomic = React.memo(() => {
     };
   }, [isMobile, isTablet, isDesktop]);
 
+  // 🎯 LCP OPTIMIZATION: Mobile-optimized subtitle text to reduce LCP size
+  const optimizedSubtitleText = React.useMemo(() => {
+    if (isMobile) {
+      // Mobile: Shorter, punchier text to reduce rendering size
+      return "Building next-generation AI experiences. Join us in shaping tomorrow's web.";
+    }
+    // Desktop: Keep full text
+    return "We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.";
+  }, [isMobile]);
+
   // Optimized planet positioning based on device
   const planetPosition = React.useMemo(() => {
     if (isMobile) return { top: '15%', right: '5%' };
@@ -412,21 +422,24 @@ const HeroAtomic = React.memo(() => {
             {/* Enhanced subheader with responsive text */}
             <div className="relative">
               {isMobile ? (
-                // Mobile: Static text with fade-in to eliminate CLS
+                // Mobile: Static text with fade-in to eliminate CLS + LCP OPTIMIZATION
                 <motion.p 
-                  className={responsiveClasses.subtitle}
+                  className={`${responsiveClasses.subtitle} hero-subtitle-critical`}
                   style={{
                     minHeight: stableDimensions.subtitleHeight,
                     contain: 'layout style',
                     fontSize: stableDimensions.subtitleFontSize,
                     lineHeight: stableDimensions.subtitleLineHeight,
-                    textSizeAdjust: 'none'
+                    textSizeAdjust: 'none',
+                    // 🎯 LCP OPTIMIZATION: Force system font fallback for faster rendering
+                    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                    fontDisplay: 'swap'
                   }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                 >
-                  We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.
+                  {optimizedSubtitleText}
                 </motion.p>
               ) : (
                 // Desktop: Keep typewriter effect

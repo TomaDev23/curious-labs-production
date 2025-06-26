@@ -5,8 +5,9 @@
  * @type atomic
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import {  motion, useAnimation, useInView  } from '../../FramerProvider';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, useAnimation, useInView, AnimatePresence } from '../../FramerProvider';
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
 
 // Enhanced process steps data with cosmic theming
 const PROCESS_STEPS = [
@@ -264,47 +265,48 @@ const ProcessStepCard = ({ step, index, isActive, onActivate, isMobile, prefersR
 };
 
 const ProcessLegacyAtomic = () => {
-  // Enhanced state management
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
+  // 🎯 UNIFIED MOBILE DETECTION: Replace useState pattern
+  const { isMobile, isTablet, isHydrated } = useUnifiedMobile();
+  
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-10%" });
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  
+  // Refs for DOM elements
+  const containerRef = useRef(null);
+  const intervalRef = useRef(null);
   
   // Handle responsive behavior and reduced motion preference
   useEffect(() => {
-    const checkResponsive = () => {
-      setIsMobile(window.innerWidth < 768);
-      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
-    };
+    // 🎯 REMOVED: checkMobile and checkTablet functions - now using unified system
     
     const checkMotionPreference = () => {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       setPrefersReducedMotion(mediaQuery.matches);
       
+      // Listen for changes
       const handleChange = (e) => setPrefersReducedMotion(e.matches);
       if (mediaQuery.addEventListener) {
         mediaQuery.addEventListener('change', handleChange);
         return () => mediaQuery.removeEventListener('change', handleChange);
       }
     };
+
+    // 🎯 HYDRATION SAFETY: Only run checks after hydration
+    if (isHydrated) {
+      checkMotionPreference();
+    }
     
-    checkResponsive();
-    checkMotionPreference();
-    
-    window.addEventListener('resize', checkResponsive);
-    
-    return () => window.removeEventListener('resize', checkResponsive);
-  }, []);
+    // 🎯 REMOVED: resize listeners for mobile/tablet detection
+  }, [isHydrated]);
   
   // Auto-advance steps
   useEffect(() => {
     if (!isAutoPlaying || prefersReducedMotion) return;
     
     const interval = setInterval(() => {
-      setActiveStep((current) => (current + 1) % PROCESS_STEPS.length);
+      setCurrentStep((current) => (current + 1) % PROCESS_STEPS.length);
     }, 4000);
     
     return () => clearInterval(interval);
@@ -334,11 +336,11 @@ const ProcessLegacyAtomic = () => {
   
   return (
     <motion.section
-      ref={sectionRef}
+      ref={containerRef}
       id="process"
       className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-32 overflow-hidden"
       initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
+      animate="visible"
       variants={containerVariants}
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
@@ -373,7 +375,7 @@ const ProcessLegacyAtomic = () => {
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-cyan-400 rounded-full" />
-            <span className="text-cyan-400">PHASE {activeStep + 1}/4</span>
+            <span className="text-cyan-400">PHASE {currentStep + 1}/4</span>
           </div>
         </div>
       </motion.div>
@@ -389,8 +391,8 @@ const ProcessLegacyAtomic = () => {
             key={step.id}
             step={step}
             index={index}
-            isActive={index === activeStep}
-            onActivate={setActiveStep}
+            isActive={index === currentStep}
+            onActivate={setCurrentStep}
             isMobile={isMobile}
             prefersReducedMotion={prefersReducedMotion}
           />
@@ -406,11 +408,11 @@ const ProcessLegacyAtomic = () => {
           <button
             key={index}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === activeStep 
+              index === currentStep 
                 ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50' 
                 : 'bg-gray-600 hover:bg-gray-500'
             }`}
-            onClick={() => setActiveStep(index)}
+            onClick={() => setCurrentStep(index)}
             aria-label={`Go to step ${index + 1}`}
           />
         ))}
@@ -437,7 +439,7 @@ const ProcessLegacyAtomic = () => {
       </motion.div>
       
       {/* Orbital connections */}
-      <OrbitalConnections activeStep={activeStep} isMobile={isMobile} prefersReducedMotion={prefersReducedMotion} />
+      <OrbitalConnections activeStep={currentStep} isMobile={isMobile} prefersReducedMotion={prefersReducedMotion} />
     </motion.section>
   );
 };

@@ -5,9 +5,11 @@
  * @type atomic
  */
 
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useInViewLazy } from '../../hooks/useInViewLazy';
+import { motion, AnimatePresence } from '../../FramerProvider';
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
 
 // 🎯 INTERSECTION-BASED 3D: Only load ContactGlobeProxy when user scrolls to contact section
 // This removes 362KB from critical path, loading only when needed
@@ -33,18 +35,31 @@ const ContactTerminalAtomic = () => {
     { rootMargin: '200px' }
   );
   
-  // Self-contained responsive state
-  const [isMobile, setIsMobile] = useState(false);
+  // 🎯 UNIFIED MOBILE DETECTION: Replace useState pattern
+  const { isMobile, isHydrated } = useUnifiedMobile();
+  
+  // 🔧 RESTORED: Missing state variables that were accidentally removed
+  const [activeTab, setActiveTab] = useState('info');
   const [typedText, setTypedText] = useState('');
   const [typingComplete, setTypingComplete] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [activeTab, setActiveTab] = useState('info'); // 'info' or 'form'
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    project: 'web-development',
+    project: '',
     message: ''
   });
+  
+  const [isTerminalActive, setIsTerminalActive] = useState(false);
+  const [currentCommand, setCurrentCommand] = useState('');
+  const [commandHistory, setCommandHistory] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [terminalOutput, setTerminalOutput] = useState([]);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  
+  // Refs
+  const terminalRef = useRef(null);
+  const inputRef = useRef(null);
+  const outputRef = useRef(null);
   
   // Project type options
   const projectTypes = [
@@ -72,9 +87,7 @@ const ContactTerminalAtomic = () => {
   
   // Handle responsive behavior and reduced motion preference
   useEffect(() => {
-    const checkResponsive = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    // 🎯 REMOVED: checkMobile function - now using unified system
     
     const checkMotionPreference = () => {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -87,17 +100,14 @@ const ContactTerminalAtomic = () => {
         return () => mediaQuery.removeEventListener('change', handleChange);
       }
     };
+
+    // 🎯 HYDRATION SAFETY: Only run checks after hydration
+    if (isHydrated) {
+      checkMotionPreference();
+    }
     
-    // Initial checks
-    checkResponsive();
-    checkMotionPreference();
-    
-    // Add resize listener
-    window.addEventListener('resize', checkResponsive);
-    
-    // Cleanup
-    return () => window.removeEventListener('resize', checkResponsive);
-  }, []);
+    // 🎯 REMOVED: resize listener for mobile detection
+  }, [isHydrated]);
   
   // Typing animation effect
   useEffect(() => {

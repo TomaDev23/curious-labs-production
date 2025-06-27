@@ -45,28 +45,32 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
   const observerRef = useRef(null);
   const imageRef = useRef(null);
   
-  // Device-adaptive image quality selection
+  // 🎯 SAFE DEVICE CAPABILITIES - Mobile crash fix
+  const getDeviceCapabilities = useCallback(() => {
+    if (typeof window === 'undefined') return { width: 1200, isMobile: false };
+    
+    try {
+      const width = window.innerWidth;
+      const isMobile = width < 1200;
+      
+      return { width, isMobile };
+    } catch (error) {
+      console.warn('Device capability check failed:', error);
+      return { width: 1200, isMobile: false };
+    }
+  }, []);
+
+  // 🎯 OPTIMIZED 2-TIER IMAGE SELECTION
   const getImageSrc = useCallback(() => {
     if (typeof window === 'undefined') return null;
     
-    const width = window.innerWidth;
-    const pixelRatio = window.devicePixelRatio || 1;
-    const connection = navigator.connection?.effectiveType || '4g';
-    const memory = navigator.deviceMemory || 4;
+    const { isMobile } = getDeviceCapabilities();
     
-    // Performance-based quality selection using ACTUAL existing assets
-    if (width <= 768 || memory < 4 || ['slow-2g', '2g'].includes(connection)) {
-      return '/assets/images/planets/milkyway_Light_mobile.webp'; // 41KB - EXISTS ✅
-    }
-    if (width <= 1440 || ['3g'].includes(connection)) {
-      return '/assets/images/planets/milkyway_Light_tablet.webp'; // 97KB - EXISTS ✅
-    }
-    if (pixelRatio >= 2 && memory >= 8 && connection === '4g') {
-      return '/assets/images/planets/4k/milkyway_Light_big.webp'; // 683KB - EXISTS ✅
-    }
-    
-    return '/assets/images/planets/4k/milkyway_Light_big.webp'; // Default fallback - EXISTS ✅
-  }, []);
+    // SIMPLIFIED: Only 2 quality tiers
+    return isMobile 
+      ? '/assets/images/planets/4k/milkyway_Light.webp'     // 159KB - Mobile/Tablet
+      : '/assets/images/planets/4k/milkyway_Light_big.webp'; // 683KB - Desktop
+  }, [getDeviceCapabilities]);
 
   // Smart image preloading with error handling
   const preloadImage = useCallback((src) => {
@@ -340,8 +344,7 @@ const MissionAtomic = () => {
     // 🎯 HYDRATION SAFETY: Only run after hydration
     if (!isHydrated) return;
     
-    // Simple heuristic: mobile + reduced motion preference
-    // A more sophisticated implementation could check for GPU capabilities
+    // 🎯 MOBILE SAFE: Simplified device check without unsafe APIs
     setUseSimpleEclipse(isMobile && prefersReducedMotion);
     
     // Check for URL param for testing both versions
@@ -352,15 +355,8 @@ const MissionAtomic = () => {
       }
     }
 
-    const capabilities = {
-      memory: navigator.deviceMemory || 4,
-      connection: navigator.connection?.effectiveType || '4g',
-      hardwareConcurrency: navigator.hardwareConcurrency || 4
-    };
-    
-    return capabilities.memory >= 4 && 
-           ['4g', 'slow-2g', '2g', '3g'].indexOf(capabilities.connection) === -1 &&
-           capabilities.hardwareConcurrency >= 4;
+    // 🎯 REMOVED: Unsafe navigator API calls that crash on iOS
+    return true; // Always assume capable device, let CSS handle optimization
   };
   
   useEffect(() => {
@@ -578,10 +574,10 @@ const MissionAtomic = () => {
           className="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out"
           style={{
             backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover', // Maintains aspect ratio, prevents stretching
-            backgroundPosition: 'center',
+            backgroundSize: 'cover', // 🎯 MOBILE FIX: Always fill container completely
+            backgroundPosition: isMobile ? 'center 30%' : 'center', // 🎯 Better mobile positioning
             backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed', // Added for parallax effect
+            backgroundAttachment: isMobile ? 'scroll' : 'fixed', // 🎯 CRITICAL: Fixed crashes iOS Safari
             opacity: 1.0, // Full opacity when loaded
             zIndex: 20, // Increased from 2 to bring above hero mask
             willChange: 'opacity'

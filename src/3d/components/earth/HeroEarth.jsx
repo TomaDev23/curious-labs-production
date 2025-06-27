@@ -25,28 +25,28 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
   const earthRef = useRef();
   const cloudsRef = useRef();
   
-  // ✅ TILE MR-3.0 PHASE 4: Mobile-only effect suppression
+  // 🎯 TILE MR-3.0 PHASE 4: Mobile-only effect suppression
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const shouldSuppressEffects = isMobile && performanceMode !== 'high';
   
-  // Rotation animation with optional override
+  // 🎯 MOBILE FRAME THROTTLING: Reduce useFrame calls on mobile
+  const frameSkipRef = useRef(0);
+  const mobileFrameSkip = isMobile ? 3 : 0; // Skip 3 out of 4 frames on mobile
+
+  // Rotate the earth and clouds
   useFrame(() => {
-    if (earthRef.current) {
-      // Much slower rotation for majestic, royal feeling
-      const rotationSpeed = performanceMode === 'minimal' ? 0.0002 : 0.0002;
-      earthRef.current.rotation.y += rotationSpeed;
-      
-      // Apply additional rotation if provided (for scroll animations)
-      if (rotationY) {
-        earthRef.current.rotation.y = rotationY;
-      }
+    // 🎯 MOBILE THROTTLING: Skip frames on mobile devices
+    if (mobileFrameSkip > 0) {
+      frameSkipRef.current = (frameSkipRef.current + 1) % (mobileFrameSkip + 1);
+      if (frameSkipRef.current !== 0) return;
     }
     
-    // Rotate clouds slightly faster for realistic effect, but still very slow
-    // ✅ Mobile: Reduce cloud animation to save GPU cycles
-    if (cloudsRef.current && !shouldSuppressEffects) {
-      const cloudSpeed = performanceMode === 'minimal' ? 0.00015 : 0.0003;
-      cloudsRef.current.rotation.y += cloudSpeed;
+    if (earthRef.current) {
+      earthRef.current.rotation.y += shouldSuppressEffects ? 0.0001 : 0.0002;
+      if (cloudsRef.current && !shouldSuppressEffects) {
+        const rotationSpeed = performanceMode === 'minimal' ? 0.00015 : 0.0003;
+        cloudsRef.current.rotation.y += rotationSpeed;
+      }
     }
   });
 

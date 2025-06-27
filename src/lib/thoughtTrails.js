@@ -320,7 +320,10 @@ class ThoughtTrails {
   startAnimationLoop() {
     if (!this.isActive || this.isDestroyed) return;
 
-    const frameInterval = 1000 / this.frameRate;
+    // 🎯 MOBILE THROTTLING: Reduce frame rate on mobile devices
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const mobileFrameRate = isMobile ? Math.min(this.frameRate, 15) : this.frameRate;
+    const frameInterval = 1000 / mobileFrameRate;
 
     const animate = (currentTime) => {
       if (!this.isActive || this.isDestroyed) return;
@@ -331,6 +334,16 @@ class ThoughtTrails {
         return;
       }
       this.lastFrameTime = currentTime;
+
+      // 🎯 MOBILE SKIP: Skip expensive operations on mobile
+      if (isMobile && this.performanceTier === 'low') {
+        // Only update every 3rd frame on low-performance mobile
+        this.frameSkipCounter = (this.frameSkipCounter || 0) + 1;
+        if (this.frameSkipCounter % 3 !== 0) {
+          this.animationId = requestAnimationFrame(animate);
+          return;
+        }
+      }
 
       // Clear canvas with proper scaling
       this.ctx.clearRect(0, 0, this.width / this.pixelRatio, this.height / this.pixelRatio);

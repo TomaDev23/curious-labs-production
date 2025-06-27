@@ -42,16 +42,13 @@
   <link rel="preload" href="/images/webp/cosmic-background.webp" as="image" type="image/webp">
   <link rel="preload" href="/images/stars.svg" as="image" type="image/svg+xml">
   
-  <!-- Critical preload for LCP optimization - SELECTIVE quality strategy -->
-  <link rel="preload" as="image" 
-        href="/assets/images/planets/milkyway_Light_mobile.webp"
-        media="(max-width: 768px)" fetchpriority="high">
-  <link rel="preload" as="image" 
-        href="/assets/images/planets/milkyway_Light_tablet.webp"
-        media="(min-width: 769px) and (max-width: 1200px)" fetchpriority="high">
+  <!-- Critical preload for LCP optimization - OPTIMIZED 2-tier strategy -->
   <link rel="preload" as="image" 
         href="/assets/images/planets/4k/milkyway_Light.webp"
-        media="(min-width: 1201px)" fetchpriority="high">
+        media="(max-width: 1199px)" fetchpriority="high">
+  <link rel="preload" as="image" 
+        href="/assets/images/planets/4k/milkyway_Light_big.webp"
+        media="(min-width: 1200px)" fetchpriority="high">
   
   <!-- Theme color for browser UI -->
   <meta name="theme-color" content="#0f172a">

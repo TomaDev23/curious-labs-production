@@ -47,73 +47,51 @@ class AnimationController {
     // Start animation loop
     this.running = true;
     this.animationFrameId = window.requestAnimationFrame(this.animationLoop.bind(this));
+    
+    // 🎯 MOBILE FRAME THROTTLING: Reduce frame rate on mobile
+    this.isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    this.targetFPS = this.isMobile ? 15 : 60; // 15fps on mobile, 60fps on desktop
+    this.frameInterval = 1000 / this.targetFPS;
+    this.frameSkipCounter = 0;
   }
   
   /**
    * The main animation loop that orchestrates all subscriber callbacks
    */
-  animationLoop(timestamp) {
-    // Calculate FPS
-    this.frameCount++;
-    
-    if (timestamp - this.lastFpsUpdate >= 1000) {
-      const elapsed = timestamp - this.lastFpsUpdate;
-      const currentFps = Math.round((this.frameCount * 1000) / elapsed);
-      
-      // Update FPS history
-      this.fpsHistory.push(currentFps);
-      if (this.fpsHistory.length > FPS_SAMPLE_SIZE) {
-        this.fpsHistory.shift();
+  animationLoop(currentTime) {
+    if (!this.running) return;
+
+    // 🎯 MOBILE THROTTLING: Skip frames to reduce load
+    if (this.isMobile) {
+      const deltaTime = currentTime - this.lastTime;
+      if (deltaTime < this.frameInterval) {
+        this.animationFrameId = window.requestAnimationFrame(this.animationLoop.bind(this));
+        return;
       }
       
-      // Calculate average FPS
-      this.currentFps = this.fpsHistory.reduce((sum, fps) => sum + fps, 0) / this.fpsHistory.length;
-      
-      // Update throttle level based on FPS
-      this.updateThrottling();
-      
-      // Reset counters
-      this.frameCount = 0;
-      this.lastFpsUpdate = timestamp;
-    }
-    
-    // Apply throttling if needed
-    this.currentFrameCount++;
-    const shouldRenderFrame = this.currentFrameCount > this.framesToSkip;
-    
-    if (shouldRenderFrame) {
-      this.currentFrameCount = 0;
-      
-      // Execute callbacks by priority
-      for (let priority = PRIORITY.CRITICAL; priority <= PRIORITY.VERY_LOW; priority++) {
-        // Skip certain priorities based on throttle level
-        if (
-          (this.throttleLevel >= 3 && priority >= PRIORITY.LOW) ||
-          (this.throttleLevel >= 2 && priority >= PRIORITY.MEDIUM) ||
-          (this.throttleLevel >= 1 && priority >= PRIORITY.VERY_LOW)
-        ) {
-          continue;
-        }
-        
-        // Execute all callbacks at current priority
-        for (const [id, subscriber] of this.subscribers.entries()) {
-          if (subscriber.priority === priority && subscriber.enabled) {
-            try {
-              subscriber.callback(timestamp);
-            } catch (error) {
-              console.error(`Error in animation subscriber (ID: ${id}):`, error);
-              // Disable failing subscriber
-              subscriber.enabled = false;
-            }
-          }
-        }
+      // Skip every 4th frame on mobile for additional throttling
+      this.frameSkipCounter = (this.frameSkipCounter + 1) % 4;
+      if (this.frameSkipCounter === 0) {
+        this.animationFrameId = window.requestAnimationFrame(this.animationLoop.bind(this));
+        return;
       }
     }
-    
-    // Continue the loop if running
-    if (this.running) {
-      this.animationFrameId = window.requestAnimationFrame(this.animationLoop.bind(this));
-    }
+
+    this.lastTime = currentTime;
+
+    // Call all subscriber callbacks
+    this.subscribers.forEach(callback => {
+      try {
+        callback(currentTime);
+      } catch (error) {
+        console.warn('Animation callback error:', error);
+        // Remove problematic callback to prevent future errors
+        this.subscribers.delete(callback);
+      }
+    });
+
+    // Continue the animation loop
+    this.animationFrameId = window.requestAnimationFrame(this.animationLoop.bind(this));
   }
   
   /**

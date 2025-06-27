@@ -36,76 +36,45 @@ export const metadata = {
   doc: 'contract_mission_atomic.md'
 };
 
-// 🎯 PROGRESSIVE BACKGROUND LOADING HOOK - FIXED: Remove conflicting observer
+// 🎯 PROGRESSIVE BACKGROUND LOADING
 const useProgressiveBackground = (componentName = 'MissionAtomic') => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
   const [backgroundError, setBackgroundError] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
   const imageRef = useRef(null);
   
-  // 🎯 SAFE DEVICE CAPABILITIES - Mobile crash fix
-  const getDeviceCapabilities = useCallback(() => {
-    if (typeof window === 'undefined') return { width: 1200, isMobile: false };
-    
-    try {
-      const width = window.innerWidth || 1200; // 🎯 SAFE: Fallback for iOS Safari
-      const isMobile = width < 1200;
-      
-      return { width, isMobile };
-    } catch (error) {
-      console.warn('Device capability check failed:', error);
-      return { width: 1200, isMobile: false }; // 🎯 SAFE: Always assume desktop on error
-    }
-  }, []);
-
-  // 🎯 OPTIMIZED 2-TIER IMAGE SELECTION
+  // 🎯 UNIFIED MOBILE DETECTION: Get device capabilities
+  const { isMobile } = useUnifiedMobile();
+  
+  // 🎯 SIMPLIFIED: Get image source based on device type
   const getImageSrc = useCallback(() => {
-    if (typeof window === 'undefined') return null;
-    
-    const { isMobile } = getDeviceCapabilities();
-    
-    // SIMPLIFIED: Only 2 quality tiers
-    return isMobile 
-      ? '/assets/images/planets/4k/milkyway_Light.webp'     // 159KB - Mobile/Tablet
-      : '/assets/images/planets/4k/milkyway_Light_big.webp'; // 683KB - Desktop
-  }, [getDeviceCapabilities]);
+    // 🎯 FIXED: Use correct existing image paths
+    if (isMobile) {
+      return '/assets/images/planets/4k/milkyway_Light.webp';     // 159KB - Mobile/Tablet
+    } else {
+      return '/assets/images/planets/4k/milkyway_Light_big.webp'; // 683KB - Desktop
+    }
+  }, [isMobile]);
 
-  // Smart image preloading with error handling
-  const preloadImage = useCallback((src) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      
-      const cleanup = () => {
-        img.onload = null;
-        img.onerror = null;
-        img.onabort = null;
-      };
-      
-      img.onload = () => {
-        cleanup();
-        resolve(img);
-      };
-      
-      img.onerror = img.onabort = () => {
-        cleanup();
-        reject(new Error(`Failed to load background image: ${src}`));
-      };
-      
-      // Set source to trigger load
-      img.src = src;
-      imageRef.current = img;
-    });
-  }, [componentName]);
-
-  // 🚀 FIXED: Use simple timer-based loading instead of conflicting observer
+  // 🎯 SINGLE CONSOLIDATED EFFECT: All background loading logic in one place
   useEffect(() => {
     const imageSrc = getImageSrc();
     if (!imageSrc) return;
     
     setImageUrl(imageSrc);
     
-    // 🎯 LCP PROTECTION: Delay background loading to ensure content loads first
-    // Use timer instead of intersection observer to avoid conflicts
+    // Preload image function
+    const preloadImage = (src) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+        img.src = src;
+        imageRef.current = img;
+      });
+    };
+    
+    // Delay background loading to ensure content loads first
     const loadTimer = setTimeout(() => {
       preloadImage(imageSrc)
         .then(() => {
@@ -117,16 +86,15 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
           setBackgroundError(true);
           setBackgroundLoaded(false);
         });
-    }, 800); // 800ms delay ensures text content becomes LCP and SmartLazySection has loaded
+    }, 800);
     
     return () => {
       clearTimeout(loadTimer);
-      // Cleanup image reference
       if (imageRef.current) {
         imageRef.current = null;
       }
     };
-  }, [getImageSrc, preloadImage]);
+  }, [getImageSrc]);
 
   return {
     backgroundLoaded,
@@ -140,10 +108,9 @@ const useContentFirstLoading = () => {
   const [contentLoaded, setContentLoaded] = useState(false);
   
   useEffect(() => {
-    // Simple content-first strategy without PerformanceObserver
     const timer = setTimeout(() => {
       setContentLoaded(true);
-    }, 100); // Small delay to ensure text renders first
+    }, 100);
     
     return () => clearTimeout(timer);
   }, []);
@@ -249,103 +216,105 @@ const MissionAtomic = () => {
   const controls = useAnimation();
   const moonControls = useAnimation();
   
-  // 🎯 MOBILE SAFE: Check if user prefers reduced motion
-  const checkMotionPreference = () => {
-    if (typeof window === 'undefined') return;
+  // ✅ FIXED: SINGLE CONSOLIDATED EFFECT - All initialization logic in one place
+  useEffect(() => {
+    if (!isHydrated) return;
     
-    try {
-      // 🎯 SAFE: Check if matchMedia exists and is functional
-      if (!window.matchMedia || typeof window.matchMedia !== 'function') {
-        setPrefersReducedMotion(false);
-        return;
-      }
-      
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if (!mediaQuery) {
-        setPrefersReducedMotion(false);
-        return;
-      }
-      
-      setPrefersReducedMotion(mediaQuery.matches);
-      
-      const handleChange = (e) => {
-        try {
-          setPrefersReducedMotion(e.matches);
-        } catch (error) {
-          console.warn('Motion preference change handler failed:', error);
-        }
-      };
-      
-      // 🎯 SAFE: Wrap addEventListener in try-catch
+    let cleanupFunctions = [];
+    
+    // 1. Motion Preference Detection
+    const setupMotionPreference = () => {
       try {
-        mediaQuery.addEventListener('change', handleChange);
-        return () => {
+        if (!window.matchMedia || typeof window.matchMedia !== 'function') {
+          setPrefersReducedMotion(false);
+          return null;
+        }
+        
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (!mediaQuery) {
+          setPrefersReducedMotion(false);
+          return null;
+        }
+        
+        setPrefersReducedMotion(mediaQuery.matches);
+        
+        const handleChange = (e) => {
           try {
-            mediaQuery.removeEventListener('change', handleChange);
+            setPrefersReducedMotion(e.matches);
           } catch (error) {
-            console.warn('Motion preference cleanup failed:', error);
+            console.warn('Motion preference change failed:', error);
           }
         };
+        
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
       } catch (error) {
-        console.warn('Motion preference event listener failed:', error);
-        return;
-      }
-    } catch (error) {
-      console.warn('Motion preference check failed:', error);
-      setPrefersReducedMotion(false);
-      return;
-    }
-  };
-  
-  // 🚀 CONSOLIDATED INITIALIZATION - Merge multiple useEffect hooks into one
-  useEffect(() => {
-    // 🎯 UNIFIED MOBILE DETECTION: Simplified initialization
-    const cleanupMotion = checkMotionPreference();
-    
-    // 🎯 SIMPLIFIED: Set eclipse mode based on unified mobile detection
-    setUseSimpleEclipse(isMobile && prefersReducedMotion);
-    
-    // 🎯 ECLIPSE STYLES: Add CSS animation for eclipse nebula effect
-    let styleSheet = null;
-    try {
-      const eclipseStyles = `
-        @keyframes eclipsePulse {
-          0%, 100% { 
-            opacity: 0.7; 
-            transform: scale(1); 
-          }
-          50% { 
-            opacity: 1; 
-            transform: scale(1.05); 
-          }
-        }
-      `;
-
-      // 🎯 SAFE: Check if document and head exist
-      if (typeof document !== 'undefined' && document.head) {
-        styleSheet = document.createElement('style');
-        styleSheet.type = 'text/css';
-        styleSheet.innerText = eclipseStyles;
-        document.head.appendChild(styleSheet);
-      }
-    } catch (error) {
-      console.warn('Eclipse animation setup failed:', error);
-    }
-    
-    return () => {
-      // Cleanup motion preference listener
-      if (cleanupMotion) cleanupMotion();
-      
-      // Cleanup eclipse styles
-      try {
-        if (styleSheet && document.head && document.head.contains(styleSheet)) {
-          document.head.removeChild(styleSheet);
-        }
-      } catch (cleanupError) {
-        console.warn('Failed to cleanup eclipse styles:', cleanupError);
+        console.warn('Motion preference setup failed:', error);
+        setPrefersReducedMotion(false);
+        return null;
       }
     };
-  }, [isMobile, prefersReducedMotion]); // Only essential dependencies
+    
+    // 2. Eclipse Mode Setup
+    const setupEclipseMode = () => {
+      setUseSimpleEclipse(isMobile && prefersReducedMotion);
+      
+      // Add CSS animation for eclipse nebula effect
+      let styleSheet = null;
+      try {
+        const eclipseStyles = `
+          @keyframes eclipsePulse {
+            0%, 100% { 
+              opacity: 0.7; 
+              transform: scale(1); 
+            }
+            50% { 
+              opacity: 1; 
+              transform: scale(1.05); 
+            }
+          }
+        `;
+
+        if (typeof document !== 'undefined' && document.head) {
+          styleSheet = document.createElement('style');
+          styleSheet.type = 'text/css';
+          styleSheet.innerText = eclipseStyles;
+          document.head.appendChild(styleSheet);
+        }
+      } catch (error) {
+        console.warn('Eclipse animation setup failed:', error);
+      }
+      
+      return () => {
+        try {
+          if (styleSheet && document.head && document.head.contains(styleSheet)) {
+            document.head.removeChild(styleSheet);
+          }
+        } catch (error) {
+          console.warn('Eclipse cleanup failed:', error);
+        }
+      };
+    };
+    
+    // Execute all setup functions
+    const motionCleanup = setupMotionPreference();
+    const eclipseCleanup = setupEclipseMode();
+    
+    // Collect cleanup functions
+    if (motionCleanup) cleanupFunctions.push(motionCleanup);
+    if (eclipseCleanup) cleanupFunctions.push(eclipseCleanup);
+    
+    // Single cleanup function
+    return () => {
+      cleanupFunctions.forEach(cleanup => {
+        try {
+          cleanup();
+        } catch (error) {
+          console.warn('Cleanup function failed:', error);
+        }
+      });
+    };
+  }, [isMobile, isHydrated]); // ✅ MINIMAL DEPENDENCIES
 
   // ⭐ Enhanced: Mission Control Board phase and anomaly change handler
   const handleMissionControlPhaseChange = (phase) => {

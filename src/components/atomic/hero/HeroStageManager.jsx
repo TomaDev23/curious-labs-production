@@ -8,6 +8,12 @@ const HeroStageManager = ({ setSceneStep }) => {
   const [isHydrated, setIsHydrated] = useState(false);
   const scrollTimeoutRef = useRef(null);
   const lastScrollRatioRef = useRef(-1);
+  const setSceneStepRef = useRef(setSceneStep);
+
+  // ✅ FIXED: Keep setSceneStep ref updated to avoid dependency cycles
+  useEffect(() => {
+    setSceneStepRef.current = setSceneStep;
+  }, [setSceneStep]);
 
   // ✅ FIXED: SSR-safe hydration check
   useEffect(() => {
@@ -35,8 +41,9 @@ const HeroStageManager = ({ setSceneStep }) => {
     }
   }, [isHydrated]);
 
-  // ✅ FIXED: Throttled scroll handler with batched state updates
-  const handleScroll = useCallback(() => {
+  // ✅ FIXED: Stable scroll handler using refs to avoid dependency cycles
+  const handleScrollRef = useRef();
+  handleScrollRef.current = useCallback(() => {
     if (!isHydrated) return;
 
     // Clear existing timeout to throttle calls
@@ -67,24 +74,27 @@ const HeroStageManager = ({ setSceneStep }) => {
         else if (scrollRatio < 0.7) newStep = 7;
         else newStep = 8;
         
-        // Single state update instead of multiple rapid calls
-        setSceneStep(newStep);
+        // Use ref to avoid dependency cycle
+        setSceneStepRef.current(newStep);
       } catch (error) {
         console.warn('Scroll handling error:', error);
         // Safe fallback - set to final step
-        setSceneStep(8);
+        setSceneStepRef.current(8);
       }
     }, 16); // 16ms throttle for 60fps
-  }, [isHydrated, setSceneStep]);
+  }, [isHydrated]);
 
   useEffect(() => {
     if (!isHydrated) return;
 
     // ✅ FIXED: Reduced motion bypass - skip scroll handling entirely
     if (prefersReducedMotion) {
-      setSceneStep(8);
+      setSceneStepRef.current(8);
       return;
     }
+
+    // Stable scroll handler reference
+    const handleScroll = () => handleScrollRef.current();
 
     // Call once immediately to set initial state
     handleScroll();
@@ -99,7 +109,7 @@ const HeroStageManager = ({ setSceneStep }) => {
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [setSceneStep, prefersReducedMotion, isHydrated, handleScroll]);
+  }, [prefersReducedMotion, isHydrated]); // ✅ REMOVED handleScroll dependency
 
   return null;
 };

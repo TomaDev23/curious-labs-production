@@ -22,8 +22,8 @@ import {  motion, useAnimation  } from '../../FramerProvider';
 // 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
 const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
 
-// 🌙 NEW: Lazy Moon loading with viewport detection
-import { useInViewLazy } from '../../hooks/useInViewLazy';
+// 🌙 STATIC MOON: Direct import to eliminate observer conflicts
+const MissionMoonWithCanvas = lazy(() => import('../../3d/components/moon/MissionMoonWithCanvas'));
 
 // 🎯 UNIFIED MOBILE DETECTION: Replace inconsistent patterns
 import { useUnifiedMobile } from '../../hooks/useBreakpoint';
@@ -83,14 +83,6 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
       
       img.onload = () => {
         cleanup();
-        // Track successful load for analytics
-        if (typeof window !== 'undefined' && window.lazyDebug) {
-          window.lazyDebug.trackComponentLoad?.(componentName, performance.now(), {
-            type: 'background-image',
-            src: src,
-            strategy: 'progressive-load'
-          });
-        }
         resolve(img);
       };
       
@@ -143,89 +135,12 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
   };
 };
 
-// 🎯 LCP PROTECTION HOOK - MOBILE SAFE VERSION
-const useLCPProtection = (componentName = 'MissionAtomic') => {
-  const [lcpData, setLCPData] = useState(null);
+// 🎯 SIMPLE CONTENT-FIRST LOADING - No PerformanceObserver (iOS Safe)
+const useContentFirstLoading = () => {
   const [contentLoaded, setContentLoaded] = useState(false);
   
   useEffect(() => {
-    // 🎯 MOBILE SAFE: LCP Performance Observer with comprehensive error handling
-    const observeLCP = () => {
-      // 🎯 CRITICAL: Multiple safety checks for iOS Safari
-      if (typeof window === 'undefined') return;
-      
-      try {
-        // 🎯 SAFE: Check if PerformanceObserver exists and is functional
-        if (!window.PerformanceObserver || typeof window.PerformanceObserver !== 'function') {
-          console.warn('PerformanceObserver not supported - skipping LCP tracking');
-          return;
-        }
-        
-        const lcpObserver = new PerformanceObserver((list) => {
-          try {
-            const entries = list.getEntries();
-            if (!entries || entries.length === 0) return;
-            
-            const lastEntry = entries[entries.length - 1];
-            if (!lastEntry) return;
-            
-            setLCPData({
-              element: lastEntry.element?.tagName || 'unknown',
-              startTime: lastEntry.startTime || 0,
-              renderTime: lastEntry.renderTime || 0,
-              loadTime: lastEntry.loadTime || 0,
-              size: lastEntry.size || 0,
-              url: lastEntry.url || 'N/A'
-            });
-            
-            // 🎯 SAFE: Only log in development
-            if (process.env.NODE_ENV === 'development') {
-              console.log('🎯 [LCP-MONITOR] Largest Contentful Paint detected:', {
-                element: lastEntry.element?.tagName,
-                time: `${(lastEntry.startTime || 0).toFixed(2)}ms`,
-                isBackground: (lastEntry.url || '').includes('milkyway'),
-                component: componentName
-              });
-            }
-            
-            // 🎯 SAFE: Warning if background becomes LCP
-            if ((lastEntry.url || '').includes('milkyway')) {
-              console.warn('⚠️ [LCP-WARNING] Background image became LCP - performance risk detected!');
-            }
-          } catch (entryError) {
-            console.warn('LCP entry processing failed:', entryError);
-          }
-        });
-        
-        // 🎯 SAFE: Wrap observe call in try-catch
-        try {
-          lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-        } catch (observeError) {
-          console.warn('LCP observe failed:', observeError);
-          lcpObserver.disconnect();
-          return;
-        }
-        
-        return () => {
-          try {
-            lcpObserver.disconnect();
-          } catch (disconnectError) {
-            console.warn('LCP disconnect failed:', disconnectError);
-          }
-        };
-      } catch (error) {
-        console.warn('LCP Observer setup failed:', error);
-        return;
-      }
-    };
-    
-    const cleanup = observeLCP();
-    return cleanup;
-  }, [componentName]);
-  
-  // Content-first loading strategy
-  useEffect(() => {
-    // Ensure DOM content is loaded before marking as ready
+    // Simple content-first strategy without PerformanceObserver
     const timer = setTimeout(() => {
       setContentLoaded(true);
     }, 100); // Small delay to ensure text renders first
@@ -233,11 +148,7 @@ const useLCPProtection = (componentName = 'MissionAtomic') => {
     return () => clearTimeout(timer);
   }, []);
   
-  return {
-    lcpData,
-    contentLoaded,
-    isLCPSafe: lcpData && !(lcpData.url || '').includes('milkyway')
-  };
+  return { contentLoaded };
 };
 
 // Advanced Neon Arc Animation Component
@@ -325,23 +236,20 @@ const MissionAtomic = () => {
   const [moonPhaseOverride, setMoonPhaseOverride] = useState(null);
   const [moonAnomalyMode, setMoonAnomalyMode] = useState(null);
   
-  // 🌙 NEW: Lazy Moon loading with viewport detection
-  const { ref: moonRef, Comp: LazyMoon } = useInViewLazy(
-    () => import('../../3d/components/moon/MissionMoonWithCanvas'),
-    { rootMargin: '200px' }
-  );
+  // 🌙 STATIC MOON: Simple ref without conflicting observer
+  const moonRef = useRef(null);
   
   // 🎯 PROGRESSIVE BACKGROUND LOADING
   const { backgroundLoaded, backgroundError, imageUrl } = useProgressiveBackground('MissionAtomic');
   const containerRef = useRef(null);
   
-  // 🎯 LCP PROTECTION - Ensure content loads first
-  const { lcpData, contentLoaded, isLCPSafe } = useLCPProtection('MissionAtomic');
+  // 🎯 SIMPLE CONTENT-FIRST LOADING - No PerformanceObserver (iOS Safe)
+  const { contentLoaded } = useContentFirstLoading();
   
   const controls = useAnimation();
   const moonControls = useAnimation();
   
-  // �� MOBILE SAFE: Check if user prefers reduced motion
+  // 🎯 MOBILE SAFE: Check if user prefers reduced motion
   const checkMotionPreference = () => {
     if (typeof window === 'undefined') return;
     
@@ -389,25 +297,16 @@ const MissionAtomic = () => {
     }
   };
   
-  // 🚀 REMOVED: Redundant device capability check function to eliminate 2-second crash
-  // Device capabilities are now handled by unified mobile detection hook
-  
+  // 🚀 CONSOLIDATED INITIALIZATION - Merge multiple useEffect hooks into one
   useEffect(() => {
     // 🎯 UNIFIED MOBILE DETECTION: Simplified initialization
     const cleanupMotion = checkMotionPreference();
     
     // 🎯 SIMPLIFIED: Set eclipse mode based on unified mobile detection
-    // No need for complex device capability checks
     setUseSimpleEclipse(isMobile && prefersReducedMotion);
     
-    return () => {
-      if (cleanupMotion) cleanupMotion();
-    };
-  }, [isMobile, prefersReducedMotion]); // 🎯 FIXED: Removed attachObserver dependency that caused conflicts
-
-  // Add CSS animation for eclipse nebula effect
-  useEffect(() => {
-    // 🎯 MOBILE SAFE: Wrap style sheet creation in comprehensive error handling
+    // 🎯 ECLIPSE STYLES: Add CSS animation for eclipse nebula effect
+    let styleSheet = null;
     try {
       const eclipseStyles = `
         @keyframes eclipsePulse {
@@ -423,96 +322,78 @@ const MissionAtomic = () => {
       `;
 
       // 🎯 SAFE: Check if document and head exist
-      if (typeof document === 'undefined' || !document.head) {
-        console.warn('Document or document.head not available - skipping eclipse styles');
-        return;
-      }
-
-      const styleSheet = document.createElement('style');
-      styleSheet.type = 'text/css';
-      styleSheet.innerText = eclipseStyles;
-      
-      // 🎯 SAFE: Wrap appendChild in try-catch
-      try {
+      if (typeof document !== 'undefined' && document.head) {
+        styleSheet = document.createElement('style');
+        styleSheet.type = 'text/css';
+        styleSheet.innerText = eclipseStyles;
         document.head.appendChild(styleSheet);
-      } catch (appendError) {
-        console.warn('Failed to append eclipse styles:', appendError);
-        return;
       }
-
-      return () => {
-        // 🎯 SAFE: Cleanup with comprehensive error handling
-        try {
-          if (document.head && document.head.contains(styleSheet)) {
-            document.head.removeChild(styleSheet);
-          }
-        } catch (cleanupError) {
-          console.warn('Failed to cleanup eclipse styles:', cleanupError);
-        }
-      };
     } catch (error) {
       console.warn('Eclipse animation setup failed:', error);
-      return;
     }
-  }, []);
+    
+    return () => {
+      // Cleanup motion preference listener
+      if (cleanupMotion) cleanupMotion();
+      
+      // Cleanup eclipse styles
+      try {
+        if (styleSheet && document.head && document.head.contains(styleSheet)) {
+          document.head.removeChild(styleSheet);
+        }
+      } catch (cleanupError) {
+        console.warn('Failed to cleanup eclipse styles:', cleanupError);
+      }
+    };
+  }, [isMobile, prefersReducedMotion]); // Only essential dependencies
 
   // ⭐ Enhanced: Mission Control Board phase and anomaly change handler
   const handleMissionControlPhaseChange = (phase) => {
-    console.log(`🚀 MISSION ATOMIC: Received phase change from Mission Control - ${phase}`);
+    // Only log in development to reduce console spam
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🚀 MISSION ATOMIC: Received phase change from Mission Control - ${phase}`);
+    }
     setMoonPhaseOverride(phase);
   };
   
   // ⭐ NEW: Mission Control Board anomaly change handler
   const handleMissionControlAnomalyChange = (anomalyMode) => {
     try {
-      // Only log in development
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🚀 MISSION ATOMIC: Received anomaly change from Mission Control - ${anomalyMode}`);
-      }
-      
       // Store previous phase when entering eclipse mode
       if (anomalyMode === 'eclipse' && moonAnomalyMode !== 'eclipse') {
-        // Store current phase before switching to eclipse
         const previousPhase = moonPhaseOverride;
-        
-        // Set to Waning Gibbous for better eclipse lighting
         setMoonPhaseOverride(0.75); // Waning Gibbous phase value
         
-        // 🎯 SAFE: Store the previous phase for restoration later with error handling
+        // 🎯 SAFE: Store the previous phase for restoration later
         try {
           if (typeof window !== 'undefined') {
             window.previousEclipsePhase = previousPhase;
           }
         } catch (windowError) {
-          console.warn('Failed to store previous eclipse phase:', windowError);
+          // Silent fail - not critical
         }
       }
       // Restore previous phase when exiting eclipse mode
       else if (anomalyMode !== 'eclipse' && moonAnomalyMode === 'eclipse') {
-        // 🎯 SAFE: Restore the previous phase with error handling
         try {
           if (typeof window !== 'undefined' && window.previousEclipsePhase !== undefined) {
             setMoonPhaseOverride(window.previousEclipsePhase);
             delete window.previousEclipsePhase;
           } else {
-            // Fallback to auto mode if no previous phase stored
             setMoonPhaseOverride(null);
           }
         } catch (windowError) {
-          console.warn('Failed to restore previous eclipse phase:', windowError);
-          // Fallback to auto mode on error
           setMoonPhaseOverride(null);
         }
       }
       
       setMoonAnomalyMode(anomalyMode);
     } catch (error) {
-      console.warn('Mission control anomaly change handler failed:', error);
-      // Safe fallback: just set the anomaly mode without phase management
+      // Silent fail with fallback
       try {
         setMoonAnomalyMode(anomalyMode);
       } catch (setError) {
-        console.warn('Failed to set moon anomaly mode:', setError);
+        // Silent fail
       }
     }
   };
@@ -574,31 +455,9 @@ const MissionAtomic = () => {
     }
   };
   
-  // CSS animation for eclipse nebula effect
-  const eclipseStyles = `
-    @keyframes eclipsePulse {
-      0%, 100% { 
-        opacity: 0.7; 
-        transform: scale(1); 
-      }
-      50% { 
-        opacity: 1; 
-        transform: scale(1.05); 
-      }
-    }
-  `;
-
-  // Inject styles into document head
-  if (typeof document !== 'undefined') {
-    const styleSheet = document.createElement('style');
-    styleSheet.type = 'text/css';
-    styleSheet.innerText = eclipseStyles;
-    document.head.appendChild(styleSheet);
-  }
-
   // Enhanced debug indicator with strategy info - only show if explicitly debug=true
   const debug = typeof window !== 'undefined' && window.lazyDebug && window.lazyDebug.debug === 'true';
-  const isInSafeMode = debug && !isLCPSafe;
+  const isInSafeMode = debug && !contentLoaded;
   const hasBeenInView = backgroundLoaded || backgroundError;
   const strategy = { rootMargin: '100px', priority: 'high', expectedSize: 'large' };
   const performanceTier = 'Tier 1';
@@ -901,40 +760,29 @@ const MissionAtomic = () => {
             className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" 
             style={{ zIndex: 37 }}
           >
-            {LazyMoon ? (
-              <Suspense fallback={
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
-                    <div className="flex flex-col items-center space-y-3">
-                      <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
-                      <div className="text-white/60 text-sm">Loading Moon...</div>
-                    </div>
-                  </div>
-                </div>
-              }>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1.2, ease: "easeInOut" }}
-                  className="w-full h-full"
-                >
-                  <LazyMoon 
-                    className="w-[400px] h-[400px]" 
-                    debugPhase={moonPhaseOverride}
-                    anomalyMode={moonAnomalyMode}
-                  />
-                </motion.div>
-              </Suspense>
-            ) : (
+            <Suspense fallback={
               <div className="w-full h-full flex items-center justify-center">
                 <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
                   <div className="flex flex-col items-center space-y-3">
                     <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
-                    <div className="text-white/60 text-sm">Preparing Moon...</div>
+                    <div className="text-white/60 text-sm">Loading Moon...</div>
                   </div>
                 </div>
               </div>
-            )}
+            }>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.2, ease: "easeInOut" }}
+                className="w-full h-full"
+              >
+                <MissionMoonWithCanvas 
+                  className="w-[400px] h-[400px]" 
+                  debugPhase={moonPhaseOverride}
+                  anomalyMode={moonAnomalyMode}
+                />
+              </motion.div>
+            </Suspense>
           </div>
           
           {/* Text content container - MOVED TO BOTTOM LEFT */}
@@ -1119,12 +967,7 @@ const MissionAtomic = () => {
               <div className="text-lime-300 font-semibold">LCP Protection:</div>
               <div>Content: {contentLoaded ? '✅' : '⏳'}</div>
               <div>Background: {backgroundLoaded ? '✅' : '⏳'}</div>
-              <div>LCP Safe: {isLCPSafe ? '✅' : '⚠️'}</div>
-              {lcpData && (
-                <div className="text-xs text-gray-300">
-                  LCP: {lcpData.element} ({lcpData.startTime?.toFixed(0)}ms)
-                </div>
-              )}
+              <div>LCP Safe: {contentLoaded ? '✅' : '⚠️'}</div>
             </div>
           </div>
         </div>

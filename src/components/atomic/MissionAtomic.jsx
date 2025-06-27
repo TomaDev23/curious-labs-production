@@ -312,13 +312,13 @@ const NeonArcAnimation = ({ children, sceneStep }) => {
     try {
       // 🎯 SAFE: Check if matchMedia exists and is functional
       if (!window.matchMedia || typeof window.matchMedia !== 'function') {
-        return false; // Default to no reduced motion if matchMedia not supported
+        return false; // Safe fallback
       }
       
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       return mediaQuery ? mediaQuery.matches : false;
     } catch (error) {
-      console.warn('matchMedia check failed:', error);
+      console.warn('Motion preference check failed in NeonArcAnimation:', error);
       return false; // Safe fallback
     }
   })();
@@ -493,30 +493,53 @@ const MissionAtomic = () => {
 
   // Add CSS animation for eclipse nebula effect
   useEffect(() => {
-    const eclipseStyles = `
-      @keyframes eclipsePulse {
-        0%, 100% { 
-          opacity: 0.7; 
-          transform: scale(1); 
+    // 🎯 MOBILE SAFE: Wrap style sheet creation in comprehensive error handling
+    try {
+      const eclipseStyles = `
+        @keyframes eclipsePulse {
+          0%, 100% { 
+            opacity: 0.7; 
+            transform: scale(1); 
+          }
+          50% { 
+            opacity: 1; 
+            transform: scale(1.05); 
+          }
         }
-        50% { 
-          opacity: 1; 
-          transform: scale(1.05); 
+      `;
+
+      // 🎯 SAFE: Check if document and head exist
+      if (typeof document === 'undefined' || !document.head) {
+        console.warn('Document or document.head not available - skipping eclipse styles');
+        return;
+      }
+
+      const styleSheet = document.createElement('style');
+      styleSheet.type = 'text/css';
+      styleSheet.innerText = eclipseStyles;
+      
+      // 🎯 SAFE: Wrap appendChild in try-catch
+      try {
+        document.head.appendChild(styleSheet);
+      } catch (appendError) {
+        console.warn('Failed to append eclipse styles:', appendError);
+        return;
+      }
+
+      return () => {
+        // 🎯 SAFE: Cleanup with comprehensive error handling
+        try {
+          if (document.head && document.head.contains(styleSheet)) {
+            document.head.removeChild(styleSheet);
+          }
+        } catch (cleanupError) {
+          console.warn('Failed to cleanup eclipse styles:', cleanupError);
         }
-      }
-    `;
-
-    const styleSheet = document.createElement('style');
-    styleSheet.type = 'text/css';
-    styleSheet.innerText = eclipseStyles;
-    document.head.appendChild(styleSheet);
-
-    return () => {
-      // Cleanup: remove the style sheet when component unmounts
-      if (document.head.contains(styleSheet)) {
-        document.head.removeChild(styleSheet);
-      }
-    };
+      };
+    } catch (error) {
+      console.warn('Eclipse animation setup failed:', error);
+      return;
+    }
   }, []);
 
   // ⭐ Enhanced: Mission Control Board phase and anomaly change handler
@@ -527,37 +550,57 @@ const MissionAtomic = () => {
   
   // ⭐ NEW: Mission Control Board anomaly change handler
   const handleMissionControlAnomalyChange = (anomalyMode) => {
-    // Only log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`🚀 MISSION ATOMIC: Received anomaly change from Mission Control - ${anomalyMode}`);
-    }
-    
-    // Store previous phase when entering eclipse mode
-    if (anomalyMode === 'eclipse' && moonAnomalyMode !== 'eclipse') {
-      // Store current phase before switching to eclipse
-      const previousPhase = moonPhaseOverride;
+    try {
+      // Only log in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🚀 MISSION ATOMIC: Received anomaly change from Mission Control - ${anomalyMode}`);
+      }
       
-      // Set to Waning Gibbous for better eclipse lighting
-      setMoonPhaseOverride(0.75); // Waning Gibbous phase value
+      // Store previous phase when entering eclipse mode
+      if (anomalyMode === 'eclipse' && moonAnomalyMode !== 'eclipse') {
+        // Store current phase before switching to eclipse
+        const previousPhase = moonPhaseOverride;
+        
+        // Set to Waning Gibbous for better eclipse lighting
+        setMoonPhaseOverride(0.75); // Waning Gibbous phase value
+        
+        // 🎯 SAFE: Store the previous phase for restoration later with error handling
+        try {
+          if (typeof window !== 'undefined') {
+            window.previousEclipsePhase = previousPhase;
+          }
+        } catch (windowError) {
+          console.warn('Failed to store previous eclipse phase:', windowError);
+        }
+      }
+      // Restore previous phase when exiting eclipse mode
+      else if (anomalyMode !== 'eclipse' && moonAnomalyMode === 'eclipse') {
+        // 🎯 SAFE: Restore the previous phase with error handling
+        try {
+          if (typeof window !== 'undefined' && window.previousEclipsePhase !== undefined) {
+            setMoonPhaseOverride(window.previousEclipsePhase);
+            delete window.previousEclipsePhase;
+          } else {
+            // Fallback to auto mode if no previous phase stored
+            setMoonPhaseOverride(null);
+          }
+        } catch (windowError) {
+          console.warn('Failed to restore previous eclipse phase:', windowError);
+          // Fallback to auto mode on error
+          setMoonPhaseOverride(null);
+        }
+      }
       
-      // Store the previous phase for restoration later
-      if (typeof window !== 'undefined') {
-        window.previousEclipsePhase = previousPhase;
+      setMoonAnomalyMode(anomalyMode);
+    } catch (error) {
+      console.warn('Mission control anomaly change handler failed:', error);
+      // Safe fallback: just set the anomaly mode without phase management
+      try {
+        setMoonAnomalyMode(anomalyMode);
+      } catch (setError) {
+        console.warn('Failed to set moon anomaly mode:', setError);
       }
     }
-    // Restore previous phase when exiting eclipse mode
-    else if (anomalyMode !== 'eclipse' && moonAnomalyMode === 'eclipse') {
-      // Restore the previous phase
-      if (typeof window !== 'undefined' && window.previousEclipsePhase !== undefined) {
-        setMoonPhaseOverride(window.previousEclipsePhase);
-        delete window.previousEclipsePhase;
-      } else {
-        // Fallback to auto mode if no previous phase stored
-        setMoonPhaseOverride(null);
-      }
-    }
-    
-    setMoonAnomalyMode(anomalyMode);
   };
 
   // Self-contained mission points data

@@ -36,147 +36,41 @@ export const metadata = {
   doc: 'contract_mission_atomic.md'
 };
 
-// 🎯 PROGRESSIVE BACKGROUND LOADING
-const useProgressiveBackground = (componentName = 'MissionAtomic') => {
-  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
-  const [backgroundError, setBackgroundError] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const imageRef = useRef(null);
-  
-  // 🎯 UNIFIED MOBILE DETECTION: Get device capabilities
-  const { isMobile } = useUnifiedMobile();
-  
-  // 🎯 SIMPLIFIED: Get image source based on device type
-  const getImageSrc = useCallback(() => {
-    // 🎯 FIXED: Use correct existing image paths
-    if (isMobile) {
-      return '/assets/images/planets/4k/milkyway_Light.webp';     // 159KB - Mobile/Tablet
-    } else {
-      return '/assets/images/planets/4k/milkyway_Light_big.webp'; // 683KB - Desktop
-    }
-  }, [isMobile]);
-
-  // 🎯 SINGLE CONSOLIDATED EFFECT: All background loading logic in one place
-  useEffect(() => {
-    const imageSrc = getImageSrc();
-    if (!imageSrc) return;
-    
-    setImageUrl(imageSrc);
-    
-    // Preload image function
-    const preloadImage = (src) => {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
-        img.src = src;
-        imageRef.current = img;
-      });
-    };
-    
-    // Delay background loading to ensure content loads first
-    const loadTimer = setTimeout(() => {
-      preloadImage(imageSrc)
-        .then(() => {
-          setBackgroundLoaded(true);
-          setBackgroundError(false);
-        })
-        .catch((error) => {
-          console.warn(`Background image failed to load: ${error.message}`);
-          setBackgroundError(true);
-          setBackgroundLoaded(false);
-        });
-    }, 800);
-    
-    return () => {
-      clearTimeout(loadTimer);
-      if (imageRef.current) {
-        imageRef.current = null;
-      }
-    };
-  }, [getImageSrc]);
-
-  return {
-    backgroundLoaded,
-    backgroundError,
-    imageUrl
-  };
+// 🎯 PROGRESSIVE BACKGROUND LOADING - NO HOOKS, PURE FUNCTIONS ONLY
+const getBackgroundImageSrc = (isMobile) => {
+  // 🎯 FIXED: Use correct existing image paths
+  if (isMobile) {
+    return '/assets/images/planets/4k/milkyway_Light.webp';     // 159KB - Mobile/Tablet
+  } else {
+    return '/assets/images/planets/4k/milkyway_Light_big.webp'; // 683KB - Desktop
+  }
 };
 
 // 🎯 SIMPLE CONTENT-FIRST LOADING - No PerformanceObserver (iOS Safe)
 const useContentFirstLoading = () => {
   const [contentLoaded, setContentLoaded] = useState(false);
   
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setContentLoaded(true);
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, []);
-  
-  return { contentLoaded };
+  // NO useEffect - will be handled in main component
+  return { contentLoaded, setContentLoaded };
 };
 
-// Advanced Neon Arc Animation Component
-const NeonArcAnimation = ({ children, sceneStep }) => {
+// Advanced Neon Arc Animation Component - NO EFFECTS
+const NeonArcAnimation = ({ children, sceneStep, prefersReducedMotion = false }) => {
   const controls = useAnimation();
   
-  // 🎯 MOBILE SAFE: Check reduced motion preference with comprehensive error handling
-  const prefersReducedMotion = (() => {
-    if (typeof window === 'undefined') return false;
-    
-    try {
-      // 🎯 SAFE: Check if matchMedia exists and is functional
-      if (!window.matchMedia || typeof window.matchMedia !== 'function') {
-        return false; // Safe fallback
-      }
-      
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      return mediaQuery ? mediaQuery.matches : false;
-    } catch (error) {
-      console.warn('Motion preference check failed in NeonArcAnimation:', error);
-      return false; // Safe fallback
-    }
-  })();
-
-  // Trigger neon glow animation
-  useEffect(() => {
-    // Always show base neon effect with higher opacity
+  // NO useEffect - animations will be handled in main component
+  // Set base neon effect immediately
+  React.useLayoutEffect(() => {
     controls.set({ 
-      opacity: 1.0, // Increased from 0.8 to 1.0
+      opacity: 1.0,
       textShadow: '0 0 8px rgba(0, 255, 255, 0.6), 0 0 16px rgba(0, 255, 255, 0.3)' 
     });
-
-    // Skip advanced effects only if reduced motion is preferred
-    if (prefersReducedMotion) {
-      return;
-    }
-    
-    const glowInterval = setInterval(() => {
-      // Gentle neon flicker and glow with brighter range
-      controls.start({
-        opacity: [1.0, 1.3, 0.9, 1.4, 1.0], // Increased from [0.8, 1.1, 0.7, 1.2, 0.8]
-        textShadow: [
-          '0 0 8px rgba(0, 255, 255, 0.6), 0 0 16px rgba(0, 255, 255, 0.3)',
-          '0 0 18px rgba(0, 255, 255, 1), 0 0 32px rgba(255, 105, 180, 0.6), 0 0 48px rgba(255, 255, 255, 0.3)',
-          '0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.4)',
-          '0 0 22px rgba(0, 255, 255, 1.1), 0 0 38px rgba(255, 105, 180, 0.8), 0 0 56px rgba(255, 255, 255, 0.4)',
-          '0 0 8px rgba(0, 255, 255, 0.6), 0 0 16px rgba(0, 255, 255, 0.3)',
-        ],
-        transition: { duration: 0.4, times: [0, 0.15, 0.35, 0.65, 1], ease: 'easeInOut' },
-      });
-    }, 1500 + Math.random() * 1000); // Random interval 1.5-2.5s
-
-    return () => {
-      clearInterval(glowInterval);
-    };
-  }, [controls, prefersReducedMotion]);
+  }, [controls]);
 
   return (
     <div className="relative">
       <motion.div
-        className="text-white/80 text-xs font-mono" // Increased from text-white/50 to text-white/80
+        className="text-white/80 text-xs font-mono"
         style={{ 
           zIndex: 155,
           willChange: 'opacity, text-shadow',
@@ -203,26 +97,69 @@ const MissionAtomic = () => {
   const [moonPhaseOverride, setMoonPhaseOverride] = useState(null);
   const [moonAnomalyMode, setMoonAnomalyMode] = useState(null);
   
+  // 🎯 BACKGROUND LOADING STATE - Moved to main component
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+  const [backgroundError, setBackgroundError] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
+  const [contentLoaded, setContentLoaded] = useState(false);
+  
   // 🌙 STATIC MOON: Simple ref without conflicting observer
   const moonRef = useRef(null);
-  
-  // 🎯 PROGRESSIVE BACKGROUND LOADING
-  const { backgroundLoaded, backgroundError, imageUrl } = useProgressiveBackground('MissionAtomic');
+  const imageRef = useRef(null);
   const containerRef = useRef(null);
-  
-  // 🎯 SIMPLE CONTENT-FIRST LOADING - No PerformanceObserver (iOS Safe)
-  const { contentLoaded } = useContentFirstLoading();
   
   const controls = useAnimation();
   const moonControls = useAnimation();
   
-  // ✅ FIXED: SINGLE CONSOLIDATED EFFECT - All initialization logic in one place
+  // ✅ SINGLE MEGA-CONSOLIDATED EFFECT - Everything in one place
   useEffect(() => {
     if (!isHydrated) return;
     
     let cleanupFunctions = [];
     
-    // 1. Motion Preference Detection
+    // 1. Content Loading Timer
+    const contentTimer = setTimeout(() => {
+      setContentLoaded(true);
+    }, 100);
+    cleanupFunctions.push(() => clearTimeout(contentTimer));
+    
+    // 2. Background Image Loading
+    const imageSrc = getBackgroundImageSrc(isMobile);
+    if (imageSrc) {
+      setImageUrl(imageSrc);
+      
+      const preloadImage = (src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+          img.src = src;
+          imageRef.current = img;
+        });
+      };
+      
+      const loadTimer = setTimeout(() => {
+        preloadImage(imageSrc)
+          .then(() => {
+            setBackgroundLoaded(true);
+            setBackgroundError(false);
+          })
+          .catch((error) => {
+            console.warn(`Background image failed to load: ${error.message}`);
+            setBackgroundError(true);
+            setBackgroundLoaded(false);
+          });
+      }, 800);
+      
+      cleanupFunctions.push(() => {
+        clearTimeout(loadTimer);
+        if (imageRef.current) {
+          imageRef.current = null;
+        }
+      });
+    }
+    
+    // 3. Motion Preference Detection
     const setupMotionPreference = () => {
       try {
         if (!window.matchMedia || typeof window.matchMedia !== 'function') {
@@ -255,7 +192,7 @@ const MissionAtomic = () => {
       }
     };
     
-    // 2. Eclipse Mode Setup
+    // 4. Eclipse Mode Setup
     const setupEclipseMode = () => {
       setUseSimpleEclipse(isMobile && prefersReducedMotion);
       

@@ -63,7 +63,7 @@ const HeroAtomic = React.memo(() => {
   
   // Memoize subtext to prevent recreation
   const subText = React.useMemo(() => 
-    "We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.",
+    "We're1 building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.",
     []
   );
 
@@ -151,10 +151,10 @@ const HeroAtomic = React.memo(() => {
   const optimizedSubtitleText = React.useMemo(() => {
     if (isMobile) {
       // Mobile: Shorter, punchier text to reduce rendering size
-      return "Building next-generation AI experiences. Join us in shaping tomorrow's web.";
+      return "Building1 next-generation AI experiences. Join us in shaping tomorrow's web.";
     }
     // Desktop: Keep full text
-    return "We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.";
+    return "We're test building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.";
   }, [isMobile]);
 
   // Optimized planet positioning based on device

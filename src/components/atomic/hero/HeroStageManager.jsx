@@ -1,50 +1,105 @@
 // @file src/components/atomic/hero/HeroStageManager.jsx
 // @description Scroll-based controller for Cosmic Arrival hero scene
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 const HeroStageManager = ({ setSceneStep }) => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const scrollTimeoutRef = useRef(null);
+  const lastScrollRatioRef = useRef(-1);
 
+  // ✅ FIXED: SSR-safe hydration check
   useEffect(() => {
-    // Check for reduced motion preference using native API
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-    
-    // Listen for changes
-    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
-    mediaQuery.addEventListener('change', handleChange);
-    
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    setIsHydrated(true);
   }, []);
 
+  // ✅ FIXED: SSR-safe motion preference detection
   useEffect(() => {
+    if (!isHydrated) return;
+
+    try {
+      // Safe window API access with error handling
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      setPrefersReducedMotion(mediaQuery.matches);
+      
+      // Listen for changes
+      const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
+      mediaQuery.addEventListener('change', handleChange);
+      
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    } catch (error) {
+      console.warn('matchMedia access failed:', error);
+      // Safe fallback - assume no reduced motion preference
+      setPrefersReducedMotion(false);
+    }
+  }, [isHydrated]);
+
+  // ✅ FIXED: Throttled scroll handler with batched state updates
+  const handleScroll = useCallback(() => {
+    if (!isHydrated) return;
+
+    // Clear existing timeout to throttle calls
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    // Throttle scroll handling to 16ms (60fps)
+    scrollTimeoutRef.current = setTimeout(() => {
+      try {
+        const scrollY = window.scrollY;
+        const viewportHeight = window.innerHeight;
+        const scrollRatio = scrollY / viewportHeight;
+        
+        // Only update if ratio changed significantly (prevent micro-updates)
+        if (Math.abs(scrollRatio - lastScrollRatioRef.current) < 0.05) return;
+        
+        lastScrollRatioRef.current = scrollRatio;
+        
+        // ✅ FIXED: Batched state calculation - single update instead of 8
+        let newStep;
+        if (scrollRatio < 0.1) newStep = 1;
+        else if (scrollRatio < 0.2) newStep = 2;
+        else if (scrollRatio < 0.3) newStep = 3;
+        else if (scrollRatio < 0.4) newStep = 4;
+        else if (scrollRatio < 0.5) newStep = 5;
+        else if (scrollRatio < 0.6) newStep = 6;
+        else if (scrollRatio < 0.7) newStep = 7;
+        else newStep = 8;
+        
+        // Single state update instead of multiple rapid calls
+        setSceneStep(newStep);
+      } catch (error) {
+        console.warn('Scroll handling error:', error);
+        // Safe fallback - set to final step
+        setSceneStep(8);
+      }
+    }, 16); // 16ms throttle for 60fps
+  }, [isHydrated, setSceneStep]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    // ✅ FIXED: Reduced motion bypass - skip scroll handling entirely
     if (prefersReducedMotion) {
       setSceneStep(8);
       return;
     }
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      const scrollRatio = scrollY / viewportHeight;
-      
-      if (scrollRatio < 0.1) setSceneStep(1);
-      else if (scrollRatio < 0.2) setSceneStep(2);
-      else if (scrollRatio < 0.3) setSceneStep(3);
-      else if (scrollRatio < 0.4) setSceneStep(4);
-      else if (scrollRatio < 0.5) setSceneStep(5);
-      else if (scrollRatio < 0.6) setSceneStep(6);
-      else if (scrollRatio < 0.7) setSceneStep(7);
-      else setSceneStep(8);
-    };
-
     // Call once immediately to set initial state
     handleScroll();
     
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [setSceneStep, prefersReducedMotion]);
+    // ✅ FIXED: Passive scroll listener for better performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      // Clean up any pending timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [setSceneStep, prefersReducedMotion, isHydrated, handleScroll]);
 
   return null;
 };

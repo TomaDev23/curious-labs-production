@@ -114,71 +114,148 @@ export function useDeviceCapabilities() {
     if (typeof window === 'undefined') return;
     
     const detectCapabilities = () => {
-      // Check for reduced motion preference
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      
-      // Get device info
-      const memory = navigator.deviceMemory || 8;
-      const connection = navigator.connection?.effectiveType || '4g';
-      const hardwareConcurrency = navigator.hardwareConcurrency || 4;
-      
-      // Check WebGL support for 3D capability
-      let canUse3D = true;
       try {
-        // DISABLED: WebGL context creation conflicts with 3D system
-        // const canvas = document.createElement('canvas');
-        // const webgl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-        // canUse3D = !!webgl;
-        
-        // SAFE: Use feature detection without creating WebGL context
-        const canvas = document.createElement('canvas');
-        const context2d = canvas.getContext('2d');
-        
-        // Check for basic canvas support and WebGL availability without creating context
-        canUse3D = !!(context2d && 
-                     canvas.getContext && 
-                     (window.WebGLRenderingContext || window.WebGL2RenderingContext));
-        
-        // Clean up 2D context
-        if (context2d) {
-          canvas.width = 1;
-          canvas.height = 1;
+        // 🎯 MOBILE SAFE: Check for reduced motion preference with comprehensive error handling
+        let prefersReducedMotion = false;
+        try {
+          if (window.matchMedia && typeof window.matchMedia === 'function') {
+            const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+            prefersReducedMotion = mediaQuery ? mediaQuery.matches : false;
+          }
+        } catch (error) {
+          console.warn('matchMedia check failed:', error);
+          prefersReducedMotion = false;
         }
-      } catch (e) {
-        canUse3D = false;
+        
+        // 🎯 MOBILE SAFE: Get device info with comprehensive error handling
+        let memory = 8; // Safe fallback
+        let connection = '4g'; // Safe fallback
+        let hardwareConcurrency = 4; // Safe fallback
+        
+        try {
+          // 🎯 SAFE: Check navigator.deviceMemory with iOS Safari compatibility
+          if (navigator && typeof navigator.deviceMemory === 'number') {
+            memory = navigator.deviceMemory;
+          }
+        } catch (error) {
+          console.warn('deviceMemory access failed:', error);
+        }
+        
+        try {
+          // 🎯 SAFE: Check navigator.connection with iOS Safari compatibility
+          if (navigator && navigator.connection && navigator.connection.effectiveType) {
+            connection = navigator.connection.effectiveType;
+          }
+        } catch (error) {
+          console.warn('connection access failed:', error);
+        }
+        
+        try {
+          // 🎯 SAFE: Check navigator.hardwareConcurrency with iOS Safari compatibility
+          if (navigator && typeof navigator.hardwareConcurrency === 'number') {
+            hardwareConcurrency = navigator.hardwareConcurrency;
+          }
+        } catch (error) {
+          console.warn('hardwareConcurrency access failed:', error);
+        }
+        
+        // Check WebGL support for 3D capability
+        let canUse3D = true;
+        try {
+          // DISABLED: WebGL context creation conflicts with 3D system
+          // const canvas = document.createElement('canvas');
+          // const webgl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+          // canUse3D = !!webgl;
+          
+          // SAFE: Use feature detection without creating WebGL context
+          const canvas = document.createElement('canvas');
+          const context2d = canvas.getContext('2d');
+          
+          // Check for basic canvas support and WebGL availability without creating context
+          canUse3D = !!(context2d && 
+                       canvas.getContext && 
+                       (window.WebGLRenderingContext || window.WebGL2RenderingContext));
+          
+          // Clean up 2D context
+          if (context2d) {
+            canvas.width = 1;
+            canvas.height = 1;
+          }
+        } catch (e) {
+          console.warn('WebGL detection failed:', e);
+          canUse3D = false;
+        }
+        
+        // Determine performance tier
+        let performanceTier = 'high';
+        if (prefersReducedMotion) {
+          performanceTier = 'minimal';
+        } else if (memory <= 2 || connection === 'slow-2g') {
+          performanceTier = 'minimal';
+        } else if (memory <= 4 || connection === '2g' || hardwareConcurrency < 4) {
+          performanceTier = 'low';
+        } else if (memory <= 6 || connection === '3g') {
+          performanceTier = 'medium';
+        }
+        
+        setCapabilities({
+          prefersReducedMotion,
+          performanceTier,
+          canUse3D: canUse3D && !prefersReducedMotion,
+          memory,
+          connection
+        });
+      } catch (error) {
+        console.warn('Device capabilities detection failed:', error);
+        // 🎯 SAFE: Fallback to safe defaults on any error
+        setCapabilities({
+          prefersReducedMotion: false,
+          performanceTier: 'medium',
+          canUse3D: false,
+          memory: 4,
+          connection: '4g'
+        });
       }
-      
-      // Determine performance tier
-      let performanceTier = 'high';
-      if (prefersReducedMotion) {
-        performanceTier = 'minimal';
-      } else if (memory <= 2 || connection === 'slow-2g') {
-        performanceTier = 'minimal';
-      } else if (memory <= 4 || connection === '2g' || hardwareConcurrency < 4) {
-        performanceTier = 'low';
-      } else if (memory <= 6 || connection === '3g') {
-        performanceTier = 'medium';
-      }
-      
-      setCapabilities({
-        prefersReducedMotion,
-        performanceTier,
-        canUse3D: canUse3D && !prefersReducedMotion,
-        memory,
-        connection
-      });
     };
     
     detectCapabilities();
     
-    // Listen for motion preference changes
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handleChange = () => detectCapabilities();
-    
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
+    // 🎯 MOBILE SAFE: Listen for motion preference changes with comprehensive error handling
+    try {
+      if (window.matchMedia && typeof window.matchMedia === 'function') {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (mediaQuery) {
+          const handleChange = () => {
+            try {
+              detectCapabilities();
+            } catch (error) {
+              console.warn('Motion preference change detection failed:', error);
+            }
+          };
+          
+          // 🎯 SAFE: Wrap addEventListener in try-catch
+          try {
+            if (mediaQuery.addEventListener) {
+              mediaQuery.addEventListener('change', handleChange);
+              return () => {
+                try {
+                  mediaQuery.removeEventListener('change', handleChange);
+                } catch (error) {
+                  console.warn('Motion preference cleanup failed:', error);
+                }
+              };
+            }
+          } catch (error) {
+            console.warn('Motion preference event listener failed:', error);
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Motion preference setup failed:', error);
     }
+    
+    // No cleanup needed if event listener setup failed
+    return () => {};
   }, []);
 
   return capabilities;

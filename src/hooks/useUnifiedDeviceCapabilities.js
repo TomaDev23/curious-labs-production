@@ -75,13 +75,41 @@ export const useUnifiedDeviceCapabilities = () => {
         performanceLevel: 'minimal',
         canHandle3D: false,
         shouldUse3D: false,
-        // Fallback values for when WebGL is disabled
+        // 🎯 MOBILE SAFE: Fallback values with comprehensive error handling
         webglVersion: 1,
-        hasEnoughMemory: navigator.deviceMemory ? navigator.deviceMemory >= 4 : true,
+        hasEnoughMemory: (() => {
+          try {
+            return navigator && typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory >= 4 : true;
+          } catch (error) {
+            console.warn('deviceMemory fallback check failed:', error);
+            return true;
+          }
+        })(),
         isSlowNetwork: false,
-        isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-        isTablet: /iPad|Android(?=.*\b(tablet|large))/i.test(navigator.userAgent),
-        isDesktop: !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+        isMobile: (() => {
+          try {
+            return navigator && navigator.userAgent ? /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) : false;
+          } catch (error) {
+            console.warn('userAgent mobile check failed:', error);
+            return false;
+          }
+        })(),
+        isTablet: (() => {
+          try {
+            return navigator && navigator.userAgent ? /iPad|Android(?=.*\b(tablet|large))/i.test(navigator.userAgent) : false;
+          } catch (error) {
+            console.warn('userAgent tablet check failed:', error);
+            return false;
+          }
+        })(),
+        isDesktop: (() => {
+          try {
+            return navigator && navigator.userAgent ? !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) : true;
+          } catch (error) {
+            console.warn('userAgent desktop check failed:', error);
+            return true;
+          }
+        })(),
         maxTextureSize: 0,
         maxTextures: 0,
         vendor: 'Unknown',
@@ -89,18 +117,45 @@ export const useUnifiedDeviceCapabilities = () => {
       };
     }
 
-    // Memory check
-    const hasEnoughMemory = !navigator.deviceMemory || navigator.deviceMemory >= 4;
+    // 🎯 MOBILE SAFE: Memory check with comprehensive error handling
+    let hasEnoughMemory = true;
+    try {
+      if (navigator && typeof navigator.deviceMemory === 'number') {
+        hasEnoughMemory = navigator.deviceMemory >= 4;
+      }
+    } catch (error) {
+      console.warn('deviceMemory check failed:', error);
+      hasEnoughMemory = true; // Safe fallback
+    }
     
-    // Network check
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    const isSlowNetwork = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
+    // 🎯 MOBILE SAFE: Network check with comprehensive error handling
+    let isSlowNetwork = false;
+    try {
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (connection && connection.effectiveType) {
+        isSlowNetwork = connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g';
+      }
+    } catch (error) {
+      console.warn('connection check failed:', error);
+      isSlowNetwork = false; // Safe fallback
+    }
     
-    // Device class detection
-    const userAgent = navigator.userAgent;
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-    const isTablet = /iPad|Android(?=.*\b(tablet|large))/i.test(userAgent);
-    const isDesktop = !isMobile && !isTablet;
+    // 🎯 MOBILE SAFE: Device class detection with comprehensive error handling
+    let isMobile = false;
+    let isTablet = false;
+    let isDesktop = true;
+    
+    try {
+      if (navigator && navigator.userAgent) {
+        const userAgent = navigator.userAgent;
+        isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        isTablet = /iPad|Android(?=.*\b(tablet|large))/i.test(userAgent);
+        isDesktop = !isMobile && !isTablet;
+      }
+    } catch (error) {
+      console.warn('userAgent detection failed:', error);
+      // Keep safe defaults: isMobile = false, isTablet = false, isDesktop = true
+    }
     
     // Performance level calculation
     let performanceLevel = 'high';
@@ -125,7 +180,18 @@ export const useUnifiedDeviceCapabilities = () => {
 
     const shouldUse3D = canHandle3D && 
                        performanceLevel !== 'minimal' && 
-                       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                       (() => {
+                         try {
+                           if (window.matchMedia && typeof window.matchMedia === 'function') {
+                             const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+                             return mediaQuery ? !mediaQuery.matches : true;
+                           }
+                           return true; // Safe fallback
+                         } catch (error) {
+                           console.warn('matchMedia shouldUse3D check failed:', error);
+                           return true; // Safe fallback
+                         }
+                       })();
 
     return {
       webglSupported,
@@ -145,42 +211,88 @@ export const useUnifiedDeviceCapabilities = () => {
     };
   }, [webglSupported, capabilities]);
 
-  // Device breakpoint detection (no WebGL context needed)
+  // 🎯 MOBILE SAFE: Device breakpoint detection with comprehensive error handling
   const breakpoint = useMemo(() => {
     if (typeof window === 'undefined') return 'md';
     
-    const width = window.innerWidth;
-    if (width < 640) return 'sm';
-    if (width < 768) return 'md';
-    if (width < 1024) return 'lg';
-    if (width < 1280) return 'xl';
-    return '2xl';
+    try {
+      const width = window.innerWidth || 1024; // Safe fallback
+      if (width < 640) return 'sm';
+      if (width < 768) return 'md';
+      if (width < 1024) return 'lg';
+      if (width < 1280) return 'xl';
+      return '2xl';
+    } catch (error) {
+      console.warn('window.innerWidth access failed:', error);
+      return 'md'; // Safe fallback
+    }
   }, []);
 
-  // Update device profile when window resizes
+  // 🎯 MOBILE SAFE: Update device profile when window resizes with comprehensive error handling
   useEffect(() => {
     const updateProfile = () => {
-      setDeviceProfile({
-        ...performanceProfile,
-        breakpoint,
-        isLowPerf: performanceProfile.performanceLevel === 'minimal' || 
-                   performanceProfile.performanceLevel === 'low' ||
-                   performanceProfile.isSlowNetwork,
-        viewport: {
-          width: window.innerWidth,
-          height: window.innerHeight
-        },
-        timestamp: Date.now()
-      });
+      try {
+        setDeviceProfile({
+          ...performanceProfile,
+          breakpoint,
+          isLowPerf: performanceProfile.performanceLevel === 'minimal' || 
+                     performanceProfile.performanceLevel === 'low' ||
+                     performanceProfile.isSlowNetwork,
+          viewport: {
+            width: (typeof window !== 'undefined' && window.innerWidth) || 1024,
+            height: (typeof window !== 'undefined' && window.innerHeight) || 768
+          },
+          timestamp: Date.now()
+        });
+      } catch (error) {
+        console.warn('Device profile update failed:', error);
+        // Set minimal safe profile on error
+        setDeviceProfile({
+          webglSupported: false,
+          performanceLevel: 'minimal',
+          canHandle3D: false,
+          shouldUse3D: false,
+          isMobile: false,
+          isTablet: false,
+          isDesktop: true,
+          breakpoint: 'md',
+          isLowPerf: true,
+          viewport: { width: 1024, height: 768 },
+          timestamp: Date.now()
+        });
+      }
     };
 
     updateProfile();
 
-    const handleResize = () => updateProfile();
-    window.addEventListener('resize', handleResize);
+    // 🎯 MOBILE SAFE: Handle resize events with comprehensive error handling
+    const handleResize = () => {
+      try {
+        updateProfile();
+      } catch (error) {
+        console.warn('Resize handler failed:', error);
+      }
+    };
     
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    try {
+      if (typeof window !== 'undefined' && window.addEventListener) {
+        window.addEventListener('resize', handleResize);
+        
+        return () => {
+          try {
+            window.removeEventListener('resize', handleResize);
+          } catch (error) {
+            console.warn('Resize cleanup failed:', error);
+          }
+        };
+      }
+    } catch (error) {
+      console.warn('Resize event listener setup failed:', error);
+    }
+    
+    // No cleanup needed if event listener setup failed
+    return () => {};
+  }, [performanceProfile, breakpoint]);
 
   return deviceProfile;
 };

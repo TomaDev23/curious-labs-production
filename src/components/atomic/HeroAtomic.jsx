@@ -271,7 +271,29 @@ const HeroAtomic = React.memo(() => {
                     alpha: true,
                     powerPreference: 'high-performance'
                   }}
-                  dpr={performanceTier === 'minimal' ? 1 : Math.min(window.devicePixelRatio, 2)}
+                  dpr={(() => {
+                    // 🎯 MOBILE SAFE: Fix iOS Safari crash with comprehensive error handling
+                    if (performanceTier === 'minimal') return 1;
+                    
+                    try {
+                      // 🎯 SAFE: Check if window and devicePixelRatio exist
+                      if (typeof window === 'undefined' || typeof window.devicePixelRatio === 'undefined') {
+                        return 1; // Safe fallback for SSR or unsupported browsers
+                      }
+                      
+                      const dpr = window.devicePixelRatio;
+                      
+                      // 🎯 SAFE: Validate devicePixelRatio value
+                      if (typeof dpr !== 'number' || isNaN(dpr) || dpr <= 0) {
+                        return 1; // Safe fallback for invalid values
+                      }
+                      
+                      return Math.min(dpr, 2); // Cap at 2x for performance
+                    } catch (error) {
+                      console.warn('devicePixelRatio access failed:', error);
+                      return 1; // Safe fallback on any error
+                    }
+                  })()}
                 >
                   <HeroEarth />
                 </CanvasWrapper>

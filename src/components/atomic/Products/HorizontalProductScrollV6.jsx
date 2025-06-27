@@ -211,24 +211,32 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
     }
   }, [touchStart, currentPage, isMobile, isTransitioning, handlePageChange]);
 
-  // Event listeners setup
+  // Event listeners setup with proper cleanup
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
-
-    // Add passive: false for preventDefault to work
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd, { passive: true });
-
+    if (!container || !isScrollLocked) return;
+    
+    // 🎯 MOBILE CRASH FIX: Proper event listener cleanup
+    const wheelHandler = (e) => handleWheel(e);
+    const touchStartHandler = (e) => handleTouchStart(e);
+    const touchMoveHandler = (e) => handleTouchMove(e);
+    const touchEndHandler = (e) => handleTouchEnd(e);
+    
+    container.addEventListener('wheel', wheelHandler, { passive: false });
+    container.addEventListener('touchstart', touchStartHandler, { passive: true });
+    container.addEventListener('touchmove', touchMoveHandler, { passive: false });
+    container.addEventListener('touchend', touchEndHandler, { passive: true });
+    
     return () => {
-      container.removeEventListener('wheel', handleWheel);
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchmove', handleTouchMove);
-      container.removeEventListener('touchend', handleTouchEnd);
+      // 🎯 CRITICAL: Always cleanup ALL event listeners to prevent memory leaks
+      if (container) {
+        container.removeEventListener('wheel', wheelHandler);
+        container.removeEventListener('touchstart', touchStartHandler);
+        container.removeEventListener('touchmove', touchMoveHandler);
+        container.removeEventListener('touchend', touchEndHandler);
+      }
     };
-  }, [handleWheel, handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [handleWheel, handleTouchStart, handleTouchMove, handleTouchEnd, isScrollLocked]);
 
   const handleScrollRelease = useCallback(() => {
     // COMMENTED OUT - no longer needed for 2-page system

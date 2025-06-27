@@ -36,9 +36,26 @@ const CanvasWrapper = ({ children, fallback = null, ...canvasProps }) => {
       return;
     }
     
-    // WebGL Check
+    // 🎯 MOBILE CRASH FIX: iOS Safari WebGL context safety
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    // WebGL Check with mobile safety
     const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl');
+    let gl;
+    try {
+      gl = canvas.getContext('webgl', { 
+        failIfMajorPerformanceCaveat: isMobile, // Fail gracefully on low-end mobile
+        antialias: false, // Disable on mobile for stability
+        alpha: true,
+        depth: false, // Reduce memory usage
+        stencil: false,
+        preserveDrawingBuffer: false
+      });
+    } catch (error) {
+      console.warn('WebGL context creation failed:', error);
+      return;
+    }
+    
     if (!gl) {
       console.log('WebGL not supported, using fallback');
       return;

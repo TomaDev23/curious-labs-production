@@ -36,13 +36,11 @@ export const metadata = {
   doc: 'contract_mission_atomic.md'
 };
 
-// 🎯 PROGRESSIVE BACKGROUND LOADING HOOK
+// 🎯 PROGRESSIVE BACKGROUND LOADING HOOK - FIXED: Remove conflicting observer
 const useProgressiveBackground = (componentName = 'MissionAtomic') => {
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
   const [backgroundError, setBackgroundError] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-  const [shouldStartLoading, setShouldStartLoading] = useState(false);
-  const observerRef = useRef(null);
   const imageRef = useRef(null);
   
   // 🎯 SAFE DEVICE CAPABILITIES - Mobile crash fix
@@ -107,78 +105,17 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
     });
   }, [componentName]);
 
-  // Initialize intersection observer for smart loading
+  // 🚀 FIXED: Use simple timer-based loading instead of conflicting observer
   useEffect(() => {
     const imageSrc = getImageSrc();
     if (!imageSrc) return;
     
     setImageUrl(imageSrc);
     
-    // 🎯 MOBILE SAFE: Create intersection observer with comprehensive error handling
-    try {
-      // 🎯 SAFE: Check if IntersectionObserver exists and is functional
-      if (typeof window === 'undefined' || !window.IntersectionObserver || typeof window.IntersectionObserver !== 'function') {
-        console.warn('IntersectionObserver not supported - using immediate loading');
-        // Fallback: Load immediately if IntersectionObserver not supported
-        setTimeout(() => {
-          setShouldStartLoading(true);
-        }, 300);
-        return;
-      }
-      
-      observerRef.current = new IntersectionObserver(
-        ([entry]) => {
-          try {
-            if (entry && entry.isIntersecting) {
-              // 🎯 LCP PROTECTION: Delay background loading to ensure content loads first
-              setTimeout(() => {
-                setShouldStartLoading(true);
-              }, 300); // 300ms delay ensures text content becomes LCP
-              
-              // Stop observing after first trigger
-              if (observerRef.current) {
-                observerRef.current.disconnect();
-              }
-            }
-          } catch (entryError) {
-            console.warn('IntersectionObserver entry processing failed:', entryError);
-            // Fallback: Load immediately on error
-            setShouldStartLoading(true);
-          }
-        },
-        { 
-          rootMargin: '100px',  // Start loading 100px before visible
-          threshold: 0.01 
-        }
-      );
-    } catch (error) {
-      console.warn('IntersectionObserver setup failed:', error);
-      // Fallback: Load immediately if observer setup fails
-      setTimeout(() => {
-        setShouldStartLoading(true);
-      }, 300);
-      return;
-    }
-    
-    return () => {
-      try {
-        if (observerRef.current) {
-          observerRef.current.disconnect();
-        }
-        // Cleanup image reference
-        if (imageRef.current) {
-          imageRef.current = null;
-        }
-      } catch (error) {
-        console.warn('IntersectionObserver cleanup failed:', error);
-      }
-    };
-  }, [getImageSrc]);
-
-  // Actual image loading (only after LCP protection delay)
-  useEffect(() => {
-    if (shouldStartLoading && imageUrl) {
-      preloadImage(imageUrl)
+    // 🎯 LCP PROTECTION: Delay background loading to ensure content loads first
+    // Use timer instead of intersection observer to avoid conflicts
+    const loadTimer = setTimeout(() => {
+      preloadImage(imageSrc)
         .then(() => {
           setBackgroundLoaded(true);
           setBackgroundError(false);
@@ -188,19 +125,21 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
           setBackgroundError(true);
           setBackgroundLoaded(false);
         });
-    }
-  }, [shouldStartLoading, imageUrl, preloadImage]);
+    }, 800); // 800ms delay ensures text content becomes LCP and SmartLazySection has loaded
+    
+    return () => {
+      clearTimeout(loadTimer);
+      // Cleanup image reference
+      if (imageRef.current) {
+        imageRef.current = null;
+      }
+    };
+  }, [getImageSrc, preloadImage]);
 
   return {
     backgroundLoaded,
     backgroundError,
-    imageUrl,
-    observerRef: observerRef.current,
-    attachObserver: (element) => {
-      if (element && observerRef.current) {
-        observerRef.current.observe(element);
-      }
-    }
+    imageUrl
   };
 };
 
@@ -393,7 +332,7 @@ const MissionAtomic = () => {
   );
   
   // 🎯 PROGRESSIVE BACKGROUND LOADING
-  const { backgroundLoaded, backgroundError, imageUrl, attachObserver } = useProgressiveBackground('MissionAtomic');
+  const { backgroundLoaded, backgroundError, imageUrl } = useProgressiveBackground('MissionAtomic');
   const containerRef = useRef(null);
   
   // 🎯 LCP PROTECTION - Ensure content loads first
@@ -450,46 +389,21 @@ const MissionAtomic = () => {
     }
   };
   
-  // Check device performance capabilities
-  const checkDeviceCapabilities = () => {
-    // 🎯 HYDRATION SAFETY: Only run after hydration
-    if (!isHydrated) return;
-    
-    // 🎯 MOBILE SAFE: Simplified device check without unsafe APIs
-    setUseSimpleEclipse(isMobile && prefersReducedMotion);
-    
-    // Check for URL param for testing both versions
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('forceEclipse') === 'true') {
-        setUseSimpleEclipse(true);
-      }
-    }
-
-    // 🎯 REMOVED: Unsafe navigator API calls that crash on iOS
-    return true; // Always assume capable device, let CSS handle optimization
-  };
+  // 🚀 REMOVED: Redundant device capability check function to eliminate 2-second crash
+  // Device capabilities are now handled by unified mobile detection hook
   
   useEffect(() => {
-    // 🎯 UNIFIED MOBILE DETECTION: Removed checkMobile calls
+    // 🎯 UNIFIED MOBILE DETECTION: Simplified initialization
     const cleanupMotion = checkMotionPreference();
     
-    // Attach intersection observer for background loading
-    if (containerRef.current) {
-      attachObserver(containerRef.current);
-    }
+    // 🎯 SIMPLIFIED: Set eclipse mode based on unified mobile detection
+    // No need for complex device capability checks
+    setUseSimpleEclipse(isMobile && prefersReducedMotion);
     
     return () => {
       if (cleanupMotion) cleanupMotion();
     };
-  }, [attachObserver]);
-  
-  useEffect(() => {
-    // 🎯 HYDRATION SAFETY: Only run device capabilities check after hydration
-    if (isHydrated) {
-      checkDeviceCapabilities();
-    }
-  }, [isMobile, prefersReducedMotion, isHydrated]);
+  }, [isMobile, prefersReducedMotion]); // 🎯 FIXED: Removed attachObserver dependency that caused conflicts
 
   // Add CSS animation for eclipse nebula effect
   useEffect(() => {

@@ -661,19 +661,11 @@ const MissionAtomic = () => {
             </div>
           )}
           
-          <div 
-            ref={moonRef}
-            className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" 
-            style={{ zIndex: 37 }}
-          >
+          {/* Moon Container - Centered on left side with PHASE 2 SSR protection */}
+          <div className="absolute left-[calc(20%-200px)] top-[calc(50%-200px)] w-[400px] h-[400px] z-10">
             <Suspense fallback={
               <div className="w-full h-full flex items-center justify-center">
-                <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="w-8 h-8 border-2 border-t-transparent border-white/30 rounded-full animate-spin"></div>
-                    <div className="text-white/60 text-sm">Loading Moon...</div>
-                  </div>
-                </div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white/30"></div>
               </div>
             }>
               <motion.div
@@ -682,11 +674,20 @@ const MissionAtomic = () => {
                 transition={{ duration: 1.2, ease: "easeInOut" }}
                 className="w-full h-full"
               >
-                <MissionMoonWithCanvas 
-                  className="w-[400px] h-[400px]" 
-                  debugPhase={moonPhaseOverride}
-                  anomalyMode={moonAnomalyMode}
-                />
+                {/* ✅ PHASE 2: SSR-safe canvas loading with hydration guard */}
+                {isHydrated && typeof window !== 'undefined' && (
+                  <MissionMoonWithCanvas 
+                    className="w-[400px] h-[400px]" 
+                    debugPhase={moonPhaseOverride}
+                    anomalyMode={moonAnomalyMode}
+                  />
+                )}
+                {/* ✅ PHASE 2: SSR fallback - show placeholder during hydration */}
+                {(!isHydrated || typeof window === 'undefined') && (
+                  <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-full">
+                    <div className="text-white/40 text-sm">Loading...</div>
+                  </div>
+                )}
               </motion.div>
             </Suspense>
           </div>

@@ -1,5 +1,13 @@
+// ❌❌❌ LEGACY COMPONENT - DO NOT USE ❌❌❌
+// 🔴 WARNING: This is the OLD HeroPortal - NOT in production use
+// 🔴 STATUS: LEGACY / DEPRECATED
+// 🔴 REPLACED BY: HeroAtomic.jsx (src/components/atomic/HeroAtomic.jsx)
+// 🔴 DO NOT MODIFY - KEPT FOR REFERENCE ONLY
+// ❌❌❌ LEGACY COMPONENT - DO NOT USE ❌❌❌
+
 import React, { useEffect, useRef, useState, useMemo, useCallback, memo } from 'react';
-import SpaceCanvas from './SpaceCanvas';
+// ❌ REMOVED: Dead import causing eager canvas bundling
+// import SpaceCanvas from './SpaceCanvas';
 import { sectionVariants, itemVariants } from '../../../utils/animation';
 import MagneticButton from '../../ui/MagneticButton';
 import CosmicNoiseOverlay from '../../ui/CosmicNoiseOverlay';
@@ -25,6 +33,19 @@ import {  motion, useScroll, useTransform  } from '../../../FramerProvider';
 const HeroPortal = () => {
   // Performance monitoring
   const renderStartTime = startComponentRender('HeroPortal');
+  
+  // 🧪 MOBILE RUNTIME CRASH TEST - Phase 2D.7
+  useEffect(() => {
+    if (typeof window !== 'undefined' && isMobile) {
+      console.log('[MOBILE_INIT] HeroPortal', {
+        window: typeof window !== 'undefined',
+        isMobile,
+        breakpoint,
+        heroMounted: true,
+        timestamp: Date.now()
+      });
+    }
+  }, [isMobile, breakpoint]);
   
   // Accessibility checks
   const { ref: accessibilityRef } = useAccessibilityCheck('HeroPortal');
@@ -71,26 +92,22 @@ const HeroPortal = () => {
     
     starFieldRef.current.style.transform = `translate(${moveX}px, ${moveY}px)`;
   }, [isMobile]);
-
+  
   useEffect(() => {
-    if (typeof window === 'undefined' || isMobile) return;
+    if (isMobile || isTablet) return; // Skip parallax on mobile/tablet for performance
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [handleMouseMove, isMobile]);
+  }, [isMobile, isTablet, handleMouseMove]);
   
-  // Scroll tracking for animations
+  // Track scroll position to hide scroll indicator once user has scrolled - optimized with useCallback
   const handleScroll = useCallback(() => {
-    if (typeof window === 'undefined') return;
-    
     if (window.scrollY > 100 && !hasScrolled) {
       setHasScrolled(true);
     }
   }, [hasScrolled]);
-
+  
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);

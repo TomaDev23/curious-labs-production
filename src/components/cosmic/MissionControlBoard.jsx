@@ -231,6 +231,22 @@ const MissionControlBoard = ({
   const [lunarEvents, setLunarEvents] = useState(null);
   const [anomalyMode, setAnomalyMode] = useState(null);
   
+  // 🚨 PHASE A: Telemetry logs for field debugging and monitoring
+  useEffect(() => {
+    console.log('[MOUNT] MissionControlBoard', { 
+      timestamp: Date.now(),
+      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 'SSR',
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'SSR',
+      isMobile: isMobile
+    });
+    
+    return () => {
+      console.log('[UNMOUNT] MissionControlBoard', { 
+        timestamp: Date.now()
+      });
+    };
+  }, [isMobile]);
+
   // Get real lunar data from our lighting system with error handling
   const { 
     phase: realPhase, 

@@ -478,6 +478,22 @@ const MissionAtomic = () => {
   const performanceTier = 'Tier 1';
   const errorRetryCount = useRef(0);
 
+  // 🚨 PHASE A: Telemetry logs for field debugging and monitoring
+  useEffect(() => {
+    console.log('[MOUNT] MissionAtomic', { 
+      timestamp: Date.now(),
+      isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'SSR'
+    });
+    
+    return () => {
+      console.log('[UNMOUNT] MissionAtomic', { 
+        timestamp: Date.now(),
+        duration: Date.now() - performance.now()
+      });
+    };
+  }, []);
+
   return (
     <motion.div 
       ref={containerRef}

@@ -8,6 +8,10 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 
+// 🚨 PHASE A: Module caching to prevent re-downloading R3F on every mount
+// This eliminates network and memory spikes during component remounting
+let cachedR3FModule = null;
+
 const CanvasWrapper = React.forwardRef(({ children, fallback = null, ...canvasProps }, ref) => {
   const [isReady, setIsReady] = useState(false);
   const [CanvasComponent, setCanvasComponent] = useState(null);
@@ -77,18 +81,27 @@ const CanvasWrapper = React.forwardRef(({ children, fallback = null, ...canvasPr
       return;
     }
 
-    // 🔧 SIMPLIFIED: Direct dynamic import
+    // 🔧 PHASE A: Use cached module to prevent re-downloading R3F on remount
     console.log('Loading @react-three/fiber...');
     
-    import('@react-three/fiber')
-      .then(module => {
-        console.log('Canvas loaded successfully:', module.Canvas);
-        setCanvasComponent(() => module.Canvas);
-        setIsReady(true);
-      })
-      .catch(error => {
-        console.error('Failed to load Canvas:', error);
-      });
+    // Check if we already have the module cached
+    if (cachedR3FModule) {
+      console.log('Using cached @react-three/fiber module');
+      setCanvasComponent(() => cachedR3FModule.Canvas);
+      setIsReady(true);
+    } else {
+      // First time - load and cache the module
+      import('@react-three/fiber')
+        .then(module => {
+          console.log('Canvas loaded successfully:', module.Canvas);
+          cachedR3FModule = module; // Cache for future mounts
+          setCanvasComponent(() => module.Canvas);
+          setIsReady(true);
+        })
+        .catch(error => {
+          console.error('Failed to load Canvas:', error);
+        });
+    }
   }, [showCanvas]);
 
   // Default fallback if none provided

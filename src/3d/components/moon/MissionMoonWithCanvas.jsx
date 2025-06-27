@@ -97,6 +97,12 @@ const MissionMoonWithCanvas = ({
       scene.clear();
       
       console.log('[PHASE_2] WebGL context cleanup completed');
+      
+      // 🚨 PHASE A: Nullify refs to prevent stale access after disposal
+      // This prevents crashes when components try to access disposed WebGL objects
+      sceneRef.current = null;
+      rendererRef.current = null;
+      
       return true;
     } catch (error) {
       console.warn('[PHASE_2] WebGL cleanup failed:', error);

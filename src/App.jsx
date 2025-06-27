@@ -1,5 +1,10 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { ScrollProvider } from './context/ScrollContext';
+import { DeviceProvider } from './context/DeviceContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // 🚀 OPTIMIZATION: Lazy load FramerProvider to reduce initial bundle
 const LazyFramerProvider = lazy(() => import('./FramerProvider'));
@@ -24,7 +29,6 @@ function ConditionalFramer({ children }) {
 
 // 🚀 LAZY LOAD EVERYTHING - Even basic components for maximum optimization
 const ScrollToTop = lazy(() => import('./components/ScrollToTop'));
-const ErrorBoundary = lazy(() => import('./components/ErrorBoundary'));
 const BackgroundManager = lazy(() => import('./components/sandbox/BackgroundManager'));
 const SafeV4CosmicPage = lazy(() => import('./pages/safe_v4_cosmic.jsx'));
 const JourneyV2 = lazy(() => import('./pages/journey-v2.jsx'));
@@ -67,7 +71,6 @@ const V6ProductsPage = lazy(() => import('./pages/v6-products.tsx'));
 const V6ProductsPage2 = lazy(() => import('./pages/v6-products2.tsx'));
 const Museum = lazy(() => import('./pages/museum.jsx'));
 const CombinedParallaxTest = lazy(() => import('./pages/dev/combined-parallax-test.jsx'));
-// TEMPORARILY DISABLED: const PlanetSandboxPage = lazy(() => import('./pages/dev/planet-sandbox.jsx'));
 
 // 🚀 LAZY LOAD HEAVY UTILS - Only load when needed
 const loadPerformanceMonitor = () => import('./lib/performanceMonitor');
@@ -153,67 +156,6 @@ const BackgroundManagerWrapper = () => {
     </Suspense>
   ) : null;
 };
-
-export default function App() {
-  const location = useLocation();
-  const [metrics, setMetrics] = useState({});
-  
-  // 🎯 REMOVED: Conditional 3D detection and double wrapping
-  // Let components handle their own 3D context needs
-  // const routes3D = ['/', '/cosmic-rev', '/dev/planet-sandbox-with-stars'];
-  // const needs3D = routes3D.includes(location.pathname);
-
-  const addMetric = (key, value) => {
-    setMetrics(prev => ({
-      ...prev,
-      [key]: {
-        ...value,
-        timestamp: Date.now()
-      }
-    }));
-  };
-
-  // 🚀 SURGICAL FIX: Remove conditional 3D wrapping - let components handle their own context
-  // 🚀 OPTIMIZED: Lazy load performance monitoring only in development
-  useEffect(() => {
-    // ⛔ DISABLED: Performance monitoring temporarily disabled for audit
-    return;
-    
-    if (process.env.NODE_ENV === 'development') {
-      loadPerformanceMonitor().then(({ generatePerformanceReport }) => {
-        const intervalId = setInterval(() => {
-          if (Object.keys(metrics).length > 0) {
-            console.log('Performance metrics:', metrics);
-          }
-          
-          // 🚀 PHASE 6: Generate bundle optimization report
-          const optimizationReport = generatePerformanceReport();
-          if (optimizationReport) {
-            console.log('🎯 Phase 6 Bundle Optimization Status:', {
-              bundleAnalysis: optimizationReport.bundle,
-              memoryTrend: optimizationReport.memory?.growth || 0,
-              chunkEfficiency: optimizationReport.bundle?.chunks?.successful / optimizationReport.bundle?.chunks?.total || 0
-            });
-          }
-        }, 60000); // Log every minute
-        
-        return () => clearInterval(intervalId);
-      });
-    }
-  }, [metrics]);
-
-  return (
-    <ConditionalFramer>
-      <PerformanceContext.Provider value={{ metrics, addMetric }}>
-        <Suspense fallback={<SimpleLoader />}>
-          <ErrorBoundary>
-            <AppRoutes />
-          </ErrorBoundary>
-        </Suspense>
-      </PerformanceContext.Provider>
-    </ConditionalFramer>
-  );
-}
 
 // 🎯 ROUTES COMPONENT: Single source of truth for all routes
 const AppRoutes = () => (
@@ -301,13 +243,6 @@ const AppRoutes = () => (
         </Suspense>
       } />
       
-      {/* Our Products - New unified products page */}
-      {/* <Route path="/our-products" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <OurProductsPage />
-        </Suspense>
-      } /> */}
-      
       <Route path="/tools" element={
         <Suspense fallback={<SimpleLoader />}>
           <Tools />
@@ -358,74 +293,13 @@ const AppRoutes = () => (
           <Documentation />
         </Suspense>
       } />
-      {/* 🗑️ GO: /universe - bye */}
-      {/* <Route path="/universe" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <UniverseExperience />
-        </Suspense>
-      } /> */}
       
-      {/* 🗑️ GO: /dev main index - bye */}
-      {/* <Route path="/dev" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <DevPage />
-        </Suspense>
-      } /> */}
-      
-      {/* 🗑️ GO: All dev routes except the KEEP ones */}
-      {/* <Route path="/dev/index" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <DevIndex />
-        </Suspense>
-      } /> */}
-      
-      {/* 🗑️ GO: /dev/parallax-test - bye */}
-      {/* <Route path="/dev/parallax-test" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <ParallaxTest />
-        </Suspense>
-      } /> */}
-      
-      {/* 🗑️ GO: /dev/mouse-parallax-test - bye */}
-      {/* <Route path="/dev/mouse-parallax-test" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <MouseParallaxTest />
-        </Suspense>
-      } /> */}
-      
-      {/* 🚨 KEEP: /dev/combined-parallax-test - handle last */}
       <Route path="/dev/combined-parallax-test" element={
         <Suspense fallback={<SimpleLoader />}>
           <CombinedParallaxTest />
         </Suspense>
       } />
       
-      {/* TEMPORARILY DISABLED: <Route path="/dev/planet-sandbox" element={<PlanetSandboxPage />} /> */}
-      
-      {/* 🔍 LEGACY REVIEW: Mount old index.jsx for examination */}
-      {/* <Route path="/dev/legacy-index-review" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <ErrorBoundary fallback={<SafeV4CosmicPage />}>
-            <LegacyIndexSafeReview />
-          </ErrorBoundary>
-        </Suspense>
-      } /> */}
-      
-      {/* 🗑️ GO: /dev/stellar-ab-test - bye */}
-      {/* <Route path="/dev/stellar-ab-test" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <StellarABTest />
-        </Suspense>
-      } /> */}
-      
-      {/* 🗑️ GO: /background-final - bye */}
-      {/* <Route path="/background-final" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <BackgroundFinal />
-        </Suspense>
-      } /> */}
-      
-      {/* 🚨 KEEP: /background-sandbox - Background System Sandbox */}
       <Route path="/background-sandbox" element={
         <Suspense fallback={<SimpleLoader />}>
           <BackgroundSandbox />
@@ -439,21 +313,18 @@ const AppRoutes = () => (
       } />
       
       {/* ✅ NEW: 3D ROUTES WITH COSMIC LOADER */}
-      {/* 🚀 Cosmic Rev - 3D route with cosmic loading experience */}
       <Route path="/cosmic-rev" element={
         <Suspense fallback={<SimpleLoader />}>
           <CosmicRevPage />
         </Suspense>
       } />
       
-      {/* 🚀 Planet Sandbox with Stars - 3D dev route with cosmic loading */}
       <Route path="/dev/planet-sandbox-with-stars" element={
         <Suspense fallback={<SimpleLoader />}>
           <PlanetSandboxWithStarsPage />
         </Suspense>
       } />
       
-      {/* 🚨 KEEP: V6 Products - static museum */}
       <Route path="/v6-products" element={
         <Suspense fallback={<SimpleLoader />}>
           <V6ProductsPage />
@@ -466,40 +337,6 @@ const AppRoutes = () => (
         </Suspense>
       } />
       
-      {/* 🗑️ GO: /process-comparison - bye */}
-      {/* <Route path="/process-comparison" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <ProcessComparisonPage />
-        </Suspense>
-      } /> */}
-      
-      {/* 🗑️ GO: /demo/scroll-test - bye */}
-      {/* <Route path="/demo/scroll-test" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <ScrollTestPage />
-        </Suspense>
-      } /> */}
-      
-      {/* 🗑️ GO: 3D test pages - bye */}
-      {/* <Route path="/3d-test" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <Test3DPage />
-        </Suspense>
-      } /> */}
-      
-      {/* <Route path="/3d-test-simple" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <Test3DPageSimple />
-        </Suspense>
-      } /> */}
-      
-      {/* <Route path="/3d-test-debug" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <Test3DPageDebug />
-        </Suspense>
-      } /> */}
-      
-      {/* 🚨 KEEP: /dev/contracts - handle last */}
       <Route path="/dev/contracts" element={
         <Suspense fallback={<SimpleLoader />}>
           <ContractsDashboard />
@@ -514,3 +351,59 @@ const AppRoutes = () => (
     </Routes>
   </>
 );
+
+export default function App() {
+  const [metrics, setMetrics] = useState({});
+  
+  const addMetric = (key, value) => {
+    setMetrics(prev => ({
+      ...prev,
+      [key]: {
+        ...value,
+        timestamp: Date.now()
+      }
+    }));
+  };
+
+  // 🚀 OPTIMIZED: Lazy load performance monitoring only in development
+  useEffect(() => {
+    // ⛔ DISABLED: Performance monitoring temporarily disabled for audit
+    return;
+    
+    if (process.env.NODE_ENV === 'development') {
+      loadPerformanceMonitor().then(({ generatePerformanceReport }) => {
+        const intervalId = setInterval(() => {
+          if (Object.keys(metrics).length > 0) {
+            console.log('Performance metrics:', metrics);
+          }
+          
+          // 🚀 PHASE 6: Generate bundle optimization report
+          const optimizationReport = generatePerformanceReport();
+          if (optimizationReport) {
+            console.log('🎯 Phase 6 Bundle Optimization Status:', {
+              bundleAnalysis: optimizationReport.bundle,
+              memoryTrend: optimizationReport.memory?.growth || 0,
+              chunkEfficiency: optimizationReport.bundle?.chunks?.successful / optimizationReport.bundle?.chunks?.total || 0
+            });
+          }
+        }, 60000); // Log every minute
+        
+        return () => clearInterval(intervalId);
+      });
+    }
+  }, [metrics]);
+
+  return (
+    <DeviceProvider>
+      <ConditionalFramer>
+        <PerformanceContext.Provider value={{ metrics, addMetric }}>
+          <Suspense fallback={<SimpleLoader />}>
+            <ErrorBoundary>
+              <AppRoutes />
+            </ErrorBoundary>
+          </Suspense>
+        </PerformanceContext.Provider>
+      </ConditionalFramer>
+    </DeviceProvider>
+  );
+}

@@ -18,6 +18,7 @@
 
 import React, { useState, useEffect, Suspense, lazy, useRef, useCallback } from 'react';
 import {  motion, useAnimation  } from '../../FramerProvider';
+import useThrottledIntersection from '../../hooks/useThrottledIntersection';
 
 // 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
 const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
@@ -89,9 +90,6 @@ const MissionAtomic = () => {
   // 🚨 PHASE A FIX 1: MOUNT STATE TRACKING - Prevents all async operations after unmount
   const isMountedRef = useRef(true);
   
-  // 🚨 PHASE A FIX 2: CANVAS DOUBLE-MOUNT PREVENTION - Prevents canvas race conditions
-  const canvasInitializedRef = useRef(false);
-  
   // 🚨 PHASE A FIX 3: WINDOW GLOBAL REPLACEMENT - Eliminates race conditions
   const previousEclipsePhaseRef = useRef(null);
   
@@ -120,6 +118,93 @@ const MissionAtomic = () => {
   const controls = useAnimation();
   const moonControls = useAnimation();
   
+  // 🚨 PHASE B: Replace whileInView with throttled intersection observers
+  const [isVisible, setIsVisible] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
+  
+  // 🚨 CRITICAL FIX: Memoize intersection observer options to prevent re-creation
+  const primaryObserverOptions = React.useMemo(() => ({
+    rootMargin: '0px 0px -5% 0px',
+    threshold: 0.1
+  }), []);
+  
+  const contentObserverOptions = React.useMemo(() => ({
+    rootMargin: '0px 0px 0px 0px',
+    threshold: 0.3
+  }), []);
+  
+  // Memoize callbacks to prevent re-creation
+  const handlePrimaryVisibility = React.useCallback((entries) => {
+    const entry = entries[0];
+    if (entry && entry.isIntersecting && !isVisible) {
+      setIsVisible(true);
+      console.log('[PHASE_B] MissionAtomic became visible');
+    }
+  }, [isVisible]);
+  
+  const handleContentVisibility = React.useCallback((entries) => {
+    const entry = entries[0];
+    if (entry && entry.intersectionRatio > 0.3 && !contentVisible) {
+      setContentVisible(true);
+      console.log('[PHASE_B] MissionAtomic content triggered');
+    }
+  }, [contentVisible]);
+  
+  // Primary visibility observer with reduced aggressive margins
+  useThrottledIntersection(
+    containerRef,
+    handlePrimaryVisibility,
+    primaryObserverOptions,
+    100 // 100ms throttle
+  );
+  
+  // Content visibility observer for staggered animations
+  useThrottledIntersection(
+    containerRef,
+    handleContentVisibility,
+    contentObserverOptions,
+    150 // Slightly higher throttle for content
+  );
+
+  // 🚨 PHASE B: Animation controller cleanup
+  useEffect(() => {
+    return () => {
+      if (!isMountedRef.current) return;
+      
+      try {
+        console.log('[PHASE_B] Cleaning up animation controllers...');
+        
+        // Stop all active animations
+        controls.stop();
+        moonControls.stop();
+        
+        // Clear animation queues and reset to default values
+        controls.set({ 
+          opacity: 1, 
+          scale: 1, 
+          x: 0, 
+          y: 0, 
+          rotate: 0,
+          scaleX: 1,
+          scaleY: 1 
+        });
+        moonControls.set({ 
+          opacity: 1, 
+          scale: 1, 
+          x: 0, 
+          y: 0, 
+          rotate: 0,
+          scaleX: 1,
+          scaleY: 1 
+        });
+        
+        console.log('[PHASE_B] Animation controllers cleaned up successfully');
+      } catch (error) {
+        console.warn('[PHASE_B] Animation cleanup failed:', error);
+      }
+    };
+  }, [controls, moonControls]);
+
   // ✅ SINGLE MEGA-CONSOLIDATED EFFECT - Everything in one place
   useEffect(() => {
     if (!isHydrated) return;
@@ -403,8 +488,7 @@ const MissionAtomic = () => {
         position: 'relative'
       }}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "0px 0px -5% 0px" }}
+      animate={isVisible ? "visible" : "hidden"}
       variants={sectionVariants}
     >
       {/* 🎯 BACKGROUND LAYERS - Progressive Loading Architecture */}
@@ -692,22 +776,16 @@ const MissionAtomic = () => {
                 className="w-full h-full"
               >
                 {/* ✅ PHASE 2: SSR-safe canvas loading with hydration guard */}
-                {/* 🚨 PHASE A FIX: Canvas double-mount prevention with initialization guard */}
-                {isHydrated && typeof window !== 'undefined' && !canvasInitializedRef.current && (
+                {/* 🚨 FIXED: Canvas initialization paradox - simplified logic */}
+                {isHydrated && typeof window !== 'undefined' && (
                   <MissionMoonWithCanvas 
                     className="w-[400px] h-[400px]" 
                     debugPhase={moonPhaseOverride}
                     anomalyMode={moonAnomalyMode}
-                    onMount={() => {
-                      if (isMountedRef.current) canvasInitializedRef.current = true;
-                    }}
-                    onUnmount={() => {
-                      canvasInitializedRef.current = false;
-                    }}
                   />
                 )}
-                {/* ✅ PHASE 2: SSR fallback - show placeholder during hydration */}
-                {(!isHydrated || typeof window === 'undefined' || canvasInitializedRef.current) && (
+                {/* ✅ PHASE 2: SSR fallback - show placeholder during hydration only */}
+                {(!isHydrated || typeof window === 'undefined') && (
                   <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-full">
                     <div className="text-white/40 text-sm">Loading...</div>
                   </div>
@@ -781,9 +859,8 @@ const MissionAtomic = () => {
       <motion.div 
         className="absolute bottom-8 right-8 bg-black/60 backdrop-blur-md border border-white/10 rounded-md text-white/90 flex items-center px-3 py-2"
         initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.3 }}
-        viewport={{ once: true }}
+        animate={contentVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
         style={{ zIndex: 40 }}
       >
         <div className="mr-3 flex space-x-1">
@@ -810,9 +887,8 @@ const MissionAtomic = () => {
       {/* Mission Control Command Board - Full Screen Width */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.3 }}
-        viewport={{ once: true, margin: "0px" }}
+        animate={contentVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
         className="absolute bottom-0 left-0 right-0 w-full pb-[32vh]"
         style={{ zIndex: 45 }}
       >

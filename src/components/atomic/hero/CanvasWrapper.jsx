@@ -8,7 +8,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 
-const CanvasWrapper = ({ children, fallback = null, ...canvasProps }) => {
+const CanvasWrapper = React.forwardRef(({ children, fallback = null, ...canvasProps }, ref) => {
   const [isReady, setIsReady] = useState(false);
   const [CanvasComponent, setCanvasComponent] = useState(null);
   const [showCanvas, setShowCanvas] = useState(false);
@@ -106,6 +106,7 @@ const CanvasWrapper = ({ children, fallback = null, ...canvasProps }) => {
   return (
     <Suspense fallback={fallback || defaultFallback}>
       <CanvasComponent
+        ref={ref}
         gl={{ 
           powerPreference: 'high-performance',
           antialias: true,
@@ -118,6 +119,9 @@ const CanvasWrapper = ({ children, fallback = null, ...canvasProps }) => {
       </CanvasComponent>
     </Suspense>
   );
-};
+});
+
+// Add display name for debugging
+CanvasWrapper.displayName = 'CanvasWrapper';
 
 export default CanvasWrapper; 

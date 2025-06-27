@@ -87,10 +87,13 @@ const NeonArcAnimation = ({ children, sceneStep, prefersReducedMotion = false })
 };
 
 const MissionAtomic = () => {
-  // 🚨 PHASE A FIX 1: MOUNT STATE TRACKING - Prevents all async operations after unmount
+  // 🚨 PHASE 2 FIX 1: MOUNT STATE TRACKING - Prevents all async operations after unmount
   const isMountedRef = useRef(true);
   
-  // 🚨 PHASE A FIX 3: WINDOW GLOBAL REPLACEMENT - Eliminates race conditions
+  // 🚨 PHASE 2 FIX 2: CANVAS DOUBLE-MOUNT PREVENTION - Eliminates race conditions
+  const canvasInitializedRef = useRef(false);
+  
+  // 🚨 PHASE 2 FIX 3: WINDOW GLOBAL REPLACEMENT - Eliminates race conditions
   const previousEclipsePhaseRef = useRef(null);
   
   // 🎯 UNIFIED MOBILE DETECTION: Replace useState pattern
@@ -172,7 +175,7 @@ const MissionAtomic = () => {
       if (!isMountedRef.current) return;
       
       try {
-        console.log('[PHASE_B] Cleaning up animation controllers...');
+        console.log('[PHASE_2] Cleaning up animation controllers...');
         
         // Stop all active animations
         controls.stop();
@@ -198,9 +201,9 @@ const MissionAtomic = () => {
           scaleY: 1 
         });
         
-        console.log('[PHASE_B] Animation controllers cleaned up successfully');
+        console.log('[PHASE_2] Animation controllers cleaned up successfully');
       } catch (error) {
-        console.warn('[PHASE_B] Animation cleanup failed:', error);
+        console.warn('[PHASE_2] Animation cleanup failed:', error);
       }
     };
   }, [controls, moonControls]);
@@ -213,7 +216,7 @@ const MissionAtomic = () => {
     
     // 1. Content Loading Timer
     const contentTimer = setTimeout(() => {
-      if (!isMountedRef.current) return; // 🚨 PHASE A: Mount guard
+      if (!isMountedRef.current) return; // 🚨 PHASE 2: Mount guard
       setContentLoaded(true);
     }, 100);
     cleanupFunctions.push(() => clearTimeout(contentTimer));
@@ -234,15 +237,15 @@ const MissionAtomic = () => {
       };
       
       const loadTimer = setTimeout(() => {
-        if (!isMountedRef.current) return; // 🚨 PHASE A: Mount guard
+        if (!isMountedRef.current) return; // 🚨 PHASE 2: Mount guard
         preloadImage(imageSrc)
           .then(() => {
-            if (!isMountedRef.current) return; // 🚨 PHASE A: Mount guard
+            if (!isMountedRef.current) return; // 🚨 PHASE 2: Mount guard
             setBackgroundLoaded(true);
             setBackgroundError(false);
           })
           .catch((error) => {
-            if (!isMountedRef.current) return; // 🚨 PHASE A: Mount guard
+            if (!isMountedRef.current) return; // 🚨 PHASE 2: Mount guard
             console.warn(`Background image failed to load: ${error.message}`);
             setBackgroundError(true);
             setBackgroundLoaded(false);
@@ -252,7 +255,7 @@ const MissionAtomic = () => {
       cleanupFunctions.push(() => {
         clearTimeout(loadTimer);
         if (imageRef.current) {
-          imageRef.current.src = ''; // 🚨 PHASE A: Free memory
+          imageRef.current.src = ''; // 🚨 PHASE 2: Free memory
           imageRef.current = null;
         }
         // Clear background on unmount to free GPU memory
@@ -261,24 +264,24 @@ const MissionAtomic = () => {
       });
     }
     
-    // 3. Motion Preference Detection
+    // 3. Motion Preference Detection - Enhanced with Safari < 14 fallback
     const setupMotionPreference = () => {
       try {
         if (!window.matchMedia || typeof window.matchMedia !== 'function') {
-          if (isMountedRef.current) setPrefersReducedMotion(false); // 🚨 PHASE A: Mount guard
+          if (isMountedRef.current) setPrefersReducedMotion(false); // 🚨 PHASE 2: Mount guard
           return null;
         }
         
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         if (!mediaQuery) {
-          if (isMountedRef.current) setPrefersReducedMotion(false); // 🚨 PHASE A: Mount guard
+          if (isMountedRef.current) setPrefersReducedMotion(false); // 🚨 PHASE 2: Mount guard
           return null;
         }
         
-        if (isMountedRef.current) setPrefersReducedMotion(mediaQuery.matches); // 🚨 PHASE A: Mount guard
+        if (isMountedRef.current) setPrefersReducedMotion(mediaQuery.matches); // 🚨 PHASE 2: Mount guard
         
         const handleChange = (e) => {
-          if (!isMountedRef.current) return; // 🚨 PHASE A: Mount guard
+          if (!isMountedRef.current) return; // 🚨 PHASE 2: Mount guard
           try {
             setPrefersReducedMotion(e.matches);
           } catch (error) {
@@ -286,24 +289,28 @@ const MissionAtomic = () => {
           }
         };
         
-        // 🚨 PHASE A: Safari < 14 fallback
+        // 🚨 PHASE 2: Enhanced Safari < 14 fallback
         if (mediaQuery.addEventListener) {
           mediaQuery.addEventListener('change', handleChange);
           return () => mediaQuery.removeEventListener('change', handleChange);
-        } else {
+        } else if (mediaQuery.addListener) {
+          // Safari < 14 fallback
           mediaQuery.addListener(handleChange);
           return () => mediaQuery.removeListener(handleChange);
+        } else {
+          console.warn('MediaQuery change listener not supported');
+          return null;
         }
       } catch (error) {
         console.warn('Motion preference setup failed:', error);
-        if (isMountedRef.current) setPrefersReducedMotion(false); // 🚨 PHASE A: Mount guard
+        if (isMountedRef.current) setPrefersReducedMotion(false); // 🚨 PHASE 2: Mount guard
         return null;
       }
     };
     
     // 4. Eclipse Mode Setup
     const setupEclipseMode = () => {
-      if (isMountedRef.current) setUseSimpleEclipse(isMobile && prefersReducedMotion); // 🚨 PHASE A: Mount guard
+      if (isMountedRef.current) setUseSimpleEclipse(isMobile && prefersReducedMotion); // 🚨 PHASE 2: Mount guard
       
       // Add CSS animation for eclipse nebula effect
       let styleSheet = null;
@@ -333,7 +340,7 @@ const MissionAtomic = () => {
       
       return () => {
         try {
-          if (styleSheet && document.head && document.head.contains(styleSheet)) {
+          if (styleSheet && styleSheet.parentNode && document.head && document.head.contains(styleSheet)) {
             document.head.removeChild(styleSheet);
           }
         } catch (error) {
@@ -352,7 +359,7 @@ const MissionAtomic = () => {
     
     // Single cleanup function
     return () => {
-      isMountedRef.current = false; // 🚨 PHASE A: Mark as unmounted first
+      isMountedRef.current = false; // 🚨 PHASE 2: Mark as unmounted first
       cleanupFunctions.forEach(cleanup => {
         try {
           cleanup();
@@ -365,7 +372,7 @@ const MissionAtomic = () => {
 
   // ⭐ Enhanced: Mission Control Board phase and anomaly change handler
   const handleMissionControlPhaseChange = (phase) => {
-    if (!isMountedRef.current) return; // 🚨 PHASE A: Guard against unmounted calls
+    if (!isMountedRef.current) return; // 🚨 PHASE 2: Guard against unmounted calls
     // Only log in development to reduce console spam
     if (process.env.NODE_ENV === 'development') {
       console.log(`🚀 MISSION ATOMIC: Received phase change from Mission Control - ${phase}`);
@@ -375,14 +382,14 @@ const MissionAtomic = () => {
   
   // ⭐ NEW: Mission Control Board anomaly change handler
   const handleMissionControlAnomalyChange = (anomalyMode) => {
-    if (!isMountedRef.current) return; // 🚨 PHASE A: Guard against unmounted calls
+    if (!isMountedRef.current) return; // 🚨 PHASE 2: Guard against unmounted calls
     try {
       // Store previous phase when entering eclipse mode
       if (anomalyMode === 'eclipse' && moonAnomalyMode !== 'eclipse') {
         const previousPhase = moonPhaseOverride;
         setMoonPhaseOverride(0.75); // Waning Gibbous phase value
         
-        // 🚨 PHASE A FIX: Use ref instead of window global
+        // 🚨 PHASE 2 FIX: Use ref instead of window global
         previousEclipsePhaseRef.current = previousPhase;
       }
       // Restore previous phase when exiting eclipse mode
@@ -490,6 +497,10 @@ const MissionAtomic = () => {
       initial="hidden"
       animate={isVisible ? "visible" : "hidden"}
       variants={sectionVariants}
+      viewport={{ 
+        once: true, 
+        margin: "0px 0px -5% 0px" // 🚨 PHASE 2: Reduced from -20% to -5% to prevent aggressive triggers
+      }}
     >
       {/* 🎯 BACKGROUND LAYERS - Progressive Loading Architecture */}
       
@@ -775,19 +786,31 @@ const MissionAtomic = () => {
                 transition={{ duration: 1.2, ease: "easeInOut" }}
                 className="w-full h-full"
               >
-                {/* ✅ PHASE 2: SSR-safe canvas loading with hydration guard */}
-                {/* 🚨 FIXED: Canvas initialization paradox - simplified logic */}
-                {isHydrated && typeof window !== 'undefined' && (
+                {/* ✅ PHASE 2: SSR-safe canvas loading with double-mount prevention */}
+                {/* 🚨 FIXED: Canvas double-mount prevention with ref guard */}
+                {isHydrated && typeof window !== 'undefined' && !canvasInitializedRef.current && (
                   <MissionMoonWithCanvas 
                     className="w-[400px] h-[400px]" 
                     debugPhase={moonPhaseOverride}
                     anomalyMode={moonAnomalyMode}
+                    onMount={() => {
+                      if (isMountedRef.current) {
+                        canvasInitializedRef.current = true;
+                        console.log('[PHASE_2] Canvas mounted successfully');
+                      }
+                    }}
+                    onUnmount={() => {
+                      canvasInitializedRef.current = false;
+                      console.log('[PHASE_2] Canvas unmounted successfully');
+                    }}
                   />
                 )}
-                {/* ✅ PHASE 2: SSR fallback - show placeholder during hydration only */}
-                {(!isHydrated || typeof window === 'undefined') && (
+                {/* ✅ PHASE 2: SSR fallback - show placeholder during hydration or if canvas already initialized */}
+                {(!isHydrated || typeof window === 'undefined' || canvasInitializedRef.current) && (
                   <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-full">
-                    <div className="text-white/40 text-sm">Loading...</div>
+                    <div className="text-white/40 text-sm">
+                      {canvasInitializedRef.current ? 'Canvas Active' : 'Loading...'}
+                    </div>
                   </div>
                 )}
               </motion.div>
@@ -861,6 +884,10 @@ const MissionAtomic = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={contentVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.6, delay: 0.3 }}
+        viewport={{ 
+          once: true,
+          margin: "0px" // 🚨 PHASE 2: Eliminated negative margin to prevent early firing
+        }}
         style={{ zIndex: 40 }}
       >
         <div className="mr-3 flex space-x-1">
@@ -889,6 +916,10 @@ const MissionAtomic = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={contentVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
         transition={{ duration: 0.6, delay: 0.3 }}
+        viewport={{ 
+          once: true,
+          margin: "0px" // 🚨 PHASE 2: Eliminated negative margin (-10%) to prevent early firing
+        }}
         className="absolute bottom-0 left-0 right-0 w-full pb-[32vh]"
         style={{ zIndex: 45 }}
       >

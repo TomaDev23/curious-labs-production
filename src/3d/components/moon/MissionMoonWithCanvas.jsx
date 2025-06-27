@@ -14,12 +14,15 @@ const MissionMoonWithCanvas = ({
   debugPhase = null, 
   anomalyMode = null, 
   className = "",
+  onMount = null,
+  onUnmount = null,
   ...props 
 }) => {
-  // 🚨 PHASE B: WebGL context management
+  // 🚨 PHASE 2: WebGL context management with mount tracking
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
+  const mountedRef = useRef(false);
   const [contextLost, setContextLost] = useState(false);
   const [memoryPressure, setMemoryPressure] = useState('low');
 
@@ -46,12 +49,12 @@ const MissionMoonWithCanvas = ({
     }
   };
 
-  // 🚨 PHASE B: Comprehensive Three.js disposal system
+  // 🚨 PHASE 2: Comprehensive Three.js disposal system with context loss protection
   const disposeThreeJSObjects = (scene, renderer, camera) => {
     try {
       if (!scene || !renderer) return;
 
-      console.log('[PHASE_B] Starting WebGL context cleanup...');
+      console.log('[PHASE_2] Starting WebGL context cleanup...');
 
       // Dispose geometries, materials, and textures
       scene.traverse((child) => {
@@ -79,90 +82,136 @@ const MissionMoonWithCanvas = ({
         }
       });
       
-      // Dispose renderer and force context loss
+      // 🚨 CRITICAL FIX: Only dispose renderer, let React Three Fiber handle context loss
       renderer.dispose();
-      renderer.forceContextLoss();
+      
+      // 🚨 REMOVED: forceContextLoss() - React Three Fiber handles this internally
+      // This was causing "context already lost" errors
+      
+      // Safely remove DOM element
+      if (renderer.domElement && renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
       
       // Clear scene
       scene.clear();
       
-      console.log('[PHASE_B] WebGL context cleanup completed');
+      console.log('[PHASE_2] WebGL context cleanup completed');
       return true;
     } catch (error) {
-      console.warn('[PHASE_B] WebGL cleanup failed:', error);
+      console.warn('[PHASE_2] WebGL cleanup failed:', error);
       return false;
     }
   };
 
-  // 🚨 PHASE B: GPU memory pressure monitoring
+  // 🚨 PHASE 2: GPU memory pressure monitoring with mount guards
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
+    
     const checkMemoryPressure = () => {
+      if (!mountedRef.current) return; // Guard against unmounted component
+      
       try {
-        if (performance.memory) {
-          const used = performance.memory.usedJSHeapSize;
-          const limit = performance.memory.jsHeapSizeLimit;
-          const pressure = used / limit;
+        if (window.performance && window.performance.memory) {
+          const memory = window.performance.memory;
+          const used = memory.usedJSHeapSize;
+          const limit = memory.jsHeapSizeLimit;
           
-          if (pressure > 0.8) setMemoryPressure('high');
-          else if (pressure > 0.6) setMemoryPressure('medium');
-          else setMemoryPressure('low');
-
-          // Log high memory pressure
-          if (pressure > 0.7) {
-            console.warn('[PHASE_B] High memory pressure detected:', {
+          if (used / limit > 0.8) {
+            console.warn('[PHASE_2] High memory pressure detected:', {
               used: Math.round(used / 1024 / 1024) + 'MB',
               limit: Math.round(limit / 1024 / 1024) + 'MB',
-              pressure: Math.round(pressure * 100) + '%'
+              percentage: Math.round((used / limit) * 100) + '%'
             });
+            if (mountedRef.current) setMemoryPressure('high');
+          } else {
+            if (mountedRef.current) setMemoryPressure('low');
           }
         }
       } catch (error) {
-        console.warn('[PHASE_B] Memory monitoring failed:', error);
+        console.warn('[PHASE_2] Memory pressure check failed:', error);
       }
     };
-    
+
+    // Check every 5 seconds
     const interval = setInterval(checkMemoryPressure, 5000);
-    checkMemoryPressure(); // Initial check
     
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
-  // 🚨 PHASE B: WebGL context loss handling
+  // 🚨 PHASE 2: WebGL context loss handling with mount guards
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (typeof window === 'undefined') return;
     
-    const handleContextLoss = (event) => {
+    const handleContextLost = (event) => {
+      if (!mountedRef.current) return; // Guard against unmounted component
+      
       event.preventDefault();
-      console.warn('[PHASE_B] WebGL context lost');
-      setContextLost(true);
+      console.warn('[PHASE_2] WebGL context lost');
+      if (mountedRef.current) setContextLost(true);
     };
-    
-    const handleContextRestore = () => {
-      console.log('[PHASE_B] WebGL context restored');
-      setContextLost(false);
-      // Context will be recreated by React Three Fiber
-    };
-    
-    canvas.addEventListener('webglcontextlost', handleContextLoss);
-    canvas.addEventListener('webglcontextrestored', handleContextRestore);
-    
-    return () => {
-      canvas.removeEventListener('webglcontextlost', handleContextLoss);
-      canvas.removeEventListener('webglcontextrestored', handleContextRestore);
-    };
-  }, []);
 
-  // 🚨 PHASE B: Cleanup on unmount
-  useEffect(() => {
+    const handleContextRestored = () => {
+      if (!mountedRef.current) return; // Guard against unmounted component
+      
+      console.log('[PHASE_2] WebGL context restored');
+      if (mountedRef.current) setContextLost(false);
+    };
+
+    // Wait for canvas to be available
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.addEventListener('webglcontextlost', handleContextLost);
+      canvas.addEventListener('webglcontextrestored', handleContextRestored);
+    }
+
     return () => {
-      if (sceneRef.current && rendererRef.current) {
-        disposeThreeJSObjects(sceneRef.current, rendererRef.current);
+      if (canvas) {
+        canvas.removeEventListener('webglcontextlost', handleContextLost);
+        canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       }
     };
   }, []);
+
+  // 🚨 PHASE 2: Mount/Unmount lifecycle management
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      console.log('[PHASE_2] MissionMoonWithCanvas mounting...');
+      
+      // Call onMount callback if provided
+      if (onMount && typeof onMount === 'function') {
+        try {
+          onMount();
+        } catch (error) {
+          console.warn('[PHASE_2] onMount callback failed:', error);
+        }
+      }
+    }
+
+    return () => {
+      if (mountedRef.current) {
+        mountedRef.current = false;
+        console.log('[PHASE_2] MissionMoonWithCanvas unmounting...');
+        
+        // Call onUnmount callback if provided
+        if (onUnmount && typeof onUnmount === 'function') {
+          try {
+            onUnmount();
+          } catch (error) {
+            console.warn('[PHASE_2] onUnmount callback failed:', error);
+          }
+        }
+        
+        // Perform WebGL cleanup
+        if (sceneRef.current && rendererRef.current) {
+          disposeThreeJSObjects(sceneRef.current, rendererRef.current);
+        }
+      }
+    };
+  }, [onMount, onUnmount]);
 
   // Handle context loss state
   if (contextLost) {

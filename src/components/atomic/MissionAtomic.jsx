@@ -50,13 +50,13 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
     if (typeof window === 'undefined') return { width: 1200, isMobile: false };
     
     try {
-      const width = window.innerWidth;
+      const width = window.innerWidth || 1200; // 🎯 SAFE: Fallback for iOS Safari
       const isMobile = width < 1200;
       
       return { width, isMobile };
     } catch (error) {
       console.warn('Device capability check failed:', error);
-      return { width: 1200, isMobile: false };
+      return { width: 1200, isMobile: false }; // 🎯 SAFE: Always assume desktop on error
     }
   }, []);
 
@@ -114,30 +114,63 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
     
     setImageUrl(imageSrc);
     
-    // Create intersection observer to start loading when section approaches
-    observerRef.current = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          // 🎯 LCP PROTECTION: Delay background loading to ensure content loads first
-          setTimeout(() => {
-            setShouldStartLoading(true);
-          }, 300); // 300ms delay ensures text content becomes LCP
-          
-          // Stop observing after first trigger
-          observerRef.current?.disconnect();
-        }
-      },
-      { 
-        rootMargin: '100px',  // Start loading 100px before visible
-        threshold: 0.01 
+    // 🎯 MOBILE SAFE: Create intersection observer with comprehensive error handling
+    try {
+      // 🎯 SAFE: Check if IntersectionObserver exists and is functional
+      if (typeof window === 'undefined' || !window.IntersectionObserver || typeof window.IntersectionObserver !== 'function') {
+        console.warn('IntersectionObserver not supported - using immediate loading');
+        // Fallback: Load immediately if IntersectionObserver not supported
+        setTimeout(() => {
+          setShouldStartLoading(true);
+        }, 300);
+        return;
       }
-    );
+      
+      observerRef.current = new IntersectionObserver(
+        ([entry]) => {
+          try {
+            if (entry && entry.isIntersecting) {
+              // 🎯 LCP PROTECTION: Delay background loading to ensure content loads first
+              setTimeout(() => {
+                setShouldStartLoading(true);
+              }, 300); // 300ms delay ensures text content becomes LCP
+              
+              // Stop observing after first trigger
+              if (observerRef.current) {
+                observerRef.current.disconnect();
+              }
+            }
+          } catch (entryError) {
+            console.warn('IntersectionObserver entry processing failed:', entryError);
+            // Fallback: Load immediately on error
+            setShouldStartLoading(true);
+          }
+        },
+        { 
+          rootMargin: '100px',  // Start loading 100px before visible
+          threshold: 0.01 
+        }
+      );
+    } catch (error) {
+      console.warn('IntersectionObserver setup failed:', error);
+      // Fallback: Load immediately if observer setup fails
+      setTimeout(() => {
+        setShouldStartLoading(true);
+      }, 300);
+      return;
+    }
     
     return () => {
-      observerRef.current?.disconnect();
-      // Cleanup image reference
-      if (imageRef.current) {
-        imageRef.current = null;
+      try {
+        if (observerRef.current) {
+          observerRef.current.disconnect();
+        }
+        // Cleanup image reference
+        if (imageRef.current) {
+          imageRef.current = null;
+        }
+      } catch (error) {
+        console.warn('IntersectionObserver cleanup failed:', error);
       }
     };
   }, [getImageSrc]);
@@ -171,51 +204,79 @@ const useProgressiveBackground = (componentName = 'MissionAtomic') => {
   };
 };
 
-// 🎯 LCP PROTECTION HOOK
+// 🎯 LCP PROTECTION HOOK - MOBILE SAFE VERSION
 const useLCPProtection = (componentName = 'MissionAtomic') => {
   const [lcpData, setLCPData] = useState(null);
   const [contentLoaded, setContentLoaded] = useState(false);
   
   useEffect(() => {
-    // LCP Performance Observer
+    // 🎯 MOBILE SAFE: LCP Performance Observer with comprehensive error handling
     const observeLCP = () => {
-      if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return;
+      // 🎯 CRITICAL: Multiple safety checks for iOS Safari
+      if (typeof window === 'undefined') return;
       
       try {
+        // 🎯 SAFE: Check if PerformanceObserver exists and is functional
+        if (!window.PerformanceObserver || typeof window.PerformanceObserver !== 'function') {
+          console.warn('PerformanceObserver not supported - skipping LCP tracking');
+          return;
+        }
+        
         const lcpObserver = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1];
-          
-          setLCPData({
-            element: lastEntry.element?.tagName || 'unknown',
-            startTime: lastEntry.startTime,
-            renderTime: lastEntry.renderTime,
-            loadTime: lastEntry.loadTime,
-            size: lastEntry.size,
-            url: lastEntry.url || 'N/A'
-          });
-          
-          // Cosmic debug logging (only in dev)
-          if (process.env.NODE_ENV === 'development') {
-            console.log('🎯 [LCP-MONITOR] Largest Contentful Paint detected:', {
-              element: lastEntry.element?.tagName,
-              time: `${lastEntry.startTime.toFixed(2)}ms`,
-              isBackground: lastEntry.url?.includes('milkyway'),
-              component: componentName
+          try {
+            const entries = list.getEntries();
+            if (!entries || entries.length === 0) return;
+            
+            const lastEntry = entries[entries.length - 1];
+            if (!lastEntry) return;
+            
+            setLCPData({
+              element: lastEntry.element?.tagName || 'unknown',
+              startTime: lastEntry.startTime || 0,
+              renderTime: lastEntry.renderTime || 0,
+              loadTime: lastEntry.loadTime || 0,
+              size: lastEntry.size || 0,
+              url: lastEntry.url || 'N/A'
             });
-          }
-          
-          // Warning if background becomes LCP (performance risk)
-          if (lastEntry.url?.includes('milkyway')) {
-            console.warn('⚠️ [LCP-WARNING] Background image became LCP - performance risk detected!');
+            
+            // 🎯 SAFE: Only log in development
+            if (process.env.NODE_ENV === 'development') {
+              console.log('🎯 [LCP-MONITOR] Largest Contentful Paint detected:', {
+                element: lastEntry.element?.tagName,
+                time: `${(lastEntry.startTime || 0).toFixed(2)}ms`,
+                isBackground: (lastEntry.url || '').includes('milkyway'),
+                component: componentName
+              });
+            }
+            
+            // 🎯 SAFE: Warning if background becomes LCP
+            if ((lastEntry.url || '').includes('milkyway')) {
+              console.warn('⚠️ [LCP-WARNING] Background image became LCP - performance risk detected!');
+            }
+          } catch (entryError) {
+            console.warn('LCP entry processing failed:', entryError);
           }
         });
         
-        lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+        // 🎯 SAFE: Wrap observe call in try-catch
+        try {
+          lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+        } catch (observeError) {
+          console.warn('LCP observe failed:', observeError);
+          lcpObserver.disconnect();
+          return;
+        }
         
-        return () => lcpObserver.disconnect();
+        return () => {
+          try {
+            lcpObserver.disconnect();
+          } catch (disconnectError) {
+            console.warn('LCP disconnect failed:', disconnectError);
+          }
+        };
       } catch (error) {
-        console.warn('LCP Observer not supported:', error);
+        console.warn('LCP Observer setup failed:', error);
+        return;
       }
     };
     
@@ -236,7 +297,7 @@ const useLCPProtection = (componentName = 'MissionAtomic') => {
   return {
     lcpData,
     contentLoaded,
-    isLCPSafe: lcpData && !lcpData.url?.includes('milkyway')
+    isLCPSafe: lcpData && !(lcpData.url || '').includes('milkyway')
   };
 };
 
@@ -244,9 +305,23 @@ const useLCPProtection = (componentName = 'MissionAtomic') => {
 const NeonArcAnimation = ({ children, sceneStep }) => {
   const controls = useAnimation();
   
-  // Check reduced motion preference
-  const prefersReducedMotion = typeof window !== 'undefined' ? 
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
+  // 🎯 MOBILE SAFE: Check reduced motion preference with comprehensive error handling
+  const prefersReducedMotion = (() => {
+    if (typeof window === 'undefined') return false;
+    
+    try {
+      // 🎯 SAFE: Check if matchMedia exists and is functional
+      if (!window.matchMedia || typeof window.matchMedia !== 'function') {
+        return false; // Default to no reduced motion if matchMedia not supported
+      }
+      
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      return mediaQuery ? mediaQuery.matches : false;
+    } catch (error) {
+      console.warn('matchMedia check failed:', error);
+      return false; // Safe fallback
+    }
+  })();
 
   // Trigger neon glow animation
   useEffect(() => {
@@ -327,15 +402,51 @@ const MissionAtomic = () => {
   const controls = useAnimation();
   const moonControls = useAnimation();
   
-  // Check if user prefers reduced motion
+  // �� MOBILE SAFE: Check if user prefers reduced motion
   const checkMotionPreference = () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      // 🎯 SAFE: Check if matchMedia exists and is functional
+      if (!window.matchMedia || typeof window.matchMedia !== 'function') {
+        setPrefersReducedMotion(false);
+        return;
+      }
+      
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (!mediaQuery) {
+        setPrefersReducedMotion(false);
+        return;
+      }
+      
       setPrefersReducedMotion(mediaQuery.matches);
       
-      const handleChange = (e) => setPrefersReducedMotion(e.matches);
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
+      const handleChange = (e) => {
+        try {
+          setPrefersReducedMotion(e.matches);
+        } catch (error) {
+          console.warn('Motion preference change handler failed:', error);
+        }
+      };
+      
+      // 🎯 SAFE: Wrap addEventListener in try-catch
+      try {
+        mediaQuery.addEventListener('change', handleChange);
+        return () => {
+          try {
+            mediaQuery.removeEventListener('change', handleChange);
+          } catch (error) {
+            console.warn('Motion preference cleanup failed:', error);
+          }
+        };
+      } catch (error) {
+        console.warn('Motion preference event listener failed:', error);
+        return;
+      }
+    } catch (error) {
+      console.warn('Motion preference check failed:', error);
+      setPrefersReducedMotion(false);
+      return;
     }
   };
   

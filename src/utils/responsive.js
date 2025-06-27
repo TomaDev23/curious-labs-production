@@ -30,7 +30,13 @@ export const useBreakpoint = () => {
     };
   }
   
-  const width = window.innerWidth;
+  // ✅ FIXED: Safe window access with error handling
+  let width = 1024; // Safe fallback
+  try {
+    width = window.innerWidth;
+  } catch (error) {
+    console.warn('window.innerWidth access failed in useBreakpoint:', error);
+  }
   
   return {
     isMobile: width < breakpoints.md,
@@ -56,7 +62,13 @@ export const responsiveConfig = (options) => {
     return { ...defaults, ...xs };
   }
   
-  const width = window.innerWidth;
+  // ✅ FIXED: Safe window access with error handling
+  let width = 1024; // Safe fallback
+  try {
+    width = window.innerWidth;
+  } catch (error) {
+    console.warn('window.innerWidth access failed in responsiveConfig:', error);
+  }
   
   // Return appropriate config based on current viewport
   if (width < breakpoints.sm) return { ...defaults, ...xs };

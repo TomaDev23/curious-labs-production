@@ -77,7 +77,7 @@ const HeroAtomic = React.memo(() => {
   // ✅ FIXED: Proper typewriter and 3D loading sequence with hydration safety
   useEffect(() => {
     // Wait for hydration to complete before applying mobile-specific logic
-    if (!isHydrated) return;
+    if (!isHydrated || typeof window === 'undefined') return;
     
     let typewriterTimer; // ✅ FIXED: Declare outside conditional to fix scope issue
     

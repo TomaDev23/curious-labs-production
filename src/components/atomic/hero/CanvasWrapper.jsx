@@ -11,10 +11,26 @@ import React, { useState, useEffect, Suspense } from 'react';
 const CanvasWrapper = ({ children, fallback = null, ...canvasProps }) => {
   const [isReady, setIsReady] = useState(false);
   const [CanvasComponent, setCanvasComponent] = useState(null);
+  const [showCanvas, setShowCanvas] = useState(false);
 
   useEffect(() => {
     // SSR Protection
     if (typeof window === 'undefined') return;
+    
+    // 🎯 MOBILE CRASH FIX: Add delay for mobile hydration safety
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const delay = isMobile ? 250 : 0;
+    
+    const timer = setTimeout(() => {
+      setShowCanvas(true);
+    }, delay);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // SSR Protection
+    if (typeof window === 'undefined' || !showCanvas) return;
     
     // ✅ FIX: Lighthouse Detection - Prevent Canvas during audits
     const isLighthouseAudit = () => {
@@ -73,7 +89,7 @@ const CanvasWrapper = ({ children, fallback = null, ...canvasProps }) => {
       .catch(error => {
         console.error('Failed to load Canvas:', error);
       });
-  }, []);
+  }, [showCanvas]);
 
   // Default fallback if none provided
   const defaultFallback = (
@@ -85,7 +101,7 @@ const CanvasWrapper = ({ children, fallback = null, ...canvasProps }) => {
 
   // SSR Safe Returns
   if (typeof window === 'undefined') return fallback || defaultFallback;
-  if (!isReady || !CanvasComponent) return fallback || defaultFallback;
+  if (!showCanvas || !isReady || !CanvasComponent) return fallback || defaultFallback;
 
   return (
     <Suspense fallback={fallback || defaultFallback}>

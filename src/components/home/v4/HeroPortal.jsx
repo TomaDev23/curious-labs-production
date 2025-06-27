@@ -53,32 +53,44 @@ const HeroPortal = () => {
     }
   }, [typedText, fullText]);
   
-  // Set up parallax effect on mouse move (desktop only) - optimized with useCallback
+  // Mouse movement effect for parallax (desktop only)
   const handleMouseMove = useCallback((e) => {
-    if (!starFieldRef.current) return;
+    if (typeof window === 'undefined' || !starFieldRef.current || isMobile) return;
     
     const { clientX, clientY } = e;
-    const moveX = (clientX / window.innerWidth - 0.5) * 15;
-    const moveY = (clientY / window.innerHeight - 0.5) * 15;
+    
+    // ✅ FIXED: Safe window dimension access with error handling
+    let moveX = 0, moveY = 0;
+    try {
+      moveX = (clientX / window.innerWidth - 0.5) * 15;
+      moveY = (clientY / window.innerHeight - 0.5) * 15;
+    } catch (error) {
+      console.warn('Window dimension access failed in HeroPortal:', error);
+      return; // Exit early if window access fails
+    }
     
     starFieldRef.current.style.transform = `translate(${moveX}px, ${moveY}px)`;
-  }, []);
-  
+  }, [isMobile]);
+
   useEffect(() => {
-    if (isMobile || isTablet) return; // Skip parallax on mobile/tablet for performance
+    if (typeof window === 'undefined' || isMobile) return;
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [isMobile, isTablet, handleMouseMove]);
+  }, [handleMouseMove, isMobile]);
   
-  // Track scroll position to hide scroll indicator once user has scrolled - optimized with useCallback
+  // Scroll tracking for animations
   const handleScroll = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    
     if (window.scrollY > 100 && !hasScrolled) {
       setHasScrolled(true);
     }
   }, [hasScrolled]);
-  
+
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);

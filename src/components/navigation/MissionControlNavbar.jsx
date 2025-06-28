@@ -9,6 +9,7 @@
 // 🔗 DEPENDENCIES: react-router-dom, framer-motion
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { IMAGES } from '../../utils/assets';
 import {  motion, AnimatePresence  } from '../../FramerProvider';
 
@@ -69,7 +70,7 @@ const MissionControlNavbar = ({
       coordinates: 'ARS-003',
       status: 'ACTIVE',
       original: 'Products',
-      route: '/products'
+      route: '/arsenal'
     },
     {
       id: 'instruments',
@@ -89,7 +90,7 @@ const MissionControlNavbar = ({
       coordinates: 'COMM-005',
       status: 'ACTIVE',
       original: 'Blog',
-      route: '/blog'
+      route: '/transmissions'
     },
     {
       id: 'crew',
@@ -172,36 +173,40 @@ const MissionControlNavbar = ({
               <div className="flex items-center h-14 px-6">
                 {/* CuriousLabs Logo & Status */}
                 <div className="flex items-center space-x-4">
-                  <motion.div 
-                    className="flex items-center space-x-2"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {/* CuriousLabs Logo */}
-                    <div className="flex items-center space-x-2">
-                      <img 
-                        src={IMAGES.LOGO} 
-                        alt="CuriousLabs" 
-                        className="h-6 w-auto object-contain"
-                        style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
-                      />
-                      <div>
-                        <div className="text-lime-400 font-bold text-sm tracking-wide">CuriousLabs</div>
-                        <div className="text-xs font-mono text-white/60 tracking-wider">MISSION CONTROL</div>
+                  <Link to="/">
+                    <motion.div 
+                      className="flex items-center space-x-2 cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      {/* CuriousLabs Logo */}
+                      <div className="flex items-center space-x-2">
+                        <img 
+                          src={IMAGES.LOGO} 
+                          alt="CuriousLabs" 
+                          className="h-6 w-auto object-contain"
+                          style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
+                        />
+                        <div>
+                          <div className="text-lime-400 font-bold text-sm tracking-wide">CuriousLabs</div>
+                          <div className="text-xs font-mono text-white/60 tracking-wider">MISSION CONTROL</div>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </Link>
 
                   {/* System Status Indicator */}
-                  <div className="flex items-center space-x-2 px-3 py-1 rounded-full border border-lime-400/30 bg-black/40 backdrop-blur-sm">
-                    <motion.div
-                      className="w-1.5 h-1.5 rounded-full"
-                      variants={statusIndicatorVariants}
-                      animate="operational"
-                    />
-                    <span className="text-xs font-mono text-lime-400 tracking-wider font-semibold">
-                      {systemStatus}
-                    </span>
-                  </div>
+                  <Link to="/mission-control">
+                    <div className="flex items-center space-x-2 px-3 py-1 rounded-full border border-lime-400/30 bg-black/40 backdrop-blur-sm hover:bg-lime-400/20 hover:border-lime-400/50 transition-all duration-300 cursor-pointer">
+                      <motion.div
+                        className="w-1.5 h-1.5 rounded-full"
+                        variants={statusIndicatorVariants}
+                        animate="operational"
+                      />
+                      <span className="text-xs font-mono text-lime-400 tracking-wider font-semibold">
+                        {systemStatus}
+                      </span>
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -223,36 +228,40 @@ const MissionControlNavbar = ({
               
               {/* CuriousLabs Logo & Branding - Left Side */}
               <div className="flex items-center space-x-3">
-                <motion.div 
-                  className="flex items-center space-x-2"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {/* CuriousLabs Logo */}
-                  <div className="flex items-center space-x-2">
-                    <img 
-                      src={IMAGES.LOGO} 
-                      alt="CuriousLabs" 
-                      className="h-6 w-auto object-contain"
-                      style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
-                    />
-                    <div>
-                      <div className="text-lime-400 font-bold text-sm tracking-wide">CuriousLabs</div>
-                      <div className="text-xs font-mono text-white/60 tracking-wider">MISSION CONTROL</div>
+                <Link to="/">
+                  <motion.div 
+                    className="flex items-center space-x-2 cursor-pointer"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {/* CuriousLabs Logo */}
+                    <div className="flex items-center space-x-2">
+                      <img 
+                        src={IMAGES.LOGO} 
+                        alt="CuriousLabs" 
+                        className="h-6 w-auto object-contain"
+                        style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
+                      />
+                      <div>
+                        <div className="text-lime-400 font-bold text-sm tracking-wide">CuriousLabs</div>
+                        <div className="text-xs font-mono text-white/60 tracking-wider">MISSION CONTROL</div>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </Link>
 
                 {/* System Status Indicator */}
-                <div className="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full border border-lime-400/30 bg-black/40 backdrop-blur-sm">
-                  <motion.div
-                    className="w-1.5 h-1.5 rounded-full"
-                    variants={statusIndicatorVariants}
-                    animate="operational"
-                  />
-                  <span className="text-xs font-mono text-lime-400 tracking-wider font-semibold">
-                    {systemStatus}
-                  </span>
-                </div>
+                <Link to="/mission-control">
+                  <div className="hidden md:flex items-center space-x-2 px-3 py-1 rounded-full border border-lime-400/30 bg-black/40 backdrop-blur-sm hover:bg-lime-400/20 hover:border-lime-400/50 transition-all duration-300 cursor-pointer">
+                    <motion.div
+                      className="w-1.5 h-1.5 rounded-full"
+                      variants={statusIndicatorVariants}
+                      animate="operational"
+                    />
+                    <span className="text-xs font-mono text-lime-400 tracking-wider font-semibold">
+                      {systemStatus}
+                    </span>
+                  </div>
+                </Link>
               </div>
 
               {/* Navigation Sections - Full Width Distribution */}
@@ -266,8 +275,8 @@ const MissionControlNavbar = ({
                       onMouseLeave={() => setActiveSection(null)}
                       whileHover={{ y: -1 }}
                     >
-                      <a
-                        href={section.route}
+                      <Link
+                        to={section.route}
                         className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 backdrop-blur-sm ${
                           activeSection === section.id
                             ? 'bg-lime-400/20 text-lime-400 border border-lime-400/50 shadow-lg shadow-lime-400/20'
@@ -278,7 +287,7 @@ const MissionControlNavbar = ({
                           <span className="text-xs">{section.icon}</span>
                           <span className="font-mono tracking-wide">{section.label}</span>
                         </div>
-                      </a>
+                      </Link>
 
                       {/* Fixed Hover Panel - Black Glassmorphism */}
                       <AnimatePresence>

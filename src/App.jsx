@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ScrollProvider } from './context/ScrollContext';
 import { DeviceProvider } from './context/DeviceContext';
 import ErrorBoundary from './components/ErrorBoundary';
+import MissionControl from './pages/MissionControl';
 
 // 🚀 OPTIMIZATION: Lazy load FramerProvider to reduce initial bundle
 const LazyFramerProvider = lazy(() => import('./FramerProvider'));
@@ -47,6 +48,7 @@ const Tools = lazy(() => import('./pages/tools.jsx'));
 const FinalPurgePage = lazy(() => import('./pages/FinalPurgePage.jsx'));
 const CodeLab = lazy(() => import('./pages/codelab.jsx'));
 const Blog = lazy(() => import('./pages/blog.jsx'));
+const Transmissions = lazy(() => import('./pages/Transmissions.jsx'));
 const About = lazy(() => import('./pages/about.jsx'));
 const Contact = lazy(() => import('./pages/contact.jsx'));
 const Privacy = lazy(() => import('./pages/privacy.jsx'));
@@ -217,6 +219,12 @@ const AppRoutes = () => (
           <ProductsPortal />
         </Suspense>
       } />
+      {/* 🎖️ MISSION CONTROL ALIAS: Fleet Arsenal */}
+      <Route path="/arsenal" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <ProductsPortal />
+        </Suspense>
+      } />
       <Route path="/products/aegis" element={
         <Suspense fallback={<SimpleLoader />}>
           <Aegis />
@@ -248,12 +256,24 @@ const AppRoutes = () => (
           <Tools />
         </Suspense>
       } />
+      {/* 🎖️ MISSION CONTROL ALIAS: Instruments */}
+      <Route path="/Instruments" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <Tools />
+        </Suspense>
+      } />
       <Route path="/tools/final-purge" element={
         <Suspense fallback={<SimpleLoader />}>
           <FinalPurgePage />
         </Suspense>
       } />
       <Route path="/codelab" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <CodeLab />
+        </Suspense>
+      } />
+      {/* 🎖️ MISSION CONTROL ALIAS: Engineering Bay */}
+      <Route path="/EngineeringBay" element={
         <Suspense fallback={<SimpleLoader />}>
           <CodeLab />
         </Suspense>
@@ -268,7 +288,19 @@ const AppRoutes = () => (
           <About />
         </Suspense>
       } />
+      {/* 🎖️ MISSION CONTROL ALIAS: Crew Manifest */}
+      <Route path="/CrewManifest" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <About />
+        </Suspense>
+      } />
       <Route path="/contact" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <Contact />
+        </Suspense>
+      } />
+      {/* 🎖️ MISSION CONTROL ALIAS: Deep Space Communications */}
+      <Route path="/DeepSpaceComm" element={
         <Suspense fallback={<SimpleLoader />}>
           <Contact />
         </Suspense>
@@ -340,6 +372,18 @@ const AppRoutes = () => (
       <Route path="/dev/contracts" element={
         <Suspense fallback={<SimpleLoader />}>
           <ContractsDashboard />
+        </Suspense>
+      } />
+      
+      <Route path="/Transmissions" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <Transmissions />
+        </Suspense>
+      } />
+      
+      <Route path="/mission-control" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <MissionControl />
         </Suspense>
       } />
       

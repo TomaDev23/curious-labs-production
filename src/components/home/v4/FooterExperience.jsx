@@ -59,7 +59,7 @@ const FooterExperience = () => {
     resources: [
       { name: 'Instruments', path: '/tools' },
       { name: 'Contracts', path: '/dev/contracts' },
-      { name: 'Blog', path: '/blog' },
+      { name: 'Blog', path: '/Transmissions' },
       { name: 'Museum', path: '/museum' },
     ],
     company: [
@@ -136,15 +136,16 @@ const FooterExperience = () => {
       
       {/* Footer Grid - ensure proper z-index */}
       <div className="container mx-auto px-4 py-16 relative z-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
-          {/* Company Info */}
+        {/* Mobile: 2x2 grid, Tablet: 2x2 grid, Desktop: 1x4 grid */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-12">
+          {/* Company Info - Full width on mobile */}
           <motion.div
             variants={itemVariants}
-            className="space-y-4"
+            className="col-span-2 lg:col-span-1 space-y-4 text-center md:text-left"
           >
             <h3 className="text-xl font-bold text-white">CuriousLabs</h3>
-            <p className="text-gray-400">AI-powered solutions for modern development challenges. We're building the future of collaborative coding.</p>
-            <div className="flex space-x-4 mt-6">
+            <p className="text-gray-400 text-sm md:text-base">AI-powered solutions for modern development challenges. We're building the future of collaborative coding.</p>
+            <div className="flex justify-center md:justify-start space-x-4 mt-6">
               {socialLinks.map((link) => (
                 <motion.a 
                   key={link.name}
@@ -155,7 +156,7 @@ const FooterExperience = () => {
                   whileFocus={{ y: -3 }}
                   tabIndex={0}
                 >
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <path d={link.icon} />
                   </svg>
                 </motion.a>
@@ -163,15 +164,15 @@ const FooterExperience = () => {
             </div>
           </motion.div>
           
-          {/* Products */}
+          {/* Products - Compact mobile layout */}
           <motion.div variants={itemVariants} className="relative z-10">
-            <h3 className="text-xl font-bold text-white mb-6">Products</h3>
-            <ul className="space-y-3" role="list">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6">Products</h3>
+            <ul className="space-y-2 md:space-y-3" role="list">
               {links.products.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path} 
-                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer"
+                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer text-sm md:text-base"
                     aria-label={`${link.name} product page`}
                   >
                     <motion.span 
@@ -188,15 +189,15 @@ const FooterExperience = () => {
             </ul>
           </motion.div>
           
-          {/* Resources */}
+          {/* Resources - Compact mobile layout */}
           <motion.div variants={itemVariants} className="relative z-10">
-            <h3 className="text-xl font-bold text-white mb-6">Resources</h3>
-            <ul className="space-y-3" role="list">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6">Resources</h3>
+            <ul className="space-y-2 md:space-y-3" role="list">
               {links.resources.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path} 
-                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer"
+                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer text-sm md:text-base"
                     aria-label={`${link.name} resource page`}
                   >
                     <motion.span 
@@ -213,15 +214,15 @@ const FooterExperience = () => {
             </ul>
           </motion.div>
           
-          {/* Company */}
+          {/* Company - Compact mobile layout */}
           <motion.div variants={itemVariants} className="relative z-10">
-            <h3 className="text-xl font-bold text-white mb-6">Company</h3>
-            <ul className="space-y-3" role="list">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6">Company</h3>
+            <ul className="space-y-2 md:space-y-3" role="list">
               {links.company.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path} 
-                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer"
+                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer text-sm md:text-base"
                     aria-label={`${link.name} company page`}
                   >
                     <motion.span 

@@ -29,7 +29,7 @@
  */
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useLoader, useFrame, useThree } from '@react-three/fiber';
+import { useLoader, useThree } from '@react-three/fiber';
 import { 
   TextureLoader, 
   LinearMipmapLinearFilter, 
@@ -42,6 +42,7 @@ import {
   AdditiveBlending
 } from 'three';
 import { useMoonLighting } from '../../../utils/useMoonLighting';
+import useGlobalFrame from '../../../hooks/useGlobalFrame';
 
 // ========================================
 // SCI-FI GRID OVERLAY - PRESERVED  
@@ -49,9 +50,9 @@ import { useMoonLighting } from '../../../utils/useMoonLighting';
 const SciFiGridOverlay = ({ pulseRate, gridIntensity, colorCycle }) => {
   const gridRef = useRef();
   
-  useFrame(({ clock }) => {
+  useGlobalFrame((time) => {
     if (gridRef.current) {
-      const t = clock.getElapsedTime();
+      const t = time * 0.001; // Convert to seconds like clock.getElapsedTime()
       
       // Pulse the grid intensity
       const pulse = (Math.sin(t * pulseRate) + 1) / 2;
@@ -68,7 +69,7 @@ const SciFiGridOverlay = ({ pulseRate, gridIntensity, colorCycle }) => {
         gridRef.current.material.color.setRGB(r, g, b);
       }
     }
-  });
+  }, 'low'); // Low priority for visual effects
   
   return (
     <group>
@@ -515,17 +516,37 @@ const MissionMoon = ({
   const animationRef = useRef(null);
   
   // Texture loading - OPTIMIZED for WebP and mobile
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const textureConfiguredRef = useRef(false);
+  const stableIsMobile = useRef(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+  
+  // Only update mobile detection on significant viewport changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const handleResize = () => {
+      const newIsMobile = window.innerWidth < 768;
+      if (newIsMobile !== stableIsMobile.current) {
+        stableIsMobile.current = newIsMobile;
+        textureConfiguredRef.current = false; // Reset texture config flag
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const textureBasePath = '/assets/images/planets/2k/';
   
   const moonTexture = useLoader(TextureLoader, `${textureBasePath}moonmap2k.webp`);
   const moonBumpMap = useLoader(TextureLoader, `${textureBasePath}moonbump2k.webp`);
   
-  // Texture configuration - ENHANCED for WebP optimization
+  // 🚨 CRITICAL FIX: Only configure textures once per mobile state change
   useEffect(() => {
+    if (textureConfiguredRef.current) return;
+    
     // Set proper anisotropic filtering - reduced for mobile
-    moonTexture.anisotropy = isMobile ? 8 : 16;
-    moonBumpMap.anisotropy = isMobile ? 8 : 16;
+    moonTexture.anisotropy = stableIsMobile.current ? 8 : 16;
+    moonBumpMap.anisotropy = stableIsMobile.current ? 8 : 16;
     
     // Enable mipmapping
     moonTexture.generateMipmaps = true;
@@ -548,14 +569,17 @@ const MissionMoon = ({
     moonTexture.offset.set(0, 0);  // No offset to prevent scrolling effect
     moonBumpMap.repeat.set(1, 1);
     moonBumpMap.offset.set(0, 0);
-  }, [moonTexture, moonBumpMap, isMobile]);
+    
+    textureConfiguredRef.current = true;
+    console.log('[MOON_TEXTURE] Configured textures for mobile:', stableIsMobile.current);
+  }, [moonTexture, moonBumpMap]); // 🚨 REMOVED isMobile from deps to prevent recalculation
   
   // Rotation animation - REDUCED: Slower rotation to minimize stitch line visibility
-  useFrame(() => {
+  useGlobalFrame(() => {
     if (moonRef.current) {
       moonRef.current.rotation.y += 0.0005; // Reduced from 0.001 to minimize stitch exposure
     }
-  });
+  }, 'low'); // Low priority since rotation is not critical
   
   // 🚨 PHASE B1: Unified Animation Controller to prevent rAF overlap conflicts
   const useUnifiedAnimationController = () => {

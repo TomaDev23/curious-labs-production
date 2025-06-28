@@ -7,18 +7,20 @@
 
 import React, { useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
+import useGlobalFrame from '../hooks/useGlobalFrame';
 
 // Ultra-simple rotating cube
 function RotatingCube() {
   const meshRef = useRef();
 
-  useFrame((state, delta) => {
+  useGlobalFrame((time) => {
     if (meshRef.current) {
+      const delta = time * 0.001; // Convert to delta-like value
       meshRef.current.rotation.x += delta;
       meshRef.current.rotation.y += delta * 0.5;
     }
-  });
+  }, 'normal');
 
   return (
     <mesh ref={meshRef}>

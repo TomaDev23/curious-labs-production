@@ -6,18 +6,18 @@
  */
 
 import React, { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import useGlobalFrame from '../../hooks/useGlobalFrame';
 
 const SimpleTestSphere = ({ color = '#ff6b6b', position = [0, 0, 0] }) => {
   const meshRef = useRef();
 
   // Simple rotation animation
-  useFrame(() => {
+  useGlobalFrame(() => {
     if (meshRef.current) {
       meshRef.current.rotation.x += 0.01;
       meshRef.current.rotation.y += 0.01;
     }
-  });
+  }, 'low'); // Low priority for test component
 
   return (
     <mesh ref={meshRef} position={position}>

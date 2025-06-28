@@ -17,8 +17,9 @@
  */
 
 import React, { useRef, useEffect, useState } from 'react';
-import { useLoader, useFrame } from '@react-three/fiber';
+import { useLoader } from '@react-three/fiber';
 import { TextureLoader, LinearMipmapLinearFilter, LinearFilter, ClampToEdgeWrapping } from 'three';
+import useGlobalFrame from '../../../hooks/useGlobalFrame';
 
 // Earth mesh component - optimized for performance tiers
 const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' }) => {
@@ -29,18 +30,8 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const shouldSuppressEffects = isMobile && performanceMode !== 'high';
   
-  // 🎯 MOBILE FRAME THROTTLING: Reduce useFrame calls on mobile
-  const frameSkipRef = useRef(0);
-  const mobileFrameSkip = isMobile ? 3 : 0; // Skip 3 out of 4 frames on mobile
-
-  // Rotate the earth and clouds
-  useFrame(() => {
-    // 🎯 MOBILE THROTTLING: Skip frames on mobile devices
-    if (mobileFrameSkip > 0) {
-      frameSkipRef.current = (frameSkipRef.current + 1) % (mobileFrameSkip + 1);
-      if (frameSkipRef.current !== 0) return;
-    }
-    
+  // 🚨 MOBILE CRASH FIX: Replace manual frame skipping with useGlobalFrame
+  useGlobalFrame(() => {
     if (earthRef.current) {
       earthRef.current.rotation.y += shouldSuppressEffects ? 0.0001 : 0.0002;
       if (cloudsRef.current && !shouldSuppressEffects) {
@@ -48,7 +39,7 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
         cloudsRef.current.rotation.y += rotationSpeed;
       }
     }
-  });
+  }, 'normal'); // Normal priority for Earth rotation
 
   // Load texture maps with error handling and mobile optimization
   const textureBasePath = '/assets/images/planets/2k/';

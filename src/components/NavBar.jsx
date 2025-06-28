@@ -211,8 +211,8 @@ export default function NavBar() {
           </Link>
           
           <Link 
-            to="/blog" 
-            className={`text-white hover:text-purple-300 transition relative group ${location.pathname === '/blog' ? 'text-purple-300' : ''}`}
+            to="/transmissions" 
+            className={`text-white hover:text-purple-300 transition relative group ${location.pathname === '/transmissions' ? 'text-purple-300' : ''}`}
           >
             Blog
             {/* Base gradient line (always visible) */}
@@ -330,8 +330,8 @@ export default function NavBar() {
             </Link>
             
             <Link 
-              to="/blog" 
-              className={`block py-2 text-white hover:text-purple-300 ${location.pathname === '/blog' ? 'text-purple-300' : ''}`}
+              to="/transmissions" 
+              className={`block py-2 text-white hover:text-purple-300 ${location.pathname === '/transmissions' ? 'text-purple-300' : ''}`}
             >
               Blog
             </Link>

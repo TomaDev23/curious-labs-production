@@ -26,13 +26,37 @@ const useThrottledIntersection = (
   const observerRef = useRef(null);
   const isObservingRef = useRef(false);
   
+  // 🚨 PHASE B2: Enhanced element tracking to prevent observer leaks
+  const currentElementRef = useRef(null);
+  const subscriptionIdRef = useRef(null);
+  
   // Update callback ref when callback changes
   useEffect(() => {
     callbackRef.current = callback;
   }, [callback]);
   
   useEffect(() => {
-    const element = elementRef.current;
+    const element = elementRef?.current;
+    const previousElement = currentElementRef.current;
+    
+    // 🚨 PHASE B2: Cleanup previous observer if element changed
+    if (previousElement && previousElement !== element && isObservingRef.current) {
+      try {
+        const observer = observerRef.current;
+        if (observer && subscriptionIdRef.current) {
+          observer.unobserve(previousElement);
+          globalObserverPool.unsubscribe(observer, subscriptionIdRef.current, previousElement);
+          console.log('[PHASE_B2] Cleaned up observer for previous element');
+        }
+      } catch (error) {
+        console.warn('[PHASE_B2] Previous element cleanup failed:', error);
+      }
+      isObservingRef.current = false;
+    }
+    
+    // Update current element reference
+    currentElementRef.current = element;
+    
     if (!element || isObservingRef.current) return;
     
     try {
@@ -60,29 +84,34 @@ const useThrottledIntersection = (
         }
       };
       
-      // Subscribe to observer
-      globalObserverPool.subscribe(observer, throttledCallback, element);
+      // 🚨 PHASE B2: Create unique subscription ID for tracking
+      const subscriptionId = `obs_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      subscriptionIdRef.current = subscriptionId;
+      
+      // Subscribe to observer with enhanced tracking
+      globalObserverPool.subscribe(observer, throttledCallback, element, subscriptionId);
       observer.observe(element);
       isObservingRef.current = true;
       
-      console.log('[PHASE_B] Element subscribed to pooled observer');
+      console.log('[PHASE_B2] Element subscribed to pooled observer:', subscriptionId);
       
       return () => {
-        if (observer && element && isObservingRef.current) {
+        if (observer && element && isObservingRef.current && subscriptionIdRef.current) {
           try {
             observer.unobserve(element);
-            globalObserverPool.unsubscribe(observer, throttledCallback, element);
+            globalObserverPool.unsubscribe(observer, subscriptionIdRef.current, element);
             isObservingRef.current = false;
-            console.log('[PHASE_B] Element unsubscribed from pooled observer');
+            subscriptionIdRef.current = null;
+            console.log('[PHASE_B2] Element unsubscribed from pooled observer');
           } catch (error) {
-            console.warn('[PHASE_B] Observer cleanup failed:', error);
+            console.warn('[PHASE_B2] Observer cleanup failed:', error);
           }
         }
       };
     } catch (error) {
-      console.warn('[PHASE_B] Failed to setup throttled intersection observer:', error);
+      console.warn('[PHASE_B2] Failed to setup throttled intersection observer:', error);
     }
-  }, [elementRef, options, throttleMs]);
+  }, [elementRef?.current, options, throttleMs]);
   
   // Return observer stats for debugging
   return {

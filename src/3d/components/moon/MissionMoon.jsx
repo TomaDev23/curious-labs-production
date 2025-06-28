@@ -557,6 +557,74 @@ const MissionMoon = ({
     }
   });
   
+  // 🚨 PHASE B1: Unified Animation Controller to prevent rAF overlap conflicts
+  const useUnifiedAnimationController = () => {
+    const animationQueue = useRef([]);
+    const isAnimating = useRef(false);
+    
+    const scheduleAnimation = (animationFn, animationId) => {
+      // Cancel any existing animation with the same ID
+      animationQueue.current = animationQueue.current.filter(anim => anim.id !== animationId);
+      
+      // Add new animation to queue
+      animationQueue.current.push({ fn: animationFn, id: animationId });
+      
+      // Start processing if not already running
+      if (!isAnimating.current) {
+        processAnimationQueue();
+      }
+    };
+    
+    const processAnimationQueue = () => {
+      if (animationQueue.current.length === 0) {
+        isAnimating.current = false;
+        animationRef.current = null;
+        return;
+      }
+      
+      isAnimating.current = true;
+      
+      // Process all queued animations in sequence
+      const currentAnimations = [...animationQueue.current];
+      animationQueue.current = [];
+      
+      const executeAnimations = (timestamp) => {
+        let hasActiveAnimations = false;
+        
+        currentAnimations.forEach(({ fn, id }) => {
+          const shouldContinue = fn(timestamp);
+          if (shouldContinue) {
+            hasActiveAnimations = true;
+            // Re-queue if animation should continue
+            animationQueue.current.push({ fn, id });
+          }
+        });
+        
+        if (hasActiveAnimations || animationQueue.current.length > 0) {
+          animationRef.current = window.requestAnimationFrame(processAnimationQueue);
+        } else {
+          isAnimating.current = false;
+          animationRef.current = null;
+        }
+      };
+      
+      animationRef.current = window.requestAnimationFrame(executeAnimations);
+    };
+    
+    const cleanup = () => {
+      if (animationRef.current) {
+        window.cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+      animationQueue.current = [];
+      isAnimating.current = false;
+    };
+    
+    return { scheduleAnimation, cleanup };
+  };
+  
+  const { scheduleAnimation, cleanup: cleanupAnimations } = useUnifiedAnimationController();
+  
   // Camera FOV animation for supermoon - PRESERVED EXACTLY
   useEffect(() => {
     if (anomalyMode !== prevAnomalyMode) {
@@ -564,8 +632,7 @@ const MissionMoon = ({
       
       // Cancel any existing animation
       if (animationRef.current) {
-        window.cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
+        cleanupAnimations();
       }
       
       // Supermoon zoom in
@@ -583,14 +650,10 @@ const MissionMoon = ({
           const newFOV = startFOV + (targetFOV - startFOV) * eased;
           setCameraFOV(newFOV);
           
-          if (progress < 1) {
-            animationRef.current = window.requestAnimationFrame(animateZoom);
-          } else {
-            animationRef.current = null;
-          }
+          return progress < 1;
         };
         
-        animationRef.current = window.requestAnimationFrame(animateZoom);
+        scheduleAnimation(animateZoom, 'supermoonZoomIn');
       }
       // Zoom back out when leaving supermoon
       else if (prevAnomalyMode === 'supermoon') {
@@ -607,27 +670,20 @@ const MissionMoon = ({
           const newFOV = startFOV + (targetFOV - startFOV) * eased;
           setCameraFOV(newFOV);
           
-          if (progress < 1) {
-            animationRef.current = window.requestAnimationFrame(animateZoomOut);
-          } else {
-            animationRef.current = null;
-          }
+          return progress < 1;
         };
         
-        animationRef.current = window.requestAnimationFrame(animateZoomOut);
+        scheduleAnimation(animateZoomOut, 'supermoonZoomOut');
       }
     }
-  }, [anomalyMode, prevAnomalyMode, cameraFOV]);
+  }, [anomalyMode, prevAnomalyMode, cameraFOV, scheduleAnimation, cleanupAnimations]);
   
-  // Cleanup on unmount - PRESERVED
+  // 🚨 PHASE B1: Unified cleanup on unmount
   useEffect(() => {
     return () => {
-      if (animationRef.current) {
-        window.cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
-      }
+      cleanupAnimations();
     };
-  }, []);
+  }, [cleanupAnimations]);
   
   // Material configuration based on anomaly mode - PRESERVED EXACTLY
   const isSupermoon = anomalyMode === 'supermoon';

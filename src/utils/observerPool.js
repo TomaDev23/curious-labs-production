@@ -11,6 +11,11 @@ class ObserverPool {
     this.callbacks = new Map();
     this.throttleMap = new Map();
     this.activeElements = new WeakMap();
+    
+    // 🚨 PHASE B3: Enhanced tracking for subscription safety
+    this.subscriptions = new Map(); // Track subscriptions by ID
+    this.isShuttingDown = false;
+    this.subscriptionCounter = 0;
   }
   
   /**
@@ -68,29 +73,84 @@ class ObserverPool {
   }
   
   /**
-   * Subscribe a callback to an observer
+   * Subscribe a callback to an observer with enhanced tracking
    */
-  subscribe(observer, callback, element) {
-    const key = this.findObserverKey(observer);
-    if (key) {
-      this.callbacks.get(key).add(callback);
-      if (element) {
-        this.activeElements.set(element, { observer, callback });
-      }
+  subscribe(observer, callback, element, subscriptionId = null) {
+    // 🚨 PHASE B3: Prevent operations during shutdown
+    if (this.isShuttingDown) {
+      console.warn('[PHASE_B3] Cannot subscribe during shutdown');
+      return null;
     }
+    
+    const key = this.findObserverKey(observer);
+    if (!key) {
+      console.warn('[PHASE_B3] Observer not found in pool');
+      return null;
+    }
+    
+    // Generate subscription ID if not provided
+    const subId = subscriptionId || `sub_${++this.subscriptionCounter}_${Date.now()}`;
+    
+    // Track subscription with enhanced metadata
+    const subscription = {
+      id: subId,
+      observer,
+      callback,
+      element,
+      observerKey: key,
+      createdAt: Date.now(),
+      isActive: true
+    };
+    
+    this.subscriptions.set(subId, subscription);
+    this.callbacks.get(key).add(callback);
+    
+    if (element) {
+      this.activeElements.set(element, { observer, callback, subscriptionId: subId });
+    }
+    
+    console.log(`[PHASE_B3] Subscription created: ${subId}`);
+    return subId;
   }
   
   /**
-   * Unsubscribe a callback from an observer
+   * Unsubscribe using subscription ID for precise cleanup
    */
-  unsubscribe(observer, callback, element) {
-    const key = this.findObserverKey(observer);
-    if (key) {
-      this.callbacks.get(key).delete(callback);
-      if (element) {
-        this.activeElements.delete(element);
-      }
+  unsubscribe(observer, subscriptionId, element) {
+    // 🚨 PHASE B3: Enhanced unsubscribe with subscription ID tracking
+    if (!subscriptionId) {
+      console.warn('[PHASE_B3] No subscription ID provided for unsubscribe');
+      return false;
     }
+    
+    const subscription = this.subscriptions.get(subscriptionId);
+    if (!subscription) {
+      console.warn(`[PHASE_B3] Subscription not found: ${subscriptionId}`);
+      return false;
+    }
+    
+    if (!subscription.isActive) {
+      console.warn(`[PHASE_B3] Subscription already inactive: ${subscriptionId}`);
+      return false;
+    }
+    
+    const key = subscription.observerKey;
+    const callbacks = this.callbacks.get(key);
+    
+    if (callbacks) {
+      callbacks.delete(subscription.callback);
+    }
+    
+    if (subscription.element) {
+      this.activeElements.delete(subscription.element);
+    }
+    
+    // Mark as inactive and remove from tracking
+    subscription.isActive = false;
+    this.subscriptions.delete(subscriptionId);
+    
+    console.log(`[PHASE_B3] Subscription cleaned up: ${subscriptionId}`);
+    return true;
   }
   
   /**
@@ -118,36 +178,67 @@ class ObserverPool {
   }
   
   /**
-   * Get observer statistics
+   * Enhanced observer statistics with subscription tracking
    */
   getStats() {
+    const activeSubscriptions = Array.from(this.subscriptions.values())
+      .filter(sub => sub.isActive).length;
+      
     return {
       totalObservers: this.observers.size,
       totalCallbacks: Array.from(this.callbacks.values())
         .reduce((sum, callbacks) => sum + callbacks.size, 0),
-      activeElements: this.activeElements.size || 0
+      activeElements: this.activeElements.size || 0,
+      totalSubscriptions: this.subscriptions.size,
+      activeSubscriptions,
+      isShuttingDown: this.isShuttingDown
     };
   }
   
   /**
-   * Clean up all observers and callbacks
+   * Enhanced cleanup with shutdown safety
    */
   cleanup() {
-    console.log('[PHASE_B] Cleaning up observer pool...');
+    console.log('[PHASE_B3] Cleaning up observer pool...');
     
-    this.observers.forEach((observer, key) => {
-      try {
-        observer.disconnect();
-      } catch (error) {
-        console.warn(`[PHASE_B] Failed to disconnect observer ${key}:`, error);
+    // 🚨 PHASE B3: Set shutdown flag to prevent new subscriptions
+    this.isShuttingDown = true;
+    
+    // Clean up all active subscriptions
+    const activeSubscriptions = Array.from(this.subscriptions.keys());
+    console.log(`[PHASE_B3] Cleaning up ${activeSubscriptions.length} active subscriptions`);
+    
+    activeSubscriptions.forEach(subId => {
+      const subscription = this.subscriptions.get(subId);
+      if (subscription && subscription.isActive) {
+        try {
+          if (subscription.element && subscription.observer) {
+            subscription.observer.unobserve(subscription.element);
+          }
+          subscription.isActive = false;
+        } catch (error) {
+          console.warn(`[PHASE_B3] Failed to cleanup subscription ${subId}:`, error);
+        }
       }
     });
     
+    // Disconnect all observers
+    this.observers.forEach((observer, key) => {
+      try {
+        observer.disconnect();
+        console.log(`[PHASE_B3] Disconnected observer: ${key}`);
+      } catch (error) {
+        console.warn(`[PHASE_B3] Failed to disconnect observer ${key}:`, error);
+      }
+    });
+    
+    // Clear all maps
     this.observers.clear();
     this.callbacks.clear();
     this.throttleMap.clear();
+    this.subscriptions.clear();
     
-    console.log('[PHASE_B] Observer pool cleanup completed');
+    console.log('[PHASE_B3] Observer pool cleanup completed');
   }
   
   /**

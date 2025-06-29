@@ -515,6 +515,31 @@ const MissionMoon = ({
   const [prevAnomalyMode, setPrevAnomalyMode] = useState(null);
   const animationRef = useRef(null);
   
+  // 🎯 FOLLOW HEROEARTH PATTERN: Performance tier detection
+  const [performanceMode, setPerformanceMode] = useState('high');
+  
+  // Device capability detection - COPIED FROM HEROEARTH
+  useEffect(() => {
+    const checkDevice = () => {
+      const mobile = window.innerWidth < 768;
+      const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 4;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      // Set performance mode based on device capabilities
+      if (prefersReducedMotion || (mobile && lowMemory)) {
+        setPerformanceMode('minimal');
+      } else if (mobile || lowMemory) {
+        setPerformanceMode('low');
+      } else {
+        setPerformanceMode('high');
+      }
+    };
+    
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+  
   // Texture loading - OPTIMIZED for WebP and mobile
   const textureConfiguredRef = useRef(false);
   const stableIsMobile = useRef(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -544,9 +569,14 @@ const MissionMoon = ({
   useEffect(() => {
     if (textureConfiguredRef.current) return;
     
-    // Set proper anisotropic filtering - reduced for mobile
-    moonTexture.anisotropy = stableIsMobile.current ? 8 : 16;
-    moonBumpMap.anisotropy = stableIsMobile.current ? 8 : 16;
+    // 🎯 FOLLOW HEROEARTH PATTERN: Performance-based texture optimization
+    const mobileAnisotropy = performanceMode === 'minimal' ? 4 : 8;
+    const desktopAnisotropy = performanceMode === 'high' ? 16 : 12;
+    const anisotropyLevel = stableIsMobile.current ? mobileAnisotropy : desktopAnisotropy;
+    
+    // Set proper anisotropic filtering - performance tier based
+    moonTexture.anisotropy = anisotropyLevel;
+    moonBumpMap.anisotropy = anisotropyLevel;
     
     // Enable mipmapping
     moonTexture.generateMipmaps = true;
@@ -571,8 +601,8 @@ const MissionMoon = ({
     moonBumpMap.offset.set(0, 0);
     
     textureConfiguredRef.current = true;
-    console.log('[MOON_TEXTURE] Configured textures for mobile:', stableIsMobile.current);
-  }, [moonTexture, moonBumpMap]); // 🚨 REMOVED isMobile from deps to prevent recalculation
+    console.log('[MOON_TEXTURE] Configured textures for performance mode:', performanceMode);
+  }, [moonTexture, moonBumpMap, performanceMode]); // Include performanceMode in deps
   
   // Rotation animation - REDUCED: Slower rotation to minimize stitch line visibility
   useGlobalFrame(() => {
@@ -714,8 +744,46 @@ const MissionMoon = ({
   const isEclipseMode = anomalyMode === 'eclipse';
   const isSciFi = anomalyMode === 'scifi';
   
-  // Get lighting values from hook for material properties
-  const { phaseConfig } = useMoonLighting(debugPhase);
+  // Get current phase from debugPhase or calculate it
+  const getCurrentPhase = () => {
+    if (debugPhase !== null) {
+      if (debugPhase >= 0.9 || debugPhase <= 0.1) return 'newMoon';
+      if (debugPhase > 0.1 && debugPhase <= 0.25) return 'waxingCrescent';
+      if (debugPhase > 0.25 && debugPhase <= 0.4) return 'firstQuarter';
+      if (debugPhase > 0.4 && debugPhase <= 0.6) return 'waxingGibbous';
+      if (debugPhase > 0.6 && debugPhase <= 0.75) return 'fullMoon';
+      if (debugPhase > 0.75 && debugPhase <= 0.85) return 'waningGibbous';
+      if (debugPhase > 0.85 && debugPhase < 0.9) return 'lastQuarter';
+      return 'waningCrescent';
+    }
+    
+    // Auto calculation based on current date
+    const now = new Date();
+    const lunarCycle = 29.53; // days
+    const knownNewMoon = new Date('2024-01-11'); // Known new moon
+    const daysSinceNewMoon = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
+    const currentPhase = (daysSinceNewMoon % lunarCycle) / lunarCycle;
+    
+    if (currentPhase >= 0.9 || currentPhase <= 0.1) return 'newMoon';
+    if (currentPhase > 0.1 && currentPhase <= 0.25) return 'waxingCrescent';
+    if (currentPhase > 0.25 && currentPhase <= 0.4) return 'firstQuarter';
+    if (currentPhase > 0.4 && currentPhase <= 0.6) return 'waxingGibbous';
+    if (currentPhase > 0.6 && currentPhase <= 0.75) return 'fullMoon';
+    if (currentPhase > 0.75 && currentPhase <= 0.85) return 'waningGibbous';
+    if (currentPhase > 0.85 && currentPhase < 0.9) return 'lastQuarter';
+    return 'waningCrescent';
+  };
+  
+  const phaseConfig = getCurrentPhase();
+  
+  // 🎯 FOLLOW HEROEARTH PATTERN: Responsive geometry settings
+  const geometryDetail = performanceMode === 'minimal' ? 32 : performanceMode === 'low' ? 48 : 64;
+  const atmosphereDetail = performanceMode === 'minimal' ? 16 : 32;
+  const interactionDetail = performanceMode === 'minimal' ? 16 : 32;
+  
+  // 🎯 PERFORMANCE TIERS: Material quality settings
+  const bumpScale = performanceMode === 'minimal' ? 0.002 : performanceMode === 'low' ? 0.003 : 0.005;
+  const enableDithering = performanceMode !== 'minimal';
   
   // Clean emissive intensity based on moon phase
   const getMaterialEmissiveIntensity = () => {
@@ -759,9 +827,9 @@ const MissionMoon = ({
       {/* Moon Lighting System - PRESERVED */}
       <MoonLighting debugPhase={debugPhase} anomalyMode={anomalyMode} />
       
-      {/* Soft atmospheric haze - PRESERVED */}
+      {/* Soft atmospheric haze - PERFORMANCE OPTIMIZED */}
       <mesh>
-        <sphereGeometry args={[4.25, 32, 32]} />
+        <sphereGeometry args={[4.25, atmosphereDetail, atmosphereDetail]} />
         <meshBasicMaterial
           color={isSupermoon ? "#fff2d6" : "#ffffff"}
           transparent
@@ -770,34 +838,34 @@ const MissionMoon = ({
         />
       </mesh>
       
-      {/* Main Moon Mesh - PRESERVED EXACTLY */}
+      {/* Main Moon Mesh - PERFORMANCE OPTIMIZED */}
       <mesh 
         ref={moonRef} 
         receiveShadow={true} 
         castShadow={true}
         {...otherProps}
       >
-        <sphereGeometry args={[4.16, 64, 64]} />
+        <sphereGeometry args={[4.16, geometryDetail, geometryDetail]} />
         <meshStandardMaterial 
           map={moonTexture}
           bumpMap={moonBumpMap}
-          bumpScale={0.005}
+          bumpScale={bumpScale}
           color={isSupermoon ? "#f8e0b0" : "#f5f5f5"}
           metalness={isSupermoon ? 0.15 : 0.1}
           roughness={isSupermoon ? 0.65 : 0.7}
           emissive={getMaterialEmissiveColor()}
           emissiveIntensity={getMaterialEmissiveIntensity()}
           flatShading={false}
-          dithering={true}
+          dithering={enableDithering}
           transparent={false}
           opacity={1.0}
           depthWrite={true}
         />
       </mesh>
       
-      {/* Invisible interaction sphere - PRESERVED */}
+      {/* Invisible interaction sphere - PERFORMANCE OPTIMIZED */}
       <mesh>
-        <sphereGeometry args={[4.5, 32, 32]} />
+        <sphereGeometry args={[4.5, interactionDetail, interactionDetail]} />
         <meshBasicMaterial 
           transparent 
           opacity={0} 

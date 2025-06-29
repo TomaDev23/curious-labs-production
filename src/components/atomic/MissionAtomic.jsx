@@ -24,8 +24,8 @@ import {  motion, useAnimation  } from '../../FramerProvider';
 // 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
 const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
 
-// 🌙 STATIC MOON: Direct import to eliminate observer conflicts
-const MissionMoonWithCanvas = lazy(() => import('../../3d/components/moon/MissionMoonWithCanvas'));
+// 🌙 PROXY MOON: Use MoonSphereProxy for proper 3D isolation
+const MoonSphereProxy = lazy(() => import('./proxies/MoonSphereProxy'));
 
 // 🎯 UNIFIED MOBILE DETECTION: Replace inconsistent patterns
 import { useUnifiedMobile } from '../../hooks/useBreakpoint';
@@ -51,34 +51,86 @@ const getBackgroundImageSrc = (isMobile) => {
 // 🚨 CRASH FIX: Simple visibility detection without complex observers
 const useSimpleVisibility = (ref) => {
   const [isVisible, setIsVisible] = useState(false);
-  
+  const [hasBeenInView, setHasBeenInView] = useState(false);
+
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    
-    // Simple intersection observer - no pooling, no throttling
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
+        if (entry.isIntersecting) {
           setIsVisible(true);
-          // Disconnect after first intersection to prevent memory leaks
-          observer.disconnect();
+          setHasBeenInView(true);
+        } else {
+          setIsVisible(false);
         }
       },
-      {
-        rootMargin: '50px',
-        threshold: 0.1
+      { threshold: 0.1 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return { isVisible, hasBeenInView };
+};
+
+// Add new hook for moon viewport loading
+const useMoonViewportLoading = () => {
+  const [shouldLoadMoon, setShouldLoadMoon] = useState(false);
+
+  useEffect(() => {
+    // Safety checks for mobile/older browsers
+    if (typeof window === 'undefined' || !window.IntersectionObserver) {
+      // Fallback: load immediately if IntersectionObserver not supported
+      setShouldLoadMoon(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadMoon(true);
+          observer.disconnect(); // Only load once
+        }
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: '200px 0px 0px 0px' // Start loading 200px before moon comes into view
       }
     );
-    
-    observer.observe(element);
-    
-    return () => {
-      observer.disconnect();
+
+    // Observe the moon section with retry logic
+    const observeMoonSection = () => {
+      const moonSection = document.querySelector('[data-moon-section]');
+      if (moonSection) {
+        observer.observe(moonSection);
+        return true;
+      }
+      return false;
     };
-  }, [isVisible]);
-  
-  return isVisible;
+
+    // Try to observe immediately
+    if (!observeMoonSection()) {
+      // If element not found, retry after a short delay (for hydration)
+      const retryTimeout = setTimeout(() => {
+        if (!observeMoonSection()) {
+          // If still not found, fallback to immediate loading
+          setShouldLoadMoon(true);
+        }
+      }, 100);
+
+      return () => {
+        clearTimeout(retryTimeout);
+        observer.disconnect();
+      };
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return shouldLoadMoon;
 };
 
 // Advanced Neon Arc Animation Component - SIMPLIFIED
@@ -129,7 +181,9 @@ const MissionAtomic = () => {
   const [moonAnomalyMode, setMoonAnomalyMode] = useState(null);
   
   // 🚨 CRASH FIX: Simple visibility detection
-  const isVisible = useSimpleVisibility(containerRef);
+  const { isVisible, hasBeenInView } = useSimpleVisibility(containerRef);
+  
+  const shouldLoadMoon = useMoonViewportLoading();
   
   // 🚨 CRASH FIX: SINGLE, SIMPLE EFFECT - No mega-consolidation
   useEffect(() => {
@@ -403,17 +457,19 @@ const MissionAtomic = () => {
         />
 
         {/* 🚨 CRASH FIX: SIMPLIFIED MOON - No complex canvas mounting logic */}
-        <div className="relative flex items-center justify-center transform -translate-x-4 -translate-y-4">
-          {/* Moon Container - Simplified mounting */}
-          <div className="absolute left-[calc(20%-200px)] top-[calc(50%-200px)] w-[400px] h-[400px] z-10">
+        <div className="relative flex items-center justify-center transform -translate-x-4 -translate-y-4" data-moon-section>
+          {/* Moon Container - Restored to original positioning */}
+          <div className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" style={{ zIndex: 37 }}>
             <Suspense fallback={
-              <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-full">
-                <div className="text-white/40 text-sm">Loading...</div>
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-[280px] h-[280px] rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 flex items-center justify-center">
+                  <div className="text-white/60 text-sm">Loading Moon...</div>
+                </div>
               </div>
             }>
-              {/* 🚨 CRASH FIX: Simple conditional rendering - no race conditions */}
-              {isHydrated && typeof window !== 'undefined' && (
-                <MissionMoonWithCanvas 
+              {/* 🚨 LAZY LOADING: Only load moon when scrolled into viewport */}
+              {isHydrated && typeof window !== 'undefined' && shouldLoadMoon && (
+                <MoonSphereProxy 
                   className="w-[400px] h-[400px]" 
                   debugPhase={moonPhaseOverride}
                   anomalyMode={moonAnomalyMode}

@@ -189,6 +189,11 @@ export const useMoonLighting = (debugPhase = null, anomalyMode = null) => {
   const animationFrameRef = useRef(null);
   const transitionStartRef = useRef(null);
   const prevAnomalyMode = useRef(null);
+  
+  // Add logging debounce to prevent React Strict Mode duplicate logs
+  const lastLoggedTransition = useRef(null);
+  const lastLoggedCompletion = useRef(null);
+  const logDebounceTime = 100; // 100ms debounce
 
   // Set active anomaly mode when prop changes
   useEffect(() => {
@@ -245,7 +250,12 @@ export const useMoonLighting = (debugPhase = null, anomalyMode = null) => {
         setIsTransitioning(false);
         // Log transition completion but only in development mode
         if (process.env.NODE_ENV === 'development') {
-          console.log('🎬 Transition completed');
+          // Debounce completion logging too
+          const now = Date.now();
+          if (!lastLoggedCompletion.current || now - lastLoggedCompletion.current > logDebounceTime) {
+            console.log('🎬 Transition completed');
+            lastLoggedCompletion.current = now;
+          }
         }
       }
     };
@@ -320,7 +330,17 @@ export const useMoonLighting = (debugPhase = null, anomalyMode = null) => {
           // Log only significant transitions and only in development mode
           if (process.env.NODE_ENV === 'development') {
             if (hasSignificantPhaseChange) {
-              console.log(`🎬 Starting transition: ${currentPhaseConfig} → ${phaseConfigKey}`);
+              // Debounce logging to prevent React Strict Mode duplicates
+              const transitionKey = `${currentPhaseConfig}→${phaseConfigKey}`;
+              const now = Date.now();
+              
+              if (!lastLoggedTransition.current || 
+                  lastLoggedTransition.current.key !== transitionKey ||
+                  now - lastLoggedTransition.current.time > logDebounceTime) {
+                
+                console.log(`🎬 Starting transition: ${currentPhaseConfig} → ${phaseConfigKey}`);
+                lastLoggedTransition.current = { key: transitionKey, time: now };
+              }
             }
             
             if (hasAnomalyChange && activeAnomalyMode) {

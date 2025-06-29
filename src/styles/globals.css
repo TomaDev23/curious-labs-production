@@ -82,4 +82,16 @@
 /* Chrome, Safari, and Opera */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Eclipse pulse animation for nebula effect */
+@keyframes eclipsePulse {
+  0%, 100% { 
+    opacity: 0.8; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.05); 
+  }
 } 

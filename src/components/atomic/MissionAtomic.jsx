@@ -439,29 +439,44 @@ const MissionAtomic = () => {
   }, [isMobile, isHydrated, addTimer, clearAllTimers, backgroundLoaded]);
 
   // ⭐ Mission Control Board handlers - SIMPLIFIED with MA-4 guards
-  const handleMissionControlPhaseChange = useCallback((phase) => {
-    if (!isMountedRef.current) return;
-    
-    // 🚨 MA-4: Add debounce timer with tracking
-    const debounceTimer = addTimer(setTimeout(() => {
-      if (isMountedRef.current) {
-        setMoonPhaseOverride(phase);
-      }
-    }, 100));
-    
-  }, [addTimer]);
+  const handleMissionControlPhaseChange = (phase) => {
+    console.log(`🚀 MISSION ATOMIC: Received phase change from Mission Control - ${phase}`);
+    setMoonPhaseOverride(phase);
+  };
   
-  const handleMissionControlAnomalyChange = useCallback((anomalyMode) => {
-    if (!isMountedRef.current) return;
+  const handleMissionControlAnomalyChange = (anomalyMode) => {
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🚀 MISSION ATOMIC: Received anomaly change from Mission Control - ${anomalyMode}`);
+    }
     
-    // 🚨 MA-4: Add debounce timer with tracking
-    const debounceTimer = addTimer(setTimeout(() => {
-      if (isMountedRef.current) {
-        setMoonAnomalyMode(anomalyMode);
+    // Store previous phase when entering eclipse mode
+    if (anomalyMode === 'eclipse' && moonAnomalyMode !== 'eclipse') {
+      // Store current phase before switching to eclipse
+      const previousPhase = moonPhaseOverride;
+      
+      // Set to Waning Gibbous for better eclipse lighting
+      setMoonPhaseOverride(0.75); // Waning Gibbous phase value
+      
+      // Store the previous phase for restoration later
+      if (typeof window !== 'undefined') {
+        window.previousEclipsePhase = previousPhase;
       }
-    }, 100));
+    }
+    // Restore previous phase when exiting eclipse mode
+    else if (anomalyMode !== 'eclipse' && moonAnomalyMode === 'eclipse') {
+      // Restore the previous phase
+      if (typeof window !== 'undefined' && window.previousEclipsePhase !== undefined) {
+        setMoonPhaseOverride(window.previousEclipsePhase);
+        delete window.previousEclipsePhase;
+      } else {
+        // Fallback to auto mode if no previous phase stored
+        setMoonPhaseOverride(null);
+      }
+    }
     
-  }, [addTimer]);
+    setMoonAnomalyMode(anomalyMode);
+  };
 
   // Self-contained mission points data
   const MISSION_POINTS = [
@@ -673,6 +688,68 @@ const MissionAtomic = () => {
 
         {/* 🚨 CRASH FIX: SIMPLIFIED MOON - No complex canvas mounting logic */}
         <div className="relative flex items-center justify-center transform -translate-x-4 -translate-y-4" data-moon-section>
+          {/* Eclipse Nebula Background - CSS only, outside of Three.js */}
+          {moonAnomalyMode === 'eclipse' && (
+            <div className="absolute inset-0 w-[700px] h-[700px] md:w-[780px] md:h-[780px] pointer-events-none" style={{ zIndex: 36 }}>
+              {/* Main nebula layer */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255, 140, 0, 0.5) 0%, rgba(255, 100, 20, 0.3) 20%, rgba(200, 60, 10, 0.15) 40%, rgba(100, 30, 5, 0.08) 60%, rgba(50, 15, 2, 0.03) 80%, transparent 95%)',
+                  filter: 'blur(30px)',
+                  animation: 'eclipsePulse 4s ease-in-out infinite',
+                  borderRadius: '50%'
+                }}
+              />
+              
+              {/* Secondary nebula layer */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255, 120, 40, 0.4) 0%, rgba(255, 80, 20, 0.25) 25%, rgba(180, 50, 10, 0.12) 50%, rgba(90, 25, 5, 0.06) 75%, transparent 90%)',
+                  filter: 'blur(40px)',
+                  animation: 'eclipsePulse 6s ease-in-out infinite reverse',
+                  borderRadius: '50%'
+                }}
+              />
+              
+              {/* Outer atmospheric glow */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255, 100, 0, 0.2) 0%, rgba(255, 60, 0, 0.1) 30%, rgba(200, 40, 0, 0.05) 60%, rgba(100, 20, 0, 0.02) 80%, transparent 95%)',
+                  filter: 'blur(60px)',
+                  animation: 'eclipsePulse 8s ease-in-out infinite',
+                  borderRadius: '50%',
+                  transform: 'scale(1.2)'
+                }}
+              />
+              
+              {/* Inner corona effect */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255, 200, 100, 0.3) 0%, rgba(255, 140, 60, 0.15) 30%, rgba(255, 100, 30, 0.08) 50%, rgba(200, 80, 20, 0.04) 70%, transparent 85%)',
+                  filter: 'blur(20px)',
+                  animation: 'eclipsePulse 3s ease-in-out infinite',
+                  borderRadius: '50%'
+                }}
+              />
+              
+              {/* Additional soft glow layer */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(255, 160, 80, 0.15) 0%, rgba(255, 120, 40, 0.08) 35%, rgba(200, 80, 20, 0.04) 60%, transparent 80%)',
+                  filter: 'blur(50px)',
+                  animation: 'eclipsePulse 5s ease-in-out infinite',
+                  borderRadius: '50%',
+                  transform: 'scale(1.4)'
+                }}
+              />
+            </div>
+          )}
+          
           {/* Moon Container - Restored to original positioning */}
           <div className="w-[700px] h-[700px] md:w-[780px] md:h-[780px]" style={{ zIndex: 37 }}>
             <Suspense fallback={

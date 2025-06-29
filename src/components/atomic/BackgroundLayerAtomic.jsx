@@ -19,6 +19,10 @@
 // 🔗 DEPENDENCIES: framer-motion, react
 
 import React, { useEffect, useState, useRef, useId } from 'react';
+import { motion } from '../../FramerProvider';
+
+// 🎯 UNIFIED MOBILE DETECTION: Replace inconsistent patterns  
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
 
 // Internal performance detection
 const useDeviceCapabilities = () => {
@@ -308,6 +312,9 @@ const AnimatedGridPattern = ({
 export default function BackgroundLayerAtomic() {
   const { performanceTier, prefersReducedMotion } = useDeviceCapabilities();
   
+  // 🚨 MOBILE CRASH FIX: Add mobile detection
+  const { isMobile } = useUnifiedMobile();
+  
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none" aria-hidden="true">
       {/* Base gradient background */}
@@ -318,7 +325,8 @@ export default function BackgroundLayerAtomic() {
         className="absolute left-0 top-0 w-[500px] h-[120vh] pointer-events-none"
         style={{
           background: 'radial-gradient(ellipse 500px 120vh at 0% 50%, rgba(255, 255, 255, 0.15) 0%, rgba(200, 220, 255, 0.12) 20%, rgba(150, 180, 255, 0.08) 40%, rgba(120, 160, 255, 0.04) 60%, transparent 80%)',
-          filter: 'blur(25px)',
+          // 🚨 MOBILE CRASH FIX #6: Disable heavy blur filters on mobile
+          filter: isMobile ? 'none' : 'blur(25px)',
           zIndex: 30,
           top: '-10vh'
         }}
@@ -329,7 +337,8 @@ export default function BackgroundLayerAtomic() {
         className="absolute left-0 top-0 w-[350px] h-[120vh] pointer-events-none"
         style={{
           background: 'radial-gradient(ellipse 350px 120vh at 0% 50%, rgba(255, 255, 255, 0.08) 0%, rgba(220, 235, 255, 0.06) 30%, rgba(180, 200, 255, 0.03) 50%, transparent 70%)',
-          filter: 'blur(50px)',
+          // 🚨 MOBILE CRASH FIX #6: Disable heavy blur filters on mobile
+          filter: isMobile ? 'none' : 'blur(50px)',
           zIndex: 28,
           top: '-10vh'
         }}
@@ -340,7 +349,8 @@ export default function BackgroundLayerAtomic() {
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{
           background: 'linear-gradient(to right, rgba(255, 255, 255, 0.06) 0%, rgba(220, 235, 255, 0.04) 15%, rgba(180, 200, 255, 0.03) 30%, rgba(150, 180, 255, 0.015) 45%, transparent 60%)',
-          filter: 'blur(30px)',
+          // 🚨 MOBILE CRASH FIX #6: Disable heavy blur filters on mobile
+          filter: isMobile ? 'none' : 'blur(30px)',
           zIndex: 32
         }}
       />
@@ -351,7 +361,8 @@ export default function BackgroundLayerAtomic() {
         style={{
           top: '100vh',
           background: 'linear-gradient(to right, rgba(255, 255, 255, 0.03) 0%, rgba(200, 220, 255, 0.02) 20%, rgba(150, 180, 255, 0.015) 40%, rgba(120, 160, 255, 0.01) 60%, transparent 80%)',
-          filter: 'blur(40px)',
+          // 🚨 MOBILE CRASH FIX #6: Disable heavy blur filters on mobile
+          filter: isMobile ? 'none' : 'blur(40px)',
           zIndex: 3
         }}
       />
@@ -362,7 +373,8 @@ export default function BackgroundLayerAtomic() {
         style={{
           top: '95vh',
           background: 'radial-gradient(ellipse 600px 200px at 0% 0%, rgba(255, 255, 255, 0.06) 0%, rgba(200, 220, 255, 0.04) 30%, rgba(150, 180, 255, 0.02) 60%, transparent 100%)',
-          filter: 'blur(35px)',
+          // 🚨 MOBILE CRASH FIX #6: Disable heavy blur filters on mobile
+          filter: isMobile ? 'none' : 'blur(35px)',
           zIndex: 2
         }}
       />
@@ -376,14 +388,18 @@ export default function BackgroundLayerAtomic() {
       </div>
       
       {/* Nebula effect - only show on high performance devices */}
-      {performanceTier === 'high' && (
+      {performanceTier === 'high' && !isMobile && (
         <div 
-          className="absolute inset-0 mix-blend-screen opacity-30"
+          // 🚨 MOBILE CRASH FIX #8: Disable mix-blend-mode on mobile
+          className="absolute inset-0 opacity-30"
           style={{
             backgroundImage: 'url("/images/nebula-texture.png")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            filter: 'blur(40px)'
+            // 🚨 MOBILE CRASH FIX #6: Disable heavy blur filters on mobile
+            filter: 'blur(40px)',
+            // 🚨 MOBILE CRASH FIX #8: Only use mix-blend on desktop
+            mixBlendMode: 'screen'
           }}
         />
       )}

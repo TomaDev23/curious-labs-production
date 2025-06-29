@@ -20,6 +20,9 @@
 
 import React, { useEffect, useState, useMemo, memo } from 'react';
 
+// 🎯 UNIFIED MOBILE DETECTION: Replace inconsistent patterns
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
+
 // Internal performance detection (simplified for Guardian)
 const useDeviceCapabilities = () => {
   const [capabilities, setCapabilities] = useState({
@@ -74,19 +77,20 @@ const useDeviceCapabilities = () => {
 const BackgroundLayerGuardian = memo(() => {
   const { performanceTier, prefersReducedMotion } = useDeviceCapabilities();
   
-  // Memoize expensive style calculations
+  // 🚨 MOBILE CRASH FIX: Add mobile detection
+  const { isMobile } = useUnifiedMobile();
+
   const baseGradientStyle = useMemo(() => ({
     background: `
       linear-gradient(180deg, 
-        #1e3a8a 0%,           /* Deep blue at top (hero) */
-        #3b82f6 15%,          /* Medium blue */
-        #60a5fa 30%,          /* Lighter blue */
-        #93c5fd 45%,          /* Sky blue */
-        #dbeafe 60%,          /* Very light blue */
-        #f0f9ff 75%,          /* Almost white */
-        #fef3c7 85%,          /* Warm sunrise yellow */
-        #fed7aa 95%,          /* Soft peach */
-        #fecaca 100%          /* Gentle pink at bottom */
+        #fef3c7 0%,     /* Warm golden sunrise */
+        #fed7aa 15%,    /* Soft peach */
+        #fbbf24 30%,    /* Golden yellow */
+        #f59e0b 45%,    /* Amber */
+        #d97706 60%,    /* Orange */
+        #ea580c 75%,    /* Deep orange */
+        #dc2626 90%,    /* Red */
+        #7c2d12 100%    /* Deep brown-red */
       )
     `,
     zIndex: 1
@@ -94,17 +98,19 @@ const BackgroundLayerGuardian = memo(() => {
 
   const sunGlareStyle = useMemo(() => ({
     background: 'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.4) 0%, rgba(254, 243, 199, 0.3) 20%, rgba(253, 224, 71, 0.2) 40%, rgba(251, 191, 36, 0.1) 60%, transparent 80%)',
-    filter: 'blur(60px)',
+    // 🚨 MOBILE CRASH FIX #7: Disable heavy blur filters on mobile
+    filter: isMobile ? 'none' : 'blur(60px)',
     zIndex: 10,
     transform: 'translate(200px, -200px)'
-  }), []);
+  }), [isMobile]);
 
   const secondaryGlowStyle = useMemo(() => ({
     background: 'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(254, 243, 199, 0.4) 30%, rgba(253, 224, 71, 0.2) 60%, transparent 80%)',
-    filter: 'blur(40px)',
+    // 🚨 MOBILE CRASH FIX #7: Disable heavy blur filters on mobile
+    filter: isMobile ? 'none' : 'blur(40px)',
     zIndex: 12,
     transform: 'translate(100px, -100px)'
-  }), []);
+  }), [isMobile]);
   
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none" aria-hidden="true">
@@ -139,7 +145,8 @@ const BackgroundLayerGuardian = memo(() => {
               transparent 75%
             )
           `,
-          filter: 'blur(80px)',
+          // 🚨 MOBILE CRASH FIX #7: Disable heavy blur filters on mobile
+          filter: isMobile ? 'none' : 'blur(80px)',
           zIndex: 8
         }}
       />
@@ -156,18 +163,20 @@ const BackgroundLayerGuardian = memo(() => {
               transparent 80%
             )
           `,
-          filter: 'blur(100px)',
+          // 🚨 MOBILE CRASH FIX #7: Disable heavy blur filters on mobile
+          filter: isMobile ? 'none' : 'blur(100px)',
           zIndex: 5
         }}
       />
 
       {/* Gentle Cloud-like Wisps - Only on high performance */}
-      {performanceTier === 'high' && !prefersReducedMotion && (
+      {performanceTier === 'high' && !prefersReducedMotion && !isMobile && (
         <>
           <div 
             className="absolute top-[20vh] left-[10%] w-[300px] h-[100px] pointer-events-none opacity-20"
             style={{
               background: 'radial-gradient(ellipse 300px 100px at center, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 40%, transparent 70%)',
+              // 🚨 MOBILE CRASH FIX #7: Disable heavy blur filters on mobile
               filter: 'blur(30px)',
               zIndex: 15,
               animation: 'float 20s ease-in-out infinite'
@@ -178,6 +187,7 @@ const BackgroundLayerGuardian = memo(() => {
             className="absolute top-[40vh] right-[15%] w-[250px] h-[80px] pointer-events-none opacity-15"
             style={{
               background: 'radial-gradient(ellipse 250px 80px at center, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 80%)',
+              // 🚨 MOBILE CRASH FIX #7: Disable heavy blur filters on mobile
               filter: 'blur(25px)',
               zIndex: 14,
               animation: 'float 25s ease-in-out infinite reverse'
@@ -188,6 +198,7 @@ const BackgroundLayerGuardian = memo(() => {
             className="absolute top-[60vh] left-[20%] w-[200px] h-[60px] pointer-events-none opacity-10"
             style={{
               background: 'radial-gradient(ellipse 200px 60px at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 60%, transparent 90%)',
+              // 🚨 MOBILE CRASH FIX #7: Disable heavy blur filters on mobile
               filter: 'blur(20px)',
               zIndex: 13,
               animation: 'float 30s ease-in-out infinite'

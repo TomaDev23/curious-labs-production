@@ -20,6 +20,7 @@
 
 import React, { useState, useEffect, Suspense, lazy, useRef, useCallback } from 'react';
 import {  motion, useAnimation  } from '../../FramerProvider';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../../utils/SharedIO';
 
 // 🚀 LAZY LOAD: Convert MissionControlBoard to lazy loading for bundle optimization
 const MissionControlBoard = lazy(() => import('../cosmic/MissionControlBoard'));
@@ -52,13 +53,16 @@ const getBackgroundImageSrc = (isMobile) => {
 const useSimpleVisibility = (ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [hasBeenInView, setHasBeenInView] = useState(false);
+  const unsubscribeRef = useRef(null);
 
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
+    // 🚨 MA-3: Use SharedIO instead of creating individual observer
+    const unsubscribe = sharedObserve(
+      element,
+      (entry) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
           setHasBeenInView(true);
@@ -69,18 +73,44 @@ const useSimpleVisibility = (ref) => {
       { threshold: 0.1 }
     );
 
-    observer.observe(element);
-    return () => observer.disconnect();
+    unsubscribeRef.current = unsubscribe;
+    
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
   }, []);
 
   return { isVisible, hasBeenInView };
 };
 
-// Add new hook for moon viewport loading
+// Add new hook for moon viewport loading - MA-4 ENHANCED + MA-3 SHARED IO
 const useMoonViewportLoading = () => {
   const [shouldLoadMoon, setShouldLoadMoon] = useState(false);
   const mountedRef = useRef(true);
   const timersRef = useRef([]);
+  const unsubscribeRef = useRef(null);
+
+  // 🚨 MA-4: Enhanced timer management for this hook
+  const addTimer = useCallback((timerId) => {
+    if (mountedRef.current) {
+      timersRef.current.push(timerId);
+    }
+    return timerId;
+  }, []);
+
+  const clearAllTimers = useCallback(() => {
+    timersRef.current.forEach(timer => {
+      try {
+        clearTimeout(timer);
+      } catch (error) {
+        console.warn('[MA-4] useMoonViewportLoading timer cleanup failed:', error);
+      }
+    });
+    timersRef.current = [];
+  }, []);
 
   useEffect(() => {
     // Safety checks for mobile/older browsers
@@ -90,24 +120,30 @@ const useMoonViewportLoading = () => {
       return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && mountedRef.current) {
-          setShouldLoadMoon(true);
-          observer.disconnect(); // Only load once
-        }
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: '200px 0px 0px 0px' // Start loading 200px before moon comes into view
-      }
-    );
-
-    // Observe the moon section with retry logic
+    // Observe the moon section with retry logic using SharedIO
     const observeMoonSection = () => {
       const moonSection = document.querySelector('[data-moon-section]');
       if (moonSection) {
-        observer.observe(moonSection);
+        // 🚨 MA-3: Use SharedIO for moon section observation
+        const unsubscribe = sharedObserve(
+          moonSection,
+          (entry) => {
+            if (entry.isIntersecting && mountedRef.current) {
+              setShouldLoadMoon(true);
+              // Unsubscribe after first trigger (load once)
+              if (unsubscribeRef.current) {
+                unsubscribeRef.current();
+                unsubscribeRef.current = null;
+              }
+            }
+          },
+          { 
+            threshold: 0.1,
+            rootMargin: '200px 0px 0px 0px' // Start loading 200px before moon comes into view
+          }
+        );
+        
+        unsubscribeRef.current = unsubscribe;
         return true;
       }
       return false;
@@ -116,55 +152,128 @@ const useMoonViewportLoading = () => {
     // Try to observe immediately
     if (!observeMoonSection()) {
       // If element not found, retry after a short delay (for hydration)
-      const retryTimeout = setTimeout(() => {
-        if (!mountedRef.current) return; // 🚀 A-3: Mount guard
+      const retryTimeout = addTimer(setTimeout(() => {
+        if (!mountedRef.current) return; // 🚀 MA-4: Mount guard
         if (!observeMoonSection()) {
           // If still not found, fallback to immediate loading
           if (mountedRef.current) setShouldLoadMoon(true);
         }
-      }, 100);
+      }, 100));
       
-      // 🚀 A-3: Track timer for cleanup
-      timersRef.current.push(retryTimeout);
+      // 🚨 MA-4: Add fallback timeout to prevent infinite waiting
+      const fallbackTimeout = addTimer(setTimeout(() => {
+        if (mountedRef.current && !shouldLoadMoon) {
+          console.warn('[MA-4] Moon section not found, loading immediately');
+          setShouldLoadMoon(true);
+        }
+      }, 2000)); // 2 second fallback
 
       return () => {
         mountedRef.current = false;
-        // 🚀 A-3: Clear all tracked timers
-        timersRef.current.forEach(timer => clearTimeout(timer));
-        timersRef.current = [];
-        observer.disconnect();
+        // 🚨 MA-4: Clear all tracked timers
+        clearAllTimers();
+        // 🚨 MA-3: Clean up SharedIO subscription
+        if (unsubscribeRef.current) {
+          unsubscribeRef.current();
+          unsubscribeRef.current = null;
+        }
       };
     }
 
     return () => {
       mountedRef.current = false;
-      observer.disconnect();
+      clearAllTimers();
+      // 🚨 MA-3: Clean up SharedIO subscription
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
     };
-  }, []);
+  }, [addTimer, clearAllTimers]);
 
   return shouldLoadMoon;
 };
 
-// Advanced Neon Arc Animation Component - SIMPLIFIED
+// Advanced Neon Arc Animation Component - SIMPLIFIED + VIEWPORT OPTIMIZED + MA-3 SHARED IO
 const NeonArcAnimation = ({ children, prefersReducedMotion = false }) => {
   const controls = useAnimation();
+  const containerRef = useRef(null);
+  const [isInViewport, setIsInViewport] = useState(false);
+  const animationRef = useRef(null);
+  const unsubscribeRef = useRef(null);
   
-  // Set base neon effect immediately
+  // 🚨 MA-1: Viewport detection to pause off-screen animations + MA-3: SharedIO
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element || !window.IntersectionObserver) {
+      // Fallback: assume visible if no IntersectionObserver
+      setIsInViewport(true);
+      return;
+    }
+
+    // 🚨 MA-3: Use SharedIO for viewport detection
+    const unsubscribe = sharedObserve(
+      element,
+      (entry) => {
+        const isVisible = entry.isIntersecting;
+        setIsInViewport(isVisible);
+        
+        // 🚨 MA-1: Pause/resume animations based on viewport
+        if (isVisible && !prefersReducedMotion) {
+          // Resume animation when in viewport
+          controls.start({
+            opacity: 1.0,
+            textShadow: '0 0 8px rgba(0, 255, 255, 0.6), 0 0 16px rgba(0, 255, 255, 0.3)',
+            transition: { duration: 0.3 }
+          });
+        } else {
+          // Pause animation when off-screen or reduced motion
+          controls.stop();
+          controls.set({ 
+            opacity: prefersReducedMotion ? 1.0 : 0.8,
+            textShadow: prefersReducedMotion ? 'none' : '0 0 4px rgba(0, 255, 255, 0.3)'
+          });
+        }
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: '50px' // Start animation 50px before entering viewport
+      }
+    );
+
+    unsubscribeRef.current = unsubscribe;
+    
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, [controls, prefersReducedMotion]);
+
+  // Set initial state immediately
   React.useLayoutEffect(() => {
-    controls.set({ 
-      opacity: 1.0,
-      textShadow: '0 0 8px rgba(0, 255, 255, 0.6), 0 0 16px rgba(0, 255, 255, 0.3)' 
-    });
-  }, [controls]);
+    if (prefersReducedMotion) {
+      controls.set({ 
+        opacity: 1.0,
+        textShadow: 'none'
+      });
+    } else {
+      controls.set({ 
+        opacity: 0.8,
+        textShadow: '0 0 4px rgba(0, 255, 255, 0.3)'
+      });
+    }
+  }, [controls, prefersReducedMotion]);
 
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative">
       <motion.div
         className="text-white/80 text-xs font-mono"
         style={{ 
           zIndex: 155,
-          willChange: 'opacity, text-shadow',
-          filter: 'drop-shadow(0 0 4px rgba(0, 255, 255, 0.3))',
+          willChange: isInViewport && !prefersReducedMotion ? 'opacity, text-shadow' : 'auto',
+          filter: isInViewport && !prefersReducedMotion ? 'drop-shadow(0 0 4px rgba(0, 255, 255, 0.3))' : 'none',
           position: 'relative'
         }}
         animate={controls}
@@ -179,6 +288,11 @@ const MissionAtomic = () => {
   // 🚨 CRASH FIX: Simplified state management
   const isMountedRef = useRef(true);
   const containerRef = useRef(null);
+  
+  // 🚨 MA-4: Enhanced timer tracking for all component timers
+  const timersRef = useRef([]);
+  const intervalsRef = useRef([]);
+  const animationFramesRef = useRef([]);
   
   // 🎯 UNIFIED MOBILE DETECTION
   const { isMobile, isHydrated } = useUnifiedMobile();
@@ -196,6 +310,60 @@ const MissionAtomic = () => {
   const { isVisible, hasBeenInView } = useSimpleVisibility(containerRef);
   
   const shouldLoadMoon = useMoonViewportLoading();
+  
+  // 🚨 MA-4: Enhanced timer management utility functions
+  const addTimer = useCallback((timerId) => {
+    if (isMountedRef.current) {
+      timersRef.current.push(timerId);
+    }
+    return timerId;
+  }, []);
+
+  const addInterval = useCallback((intervalId) => {
+    if (isMountedRef.current) {
+      intervalsRef.current.push(intervalId);
+    }
+    return intervalId;
+  }, []);
+
+  const addAnimationFrame = useCallback((frameId) => {
+    if (isMountedRef.current) {
+      animationFramesRef.current.push(frameId);
+    }
+    return frameId;
+  }, []);
+
+  const clearAllTimers = useCallback(() => {
+    // Clear all timeouts
+    timersRef.current.forEach(timerId => {
+      try {
+        clearTimeout(timerId);
+      } catch (error) {
+        console.warn('[MA-4] Timer cleanup failed:', error);
+      }
+    });
+    timersRef.current = [];
+
+    // Clear all intervals
+    intervalsRef.current.forEach(intervalId => {
+      try {
+        clearInterval(intervalId);
+      } catch (error) {
+        console.warn('[MA-4] Interval cleanup failed:', error);
+      }
+    });
+    intervalsRef.current = [];
+
+    // Clear all animation frames
+    animationFramesRef.current.forEach(frameId => {
+      try {
+        cancelAnimationFrame(frameId);
+      } catch (error) {
+        console.warn('[MA-4] Animation frame cleanup failed:', error);
+      }
+    });
+    animationFramesRef.current = [];
+  }, []);
   
   // 🚨 CRASH FIX: SINGLE, SIMPLE EFFECT - No mega-consolidation
   useEffect(() => {
@@ -224,7 +392,7 @@ const MissionAtomic = () => {
       console.warn('Motion preference setup failed:', error);
     }
     
-    // 2. Background image loading - SIMPLIFIED
+    // 2. Background image loading - SIMPLIFIED with MA-4 timer tracking
     const imageSrc = getBackgroundImageSrc(isMobile);
     if (imageSrc) {
       setImageUrl(imageSrc);
@@ -238,15 +406,28 @@ const MissionAtomic = () => {
       };
       img.src = imageSrc;
       
+      // 🚨 MA-4: Enhanced image loading timeout with timer tracking
+      const imageTimeout = addTimer(setTimeout(() => {
+        if (isMountedRef.current && !backgroundLoaded) {
+          console.warn('[MA-4] Background image loading timeout');
+          setBackgroundLoaded(false);
+        }
+      }, 10000)); // 10 second timeout
+      
       cleanup.push(() => {
         img.src = '';
         img.onload = null;
         img.onerror = null;
+        clearTimeout(imageTimeout);
       });
     }
     
     return () => {
       isMountedRef.current = false;
+      
+      // 🚨 MA-4: Clear all tracked timers on cleanup
+      clearAllTimers();
+      
       cleanup.forEach(fn => {
         try {
           fn();
@@ -255,18 +436,32 @@ const MissionAtomic = () => {
         }
       });
     };
-  }, [isMobile, isHydrated]);
+  }, [isMobile, isHydrated, addTimer, clearAllTimers, backgroundLoaded]);
 
-  // ⭐ Mission Control Board handlers - SIMPLIFIED
+  // ⭐ Mission Control Board handlers - SIMPLIFIED with MA-4 guards
   const handleMissionControlPhaseChange = useCallback((phase) => {
     if (!isMountedRef.current) return;
-    setMoonPhaseOverride(phase);
-  }, []);
+    
+    // 🚨 MA-4: Add debounce timer with tracking
+    const debounceTimer = addTimer(setTimeout(() => {
+      if (isMountedRef.current) {
+        setMoonPhaseOverride(phase);
+      }
+    }, 100));
+    
+  }, [addTimer]);
   
   const handleMissionControlAnomalyChange = useCallback((anomalyMode) => {
     if (!isMountedRef.current) return;
-    setMoonAnomalyMode(anomalyMode);
-  }, []);
+    
+    // 🚨 MA-4: Add debounce timer with tracking
+    const debounceTimer = addTimer(setTimeout(() => {
+      if (isMountedRef.current) {
+        setMoonAnomalyMode(anomalyMode);
+      }
+    }, 100));
+    
+  }, [addTimer]);
 
   // Self-contained mission points data
   const MISSION_POINTS = [

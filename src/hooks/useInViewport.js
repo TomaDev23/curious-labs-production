@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../utils/SharedIO';
 
 /**
  * @hook useInViewport
@@ -21,53 +22,60 @@ const useInViewport = (options = {}) => {
     fallbackDelay = 100        // Fallback delay for unsupported browsers
   } = options;
 
-  const [inView, setInView] = useState(false);
-  const [hasBeenInView, setHasBeenInView] = useState(false);
-  const ref = useRef();
+  const [isInViewport, setIsInViewport] = useState(false);
+  const [hasBeenInViewport, setHasBeenInViewport] = useState(false);
+  const elementRef = useRef(null);
+  const unsubscribeRef = useRef(null);
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    const element = ref.current;
+    const element = elementRef.current;
     if (!element) return;
 
-    // Fallback for browsers that don't support Intersection Observer
-    if (!window.IntersectionObserver) {
-      console.warn('IntersectionObserver not supported, using fallback');
-      const timer = setTimeout(() => {
-        setInView(true);
-        setHasBeenInView(true);
-      }, fallbackDelay);
-      return () => clearTimeout(timer);
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const isIntersecting = entry.isIntersecting;
-        setInView(isIntersecting);
+    // 🚨 MOBILE FIX: Use SharedIO instead of individual observer
+    const unsubscribe = sharedObserve(
+      element,
+      (entry) => {
+        const inViewport = entry.isIntersecting;
+        setIsInViewport(inViewport);
         
-        if (isIntersecting && !hasBeenInView) {
-          setHasBeenInView(true);
-          
-          // Disconnect observer after first intersection for performance
-          if (triggerOnce) {
-            observer.disconnect();
-          }
+        if (inViewport && !hasBeenInViewport) {
+          setHasBeenInViewport(true);
+        }
+        
+        // Optional callback
+        if (options.onIntersect) {
+          options.onIntersect(inViewport, entry);
         }
       },
-      { 
-        threshold: Array.isArray(threshold) ? threshold : [threshold],
-        rootMargin 
+      {
+        threshold: options.threshold || 0.1,
+        rootMargin: options.rootMargin || '0px',
+        ...options
       }
     );
 
-    observer.observe(element);
+    unsubscribeRef.current = unsubscribe;
 
-    // Cleanup function
+    // Cleanup timer if it exists
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+
     return () => {
-      observer.disconnect();
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
     };
-  }, [threshold, rootMargin, hasBeenInView, triggerOnce, fallbackDelay]);
+  }, [options.threshold, options.rootMargin, hasBeenInViewport]);
 
-  return [ref, inView, hasBeenInView];
+  return [elementRef, isInViewport, hasBeenInViewport];
 };
 
 export default useInViewport; 

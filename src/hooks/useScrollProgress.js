@@ -1,33 +1,63 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useRef } from 'react';
+import { useGlobalScroll } from './useGlobalScroll.jsx';
 
 /**
  * Custom hook to track scroll progress (0-1) throughout the page
  * Used for scroll-based animations and transitions
  * @returns {number} - Normalized scroll progress (0-1)
  */
-export function useScrollProgress() {
-  const [scrollProgress, setScrollProgress] = useState(0);
+const useScrollProgress = (targetRef = null) => {
+  const [progress, setProgress] = useState(0);
+  const frameRef = useRef(null);
   
+  // 🚨 PHASE 2: Use global scroll - Pure management, preserves progress math
+  const scrollY = useGlobalScroll();
+
   useEffect(() => {
-    const handleScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollY = window.scrollY;
-      
-      // Calculate scroll progress (0 to 1)
-      const progress = Math.min(1, scrollY / (documentHeight - windowHeight));
-      setScrollProgress(progress);
+    const calculateProgress = () => {
+      if (targetRef && targetRef.current) {
+        // Preserve original element-based progress calculation
+        const element = targetRef.current;
+        const rect = element.getBoundingClientRect();
+        const elementTop = rect.top + scrollY;
+        const elementHeight = rect.height;
+        const windowHeight = window.innerHeight;
+        
+        // Original progress math - unchanged
+        const scrollStart = elementTop - windowHeight;
+        const scrollEnd = elementTop + elementHeight;
+        const scrollRange = scrollEnd - scrollStart;
+        
+        if (scrollRange > 0) {
+          const currentProgress = Math.max(0, Math.min(1, (scrollY - scrollStart) / scrollRange));
+          setProgress(currentProgress);
+        }
+      } else {
+        // Preserve original document progress calculation
+        const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const currentProgress = documentHeight > 0 ? scrollY / documentHeight : 0;
+        setProgress(Math.max(0, Math.min(1, currentProgress)));
+      }
     };
-    
-    window.addEventListener("scroll", handleScroll);
-    
-    // Initial calculation
-    handleScroll();
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  
-  return scrollProgress;
-}
+
+    // Throttle with RAF - preserves original smoothness
+    const throttledUpdate = () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+      frameRef.current = requestAnimationFrame(calculateProgress);
+    };
+
+    throttledUpdate();
+
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, [scrollY, targetRef]);
+
+  return progress;
+};
 
 export default useScrollProgress; 

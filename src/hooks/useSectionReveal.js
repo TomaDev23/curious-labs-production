@@ -1,40 +1,58 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../utils/SharedIO';
 
 /**
- * Custom hook for detecting when an element enters the viewport
- * Used to trigger section reveal animations
- * 
- * @param {Object} options - IntersectionObserver options
+ * Section reveal hook for triggering animations when sections come into view
+ * 🚨 PHASE 2: Converted to SharedIO - Pure management change, zero functional impact
+ * @param {number} threshold - Intersection threshold (0-1)
+ * @param {string} rootMargin - Root margin for intersection observer
  * @returns {Object} - Object containing ref to attach and visibility state
  */
-export function useSectionReveal(options = {}) {
-  const ref = useRef(null);
+const useSectionReveal = (threshold = 0.2, rootMargin = '0px') => {
   const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef(null);
+  const unsubscribeRef = useRef(null);
 
   useEffect(() => {
-    // Create observer with threshold option or default to 20%
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Only set visible if not already visible (no toggling back)
-        if (entry.isIntersecting && !isVisible) {
+    const element = elementRef.current;
+    if (!element) return;
+
+    // 🚨 PHASE 2: Use SharedIO - Pure management change, zero functional impact
+    const unsubscribe = sharedObserve(
+      element,
+      (entry) => {
+        if (entry.isIntersecting) {
           setIsVisible(true);
+          // Auto-unsubscribe after reveal - preserves original behavior
+          if (unsubscribeRef.current) {
+            unsubscribeRef.current();
+            unsubscribeRef.current = null;
+          }
         }
       },
-      { threshold: 0.2, ...options }
+      { 
+        threshold,
+        rootMargin 
+      }
     );
 
-    // Start observing the ref element if available
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    unsubscribeRef.current = unsubscribe;
 
-    // Clean up observer on unmount
     return () => {
-      if (ref.current) {
-        observer.disconnect();
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
       }
     };
-  }, [ref, options, isVisible]);
+  }, [threshold, rootMargin]);
 
-  return { ref, isVisible };
-} 
+  // Return in original format for compatibility
+  return {
+    ref: elementRef,
+    isVisible
+  };
+};
+
+// Export both named and default
+export { useSectionReveal };
+export default useSectionReveal; 

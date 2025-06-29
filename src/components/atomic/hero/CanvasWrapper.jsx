@@ -116,15 +116,27 @@ const CanvasWrapper = React.forwardRef(({ children, fallback = null, ...canvasPr
   if (typeof window === 'undefined') return fallback || defaultFallback;
   if (!showCanvas || !isReady || !CanvasComponent) return fallback || defaultFallback;
 
+  // 🚨 M-5: Low-end mobile WebGL guard
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 820;
+  const lowMobile = isMobile && (typeof window !== 'undefined' && window.devicePixelRatio > 1.5);
+  
+  // Mobile optimization settings for gl props
+  const glProps = lowMobile ? {
+    powerPreference: 'low-power',  // Prefer battery life over performance
+    antialias: false,              // Disable antialiasing on low-end mobile
+    alpha: true
+  } : {
+    powerPreference: 'high-performance',
+    antialias: true,
+    alpha: true
+  };
+
   return (
     <Suspense fallback={fallback || defaultFallback}>
       <CanvasComponent
         ref={ref}
-        gl={{ 
-          powerPreference: 'high-performance',
-          antialias: true,
-          alpha: true
-        }}
+        gl={glProps}
+        dpr={lowMobile ? 1 : undefined}  // Force DPR to 1 on low-end mobile
         camera={{ position: [0, 0, 12], fov: 45 }}
         {...canvasProps}
       >

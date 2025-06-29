@@ -2,6 +2,8 @@
 // ✅ Tile W1.1 — Navigation Sync
 // Provides scroll utility functions for the cosmic harmony navigation system
 
+import { observe as sharedObserve, unobserve as sharedUnobserve } from './SharedIO';
+
 /**
  * Smooth scrolls to a specified section by ID with offset consideration
  * @param {string} id - The ID of the element to scroll to
@@ -71,4 +73,61 @@ export function setupNavScrolling(items, setActive) {
       return () => observer.disconnect();
     }
   });
-} 
+}
+
+// 🚨 M-3 & M-4: SharedIO + Global Scroll Pattern
+export const createScrollObserver = (element, callback, options = {}) => {
+  // Use SharedIO instead of individual IntersectionObserver
+  return sharedObserve(element, callback, {
+    threshold: 0.1,
+    rootMargin: '0px',
+    ...options
+  });
+};
+
+// 🚨 M-4: Remove direct scroll listener - use context instead
+export const throttledScrollHandler = (callback, delay = 16) => {
+  // This should now be replaced with useGlobalScroll hook
+  console.warn('[scrollUtils] Direct scroll listeners deprecated. Use useGlobalScroll hook instead.');
+  
+  let ticking = false;
+  return () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        callback();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+};
+
+// Legacy support - will be removed in next version
+export const addScrollListener = (callback, options = {}) => {
+  console.warn('[scrollUtils] addScrollListener deprecated. Use useGlobalScroll hook instead.');
+  const handler = throttledScrollHandler(callback, options.throttle);
+  
+  // Fallback for legacy code
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handler, { passive: true, ...options });
+    return () => window.removeEventListener('scroll', handler);
+  }
+  
+  return () => {};
+};
+
+// Utility for scroll position calculations
+export const getScrollProgress = (element) => {
+  if (!element) return 0;
+  
+  const rect = element.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
+  const elementHeight = rect.height;
+  
+  // Calculate how much of the element is visible
+  const visibleTop = Math.max(0, windowHeight - rect.top);
+  const visibleBottom = Math.max(0, rect.bottom);
+  const visibleHeight = Math.min(visibleTop, visibleBottom, elementHeight);
+  
+  return Math.min(visibleHeight / elementHeight, 1);
+}; 

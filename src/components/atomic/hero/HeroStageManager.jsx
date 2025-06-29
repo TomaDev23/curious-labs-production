@@ -2,6 +2,7 @@
 // @description Scroll-based controller for Cosmic Arrival hero scene
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { useGlobalScroll } from '../../../hooks/useGlobalScroll.jsx';
 
 const HeroStageManager = ({ setSceneStep }) => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -9,6 +10,9 @@ const HeroStageManager = ({ setSceneStep }) => {
   const scrollTimeoutRef = useRef(null);
   const lastScrollRatioRef = useRef(-1);
   const setSceneStepRef = useRef(setSceneStep);
+  
+  // 🚨 M-4: Use global scroll instead of direct listener
+  const scrollY = useGlobalScroll();
 
   // ✅ FIXED: Keep setSceneStep ref updated to avoid dependency cycles
   useEffect(() => {
@@ -41,9 +45,8 @@ const HeroStageManager = ({ setSceneStep }) => {
     }
   }, [isHydrated]);
 
-  // ✅ FIXED: Stable scroll handler using refs to avoid dependency cycles
-  const handleScrollRef = useRef();
-  handleScrollRef.current = useCallback(() => {
+  // 🚨 M-4: Convert scroll handler to use global scroll value
+  const handleScroll = useCallback(() => {
     if (!isHydrated) return;
 
     // Clear existing timeout to throttle calls
@@ -54,7 +57,7 @@ const HeroStageManager = ({ setSceneStep }) => {
     // Throttle scroll handling to 16ms (60fps)
     scrollTimeoutRef.current = setTimeout(() => {
       try {
-        const scrollY = window.scrollY;
+        // 🚨 M-4: Use scrollY from context instead of window.scrollY
         const viewportHeight = window.innerHeight;
         const scrollRatio = scrollY / viewportHeight;
         
@@ -82,7 +85,7 @@ const HeroStageManager = ({ setSceneStep }) => {
         setSceneStepRef.current(8);
       }
     }, 16); // 16ms throttle for 60fps
-  }, [isHydrated]);
+  }, [isHydrated, scrollY]); // 🚨 M-4: Add scrollY dependency
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -93,23 +96,19 @@ const HeroStageManager = ({ setSceneStep }) => {
       return;
     }
 
-    // Stable scroll handler reference
-    const handleScroll = () => handleScrollRef.current();
-
-    // Call once immediately to set initial state
+    // 🚨 M-4: Call handleScroll when scrollY changes instead of using event listener
     handleScroll();
     
-    // ✅ FIXED: Passive scroll listener for better performance
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // 🚨 M-4: REMOVED - Direct scroll listener no longer needed
+    // window.addEventListener('scroll', handleScroll, { passive: true });
     
     return () => {
-      window.removeEventListener('scroll', handleScroll);
       // Clean up any pending timeout
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [prefersReducedMotion, isHydrated]); // ✅ REMOVED handleScroll dependency
+  }, [prefersReducedMotion, isHydrated, handleScroll]); // 🚨 M-4: Add handleScroll dependency
 
   return null;
 };

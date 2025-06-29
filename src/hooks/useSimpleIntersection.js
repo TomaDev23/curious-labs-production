@@ -5,46 +5,47 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../utils/SharedIO';
 
-const useSimpleIntersection = (elementRef, callback, options = {}) => {
-  const observerRef = useRef(null);
+const useSimpleIntersection = (callback, options = {}) => {
+  const elementRef = useRef(null);
+  const unsubscribeRef = useRef(null);
   const callbackRef = useRef(callback);
   
-  // Update callback ref when callback changes
+  // Keep callback ref updated
   useEffect(() => {
     callbackRef.current = callback;
   }, [callback]);
   
   useEffect(() => {
-    const element = elementRef?.current;
-    if (!element) return;
+    const element = elementRef.current;
+    if (!element || !callbackRef.current) return;
     
-    // Create simple intersection observer
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (callbackRef.current) {
-          callbackRef.current(entries);
-        }
+    // 🚨 PHASE 2: Use SharedIO - Pure management, preserves callback behavior
+    const unsubscribe = sharedObserve(
+      element,
+      (entry) => {
+        // Preserve original callback signature and timing
+        callbackRef.current(entry, entry.isIntersecting);
       },
       {
-        rootMargin: '50px',
-        threshold: 0.1,
+        threshold: 0,
+        rootMargin: '0px',
         ...options
       }
     );
     
-    observerRef.current = observer;
-    observer.observe(element);
+    unsubscribeRef.current = unsubscribe;
     
     return () => {
-      if (observer) {
-        observer.disconnect();
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
       }
-      observerRef.current = null;
     };
-  }, [elementRef?.current, options.rootMargin, options.threshold]);
+  }, [options.threshold, options.rootMargin]);
   
-  return observerRef.current;
+  return elementRef;
 };
 
 export default useSimpleIntersection; 

@@ -3,6 +3,7 @@ import CosmicNoiseOverlay from '../../ui/CosmicNoiseOverlay';
 import ErrorBoundary from '../../ui/ErrorBoundary';
 import { startComponentRender, endComponentRender } from '../../../utils/performanceMonitor';
 import useAccessibilityCheck from '../../../hooks/useAccessibilityCheck';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../../../utils/SharedIO';
 
 /**
  * SpaceCanvas - Enhanced space-themed background for cosmic components
@@ -16,11 +17,13 @@ const SpaceCanvas = () => {
   // Canvas refs
   const canvasRef = useRef(null);
   const requestRef = useRef(null);
+  const unsubscribeRef = useRef(null);
   
   // State for canvas initialization and error handling
   const [canvasInitialized, setCanvasInitialized] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
   
   // Accessibility checks
   const { ref: accessibilityRef } = useAccessibilityCheck('SpaceCanvas', {
@@ -31,6 +34,32 @@ const SpaceCanvas = () => {
   
   // Check if we're on the client side
   const isClient = typeof window !== 'undefined';
+  
+  // 🚨 PHASE 2: Use SharedIO for visibility detection - Pure management change
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const unsubscribe = sharedObserve(
+      canvas,
+      (entry) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px'
+      }
+    );
+
+    unsubscribeRef.current = unsubscribe;
+
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, []);
   
   // Create stars with density gradient (more at top, fewer at bottom)
   const createStars = (count, densityFactor = 1) => {

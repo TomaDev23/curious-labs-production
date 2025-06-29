@@ -1,35 +1,56 @@
-import { useEffect, useRef, useState, ComponentType, LazyExoticComponent, lazy } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../utils/SharedIO';
 
-type Props = { rootMargin?: string };
+interface UseInViewLazyOptions {
+  threshold?: number;
+  rootMargin?: string;
+  triggerOnce?: boolean;
+}
 
-export const useInViewLazy = <T,>(
-  importFn: () => Promise<{ default: ComponentType<T> }>,
-  { rootMargin = '200px' }: Props = {}
-) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [comp, setComp] = useState<LazyExoticComponent<ComponentType<T>> | null>(
-    null,
-  );
+const useInViewLazy = (options: UseInViewLazyOptions = {}) => {
+  const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options;
+  const [isInView, setIsInView] = useState(false);
+  const [hasBeenInView, setHasBeenInView] = useState(false);
+  const elementRef = useRef<HTMLElement>(null);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const element = elementRef.current;
+    if (!element) return;
 
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          console.log('🌍 3D section in view - Loading 3D scene...');
-          const lazyComponent = lazy(importFn);
-          setComp(lazyComponent);
-          console.log('🌍 3D scene loaded successfully');
-          obs.disconnect();
+    const unsubscribe = sharedObserve(
+      element,
+      (entry: IntersectionObserverEntry) => {
+        const inView = entry.isIntersecting;
+        setIsInView(inView);
+        
+        if (inView && !hasBeenInView) {
+          setHasBeenInView(true);
+          
+          if (triggerOnce && unsubscribeRef.current) {
+            unsubscribeRef.current();
+            unsubscribeRef.current = null;
+          }
         }
       },
-      { rootMargin },
+      { 
+        threshold,
+        rootMargin 
+      }
     );
 
-    obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [rootMargin]);
+    unsubscribeRef.current = unsubscribe as (() => void);
 
-  return { ref, Comp: comp };
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, [threshold, rootMargin, triggerOnce, hasBeenInView]);
+
+  return [elementRef, isInView, hasBeenInView] as const;
 };
+
+export { useInViewLazy };
+export default useInViewLazy;

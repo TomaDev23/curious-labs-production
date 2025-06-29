@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react';
 import { useBreakpoint } from '../../hooks/useBreakpoint.js';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../../utils/SharedIO';
 
 /**
  * ParticleField - Creates ambient floating particles with random movement patterns
@@ -26,6 +27,7 @@ const ParticleField = ({
   
   // Canvas references
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
   const animationRef = useRef(null);
   const frameCountRef = useRef(0); // Track frame count for throttling
   
@@ -256,22 +258,12 @@ const ParticleField = ({
       handleResize();
       window.addEventListener('resize', handleResize);
       
-      // Add scroll listener to detect when user has scrolled
-      const handleScroll = () => {
-        if (!isScrolled && window.scrollY > 50) {
-          setIsScrolled(true);
-        }
-      };
-      
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      
-      // Start animation loop
-      animate();
-      
-      // Observer to pause animation when not visible
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver(
-          ([entry]) => {
+      // 🚨 MOBILE OPTIMIZATION: Use SharedIO instead of individual observer
+      const container = containerRef.current;
+      if (container) {
+        const unsubscribe = sharedObserve(
+          container,
+          (entry) => {
             if (isMounted) {
               setIsVisible(entry.isIntersecting);
             }
@@ -279,15 +271,16 @@ const ParticleField = ({
           { threshold: 0.1 }
         );
         
-        if (canvasRef.current) {
-          observer.observe(canvasRef.current);
-        }
-        
         return () => {
           isMounted = false;
-          observer.disconnect();
+          if (unsubscribe) {
+            unsubscribe();
+          }
         };
       }
+      
+      // Start animation loop
+      animate();
     } catch (error) {
       console.error("[ParticleField] Setup error:", error);
       if (isMounted) {
@@ -298,10 +291,6 @@ const ParticleField = ({
     return () => {
       isMounted = false;
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
     };
   }, [isClient]);
   
@@ -327,6 +316,7 @@ const ParticleField = ({
   
   return (
     <div 
+      ref={containerRef}
       className="fixed inset-0 pointer-events-none" 
       style={{ zIndex }}
     >

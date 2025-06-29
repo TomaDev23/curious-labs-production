@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../utils/SharedIO';
 
 /**
  * Custom hook for revealing elements when they enter the viewport
@@ -6,53 +7,83 @@ import { useEffect, useRef, useState } from 'react';
  * @param {number} options.threshold - Visibility threshold (0-1)
  * @param {string} options.rootMargin - Root margin (CSS-style string)
  * @param {boolean} options.triggerOnce - Whether to trigger only once
- * @returns {Array} [ref, isVisible] - Ref to attach to element and visibility state
+ * @param {number} options.delay - Delay before revealing element
+ * @returns {Object} {ref, isVisible, hasBeenVisible} - Ref to attach to element, visibility state, and whether it's been visible
  */
-export default function useScrollReveal({
-  threshold = 0.1,
-  rootMargin = "0px",
-  triggerOnce = true
-} = {}) {
+const useScrollReveal = (options = {}) => {
+  const {
+    threshold = 0.1,
+    rootMargin = '0px',
+    triggerOnce = true,
+    delay = 0
+  } = options;
+  
   const [isVisible, setIsVisible] = useState(false);
+  const [hasBeenVisible, setHasBeenVisible] = useState(false);
   const elementRef = useRef(null);
-  const wasTriggeredRef = useRef(false);
+  const unsubscribeRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
-    const currentElement = elementRef.current;
-    if (!currentElement) return;
+    const element = elementRef.current;
+    if (!element) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // If element is visible
-          if (entry.isIntersecting) {
-            // If we only want to trigger once and it's already been triggered, do nothing
-            if (triggerOnce && wasTriggeredRef.current) return;
-            
+    // 🚨 PHASE 2: Use SharedIO - Pure management, preserves all timing
+    const unsubscribe = sharedObserve(
+      element,
+      (entry) => {
+        if (entry.isIntersecting) {
+          // Preserve original delay behavior
+          if (delay > 0) {
+            timeoutRef.current = setTimeout(() => {
+              setIsVisible(true);
+              if (!hasBeenVisible) {
+                setHasBeenVisible(true);
+              }
+            }, delay);
+          } else {
             setIsVisible(true);
-            wasTriggeredRef.current = true;
-            
-            // If we only want to trigger once, we can disconnect the observer
-            if (triggerOnce) {
-              observer.disconnect();
+            if (!hasBeenVisible) {
+              setHasBeenVisible(true);
             }
-          } else if (!triggerOnce) {
-            // If it's not visible and we want to trigger multiple times
-            setIsVisible(false);
           }
-        });
+          
+          // Preserve triggerOnce behavior
+          if (triggerOnce && unsubscribeRef.current) {
+            unsubscribeRef.current();
+            unsubscribeRef.current = null;
+          }
+        } else if (!triggerOnce) {
+          // Reset visibility if not triggerOnce
+          setIsVisible(false);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
+        }
       },
       { threshold, rootMargin }
     );
 
-    observer.observe(currentElement);
+    unsubscribeRef.current = unsubscribe;
 
     return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
     };
-  }, [threshold, rootMargin, triggerOnce]);
+  }, [threshold, rootMargin, triggerOnce, delay, hasBeenVisible]);
 
-  return [elementRef, isVisible];
-} 
+  return {
+    ref: elementRef,
+    isVisible,
+    hasBeenVisible
+  };
+};
+
+export default useScrollReveal; 

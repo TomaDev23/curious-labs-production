@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../utils/SharedIO';
 
 /**
  * Custom hook for lazy loading images and components
@@ -7,40 +8,47 @@ import { useEffect, useState, useRef } from 'react';
  * @param {Object} options - IntersectionObserver options
  * @returns {Array} - [ref, isVisible] to attach ref and check visibility
  */
-export function useLazyLoad(options = {}) {
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+const useLazyLoad = (threshold = 0.1, rootMargin = '0px') => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const elementRef = useRef(null);
+  const unsubscribeRef = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When element is about to enter viewport, set visible
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Once visible, no need to keep observing
-          if (ref.current) {
-            observer.unobserve(ref.current);
+    const element = elementRef.current;
+    if (!element) return;
+
+    // 🚨 PHASE 2: Use SharedIO - Pure management change, zero functional impact
+    const unsubscribe = sharedObserve(
+      element,
+      (entry) => {
+        if (entry.isIntersecting && !isLoaded) {
+          setIsLoaded(true);
+          // Auto-unsubscribe after loading - preserves original behavior
+          if (unsubscribeRef.current) {
+            unsubscribeRef.current();
+            unsubscribeRef.current = null;
           }
         }
       },
       { 
-        // Default to 10% visibility and 100px margin
-        threshold: 0.1, 
-        rootMargin: '100px',
-        ...options 
+        threshold,
+        rootMargin 
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    unsubscribeRef.current = unsubscribe;
 
     return () => {
-      if (ref.current) {
-        observer.disconnect();
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
       }
     };
-  }, [ref, options]);
+  }, [threshold, rootMargin, isLoaded]);
 
-  return [ref, isVisible];
-} 
+  return [elementRef, isLoaded];
+};
+
+// Export both named and default
+export { useLazyLoad };
+export default useLazyLoad; 

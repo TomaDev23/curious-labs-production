@@ -8,6 +8,8 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+// 🚀 A-4: Import global scroll hook
+import { useGlobalScroll } from '../../../hooks/useGlobalScroll.jsx';
 
 // Define types for scene phases and performance tiers
 export const ScenePhases = {
@@ -44,9 +46,11 @@ export const SceneContext = createContext({
 export const useScene = () => useContext(SceneContext);
 
 const SceneControllerV6 = ({ children }) => {
+  // 🚀 A-4: Use global scroll instead of local scroll tracking
+  const scrollPosition = useGlobalScroll();
+  
   // Core state for scene management
   const [scenePhase, setScenePhase] = useState(ScenePhases.VOID);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [horizontalScroll, setHorizontalScroll] = useState(0);
   
   // Device capabilities state
@@ -143,27 +147,16 @@ const SceneControllerV6 = ({ children }) => {
     }
   }, [scenePhase, deviceCapabilities.prefersReducedMotion]);
 
-  // Handle scroll position tracking
+  // 🚀 A-4: Handle scroll-based phase progression using global scroll
   useEffect(() => {
-    const handleScroll = () => {
-      const newScrollPosition = window.scrollY;
-      setScrollPosition(newScrollPosition);
-      
-      // Handle scroll-based phase progression
-      // This provides a fallback for users who scroll before animations complete
-      if (newScrollPosition > 100 && scenePhase === ScenePhases.VOID) {
-        setScenePhase(ScenePhases.EMERGENCE);
-      } else if (newScrollPosition > 300 && scenePhase === ScenePhases.EMERGENCE) {
-        setScenePhase(ScenePhases.ACTIVATION);
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [scenePhase]);
+    // Handle scroll-based phase progression
+    // This provides a fallback for users who scroll before animations complete
+    if (scrollPosition > 100 && scenePhase === ScenePhases.VOID) {
+      setScenePhase(ScenePhases.EMERGENCE);
+    } else if (scrollPosition > 300 && scenePhase === ScenePhases.EMERGENCE) {
+      setScenePhase(ScenePhases.ACTIVATION);
+    }
+  }, [scrollPosition, scenePhase]);
   
   // Function to advance to the next phase
   const advancePhase = useCallback(() => {

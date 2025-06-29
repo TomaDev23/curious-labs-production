@@ -79,18 +79,20 @@ const useSimpleVisibility = (ref) => {
 // Add new hook for moon viewport loading
 const useMoonViewportLoading = () => {
   const [shouldLoadMoon, setShouldLoadMoon] = useState(false);
+  const mountedRef = useRef(true);
+  const timersRef = useRef([]);
 
   useEffect(() => {
     // Safety checks for mobile/older browsers
     if (typeof window === 'undefined' || !window.IntersectionObserver) {
       // Fallback: load immediately if IntersectionObserver not supported
-      setShouldLoadMoon(true);
+      if (mountedRef.current) setShouldLoadMoon(true);
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && mountedRef.current) {
           setShouldLoadMoon(true);
           observer.disconnect(); // Only load once
         }
@@ -115,19 +117,29 @@ const useMoonViewportLoading = () => {
     if (!observeMoonSection()) {
       // If element not found, retry after a short delay (for hydration)
       const retryTimeout = setTimeout(() => {
+        if (!mountedRef.current) return; // 🚀 A-3: Mount guard
         if (!observeMoonSection()) {
           // If still not found, fallback to immediate loading
-          setShouldLoadMoon(true);
+          if (mountedRef.current) setShouldLoadMoon(true);
         }
       }, 100);
+      
+      // 🚀 A-3: Track timer for cleanup
+      timersRef.current.push(retryTimeout);
 
       return () => {
-        clearTimeout(retryTimeout);
+        mountedRef.current = false;
+        // 🚀 A-3: Clear all tracked timers
+        timersRef.current.forEach(timer => clearTimeout(timer));
+        timersRef.current = [];
         observer.disconnect();
       };
     }
 
-    return () => observer.disconnect();
+    return () => {
+      mountedRef.current = false;
+      observer.disconnect();
+    };
   }, []);
 
   return shouldLoadMoon;

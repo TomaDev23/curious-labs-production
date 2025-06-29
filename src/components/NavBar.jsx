@@ -13,50 +13,29 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { IMAGES } from '../utils/assets';
+import { IMAGES } from '../constants/images';
 import { useBreakpoint } from '../hooks/useBreakpoint.js';
+import { useGlobalScroll } from '../hooks/useGlobalScroll.jsx';
 
 // Simple environment check for development mode
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export default function NavBar() {
+  const scrollY = useGlobalScroll();
+  
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
-  const [showHudAtomic1, setShowHudAtomic1] = useState(true);
-  const [showHudAtomic2, setShowHudAtomic2] = useState(true);
+  const [showHudAtomic1, setShowHudAtomic1] = useState(false);
+  const [showHudAtomic2, setShowHudAtomic2] = useState(false);
   const location = useLocation();
   const breakpoint = useBreakpoint();
   const isMobile = breakpoint === 'mobile';
   
   // Track scroll for navbar styling
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
-    // Add scroll event listener with performance optimization
-    let ticking = false;
-    const throttledScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    
-    window.addEventListener('scroll', throttledScroll);
-    
-    // Check initial scroll position
-    handleScroll();
-    
-    // Remove event listener on cleanup
-    return () => {
-      window.removeEventListener('scroll', throttledScroll);
-    };
-  }, []);
+    setIsScrolled(scrollY > 50);
+  }, [scrollY]);
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {

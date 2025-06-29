@@ -9,6 +9,7 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import CanvasWrapper from '../../../components/atomic/hero/CanvasWrapper';
 import MissionMoon from './MissionMoon';
+import * as THREE from 'three';
 
 const MissionMoonWithCanvas = ({ 
   debugPhase = null, 
@@ -22,7 +23,9 @@ const MissionMoonWithCanvas = ({
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
+  const cameraRef = useRef(null);
   const mountedRef = useRef(false);
+  const timersRef = useRef([]); // 🚀 A-3: Track timers for cleanup
   const [contextLost, setContextLost] = useState(false);
   const [memoryPressure, setMemoryPressure] = useState('low');
 
@@ -66,17 +69,43 @@ const MissionMoonWithCanvas = ({
         if (child.material) {
           if (Array.isArray(child.material)) {
             child.material.forEach(material => {
-              if (material.map) material.map.dispose();
-              if (material.normalMap) material.normalMap.dispose();
-              if (material.roughnessMap) material.roughnessMap.dispose();
-              if (material.metalnessMap) material.metalnessMap.dispose();
+              // 🚀 A-2: Enhanced texture disposal with cache cleanup
+              if (material.map) {
+                THREE.Cache.remove(material.map.uuid);
+                material.map.dispose();
+              }
+              if (material.normalMap) {
+                THREE.Cache.remove(material.normalMap.uuid);
+                material.normalMap.dispose();
+              }
+              if (material.roughnessMap) {
+                THREE.Cache.remove(material.roughnessMap.uuid);
+                material.roughnessMap.dispose();
+              }
+              if (material.metalnessMap) {
+                THREE.Cache.remove(material.metalnessMap.uuid);
+                material.metalnessMap.dispose();
+              }
               material.dispose();
             });
           } else {
-            if (child.material.map) child.material.map.dispose();
-            if (child.material.normalMap) child.material.normalMap.dispose();
-            if (child.material.roughnessMap) child.material.roughnessMap.dispose();
-            if (child.material.metalnessMap) child.material.metalnessMap.dispose();
+            // 🚀 A-2: Enhanced texture disposal with cache cleanup
+            if (child.material.map) {
+              THREE.Cache.remove(child.material.map.uuid);
+              child.material.map.dispose();
+            }
+            if (child.material.normalMap) {
+              THREE.Cache.remove(child.material.normalMap.uuid);
+              child.material.normalMap.dispose();
+            }
+            if (child.material.roughnessMap) {
+              THREE.Cache.remove(child.material.roughnessMap.uuid);
+              child.material.roughnessMap.dispose();
+            }
+            if (child.material.metalnessMap) {
+              THREE.Cache.remove(child.material.metalnessMap.uuid);
+              child.material.metalnessMap.dispose();
+            }
             child.material.dispose();
           }
         }
@@ -84,6 +113,11 @@ const MissionMoonWithCanvas = ({
       
       // 🚨 CRITICAL FIX: Only dispose renderer, let React Three Fiber handle context loss
       renderer.dispose();
+      
+      // 🚀 A-2: Enhanced camera disposal
+      if (camera && camera.clear) {
+        camera.clear();
+      }
       
       // 🚨 REMOVED: forceContextLoss() - React Three Fiber handles this internally
       // This was causing "context already lost" errors
@@ -142,8 +176,13 @@ const MissionMoonWithCanvas = ({
     // Check every 5 seconds
     const interval = setInterval(checkMemoryPressure, 5000);
     
+    // 🚀 A-3: Track interval for cleanup
+    timersRef.current.push(interval);
+    
     return () => {
       clearInterval(interval);
+      // Remove from tracked timers
+      timersRef.current = timersRef.current.filter(timer => timer !== interval);
     };
   }, []);
 
@@ -213,8 +252,17 @@ const MissionMoonWithCanvas = ({
         
         // Perform WebGL cleanup
         if (sceneRef.current && rendererRef.current) {
-          disposeThreeJSObjects(sceneRef.current, rendererRef.current);
+          disposeThreeJSObjects(sceneRef.current, rendererRef.current, cameraRef.current);
         }
+        
+        // 🚀 A-3: Clear all tracked timers
+        timersRef.current.forEach(timer => {
+          if (typeof timer === 'number') {
+            clearTimeout(timer);
+            clearInterval(timer);
+          }
+        });
+        timersRef.current = [];
       }
     };
   }, [onMount, onUnmount]);
@@ -261,9 +309,10 @@ const MissionMoonWithCanvas = ({
           powerPreference: 'high-performance'
         }}
         dpr={getSafeDPR()}
-        onCreated={({ scene, gl }) => {
+        onCreated={({ scene, gl, camera }) => {
           sceneRef.current = scene;
           rendererRef.current = gl;
+          cameraRef.current = camera;
         }}
       >
         <MissionMoon 

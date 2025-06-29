@@ -1,24 +1,17 @@
 import React, { useState, useEffect } from 'react';
+// 🚀 A-4: Import global scroll hook
+import { useGlobalScroll } from '../hooks/useGlobalScroll.jsx';
 
 export default function ScrollToTop() {
+  // 🚀 A-4: Use global scroll instead of local scroll tracking
+  const scrollY = useGlobalScroll();
+  
   const [isVisible, setIsVisible] = useState(false);
 
-  // Toggle visibility based on scroll position
+  // 🚀 A-4: Handle visibility using global scroll value
   useEffect(() => {
-    const toggleVisibility = () => {
-      // Show button when page is scrolled down 300px
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', toggleVisibility);
-    
-    // Clean up listener
-    return () => window.removeEventListener('scroll', toggleVisibility);
-  }, []);
+    setIsVisible(scrollY > 300);
+  }, [scrollY]);
 
   // Scroll to top function
   const scrollToTop = () => {

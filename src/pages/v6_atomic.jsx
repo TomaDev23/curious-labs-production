@@ -44,6 +44,9 @@ const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTer
 // Keep ProcessLegacyAtomic eager since it's smaller and configured as non-lazy
 import ProcessLegacyAtomic from '../components/atomic/ProcessLegacyAtomic'; // CODE: ATOMIC-COMP-002
 
+// 🚀 A-4: Global scroll context
+import { ScrollProvider } from '../hooks/useGlobalScroll.jsx';
+
 // 🚀 PERFORMANCE MONITORING - Track loading performance
 const usePerformanceMonitoring = () => {
   React.useEffect(() => {
@@ -77,50 +80,52 @@ const V6AtomicPage = () => {
   usePerformanceMonitoring();
 
   return (
-    <SceneControllerV6>
-      <LayoutWrapper>
-        <CosmicBackgroundSystemV6 />
+    <ScrollProvider>
+      <SceneControllerV6>
+        <LayoutWrapper>
+          <CosmicBackgroundSystemV6 />
 
-        {/* 🔴 ATOMIC SCENES WITH SMART LOADING - ALL KEEP 🔴 */}
-        
-        {/* Hero - Immediate load (no lazy loading wrapper) */}
-        <Suspense fallback={
-          <div className="min-h-screen flex items-center justify-center bg-black">
-            <div className="w-8 h-8 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        }>
-          <HeroAtomic />
-        </Suspense>
-        
-        {/* Mission - Early loading strategy */}
-        <SmartLazySection componentName="MissionAtomic">
-          <MissionAtomic />
-        </SmartLazySection>
-        
-        {/* Products - Preemptive loading for heavy component */}
-        <SmartLazySection componentName="HorizontalProductScrollV6">
-          <HorizontalProductScrollV6 />
-        </SmartLazySection>
-        
-        {/* Services - Standard loading strategy */}
-        <SmartLazySection componentName="ServicesOrbitalAtomic">
-          <ServicesOrbitalAtomic />
-        </SmartLazySection>
-        
-        {/* Process - Keep eager (no lazy loading) */}
-        <ProcessLegacyAtomic />
-        
-        {/* Contact - Late loading strategy */}
-        <SmartLazySection componentName="ContactTerminalAtomic">
-          <ContactTerminalAtomic />
-        </SmartLazySection>
-        
-        {/* 🔴 ATOMIC SCENES END 🔴 */}
+          {/* 🔴 ATOMIC SCENES WITH SMART LOADING - ALL KEEP 🔴 */}
+          
+          {/* Hero - Immediate load (no lazy loading wrapper) */}
+          <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-black">
+              <div className="w-8 h-8 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <HeroAtomic />
+          </Suspense>
+          
+          {/* Mission - Early loading strategy */}
+          <SmartLazySection componentName="MissionAtomic">
+            <MissionAtomic />
+          </SmartLazySection>
+          
+          {/* Products - Preemptive loading for heavy component */}
+          <SmartLazySection componentName="HorizontalProductScrollV6">
+            <HorizontalProductScrollV6 />
+          </SmartLazySection>
+          
+          {/* Services - Standard loading strategy */}
+          <SmartLazySection componentName="ServicesOrbitalAtomic">
+            <ServicesOrbitalAtomic />
+          </SmartLazySection>
+          
+          {/* Process - Keep eager (no lazy loading) */}
+          <ProcessLegacyAtomic />
+          
+          {/* Contact - Late loading strategy */}
+          <SmartLazySection componentName="ContactTerminalAtomic">
+            <ContactTerminalAtomic />
+          </SmartLazySection>
+          
+          {/* 🔴 ATOMIC SCENES END 🔴 */}
 
-      </LayoutWrapper>
-      <FooterExperience />
-      <ScrollToTop />
-    </SceneControllerV6>
+        </LayoutWrapper>
+        <FooterExperience />
+        <ScrollToTop />
+      </SceneControllerV6>
+    </ScrollProvider>
   );
 };
 

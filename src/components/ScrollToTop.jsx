@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
-// 🚀 A-4: Import global scroll hook
-import { useGlobalScroll } from '../hooks/useGlobalScroll.jsx';
+// 🚨 SM-3: Replace useGlobalScroll with ScrollManager
+import { ScrollManager } from '../utils/ScrollManager';
+import { isMobile } from '../utils/deviceTier';
 
 export default function ScrollToTop() {
-  // 🚀 A-4: Use global scroll instead of local scroll tracking
-  const scrollY = useGlobalScroll();
-  
+  // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
+  const [scrollY, setScrollY] = useState(0);
+  const mobile = isMobile();
+
+  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
+  useEffect(() => {
+    // 🚨 MB-1: Skip scroll listeners on mobile for performance
+    if (mobile) return;
+    
+    const unsubscribe = ScrollManager.subscribe((newScrollY) => {
+      setScrollY(newScrollY);
+    });
+
+    return unsubscribe;
+  }, [mobile]);
+
   const [isVisible, setIsVisible] = useState(false);
 
   // 🚀 A-4: Handle visibility using global scroll value

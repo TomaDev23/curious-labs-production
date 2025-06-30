@@ -8,8 +8,9 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-// 🚀 A-4: Import global scroll hook
-import { useGlobalScroll } from '../../../hooks/useGlobalScroll.jsx';
+// 🚨 SM-3: Replace useGlobalScroll with ScrollManager
+import { ScrollManager } from '../../../utils/ScrollManager';
+import { isMobile } from '../../../utils/deviceTier';
 
 // Define types for scene phases and performance tiers
 export const ScenePhases = {
@@ -26,6 +27,7 @@ export const PerformanceTiers = {
 };
 
 // Create the context with default values
+// 🚨 SM-4: Remove scrollPosition from context to stop re-renders
 export const SceneContext = createContext({
   scenePhase: ScenePhases.VOID,
   deviceCapabilities: {
@@ -35,7 +37,6 @@ export const SceneContext = createContext({
     isTablet: false,
     devicePixelRatio: 1
   },
-  scrollPosition: 0,
   horizontalScroll: 0,
   handleHorizontalScroll: () => {},
   advancePhase: () => {},
@@ -46,8 +47,11 @@ export const SceneContext = createContext({
 export const useScene = () => useContext(SceneContext);
 
 const SceneControllerV6 = ({ children }) => {
-  // 🚀 A-4: Use global scroll instead of local scroll tracking
-  const scrollPosition = useGlobalScroll();
+  // 🚨 MB-1: Mobile short-circuit - disable scroll-based scene phasing on mobile
+  const mobile = isMobile();
+  
+  // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
+  const [scrollPosition, setScrollPosition] = useState(0);
   
   // Core state for scene management
   const [scenePhase, setScenePhase] = useState(ScenePhases.VOID);
@@ -61,6 +65,18 @@ const SceneControllerV6 = ({ children }) => {
     isTablet: false,
     devicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1
   });
+
+  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
+  useEffect(() => {
+    // 🚨 MB-1: Skip scroll listeners on mobile
+    if (mobile) return;
+    
+    const unsubscribe = ScrollManager.subscribe((newScrollY) => {
+      setScrollPosition(newScrollY);
+    });
+
+    return unsubscribe;
+  }, [mobile]);
 
   // Detect device capabilities on component mount
   useEffect(() => {
@@ -104,14 +120,18 @@ const SceneControllerV6 = ({ children }) => {
     // Detect capabilities initially
     detectCapabilities();
     
-    // Re-detect on window resize
-    window.addEventListener('resize', detectCapabilities);
+    // 🚨 MB-1: Skip resize listener on mobile
+    if (!mobile) {
+      window.addEventListener('resize', detectCapabilities);
+    }
     
     // Cleanup
     return () => {
-      window.removeEventListener('resize', detectCapabilities);
+      if (!mobile) {
+        window.removeEventListener('resize', detectCapabilities);
+      }
     };
-  }, []);
+  }, [mobile]);
 
   // Handle automatic phase progression with appropriate timing
   useEffect(() => {
@@ -147,8 +167,11 @@ const SceneControllerV6 = ({ children }) => {
     }
   }, [scenePhase, deviceCapabilities.prefersReducedMotion]);
 
-  // 🚀 A-4: Handle scroll-based phase progression using global scroll
+  // 🚨 SM-3: Handle scroll-based phase progression with mobile short-circuit
   useEffect(() => {
+    // 🚨 MB-1: Skip scroll-based scene phasing on mobile
+    if (mobile) return;
+    
     // Handle scroll-based phase progression
     // This provides a fallback for users who scroll before animations complete
     if (scrollPosition > 100 && scenePhase === ScenePhases.VOID) {
@@ -156,7 +179,7 @@ const SceneControllerV6 = ({ children }) => {
     } else if (scrollPosition > 300 && scenePhase === ScenePhases.EMERGENCE) {
       setScenePhase(ScenePhases.ACTIVATION);
     }
-  }, [scrollPosition, scenePhase]);
+  }, [scrollPosition, scenePhase, mobile]);
   
   // Function to advance to the next phase
   const advancePhase = useCallback(() => {
@@ -186,11 +209,10 @@ const SceneControllerV6 = ({ children }) => {
     setHorizontalScroll(scrollPosition);
   }, []);
   
-  // Create context value
+  // 🚨 SM-4: Create context value WITHOUT scrollPosition to prevent re-renders
   const contextValue = {
     scenePhase,
     deviceCapabilities,
-    scrollPosition,
     horizontalScroll,
     handleHorizontalScroll,
     advancePhase,

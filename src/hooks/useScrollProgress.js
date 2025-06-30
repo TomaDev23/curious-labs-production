@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { useGlobalScroll } from './useGlobalScroll.jsx';
+import { ScrollManager } from '../utils/ScrollManager';
+import { isMobile } from '../utils/deviceTier';
 
 /**
  * Custom hook to track scroll progress (0-1) throughout the page
@@ -10,8 +11,21 @@ const useScrollProgress = (targetRef = null) => {
   const [progress, setProgress] = useState(0);
   const frameRef = useRef(null);
   
-  // 🚨 PHASE 2: Use global scroll - Pure management, preserves progress math
-  const scrollY = useGlobalScroll();
+  // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
+  const [scrollY, setScrollY] = useState(0);
+  const mobile = isMobile();
+
+  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
+  useEffect(() => {
+    // 🚨 MB-1: Skip scroll listeners on mobile for performance
+    if (mobile) return;
+    
+    const unsubscribe = ScrollManager.subscribe((newScrollY) => {
+      setScrollY(newScrollY);
+    });
+
+    return unsubscribe;
+  }, [mobile]);
 
   useEffect(() => {
     const calculateProgress = () => {

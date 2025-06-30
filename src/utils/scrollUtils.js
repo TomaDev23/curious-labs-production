@@ -108,10 +108,13 @@ export const createScrollObserver = (element, callback, options = {}) => {
   });
 };
 
+// This should now be replaced with ScrollManager
+console.warn('[scrollUtils] Direct scroll listeners deprecated. Use ScrollManager instead.');
+
 // 🚨 CL-2: Remove direct scroll listener - use context instead
 export const throttledScrollHandler = (callback, delay = 16) => {
   // This should now be replaced with useGlobalScroll hook
-  console.warn('[scrollUtils] Direct scroll listeners deprecated. Use useGlobalScroll hook instead.');
+  console.warn('[scrollUtils] Direct scroll listeners deprecated. Use ScrollManager instead.');
   
   // 🚨 CL-2: Early return on mobile
   if (isMobile()) {
@@ -131,8 +134,10 @@ export const throttledScrollHandler = (callback, delay = 16) => {
 };
 
 // Legacy support - will be removed in next version
+console.warn('[scrollUtils] addScrollListener deprecated. Use ScrollManager instead.');
+
 export const addScrollListener = (callback, options = {}) => {
-  console.warn('[scrollUtils] addScrollListener deprecated. Use useGlobalScroll hook instead.');
+  console.warn('[scrollUtils] addScrollListener deprecated. Use ScrollManager instead.');
   
   // 🚨 CL-2: Early return on mobile
   if (isMobile()) {

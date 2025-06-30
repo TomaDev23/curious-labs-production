@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useGlobalScroll } from './useGlobalScroll.jsx';
+import { ScrollManager } from '../utils/ScrollManager';
+import { isMobile } from '../utils/deviceTier';
 
 /**
  * Hook to detect when scrolling past a certain threshold of the page
@@ -21,8 +22,27 @@ const useScrollTrigger = (config = {}) => {
   const hasTriggered = useRef(false);
   const frameRef = useRef(null);
   
-  // 🚨 PHASE 2: Use global scroll - Pure management, preserves trigger logic
-  const scrollY = useGlobalScroll();
+  // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
+  const [scrollY, setScrollY] = useState(0);
+  const mobile = isMobile();
+  const callbackRef = useRef(callback);
+  
+  // Update callback ref when it changes
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
+  useEffect(() => {
+    // 🚨 MB-1: Skip scroll listeners on mobile for performance
+    if (mobile) return;
+    
+    const unsubscribe = ScrollManager.subscribe((newScrollY) => {
+      setScrollY(newScrollY);
+    });
+
+    return unsubscribe;
+  }, [mobile]);
 
   useEffect(() => {
     const checkTrigger = () => {

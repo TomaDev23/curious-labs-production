@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useGlobalScroll } from './useGlobalScroll.jsx';
+import { ScrollManager } from '../utils/ScrollManager';
+import { isMobile } from '../utils/deviceTier';
 
 /**
  * Custom hook for creating parallax motion effects based on scroll position
@@ -28,8 +29,24 @@ const useParallaxMotion = (config = {}) => {
   const frameRef = useRef(null);
   const smoothValueRef = useRef(0);
   
-  // 🚨 PHASE 2: Use global scroll - Pure management, preserves motion math
-  const scrollY = useGlobalScroll();
+  // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
+  const [scrollY, setScrollY] = useState(0);
+  const mobile = isMobile();
+  const [transform, setTransform] = useState('translate3d(0, 0, 0)');
+  const [progress, setProgress] = useState(0);
+  const lastValueRef = useRef(0);
+
+  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
+  useEffect(() => {
+    // 🚨 MB-1: Skip scroll listeners on mobile for performance
+    if (mobile || config.disabled) return;
+    
+    const unsubscribe = ScrollManager.subscribe((newScrollY) => {
+      setScrollY(newScrollY);
+    });
+
+    return unsubscribe;
+  }, [mobile, config.disabled]);
 
   useEffect(() => {
     const element = elementRef.current;

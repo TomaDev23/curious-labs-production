@@ -11,27 +11,55 @@
  * Replacement: MissionControlNavbar with Mission Control theme
  */
 
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiMenu, FiX, FiHome, FiInfo, FiMail, FiGrid, FiCode, FiBook, FiStar, FiUsers, FiTool, FiZap, FiCommand } from 'react-icons/fi';
+import { RiRocketLine } from 'react-icons/ri';
+import { BiPlanet, BiCodeAlt } from 'react-icons/bi';
+import { FaBrain, FaRobot, FaSpaceShuttle } from 'react-icons/fa';
+import { HiOutlineSparkles } from 'react-icons/hi';
+import { IoRocketOutline, IoShieldCheckmarkOutline } from 'react-icons/io5';
+import { MdOutlineAutoAwesome, MdOutlineRocketLaunch } from 'react-icons/md';
+import { TbBrandOpenai } from 'react-icons/tb';
+import { VscRobot } from 'react-icons/vsc';
+import { SiOpenai } from 'react-icons/si';
+
+// 🚨 SM-3: Replace useGlobalScroll with ScrollManager
+import { ScrollManager } from '../utils/ScrollManager';
+import { isMobile } from '../utils/deviceTier';
 import { IMAGES } from '../constants/images';
 import { useBreakpoint } from '../hooks/useBreakpoint.js';
-import { useGlobalScroll } from '../hooks/useGlobalScroll.jsx';
 
 // Simple environment check for development mode
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export default function NavBar() {
-  const scrollY = useGlobalScroll();
+  // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
+  const [scrollY, setScrollY] = useState(0);
+  const location = useLocation();
+  const breakpoint = useBreakpoint();
+  const isMobileBreakpoint = breakpoint === 'mobile';
+  const isMobileDevice = isMobile();
   
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
   const [showHudAtomic1, setShowHudAtomic1] = useState(false);
   const [showHudAtomic2, setShowHudAtomic2] = useState(false);
-  const location = useLocation();
-  const breakpoint = useBreakpoint();
-  const isMobile = breakpoint === 'mobile';
   
+  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
+  useEffect(() => {
+    // 🚨 MB-1: Skip scroll listeners on mobile for performance
+    if (isMobileDevice) return;
+    
+    const unsubscribe = ScrollManager.subscribe((newScrollY) => {
+      setScrollY(newScrollY);
+    });
+
+    return unsubscribe;
+  }, [isMobileDevice]);
+
   // Track scroll for navbar styling
   useEffect(() => {
     setIsScrolled(scrollY > 50);
@@ -39,7 +67,7 @@ export default function NavBar() {
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMenuOpen(!isMenuOpen);
     // Close products dropdown when toggling menu
     setIsProductsDropdownOpen(false);
   };
@@ -51,7 +79,7 @@ export default function NavBar() {
   
   // Close mobile menu when changing routes
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    setIsMenuOpen(false);
     setIsProductsDropdownOpen(false);
   }, [location.pathname]);
   
@@ -247,7 +275,7 @@ export default function NavBar() {
       </nav>
       
       {/* Mobile menu */}
-      {isMobileMenuOpen && (
+      {isMenuOpen && (
         <div className="md:hidden bg-[#1F2040] border-t border-[#383853]">
           <div className="px-4 py-2">
             <Link 

@@ -17,7 +17,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { services } from '../../data/services';
-import { useReveal } from '../utils/useReveal.js';
+import useReveal from '../hooks/useReveal.js';
 
 // ✅ KEEP - SHARED PRODUCTION COMPONENTS
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';

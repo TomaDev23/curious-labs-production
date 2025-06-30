@@ -11,10 +11,16 @@
 import React from 'react';
 import { useScene } from './SceneControllerV6';
 import StarfieldCanvasV6 from './StarfieldCanvasV6';
+import { isMobile } from '../../../utils/deviceTier';
 // import GridOverlayV6 from './GridOverlayV6'; // REMOVED: Grid overlay
 
 const CosmicBackgroundSystemV6 = () => {
   const { deviceCapabilities, scenePhase } = useScene();
+  
+  // 🚨 MB-2: Mobile short-circuit - return null for mobile devices
+  if (isMobile()) {
+    return null;
+  }
   
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none" aria-hidden="true">

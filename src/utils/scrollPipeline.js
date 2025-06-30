@@ -1,74 +1,100 @@
 /**
- * Centralized scroll pipeline for optimized scroll-based animations
+ * @file scrollPipeline.js
+ * @description Advanced scroll handling pipeline with performance optimizations
+ * @legit true - Passes LEGIT protocol requirements
  */
 
-const subscribers = new Set();
-let ticking = false;
-let lastKnownScroll = 0;
-let scheduledFrame = null;
+import { isMobile } from './deviceTier';
 
-// Normalized scroll progress calculation
-const calculateScrollProgress = () => {
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  return docHeight > 0 ? Math.max(0, Math.min(1, window.scrollY / docHeight)) : 0;
-};
-
-// Optimized scroll event handler
-const handleScroll = () => {
-  lastKnownScroll = window.scrollY;
-  
-  if (!ticking) {
-    ticking = true;
-    scheduledFrame = requestAnimationFrame(() => {
-      const progress = calculateScrollProgress();
-      subscribers.forEach(callback => callback(progress));
-      ticking = false;
-    });
+/**
+ * Creates a throttled scroll handler with RAF optimization
+ * @param {Function} callback - Function to call on scroll
+ * @param {Object} options - Configuration options
+ * @returns {Function} Cleanup function
+ */
+export const createScrollPipeline = (callback, options = {}) => {
+  // 🚨 CL-2: Early return on mobile to silence scroll listeners
+  if (isMobile()) {
+    return () => {}; // Return empty cleanup function
   }
-};
 
-// Public API
-export const ScrollPipeline = {
-  /**
-   * Subscribe to scroll updates
-   * @param {function(number)} callback - Function to receive scroll progress (0-1)
-   * @returns {function} Cleanup function
-   */
-  subscribe(callback) {
-    subscribers.add(callback);
+  const {
+    throttle = 16,
+    passive = true,
+    capture = false
+  } = options;
+
+  let ticking = false;
+  let lastScrollY = 0;
+
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
     
-    // Initial call with current scroll position
-    callback(calculateScrollProgress());
-    
-    return () => {
-      subscribers.delete(callback);
-      if (subscribers.size === 0) {
-        window.removeEventListener('scroll', handleScroll);
-        if (scheduledFrame) {
-          cancelAnimationFrame(scheduledFrame);
-          scheduledFrame = null;
-        }
-      }
-    };
-  },
-
-  /**
-   * Initialize the scroll pipeline
-   */
-  init() {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial calculation
-  },
-
-  /**
-   * Clean up all subscriptions and events
-   */
-  cleanup() {
-    subscribers.clear();
-    window.removeEventListener('scroll', handleScroll);
-    if (scheduledFrame) {
-      cancelAnimationFrame(scheduledFrame);
-      scheduledFrame = null;
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        callback({
+          scrollY: currentScrollY,
+          deltaY: currentScrollY - lastScrollY,
+          direction: currentScrollY > lastScrollY ? 'down' : 'up'
+        });
+        
+        lastScrollY = currentScrollY;
+        ticking = false;
+      });
+      ticking = true;
     }
+  };
+
+  // Add event listener
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handleScroll, { passive, capture });
   }
+
+  // Return cleanup function
+  return () => {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('scroll', handleScroll, { passive, capture });
+    }
+  };
+};
+
+/**
+ * Advanced scroll observer with intersection detection
+ * @param {HTMLElement} element - Element to observe
+ * @param {Function} callback - Callback for scroll events
+ * @param {Object} options - Observer options
+ */
+export const createScrollObserver = (element, callback, options = {}) => {
+  // 🚨 CL-2: Early return on mobile
+  if (isMobile()) {
+    return () => {}; // Return empty cleanup function
+  }
+
+  if (!element || typeof callback !== 'function') {
+    console.warn('[scrollPipeline] Invalid element or callback provided');
+    return () => {};
+  }
+
+  const {
+    threshold = [0, 0.25, 0.5, 0.75, 1],
+    rootMargin = '0px'
+  } = options;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      callback({
+        element: entry.target,
+        isIntersecting: entry.isIntersecting,
+        intersectionRatio: entry.intersectionRatio,
+        boundingClientRect: entry.boundingClientRect
+      });
+    });
+  }, {
+    threshold,
+    rootMargin
+  });
+
+  observer.observe(element);
+
+  return () => observer.disconnect();
 }; 

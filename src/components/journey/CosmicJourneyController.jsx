@@ -14,7 +14,7 @@ import { getDissolveOpacity, getDissolveZIndex, getFadeBlendClass } from '../../
 import PersistentElements from './PersistentElements';
 import withDraggable from '../../components/ui/DraggableHOC';
 import { useHUDContext } from '../../components/ui/HUDHub';
-import { ScrollPipeline } from '../../utils/scrollPipeline';
+import { ScrollManager } from '../../utils/ScrollManager';
 import { performanceMonitor, PERF_THRESHOLDS } from '../../utils/performanceMonitor';
 
 // LEGIT-compliant metadata
@@ -464,21 +464,23 @@ export default function CosmicJourneyController({ children }) {
     }
   }, []);
 
-  // Initialize ScrollPipeline and performance monitoring
+  // Initialize ScrollManager and performance monitoring
   useEffect(() => {
-    ScrollPipeline.init();
-    const cleanup = ScrollPipeline.subscribe(setScrollProgress);
+    ScrollManager.init();
+    const unsubscribe = ScrollManager.subscribe(setScrollProgress);
     
     // ⛔ DISABLED: Performance check interval temporarily disabled for audit
-    // const perfInterval = setInterval(checkPerformance, 5000);
+    // const perfInterval = setInterval(() => {
+    //   const stats = performanceMonitor.getStats(metadata.id);
+    //   setPerformanceStats(stats);
+    // }, 1000);
     
     return () => {
-      cleanup();
-      ScrollPipeline.cleanup();
+      unsubscribe();
       // clearInterval(perfInterval);
       performanceMonitor.reset(metadata.id);
     };
-  }, [checkPerformance]);
+  }, []);
 
   return (
     <div className="w-full text-white">

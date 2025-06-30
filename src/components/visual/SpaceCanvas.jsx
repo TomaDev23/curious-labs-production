@@ -1,9 +1,11 @@
 // 🛡️ STAR_LOCKED: Do not remove or alter – see STAR_LOCK_V1.md
 import { useEffect, useRef, useState } from 'react';
+import { observe as sharedObserve, unobserve as sharedUnobserve } from '../../utils/SharedIO';
 
 export default function SpaceCanvas({ zone }) {
   const canvasRef = useRef(null);
   const [isVisible, setIsVisible] = useState(true);
+  const unsubscribeRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -102,34 +104,32 @@ export default function SpaceCanvas({ zone }) {
       });
     };
 
-    // Add visibility observer for performance
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          setIsVisible(entry.isIntersecting);
-          animationActive = entry.isIntersecting;
-          
-          if (entry.isIntersecting && !frameId) {
-            frameId = requestAnimationFrame(draw);
-          }
-        },
-        { threshold: 0.1 }
-      );
-      
-      observer.observe(canvas);
-      return () => {
-        observer.disconnect();
-        cancelAnimationFrame(frameId);
-        window.removeEventListener('resize', resize);
-      };
-    }
+    // 🚨 CL-1: Use SharedIO instead of individual IntersectionObserver
+    const unsubscribe = sharedObserve(
+      canvas,
+      (entry) => {
+        setIsVisible(entry.isIntersecting);
+        animationActive = entry.isIntersecting;
+        
+        if (entry.isIntersecting && !frameId) {
+          frameId = requestAnimationFrame(draw);
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-    // Fallback if IntersectionObserver is not available
+    unsubscribeRef.current = unsubscribe;
+
+    // Initialize canvas
     resize();
     window.addEventListener('resize', resize);
     frameId = requestAnimationFrame(draw);
 
     return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
       cancelAnimationFrame(frameId);
       window.removeEventListener('resize', resize);
     };

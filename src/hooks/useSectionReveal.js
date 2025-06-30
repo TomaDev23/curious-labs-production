@@ -1,38 +1,49 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { observe as sharedObserve, unobserve as sharedUnobserve } from '../utils/SharedIO';
 
 /**
- * Section reveal hook for triggering animations when sections come into view
- * 🚨 PHASE 2: Converted to SharedIO - Pure management change, zero functional impact
- * @param {number} threshold - Intersection threshold (0-1)
- * @param {string} rootMargin - Root margin for intersection observer
- * @returns {Object} - Object containing ref to attach and visibility state
+ * Hook for section reveal animations using SharedIO
+ * @param {Object} options - Configuration options
+ * @returns {Object} - Ref and visibility state
  */
-const useSectionReveal = (threshold = 0.2, rootMargin = '0px') => {
-  const [isVisible, setIsVisible] = useState(false);
+export const useSectionReveal = (options = {}) => {
+  const {
+    threshold = 0.2,
+    rootMargin = '0px',
+    triggerOnce = true
+  } = options;
+
   const elementRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasBeenVisible, setHasBeenVisible] = useState(false);
   const unsubscribeRef = useRef(null);
 
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
 
-    // 🚨 PHASE 2: Use SharedIO - Pure management change, zero functional impact
+    // 🚨 CL-1: Use SharedIO instead of individual IntersectionObserver
     const unsubscribe = sharedObserve(
       element,
       (entry) => {
-        if (entry.isIntersecting) {
+        const isIntersecting = entry.isIntersecting;
+        
+        if (isIntersecting) {
           setIsVisible(true);
-          // Auto-unsubscribe after reveal - preserves original behavior
-          if (unsubscribeRef.current) {
+          setHasBeenVisible(true);
+          
+          // If triggerOnce is true, unsubscribe after first trigger
+          if (triggerOnce && unsubscribeRef.current) {
             unsubscribeRef.current();
             unsubscribeRef.current = null;
           }
+        } else if (!triggerOnce) {
+          setIsVisible(false);
         }
       },
-      { 
+      {
         threshold,
-        rootMargin 
+        rootMargin
       }
     );
 
@@ -44,15 +55,14 @@ const useSectionReveal = (threshold = 0.2, rootMargin = '0px') => {
         unsubscribeRef.current = null;
       }
     };
-  }, [threshold, rootMargin]);
+  }, [threshold, rootMargin, triggerOnce]);
 
-  // Return in original format for compatibility
   return {
     ref: elementRef,
-    isVisible
+    isVisible: triggerOnce ? hasBeenVisible : isVisible,
+    hasBeenVisible
   };
 };
 
-// Export both named and default
-export { useSectionReveal };
+// Export default only (named export already at declaration)
 export default useSectionReveal; 

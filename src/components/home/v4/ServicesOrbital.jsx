@@ -5,7 +5,8 @@ import CosmicNoiseOverlay from '../../ui/CosmicNoiseOverlay';
 import { useBreakpoint, useLegacyBreakpoint } from '../../../hooks/useBreakpoint.js';
 import { startComponentRender, endComponentRender } from '../../../utils/performanceMonitor';
 import { useLazyLoad } from '../../../hooks/useLazyLoad';
-import { useScroll } from '../../../context/ScrollContext';
+import { ScrollManager } from '../../../utils/ScrollManager';
+import { isMobile } from '../../../utils/deviceTier';
 import { motion, AnimatePresence } from '../../../FramerProvider';
 
 
@@ -29,8 +30,30 @@ const ServicesOrbital = () => {
   // Lazy loading for the orbital visualization
   const [lazyRef, isOrbitalVisible] = useLazyLoad({ rootMargin: '200px' });
   
-  // Get scroll position for subtle effects
-  const { scrollY } = useScroll();
+  // 🚨 PHASE 2: Replace useScroll with local ScrollManager subscription
+  const [scrollY, setScrollY] = useState(0);
+  const isMobileDevice = isMobile();
+  
+  // 🚨 PHASE 2: Subscribe to ScrollManager with mobile short-circuit
+  useEffect(() => {
+    // Skip scroll listeners on mobile for subtle effects
+    if (isMobileDevice) {
+      console.log('[PHASE2] ServicesOrbital scroll listeners disabled on mobile');
+      return;
+    }
+    
+    const handleScrollUpdate = (currentScrollY) => {
+      setScrollY(currentScrollY);
+    };
+    
+    // Subscribe to ScrollManager
+    const unsubscribe = ScrollManager.subscribe(handleScrollUpdate);
+    
+    // Initialize with current scroll position
+    handleScrollUpdate(ScrollManager.getScrollY());
+    
+    return unsubscribe;
+  }, [isMobileDevice]);
   
   // Services data - memoized to prevent recreation on each render
   const services = useMemo(() => [

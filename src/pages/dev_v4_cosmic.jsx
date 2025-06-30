@@ -34,7 +34,7 @@ const FooterExperience = lazy(() => import('../components/home/v4/FooterExperien
 
 // Import scroll utilities
 import { registerSmoothScrolling } from '../utils/scrollUtils';
-import { useScroll } from '../context/ScrollContext';
+// MIGRATION: ScrollContext replaced with ScrollManager - development page uses simple local state
 
 // Import section reveal hook and animation variants
 import { useSectionReveal } from '../hooks/useSectionReveal';
@@ -51,7 +51,8 @@ import {
  * Enhanced with cosmic theme elements and scroll synchronization
  */
 const DevV4CosmicPage = () => {
-  const { activeSection } = useScroll();
+  // MIGRATION: Simple local state instead of ScrollContext
+  const [activeSection, setActiveSection] = React.useState('hero');
   
   // Section reveal hooks for each section
   const { ref: aboutRef, isVisible: aboutVisible } = useSectionReveal();

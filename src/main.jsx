@@ -8,14 +8,13 @@ import { HelmetProvider } from 'react-helmet-async'
 import App from './App.jsx'
 import './index.css'
 import './styles/globals.css'
-import { ScrollProvider } from './context/ScrollContext'
+// MIGRATION: ScrollProvider removed - components now use ScrollManager directly
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HelmetProvider>
     <BrowserRouter>
-      <ScrollProvider>
-        <App />
-      </ScrollProvider>
+      {/* MIGRATION: ScrollProvider removed - using ScrollManager directly in components */}
+      <App />
     </BrowserRouter>
   </HelmetProvider>
 )

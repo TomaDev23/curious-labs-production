@@ -2,7 +2,6 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { ScrollProvider } from './context/ScrollContext';
 import { DeviceProvider } from './context/DeviceContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import MissionControl from './pages/MissionControl';

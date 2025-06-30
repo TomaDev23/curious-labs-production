@@ -1,16 +1,65 @@
-import React, { useMemo } from 'react';
-import { useScroll } from '../../context/ScrollContext';
+import React, { useMemo, useState, useEffect } from 'react';
+import { ScrollManager } from '../../utils/ScrollManager';
+import { isMobile } from '../../utils/deviceTier';
 import { motion, AnimatePresence } from '../../FramerProvider';
-
 
 /**
  * CosmicHUD - A space-themed heads-up display showing scroll position and active section
  * Designed to complement the cosmic theme of the site
  */
 const CosmicHUD = ({ showSectionLabel = true, showProgress = true, position = 'bottom-left' }) => {
-  const { scrollY, scrollProgress, activeSection, isAtTop, isAtBottom } = useScroll();
+  const [scrollY, setScrollY] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState('');
+  const [isAtTop, setIsAtTop] = useState(true);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState('none');
+  const [lastScrollY, setLastScrollY] = useState(0);
   
-  // Define position classes based on the position prop
+  const isMobileDevice = isMobile();
+  
+  useEffect(() => {
+    if (isMobileDevice) {
+      console.log('[PHASE2] CosmicHUD scroll listeners disabled on mobile');
+      return;
+    }
+    
+    const handleScrollUpdate = (currentScrollY) => {
+      setScrollY(currentScrollY);
+      
+      if (currentScrollY > lastScrollY) {
+        setScrollDirection('down');
+      } else if (currentScrollY < lastScrollY) {
+        setScrollDirection('up');
+      }
+      setLastScrollY(currentScrollY);
+      
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? (currentScrollY / totalHeight) : 0;
+      setScrollProgress(progress);
+      
+      setIsAtTop(currentScrollY <= 10);
+      setIsAtBottom(Math.abs(currentScrollY + window.innerHeight - document.documentElement.scrollHeight) <= 10);
+      
+      const sections = document.querySelectorAll('section[id]');
+      let found = '';
+      for (let section of sections) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 120 && rect.bottom >= 120) {
+          found = section.id;
+          break;
+        }
+      }
+      setActiveSection(found);
+    };
+    
+    const unsubscribe = ScrollManager.subscribe(handleScrollUpdate);
+    
+    handleScrollUpdate(ScrollManager.getScrollY());
+    
+    return unsubscribe;
+  }, [lastScrollY, isMobileDevice]);
+  
   const positionClasses = useMemo(() => {
     switch (position) {
       case 'top-left':
@@ -25,20 +74,19 @@ const CosmicHUD = ({ showSectionLabel = true, showProgress = true, position = 'b
     }
   }, [position]);
   
-  // Format active section name for display
   const formattedSectionName = useMemo(() => {
     if (!activeSection) return 'Cosmos';
     
-    // Convert kebab-case to Title Case
     return activeSection
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }, [activeSection]);
   
-  // Don't show when at very top of page
   if (isAtTop && !activeSection) return null;
   
+  if (isMobileDevice) return null;
+
   return (
     <motion.div
       className={`fixed ${positionClasses} z-[95] pointer-events-none`}
@@ -47,7 +95,6 @@ const CosmicHUD = ({ showSectionLabel = true, showProgress = true, position = 'b
       transition={{ duration: 0.3 }}
     >
       <div className="bg-black/30 backdrop-blur-md p-2 rounded-lg border border-purple-500/30 shadow-lg shadow-purple-500/10 flex flex-col items-center">
-        {/* Section label */}
         {showSectionLabel && (
           <AnimatePresence mode="wait">
             <motion.div
@@ -64,7 +111,6 @@ const CosmicHUD = ({ showSectionLabel = true, showProgress = true, position = 'b
           </AnimatePresence>
         )}
         
-        {/* Progress visualization */}
         {showProgress && (
           <div className="w-16 h-1.5 bg-gray-800 rounded-full overflow-hidden">
             <motion.div

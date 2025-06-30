@@ -335,102 +335,181 @@ export const PERFORMANCE_METRICS = {
   }
 };
 
+// ==========================================
+// ADAPTIVE PERFORMANCE UTILITIES
+// ==========================================
+
 /**
- * Performance monitor class
+ * Calculates optimal performance settings based on device capabilities
+ * @param {Object} capabilities - Device capabilities object
+ * @returns {Object} - Optimized performance configuration
  */
-export class PerformanceMonitor {
-  constructor() {
-    this.metrics = {};
-    this.observers = [];
-    this.isMonitoring = false;
-    this.frameCount = 0;
-    this.lastFrameTime = performance.now();
-    this.fpsHistory = [];
-    this.memoryHistory = [];
+export const calculateOptimalSettings = (capabilities) => {
+  let performanceLevel = 'medium';
+  
+  // Determine performance level based on capabilities
+  if (capabilities.prefersReducedMotion) {
+    performanceLevel = 'minimal';
+  } else if (capabilities.hardwareLevel === 'high' && 
+             capabilities.refreshRate >= 60 && 
+             capabilities.estimatedMemory > 4096) {
+    performanceLevel = 'high';
+  } else if (capabilities.hardwareLevel === 'low' || 
+             capabilities.estimatedMemory < 2048) {
+    performanceLevel = 'low';
   }
   
+  return {
+    performanceLevel,
+    throttlingConfig: THROTTLING_CONFIGS[performanceLevel === 'high' ? 'full' : 
+                                        performanceLevel === 'low' ? 'minimal' : 'reduced'],
+    budgets: {
+      animations: PERFORMANCE_BUDGETS.MAX_CONCURRENT_ANIMATIONS[
+        performanceLevel === 'high' ? 'highEnd' : 
+        performanceLevel === 'low' ? 'lowEnd' : 'midRange'
+      ],
+      particles: PERFORMANCE_BUDGETS.MAX_PARTICLES[
+        performanceLevel === 'high' ? 'highEnd' : 
+        performanceLevel === 'low' ? 'lowEnd' : 'midRange'
+      ]
+    }
+  };
+};
+
+/**
+ * Creates a performance-aware animation configuration
+ * @param {string} component - Component name
+ * @param {string} performanceLevel - Performance level (high/medium/low)
+ * @returns {Object} - Animation configuration
+ */
+export const createPerformanceAwareConfig = (component, performanceLevel) => {
+  const rules = COMPONENT_PERFORMANCE_RULES[component];
+  if (!rules) return {};
+  
+  const config = {};
+  
+  Object.keys(rules).forEach(property => {
+    if (rules[property][performanceLevel]) {
+      config[property] = rules[property][performanceLevel];
+    }
+  });
+  
+  return config;
+};
+
+// ==========================================
+// EXPORTS
+// ==========================================
+
+// Create global performance monitor instance
+export const globalPerformanceMonitor = new PerformanceMonitor();
+
+export const PERFORMANCE_CONTRACT_VERSION = '1.0.0';
+export const LAST_UPDATED = '2024-12-28';
+
+// 🚨 PHASE 1: Add mobile detection to disable performance monitoring on mobile
+import { isMobile } from '../../../utils/deviceTier';
+
+export class PerformanceMonitor {
+  constructor() {
+    // 🚨 PHASE 1: Mobile short-circuit - disable monitoring on mobile completely
+    this.isMobile = isMobile();
+    
+    this.isMonitoring = false;
+    this.metrics = {};
+    this.fpsHistory = [];
+    this.memoryHistory = [];
+    
+    // 🚨 PHASE 1: Skip initialization on mobile to prevent performance overhead
+    if (this.isMobile) {
+      console.log('[PHASE1] Performance monitoring disabled on mobile device');
+      return;
+    }
+    
+    this.initializeMetrics();
+  }
+
   /**
-   * Start performance monitoring
+   * Start performance monitoring with mobile guard
    */
   startMonitoring() {
+    // 🚨 PHASE 1: Skip monitoring on mobile
+    if (this.isMobile) {
+      console.log('[PHASE1] Performance monitoring start blocked on mobile');
+      return;
+    }
+    
     if (this.isMonitoring) return;
     
     this.isMonitoring = true;
-    this.frameCount = 0;
-    this.lastFrameTime = performance.now();
-    
-    // Start FPS monitoring
     this.monitorFrameRate();
-    
-    // Start memory monitoring if available
-    if ('memory' in performance) {
-      this.monitorMemoryUsage();
-    }
-    
-    // Monitor DOM complexity
+    this.monitorMemoryUsage();
     this.monitorDOMComplexity();
     
-    console.log('🔍 Performance monitoring started');
+    console.log('📊 Performance monitoring started');
   }
-  
+
   /**
    * Stop performance monitoring
    */
   stopMonitoring() {
     this.isMonitoring = false;
-    this.observers.forEach(observer => observer.disconnect?.());
-    this.observers = [];
-    
-    console.log('🔍 Performance monitoring stopped');
+    console.log('📊 Performance monitoring stopped');
   }
-  
+
   /**
-   * Monitor frame rate
+   * Monitor frame rate with mobile guard
    */
   monitorFrameRate() {
+    // 🚨 PHASE 1: Skip frame rate monitoring on mobile
+    if (this.isMobile || !this.isMonitoring) return;
+    
     const measureFPS = () => {
-      if (!this.isMonitoring) return;
+      if (!this.isMonitoring || this.isMobile) return;
       
-      const now = performance.now();
-      const delta = now - this.lastFrameTime;
+      this.lastFrameTime = performance.now();
       
-      if (delta >= 1000) { // Update every second
-        const fps = Math.round((this.frameCount * 1000) / delta);
+      const fpsCounter = () => {
+        if (!this.isMonitoring || this.isMobile) return;
+        
+        const currentTime = performance.now();
+        const fps = Math.round(1000 / (currentTime - this.lastFrameTime));
+        
         this.updateMetric('frameRate', fps);
         
-        this.fpsHistory.push({ timestamp: now, fps });
-        if (this.fpsHistory.length > 60) { // Keep 1 minute of history
+        this.fpsHistory.push(fps);
+        if (this.fpsHistory.length > 60) {
           this.fpsHistory.shift();
         }
         
-        this.frameCount = 0;
-        this.lastFrameTime = now;
-      }
+        this.lastFrameTime = performance.now();
+        requestAnimationFrame(fpsCounter);
+      };
       
-      this.frameCount++;
-      requestAnimationFrame(measureFPS);
+      requestAnimationFrame(fpsCounter);
     };
     
-    requestAnimationFrame(measureFPS);
+    measureFPS();
   }
-  
+
   /**
-   * Monitor memory usage
+   * Monitor memory usage with mobile guard
    */
   monitorMemoryUsage() {
+    // 🚨 PHASE 1: Skip memory monitoring on mobile
+    if (this.isMobile || !this.isMonitoring) return;
+    
     const measureMemory = () => {
-      if (!this.isMonitoring) return;
+      if (!this.isMonitoring || this.isMobile || !performance.memory) return;
       
-      if ('memory' in performance) {
-        const memory = performance.memory;
-        const usedMB = Math.round(memory.usedJSHeapSize / 1024 / 1024);
-        
-        this.updateMetric('memoryUsage', usedMB);
-        
-        this.memoryHistory.push({ timestamp: performance.now(), memory: usedMB });
-        if (this.memoryHistory.length > 60) {
-          this.memoryHistory.shift();
-        }
+      const memory = performance.memory;
+      const usedMB = Math.round(memory.usedJSHeapSize / 1024 / 1024);
+      
+      this.updateMetric('memoryUsage', usedMB);
+      
+      this.memoryHistory.push({ timestamp: performance.now(), memory: usedMB });
+      if (this.memoryHistory.length > 60) {
+        this.memoryHistory.shift();
       }
       
       setTimeout(measureMemory, 1000); // Update every second
@@ -438,7 +517,7 @@ export class PerformanceMonitor {
     
     measureMemory();
   }
-  
+
   /**
    * Monitor DOM complexity
    */
@@ -517,75 +596,3 @@ export class PerformanceMonitor {
     return 'full';
   }
 }
-
-// ==========================================
-// ADAPTIVE PERFORMANCE UTILITIES
-// ==========================================
-
-/**
- * Calculates optimal performance settings based on device capabilities
- * @param {Object} capabilities - Device capabilities object
- * @returns {Object} - Optimized performance configuration
- */
-export const calculateOptimalSettings = (capabilities) => {
-  let performanceLevel = 'medium';
-  
-  // Determine performance level based on capabilities
-  if (capabilities.prefersReducedMotion) {
-    performanceLevel = 'minimal';
-  } else if (capabilities.hardwareLevel === 'high' && 
-             capabilities.refreshRate >= 60 && 
-             capabilities.estimatedMemory > 4096) {
-    performanceLevel = 'high';
-  } else if (capabilities.hardwareLevel === 'low' || 
-             capabilities.estimatedMemory < 2048) {
-    performanceLevel = 'low';
-  }
-  
-  return {
-    performanceLevel,
-    throttlingConfig: THROTTLING_CONFIGS[performanceLevel === 'high' ? 'full' : 
-                                        performanceLevel === 'low' ? 'minimal' : 'reduced'],
-    budgets: {
-      animations: PERFORMANCE_BUDGETS.MAX_CONCURRENT_ANIMATIONS[
-        performanceLevel === 'high' ? 'highEnd' : 
-        performanceLevel === 'low' ? 'lowEnd' : 'midRange'
-      ],
-      particles: PERFORMANCE_BUDGETS.MAX_PARTICLES[
-        performanceLevel === 'high' ? 'highEnd' : 
-        performanceLevel === 'low' ? 'lowEnd' : 'midRange'
-      ]
-    }
-  };
-};
-
-/**
- * Creates a performance-aware animation configuration
- * @param {string} component - Component name
- * @param {string} performanceLevel - Performance level (high/medium/low)
- * @returns {Object} - Animation configuration
- */
-export const createPerformanceAwareConfig = (component, performanceLevel) => {
-  const rules = COMPONENT_PERFORMANCE_RULES[component];
-  if (!rules) return {};
-  
-  const config = {};
-  
-  Object.keys(rules).forEach(property => {
-    if (rules[property][performanceLevel]) {
-      config[property] = rules[property][performanceLevel];
-    }
-  });
-  
-  return config;
-};
-
-// ==========================================
-// EXPORTS
-// ==========================================
-
-// Create global performance monitor instance
-export const globalPerformanceMonitor = new PerformanceMonitor();
-
-export const PERFORMANCE_CONTRACT_VERSION = '1.0.0';
-export const LAST_UPDATED = '2024-12-28';

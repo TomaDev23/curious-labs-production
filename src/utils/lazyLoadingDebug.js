@@ -5,10 +5,20 @@
  * @author CuriousLabs
  */
 
+import { isMobile } from './deviceTier';
+
 class LazyLoadingDebug {
   constructor() {
-    this.isEnabled = false;
-    this.verboseMode = false; // New: separate verbose mode
+    this.isMobile = isMobile();
+    
+    this.isEnabled = !this.isMobile && (process.env.NODE_ENV === 'development' || 
+                     new URLSearchParams(window.location.search).get('lazy-debug') === 'true');
+    this.verboseMode = !this.isMobile && (localStorage.getItem('lazy-debug-verbose') === 'true');
+    
+    if (this.isMobile) {
+      console.log('[PHASE1] LazyLoading debug disabled on mobile device');
+    }
+    
     this.stats = {
       totalComponents: 0,
       loadedComponents: 0,
@@ -20,44 +30,28 @@ class LazyLoadingDebug {
       startTime: performance.now()
     };
     
-    // Rate limiting for debug logs
     this.logCache = new Map();
-    this.rateLimitMs = 2000; // Only log same message every 2 seconds
+    this.rateLimitMs = 2000;
     
-    // Initialize debug mode from localStorage or URL params
     this.initializeDebugMode();
   }
 
   initializeDebugMode() {
-    // Always attach cosmic protocol in development mode (for easter eggs)
-    if (process.env.NODE_ENV === 'development') {
-      this.attachToWindow();
-      
-      // Beautiful cosmic welcome (per contract) - not debug spam
-      setTimeout(() => {
-        console.log('🌌 [COSMIC PROTOCOL] Welcome, developer. Your tools await at cosmicProtocol.activate()');
-      }, 1000);
-    }
-
-    // Check if debug mode is explicitly enabled
-    const urlParams = new URLSearchParams(window.location.search);
-    const isDebugParam = urlParams.get('lazy-debug') === 'true';
-    const isDebugStorage = localStorage.getItem('lazy-debug') === 'true';
+    if (this.isMobile) return;
     
-    this.enabled = isDebugParam || isDebugStorage;
+    const debugParam = new URLSearchParams(window.location.search).get('lazy-debug') === 'true';
+    const debugStorage = localStorage.getItem('lazy-debug-enabled') === 'true';
     
-    if (this.enabled) {
+    this.isEnabled = debugParam || debugStorage;
+    
+    if (this.isEnabled) {
+      console.log('🔍 Lazy Loading Debug Mode Enabled');
       this.attachToWindow();
-      this.log('🎯 Debug mode activated');
-      
-      // Initialize cosmic easter eggs for enhanced developer experience
       this.initializeCosmicEasterEggs();
     }
   }
 
-  // Initialize cosmic easter eggs as per contract
   initializeCosmicEasterEggs() {
-    // Random cosmic welcome messages
     const welcomeMessages = [
       '🌟 [STELLAR-VIEW] Your presence illuminates the cosmic interface',
       '🛰️ [COSMIC-NET] Neural pathways synchronized with developer systems',
@@ -65,17 +59,14 @@ class LazyLoadingDebug {
       '🎯 [TARGETING] Perfect development trajectory locked and loaded'
     ];
     
-    // Show a random welcome message after a brief delay
     setTimeout(() => {
       const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
       console.log(randomMessage);
     }, 1500);
     
-    // Add periodic cosmic encouragement (per contract specification)
     this.startCosmicEncouragement();
   }
 
-  // Periodic cosmic encouragement system
   startCosmicEncouragement() {
     const encouragementMessages = [
       '🌟 [QUANTUM-LINK] Developer intuition amplified',
@@ -85,30 +76,24 @@ class LazyLoadingDebug {
       '🎯 [TARGETING] Perfect solution alignment detected'
     ];
     
-    // Show encouragement every 5-10 minutes during development
     const showEncouragement = () => {
       if (process.env.NODE_ENV === 'development') {
         const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
         console.log(randomMessage);
         
-        // Schedule next encouragement (5-10 minutes)
         const nextDelay = (5 + Math.random() * 5) * 60 * 1000;
         setTimeout(showEncouragement, nextDelay);
       }
     };
     
-    // Start first encouragement after 5 minutes
     setTimeout(showEncouragement, 5 * 60 * 1000);
   }
 
   attachToWindow() {
-    // Make debug utility globally available
     if (typeof window !== 'undefined') {
       window.lazyDebug = this;
       
-      // Add Cosmic Protocol as per contract specification
       window.cosmicProtocol = {
-        // Welcome sequence with available commands
         activate: () => {
           console.log('🌌 [COSMIC PROTOCOL ACTIVATED]');
           console.log('🚀 [MISSION CONTROL] Welcome aboard, Commander!');
@@ -120,7 +105,6 @@ class LazyLoadingDebug {
           console.log('🛰️ [COSMIC NETWORK] All systems primed for exploration');
         },
         
-        // Temporary boost message
         boost: () => {
           const boostLevel = Math.floor(Math.random() * 50 + 100);
           console.log(`⚡ [POWER-SURGE] Developer efficiency increased by ${boostLevel}%!`);
@@ -128,7 +112,6 @@ class LazyLoadingDebug {
           console.log('🚀 [MISSION STATUS] Neural pathways optimized for peak performance');
         },
         
-        // Show developer "stats"
         status: () => {
           const experience = Math.floor(Math.random() * 15 + 85);
           const quality = ['Transcendent', 'Legendary', 'Elite', 'Cosmic'][Math.floor(Math.random() * 4)];
@@ -139,14 +122,12 @@ class LazyLoadingDebug {
           console.log('⚡ [POWER-CORE] All systems nominal, Commander');
         },
         
-        // Random coding wisdom
         wisdom: () => {
           const wisdom = this.getRandomCosmicWisdom();
           console.log(`🧙 [COSMIC WISDOM] "${wisdom}"`);
           console.log('🌌 [TRANSMISSION] Wisdom downloaded to neural cortex');
         },
         
-        // Quick access to mission report
         mission: () => {
           if (this.isEnabled) {
             this.missionReport();
@@ -212,20 +193,17 @@ class LazyLoadingDebug {
     console.log(`📢 Verbose Mode: ${enabled ? 'ENABLED' : 'DISABLED'}`);
   }
 
-  // Smart logging with rate limiting
   log(message, data = null) {
     if (!this.isEnabled) return;
     
-    // Only log in verbose mode or for important events
     if (!this.verboseMode && !this.isImportantMessage(message)) return;
     
-    // Rate limiting to prevent spam
     const now = Date.now();
     const cacheKey = message + (data ? JSON.stringify(data) : '');
     const lastLogged = this.logCache.get(cacheKey);
     
     if (lastLogged && (now - lastLogged) < this.rateLimitMs) {
-      return; // Skip this log to prevent spam
+      return;
     }
     
     this.logCache.set(cacheKey, now);
@@ -234,64 +212,53 @@ class LazyLoadingDebug {
     console.log(`[${timestamp}] 🔍 ${message}`, data || '');
   }
 
-  // Determine if a message is important enough to show in quiet mode
   isImportantMessage(message) {
     const criticalKeywords = [
       'error', 'failed', 'safe mode', 'activated', 'warning', 'retry'
     ];
     
-    // In quiet mode, only show critical issues, not routine operations
     return criticalKeywords.some(keyword => 
       message.toLowerCase().includes(keyword)
     );
   }
 
   trackComponentLoad(componentName, loadTime, metadata = {}) {
-    if (!this.stats.componentStats.has(componentName)) {
-      this.stats.componentStats.set(componentName, {
-        name: componentName,
-        loadCount: 0,
-        totalLoadTime: 0,
-        averageLoadTime: 0,
-        minLoadTime: Infinity,
-        maxLoadTime: 0,
-        errors: 0,
-        metadata: {}
-      });
-    }
-
-    const component = this.stats.componentStats.get(componentName);
-    component.loadCount++;
-    component.totalLoadTime += loadTime;
-    component.averageLoadTime = component.totalLoadTime / component.loadCount;
-    component.minLoadTime = Math.min(component.minLoadTime, loadTime);
-    component.maxLoadTime = Math.max(component.maxLoadTime, loadTime);
-    component.metadata = { ...component.metadata, ...metadata };
-
-    // Update global stats
+    if (this.isMobile) return;
+    
+    if (!this.isEnabled) return;
+    
     this.stats.loadedComponents++;
-    this.stats.totalLoadTime += loadTime;
-    this.stats.averageLoadTime = this.stats.totalLoadTime / this.stats.loadedComponents;
-
-    // Beautiful cosmic easter eggs for component loads (per contract)
-    if (process.env.NODE_ENV === 'development') {
-      this.showCosmicLoadMessage(componentName, loadTime, metadata);
-    }
-
-    // Technical debug logging only if explicitly enabled
-    if (this.isEnabled && this.verboseMode) {
-      this.log(`Component loaded: ${componentName}`, {
-        loadTime: `${loadTime.toFixed(2)}ms`,
-        type: metadata.type || 'lazy',
-        priority: metadata.priority || 'unknown'
-      });
-    }
+    
+    const existing = this.stats.componentStats.get(componentName) || {
+      loadCount: 0,
+      totalLoadTime: 0,
+      averageLoadTime: 0,
+      lastLoaded: null,
+      metadata: {}
+    };
+    
+    existing.loadCount++;
+    existing.totalLoadTime += loadTime;
+    existing.averageLoadTime = existing.totalLoadTime / existing.loadCount;
+    existing.lastLoaded = new Date().toISOString();
+    existing.metadata = { ...existing.metadata, ...metadata };
+    
+    this.stats.componentStats.set(componentName, existing);
+    
+    const totalLoadTime = Array.from(this.stats.componentStats.values())
+      .reduce((sum, stat) => sum + stat.totalLoadTime, 0);
+    this.stats.averageLoadTime = totalLoadTime / this.stats.loadedComponents;
+    
+    this.log(`Component loaded: ${componentName}`, {
+      loadTime: `${loadTime.toFixed(2)}ms`,
+      totalLoaded: this.stats.loadedComponents,
+      averageLoadTime: `${this.stats.averageLoadTime.toFixed(2)}ms`,
+      ...metadata
+    });
   }
 
-  // Show beautiful cosmic messages for component loads (contract specification)
   showCosmicLoadMessage(componentName, loadTime, metadata) {
     const cosmicMessages = {
-      // Component-specific cosmic messages
       'MissionAtomic': [
         '🚀 [MISSION-MODULE] Core directive systems online',
         '🌟 [STELLAR-MISSION] Command protocols synchronized',
@@ -319,7 +286,6 @@ class LazyLoadingDebug {
       ]
     };
 
-    // Generic cosmic messages for unknown components
     const genericMessages = [
       '🌟 [QUANTUM-LINK] Module accessed - Neural pathways synchronized',
       '⚡ [ENERGY-SURGE] Component powers amplified',
@@ -331,46 +297,33 @@ class LazyLoadingDebug {
     const messages = cosmicMessages[componentName] || genericMessages;
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     
-    // Only show occasionally to avoid spam (30% chance)
     if (Math.random() < 0.3) {
       console.log(randomMessage);
     }
   }
 
   trackComponentError(componentName, error, metadata = {}) {
-    if (!this.stats.componentStats.has(componentName)) {
-      this.stats.componentStats.set(componentName, {
-        name: componentName,
-        loadCount: 0,
-        totalLoadTime: 0,
-        averageLoadTime: 0,
-        minLoadTime: Infinity,
-        maxLoadTime: 0,
-        errors: 0,
-        metadata: {}
-      });
-    }
-
-    const component = this.stats.componentStats.get(componentName);
-    component.errors++;
-    component.metadata = { ...component.metadata, ...metadata };
-
+    if (this.isMobile) return;
+    
+    if (!this.isEnabled) return;
+    
     this.stats.errorComponents++;
-
-    // Errors are always important
-    console.error(`❌ Component error: ${componentName}`, error, metadata);
+    
+    this.log(`Component failed: ${componentName}`, {
+      error: error.message,
+      stack: error.stack,
+      totalFailed: this.stats.errorComponents,
+      ...metadata
+    }, 'error');
   }
 
-  // Add a method to log component state changes only when they actually change
   logStateChange(componentName, newState, previousState = null) {
     if (!this.isEnabled) return;
     
-    // Only log if state actually changed
     if (previousState && JSON.stringify(newState) === JSON.stringify(previousState)) {
       return;
     }
     
-    // Only log important state changes
     const importantChanges = ['inView', 'hasBeenInView', 'hasLoaded', 'isInSafeMode', 'loadError'];
     const hasImportantChange = importantChanges.some(key => 
       newState[key] !== previousState?.[key]
@@ -512,7 +465,6 @@ class LazyLoadingDebug {
     
     const jsonData = JSON.stringify(exportData, null, 2);
     
-    // Create downloadable file
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -600,7 +552,6 @@ ${this.getRecommendations()}
   }
 
   visualize() {
-    // Create a simple ASCII timeline visualization
     console.log('\n🎨 Loading Timeline Visualization:');
     console.log('═══════════════════════════════════════════════════════════════════════════════');
     
@@ -608,13 +559,12 @@ ${this.getRecommendations()}
       .sort((a, b) => a.averageLoadTime - b.averageLoadTime);
     
     components.forEach(component => {
-      const bars = Math.ceil(component.averageLoadTime / 50); // 50ms per bar
+      const bars = Math.ceil(component.averageLoadTime / 50);
       const timeline = '█'.repeat(Math.min(bars, 50)) + (bars > 50 ? '...' : '');
       console.log(`${component.name.padEnd(20)} │${timeline} ${component.averageLoadTime.toFixed(0)}ms`);
     });
   }
 
-  // Cosmic Mission Report - themed performance summary
   missionReport() {
     const uptime = (performance.now() - this.stats.startTime) / 1000;
     const successRate = this.stats.totalComponents > 0 ? 
@@ -655,7 +605,6 @@ ${this.getRecommendations()}
     };
   }
 
-  // Get random cosmic wisdom
   getRandomCosmicWisdom() {
     const cosmicWisdoms = [
       'The best code serves both machines and humans across the galaxy',
@@ -669,7 +618,6 @@ ${this.getRecommendations()}
     return cosmicWisdoms[Math.floor(Math.random() * cosmicWisdoms.length)];
   }
 
-  // Add cosmic-themed component deployment report
   deploymentReport() {
     console.log(`
 🚀 [DEPLOYMENT] Module Status Report
@@ -698,7 +646,6 @@ ${this.getRecommendations()}
   }
 }
 
-// Create global instance
 const lazyLoadingDebug = new LazyLoadingDebug();
 
 export default lazyLoadingDebug; 

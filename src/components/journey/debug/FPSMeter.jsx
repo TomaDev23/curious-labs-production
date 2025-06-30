@@ -3,6 +3,8 @@ import withDraggable from '../../../components/ui/DraggableHOC';
 
 // Import HUDContext directly from HUDHub
 import { useHUDContext } from '../../../components/ui/HUDHub';
+// 🚨 PHASE 1: Add mobile detection to disable FPSMeter on mobile
+import { isMobile } from '../../../utils/deviceTier';
 
 // LEGIT-compliant metadata
 export const metadata = {
@@ -17,6 +19,8 @@ export const metadata = {
  * Will be wrapped with withDraggable
  */
 function FPSMeterContent() {
+  const mobile = isMobile();
+  
   const [fps, setFps] = useState(0);
   const [showMarkers, setShowMarkers] = useState(true);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -28,6 +32,12 @@ function FPSMeterContent() {
   const { hudVisibility } = useHUDContext?.() || { hudVisibility: {} };
   const isVisible = hudVisibility['hud_3'] !== false;
   
+  // 🚨 PHASE 1: Early return on mobile to prevent RAF loops and DOM queries
+  if (mobile) {
+    console.log('[PHASE1] FPSMeter disabled on mobile device');
+    return null;
+  }
+  
   // Log visibility state for debugging
   useEffect(() => {
     console.log('[HUD3] Visibility state:', isVisible, 'from context:', hudVisibility);
@@ -35,6 +45,9 @@ function FPSMeterContent() {
   
   // Calculate FPS
   useEffect(() => {
+    // 🚨 PHASE 1: Additional mobile guard inside useEffect
+    if (mobile) return;
+    
     const updateFPS = () => {
       const now = performance.now();
       framesRef.current++;
@@ -54,10 +67,13 @@ function FPSMeterContent() {
     return () => {
       cancelAnimationFrame(frameRef.current);
     };
-  }, []);
+  }, [mobile]);
   
   // Toggle VH markers with M key
   useEffect(() => {
+    // 🚨 PHASE 1: Skip keyboard listeners on mobile
+    if (mobile) return;
+    
     const handleKeyDown = (e) => {
       if (e.key === 'm' || e.key === 'M') {
         setShowMarkers(prev => !prev);
@@ -72,7 +88,7 @@ function FPSMeterContent() {
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showMarkers]);
+  }, [showMarkers, mobile]);
   
   // Early return if not visible based on HUD context
   if (!isVisible) return null;

@@ -4,12 +4,14 @@
  * @purpose Keeps all Three.js dependencies in one lazy-loaded bundle
  * ✅ PHASE 2: Enhanced with SSR safety and mobile crash protection
  * 🚨 PHASE B: WebGL context disposal and memory management
+ * 🎯 P2-2 PHASE 1: Mobile frame throttling to prevent iOS crashes
  */
 
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import CanvasWrapper from '../../../components/atomic/hero/CanvasWrapper';
 import MissionMoon from './MissionMoon';
 import * as THREE from 'three';
+import { isMobile } from '../../../utils/deviceTier'; // P2-2: Mobile detection
 
 const MissionMoonWithCanvas = ({ 
   debugPhase = null, 
@@ -28,6 +30,57 @@ const MissionMoonWithCanvas = ({
   const timersRef = useRef([]); // 🚀 A-3: Track timers for cleanup
   const [contextLost, setContextLost] = useState(false);
   const [memoryPressure, setMemoryPressure] = useState('low');
+
+  // 🎯 P2-2 PHASE 1: Mobile frame throttling state
+  const [mobileFrameControl, setMobileFrameControl] = useState('auto');
+  const lastFrameTime = useRef(0);
+  const frameThrottleRef = useRef(null);
+
+  // 🎯 P2-2 PHASE 1: Mobile frame rate controller
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const mobile = isMobile();
+    if (mobile) {
+      console.log('[P2-2] Mobile device detected - enabling 30fps frame throttling');
+      setMobileFrameControl('demand'); // Switch to manual frame control
+      
+      // P2-2: Custom 30fps throttling for mobile
+      const targetFrameTime = 1000 / 30; // 30fps = ~33.33ms per frame
+      
+      const throttledRender = (timestamp) => {
+        if (!mountedRef.current) return;
+        
+        const deltaTime = timestamp - lastFrameTime.current;
+        
+        if (deltaTime >= targetFrameTime) {
+          lastFrameTime.current = timestamp;
+          // Allow React Three Fiber to render this frame
+          if (rendererRef.current && sceneRef.current && cameraRef.current) {
+            rendererRef.current.render(sceneRef.current, cameraRef.current);
+          }
+        }
+        
+        // Continue the throttled loop
+        if (mountedRef.current) {
+          frameThrottleRef.current = requestAnimationFrame(throttledRender);
+        }
+      };
+      
+      // Start the throttled render loop for mobile
+      frameThrottleRef.current = requestAnimationFrame(throttledRender);
+    } else {
+      console.log('[P2-2] Desktop device - using native frame rate (60fps)');
+      setMobileFrameControl('auto'); // Let React Three Fiber handle frames naturally
+    }
+    
+    return () => {
+      if (frameThrottleRef.current) {
+        cancelAnimationFrame(frameThrottleRef.current);
+        frameThrottleRef.current = null;
+      }
+    };
+  }, []);
 
   // ✅ PHASE 2: Safe devicePixelRatio access with comprehensive error handling
   const getSafeDPR = () => {
@@ -263,6 +316,13 @@ const MissionMoonWithCanvas = ({
           }
         });
         timersRef.current = [];
+        
+        // 🎯 P2-2 PHASE 1: Clean up mobile frame throttling
+        if (frameThrottleRef.current) {
+          cancelAnimationFrame(frameThrottleRef.current);
+          frameThrottleRef.current = null;
+          console.log('[P2-2] Mobile frame throttling cleaned up');
+        }
       }
     };
   }, [onMount, onUnmount]);
@@ -309,6 +369,7 @@ const MissionMoonWithCanvas = ({
           powerPreference: 'high-performance'
         }}
         dpr={getSafeDPR()}
+        frameloop={mobileFrameControl} // P2-2: Mobile frame throttling control
         onCreated={({ scene, gl, camera }) => {
           sceneRef.current = scene;
           rendererRef.current = gl;

@@ -7,7 +7,7 @@
  * @author CuriousLabs
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 // 🚨 SM-3: Replace useGlobalScroll with ScrollManager
 import { ScrollManager } from '../../../utils/ScrollManager';
 import { isMobile } from '../../../utils/deviceTier';
@@ -52,6 +52,11 @@ const SceneControllerV6 = ({ children }) => {
   
   // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
   const [scrollPosition, setScrollPosition] = useState(0);
+  
+  // 🚨 P2-1: Phase debouncing refs to prevent excessive re-renders
+  const lastPhaseUpdate = useRef(0);
+  const lastScrollY = useRef(0);
+  const phaseUpdatePending = useRef(false);
   
   // Core state for scene management
   const [scenePhase, setScenePhase] = useState(ScenePhases.VOID);
@@ -167,17 +172,52 @@ const SceneControllerV6 = ({ children }) => {
     }
   }, [scenePhase, deviceCapabilities.prefersReducedMotion]);
 
-  // 🚨 SM-3: Handle scroll-based phase progression with mobile short-circuit
+  // 🚨 P2-1: CRITICAL FIX - Debounced scroll-based phase progression
   useEffect(() => {
-    // 🚨 MB-1: Skip scroll-based scene phasing on mobile
-    if (mobile) return;
+    // 🚨 MB-1: Skip scroll-based scene phasing on mobile - use static phases
+    if (mobile) {
+      // Mobile gets simplified static progression - no scroll dependency
+      if (scenePhase === ScenePhases.VOID) {
+        const timer = setTimeout(() => setScenePhase(ScenePhases.EMERGENCE), 2000);
+        return () => clearTimeout(timer);
+      }
+      return;
+    }
     
-    // Handle scroll-based phase progression
-    // This provides a fallback for users who scroll before animations complete
-    if (scrollPosition > 100 && scenePhase === ScenePhases.VOID) {
-      setScenePhase(ScenePhases.EMERGENCE);
-    } else if (scrollPosition > 300 && scenePhase === ScenePhases.EMERGENCE) {
-      setScenePhase(ScenePhases.ACTIVATION);
+    // 🚨 P2-1: DRAGON SLAYER - Debounced phase updates to prevent re-render storm
+    const now = Date.now();
+    const deltaY = Math.abs(scrollPosition - lastScrollY.current);
+    const timeDelta = now - lastPhaseUpdate.current;
+    
+    // Only update phase if:
+    // 1. Significant scroll movement (80px threshold)
+    // 2. Sufficient time has passed (150ms debounce)
+    // 3. No pending update already scheduled
+    if (deltaY > 80 && timeDelta > 150 && !phaseUpdatePending.current) {
+      phaseUpdatePending.current = true;
+      
+      // Batch phase updates to prevent cascade re-renders
+      requestAnimationFrame(() => {
+        // Double-check conditions in case of rapid scrolling
+        const currentDelta = Math.abs(scrollPosition - lastScrollY.current);
+        
+        if (currentDelta > 50) { // Relaxed check in RAF
+          // Handle scroll-based phase progression with hysteresis
+          if (scrollPosition > 100 && scenePhase === ScenePhases.VOID) {
+            console.log('[P2-1] Phase transition: VOID → EMERGENCE');
+            setScenePhase(ScenePhases.EMERGENCE);
+            lastPhaseUpdate.current = Date.now();
+            lastScrollY.current = scrollPosition;
+          } else if (scrollPosition > 300 && scenePhase === ScenePhases.EMERGENCE) {
+            console.log('[P2-1] Phase transition: EMERGENCE → ACTIVATION');
+            setScenePhase(ScenePhases.ACTIVATION);
+            lastPhaseUpdate.current = Date.now();
+            lastScrollY.current = scrollPosition;
+          }
+        }
+        
+        phaseUpdatePending.current = false;
+      });
     }
   }, [scrollPosition, scenePhase, mobile]);
   

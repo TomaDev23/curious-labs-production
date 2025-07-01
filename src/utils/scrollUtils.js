@@ -82,10 +82,20 @@ export const createThrottledScrollHandler = (callback, delay = 16) => {
   
   const handler = () => {
     if (!ticking) {
-      requestAnimationFrame(() => {
-        callback();
-        ticking = false;
-      });
+      try {
+        requestAnimationFrame(() => {
+          callback();
+          ticking = false;
+        });
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('requestAnimationFrame failed, using setTimeout fallback:', error);
+        }
+        setTimeout(() => {
+          callback();
+          ticking = false;
+        }, 16);
+      }
       ticking = true;
     }
   };
@@ -124,10 +134,20 @@ export const throttledScrollHandler = (callback, delay = 16) => {
   let ticking = false;
   return () => {
     if (!ticking) {
-      requestAnimationFrame(() => {
-        callback();
-        ticking = false;
-      });
+      try {
+        requestAnimationFrame(() => {
+          callback();
+          ticking = false;
+        });
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('requestAnimationFrame failed, using setTimeout fallback:', error);
+        }
+        setTimeout(() => {
+          callback();
+          ticking = false;
+        }, 16);
+      }
       ticking = true;
     }
   };
@@ -237,4 +257,13 @@ export function setupNavScrolling(items, setActive) {
       return () => observer.disconnect();
     }
   });
+}
+
+try {
+  cancelAnimationFrame(id);
+} catch (error) {
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('cancelAnimationFrame failed, using clearTimeout fallback:', error);
+  }
+  clearTimeout(id);
 } 

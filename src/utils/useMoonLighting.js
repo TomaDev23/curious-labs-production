@@ -6,7 +6,7 @@
  * @legit true - LEGIT protocol compliant
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import lune from 'lune';
 
 // Enhanced lighting configurations for realistic moon phases
@@ -200,7 +200,9 @@ export const useMoonLighting = (debugPhase = null, anomalyMode = null) => {
     setActiveAnomalyMode(anomalyMode);
     
     if (anomalyMode) {
-      console.log(`🔮 ANOMALY MODE ACTIVATED: ${anomalyMode}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔮 ANOMALY MODE ACTIVATED: ${anomalyMode}`);
+      }
     }
   }, [anomalyMode]);
 
@@ -367,7 +369,9 @@ export const useMoonLighting = (debugPhase = null, anomalyMode = null) => {
         setError(null);
         
       } catch (err) {
-        console.warn('Moon phase calculation failed, using fallback lighting:', err);
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Moon phase calculation failed, using fallback lighting:', err);
+        }
         setLightingData(FALLBACK_LIGHTING);
         setError(err);
       }
@@ -467,6 +471,19 @@ export const useMoonLighting = (debugPhase = null, anomalyMode = null) => {
     }
   }, [activeAnomalyMode]);
 
+  const handleAnomalyToggle = useCallback((anomalyMode) => {
+    if (anomalyMode) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔮 ANOMALY MODE ACTIVATED: ${activeAnomalyMode}`);
+      }
+    } else {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔮 ANOMALY MODE DEACTIVATED`);
+      }
+    }
+    setActiveAnomalyMode(anomalyMode);
+  }, [activeAnomalyMode]);
+
   return {
     ...lightingData,
     atmosphericColor: getAtmosphericColor(),
@@ -475,7 +492,8 @@ export const useMoonLighting = (debugPhase = null, anomalyMode = null) => {
     getAllPhases,
     getAllAnomalyModes,
     activeAnomalyMode,
-    hasAnomaly: !!lightingData.anomalyMode
+    hasAnomaly: !!lightingData.anomalyMode,
+    handleAnomalyToggle
   };
 };
 

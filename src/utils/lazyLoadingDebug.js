@@ -15,7 +15,7 @@ class LazyLoadingDebug {
                      new URLSearchParams(window.location.search).get('lazy-debug') === 'true');
     this.verboseMode = !this.isMobile && (localStorage.getItem('lazy-debug-verbose') === 'true');
     
-    if (this.isMobile) {
+    if (this.isMobile && process.env.NODE_ENV === 'development') {
       console.log('[PHASE1] LazyLoading debug disabled on mobile device');
     }
     
@@ -44,7 +44,7 @@ class LazyLoadingDebug {
     
     this.isEnabled = debugParam || debugStorage;
     
-    if (this.isEnabled) {
+    if (this.isEnabled && process.env.NODE_ENV === 'development') {
       console.log('🔍 Lazy Loading Debug Mode Enabled');
       this.attachToWindow();
       this.initializeCosmicEasterEggs();
@@ -177,26 +177,30 @@ class LazyLoadingDebug {
   enable() {
     this.isEnabled = true;
     localStorage.setItem('lazy-loading-debug', 'true');
-    console.log('🔧 Lazy Loading Debug: ENABLED');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 Lazy Loading Debug: ENABLED');
+    }
     this.attachToWindow();
   }
 
   disable() {
     this.isEnabled = false;
     localStorage.setItem('lazy-loading-debug', 'false');
-    console.log('🔇 Lazy Loading Debug: DISABLED');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔇 Lazy Loading Debug: DISABLED');
+    }
   }
 
   setVerbose(enabled) {
     this.verboseMode = enabled;
     localStorage.setItem('lazy-loading-verbose', enabled.toString());
-    console.log(`📢 Verbose Mode: ${enabled ? 'ENABLED' : 'DISABLED'}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`📢 Verbose Mode: ${enabled ? 'ENABLED' : 'DISABLED'}`);
+    }
   }
 
   log(message, data = null) {
-    if (!this.isEnabled) return;
-    
-    if (!this.verboseMode && !this.isImportantMessage(message)) return;
+    if (!this.isEnabled || process.env.NODE_ENV !== 'development') return;
     
     const now = Date.now();
     const cacheKey = message + (data ? JSON.stringify(data) : '');
@@ -643,6 +647,22 @@ ${this.getRecommendations()}
     });
     
     console.log('═══════════════════════════════════════════════════════════════════════════════');
+  }
+
+  showRandomEncouragement() {
+    if (this.isMobile || !this.isEnabled || process.env.NODE_ENV !== 'development') return;
+    
+    const messages = [
+      '🚀 Your code is reaching orbital velocity!',
+      '⚡ Performance optimizations detected!',
+      '🌟 Stellar development practices observed!',
+      '🎯 Target acquired: Peak performance!',
+      '🔥 Your lazy loading game is fire!',
+      '💫 Cosmic-level optimization achieved!'
+    ];
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    console.log(randomMessage);
   }
 }
 

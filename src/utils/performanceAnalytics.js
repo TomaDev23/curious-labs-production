@@ -44,7 +44,8 @@ class PerformanceAnalytics {
     // Only enable debug mode if explicitly requested
     this.isDebugMode = urlDebug || localDebug;
     
-    if (this.isDebugMode) {
+    // 🎯 PRODUCTION CLEANUP: Only log in development
+    if (this.isDebugMode && process.env.NODE_ENV === 'development') {
       console.log('📊 Performance Analytics Debug Mode: ENABLED');
       console.log('💡 Use performanceAnalytics.setDebug(false) to disable logging');
     }
@@ -53,7 +54,10 @@ class PerformanceAnalytics {
   setDebug(enabled) {
     this.isDebugMode = enabled;
     localStorage.setItem('performance-debug', enabled.toString());
-    console.log(`📊 Performance Analytics Debug: ${enabled ? 'ENABLED' : 'DISABLED'}`);
+    // 🎯 PRODUCTION CLEANUP: Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`📊 Performance Analytics Debug: ${enabled ? 'ENABLED' : 'DISABLED'}`);
+    }
   }
 
   // Initialize Core Web Vitals tracking
@@ -132,8 +136,8 @@ class PerformanceAnalytics {
 
     this.metrics.set(`${name}-${timestamp}`, metric);
 
-    // Only log in debug mode
-    if (this.isDebugMode) {
+    // 🎯 PRODUCTION CLEANUP: Only log in debug mode and development
+    if (this.isDebugMode && process.env.NODE_ENV === 'development') {
       console.log(`📊 ${name}: ${typeof value === 'number' ? value.toFixed(2) : value}ms`, metadata);
     }
 
@@ -261,13 +265,20 @@ class PerformanceAnalytics {
   enableDebug() {
     localStorage.setItem('debug-perf', 'true');
     this.isEnabled = true;
-    console.log('🔧 Performance debugging enabled');
+    // 🎯 PRODUCTION CLEANUP: Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 Performance debugging enabled');
+    }
   }
 
   // Disable debug mode
   disableDebug() {
-    localStorage.removeItem('debug-perf');
-    console.log('🔇 Performance debugging disabled');
+    localStorage.setItem('debug-perf', 'false');
+    this.isEnabled = false;
+    // 🎯 PRODUCTION CLEANUP: Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔇 Performance debugging disabled');
+    }
   }
 
   // Export data for analysis

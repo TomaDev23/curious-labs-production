@@ -88,31 +88,37 @@ const SERVICES = [
   }
 ];
 
-// Enhanced cosmic particle system
-const CosmicParticles = ({ activeService, prefersReducedMotion }) => {
+// Enhanced cosmic particle system with mobile optimization
+const CosmicParticles = ({ activeService, prefersReducedMotion, isMobile }) => {
   const [particles, setParticles] = useState([]);
   
   useEffect(() => {
     if (prefersReducedMotion) return;
     
     const generateParticles = () => {
-      const newParticles = Array.from({ length: 15 }, (_, i) => ({
+      // 🎯 MOBILE OPTIMIZATION: Reduce particle count dramatically on mobile
+      const particleCount = isMobile ? 5 : 15; // 67% reduction for mobile
+      const newParticles = Array.from({ length: particleCount }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: Math.random() * 2 + 1,
         opacity: Math.random() * 0.4 + 0.1,
-        duration: Math.random() * 8 + 12,
+        // 🎯 MOBILE OPTIMIZATION: Shorter, simpler animations on mobile
+        duration: isMobile ? 
+          Math.random() * 4 + 6 :  // Mobile: 6-10 seconds
+          Math.random() * 8 + 12,  // Desktop: 12-20 seconds
         color: activeService.color
       }));
       setParticles(newParticles);
     };
     
     generateParticles();
-    const interval = setInterval(generateParticles, 6000);
+    // 🎯 MOBILE OPTIMIZATION: Longer intervals on mobile to reduce regeneration frequency
+    const interval = setInterval(generateParticles, isMobile ? 10000 : 6000); // Mobile: 10s, Desktop: 6s
     
     return () => clearInterval(interval);
-  }, [activeService.color, prefersReducedMotion]);
+  }, [activeService.color, prefersReducedMotion, isMobile]);
   
   if (prefersReducedMotion) return null;
   
@@ -132,12 +138,14 @@ const CosmicParticles = ({ activeService, prefersReducedMotion }) => {
           animate={{
             opacity: [0, particle.opacity, 0],
             scale: [0, 1, 0],
-            y: [0, -60, -120],
+            // 🎯 MOBILE OPTIMIZATION: Simpler Y-only movement on mobile
+            y: isMobile ? [0, -40] : [0, -60, -120], // Reduced complexity
           }}
           transition={{
             duration: particle.duration,
             repeat: Infinity,
-            ease: "easeOut"
+            // 🎯 MOBILE OPTIMIZATION: Linear easing on mobile (less CPU intensive)
+            ease: isMobile ? "linear" : "easeOut"
           }}
         />
       ))}
@@ -299,10 +307,10 @@ const ServicesOrbitalAtomic = () => {
     
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % SERVICES.length);
-    }, 6000); // Increased from 5000 to 6000 for better readability
+    }, isMobile ? 8000 : 6000); // 🎯 MOBILE OPTIMIZATION: Slower rotation on mobile
     
     return () => clearInterval(interval);
-  }, [prefersReducedMotion, isHovering]);
+  }, [prefersReducedMotion, isHovering, isMobile]);
   
   // Animation variants
   const containerVariants = {
@@ -351,7 +359,11 @@ const ServicesOrbitalAtomic = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-curious-dark-900 via-curious-dark-950 to-black opacity-90" />
       
       {/* Cosmic particles */}
-      <CosmicParticles activeService={activeService} prefersReducedMotion={prefersReducedMotion} />
+      <CosmicParticles 
+        activeService={activeService} 
+        prefersReducedMotion={prefersReducedMotion} 
+        isMobile={isMobile}
+      />
       
       {/* PRESERVED: Enhanced orbital background rings with kinetic effect */}
       <div 
@@ -376,7 +388,10 @@ const ServicesOrbitalAtomic = () => {
               borderColor: service.color,
               borderWidth: index === activeIndex ? '2px' : '1px',
               transform: `rotate(${index * 45}deg)`,
-              boxShadow: index === activeIndex ? `0 0 30px ${service.color}30` : 'none'
+              // 🎯 MOBILE OPTIMIZATION: Reduce box-shadow intensity on mobile
+              boxShadow: index === activeIndex ? 
+                (isMobile ? `0 0 15px ${service.color}20` : `0 0 30px ${service.color}30`) : 
+                'none'
             }}
             animate={{
               rotate: prefersReducedMotion ? 0 : [index * 45, index * 45 + 360],
@@ -384,7 +399,10 @@ const ServicesOrbitalAtomic = () => {
             transition={{
               rotate: {
                 repeat: Infinity,
-                duration: 140 - index * 25, // Slightly slower for more elegance
+                // 🎯 MOBILE OPTIMIZATION: Slower orbital rotation on mobile
+                duration: isMobile ? 
+                  180 - index * 30 :  // Mobile: slower rotation
+                  140 - index * 25,   // Desktop: current speed
                 ease: "linear"
               }
             }}
@@ -403,7 +421,8 @@ const ServicesOrbitalAtomic = () => {
               animate={{ rotate: 360 }}
               transition={{
                 repeat: Infinity,
-                duration: 200,
+                // 🎯 MOBILE OPTIMIZATION: Slower accent ring rotation
+                duration: isMobile ? 280 : 200,
                 ease: "linear"
               }}
             />
@@ -416,7 +435,8 @@ const ServicesOrbitalAtomic = () => {
               animate={{ rotate: -360 }}
               transition={{
                 repeat: Infinity,
-                duration: 250,
+                // 🎯 MOBILE OPTIMIZATION: Slower accent ring rotation
+                duration: isMobile ? 350 : 250,
                 ease: "linear"
               }}
             />
@@ -427,12 +447,17 @@ const ServicesOrbitalAtomic = () => {
       {/* Enhanced central "cosmic core" */}
       <motion.div 
         className="absolute z-0"
-        animate={{
+        animate={isMobile ? {
+          // 🎯 MOBILE OPTIMIZATION: Simpler core animation
+          scale: [1, 1.05, 1],
+          opacity: [0.6, 0.8, 0.6],
+        } : {
+          // Desktop: Full animation
           scale: [1, 1.08, 1],
           opacity: [0.7, 0.9, 0.7],
         }}
         transition={{
-          duration: 10,
+          duration: isMobile ? 8 : 10, // Slower on mobile
           repeat: Infinity,
           ease: "easeInOut"
         }}
@@ -441,7 +466,10 @@ const ServicesOrbitalAtomic = () => {
           className="w-[120px] h-[120px] md:w-[180px] md:h-[180px] rounded-full"
           style={{
             background: `radial-gradient(circle at center, ${activeService.color}40 0%, ${activeService.color}15 50%, transparent 80%)`,
-            boxShadow: `0 0 80px ${activeService.color}25, inset 0 0 40px ${activeService.color}20`
+            // 🎯 MOBILE OPTIMIZATION: Reduced shadow complexity on mobile
+            boxShadow: isMobile ? 
+              `0 0 40px ${activeService.color}20, inset 0 0 20px ${activeService.color}15` :
+              `0 0 80px ${activeService.color}25, inset 0 0 40px ${activeService.color}20`
           }}
         />
       </motion.div>

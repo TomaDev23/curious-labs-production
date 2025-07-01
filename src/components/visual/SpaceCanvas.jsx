@@ -1,6 +1,7 @@
 // 🛡️ STAR_LOCKED: Do not remove or alter – see STAR_LOCK_V1.md
 import { useEffect, useRef, useState } from 'react';
 import { observe as sharedObserve, unobserve as sharedUnobserve } from '../../utils/SharedIO';
+import { isMobile } from '../../utils/deviceTier'; // P2-2: Mobile detection
 
 export default function SpaceCanvas({ zone }) {
   const canvasRef = useRef(null);
@@ -15,8 +16,22 @@ export default function SpaceCanvas({ zone }) {
     let frameId;
     let animationActive = true;
 
+    // 🎯 P2-2: Mobile frame throttling setup
+    const mobile = isMobile();
+    const targetFPS = mobile ? 30 : 60;
+    const frameInterval = 1000 / targetFPS;
+    let lastFrameTime = 0;
+
+    if (mobile) {
+      console.log('[P2-2] SpaceCanvas: Mobile detected - throttling to 30fps');
+    }
+
     // Create stars with varying properties for more visual interest
-    const stars = Array.from({ length: 120 }, () => {
+    // P2-2: Reduce star count on mobile for better performance
+    const starCount = mobile ? 80 : 120; // 33% reduction on mobile
+    const specialStarCount = mobile ? 3 : 5; // 40% reduction on mobile
+    
+    const stars = Array.from({ length: starCount }, () => {
       const size = Math.random();
       return {
         x: Math.random() * canvas.width,
@@ -31,7 +46,7 @@ export default function SpaceCanvas({ zone }) {
     });
 
     // Create a few "special" stars (brighter, larger)
-    const specialStars = Array.from({ length: 5 }, () => ({
+    const specialStars = Array.from({ length: specialStarCount }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       r: Math.random() * 3 + 2, // Larger radius
@@ -45,8 +60,15 @@ export default function SpaceCanvas({ zone }) {
     // Combine regular and special stars
     const allStars = [...stars, ...specialStars];
 
-    const draw = () => {
+    const draw = (timestamp) => {
       if (!animationActive) return;
+      
+      // P2-2: Mobile frame throttling
+      if (mobile && timestamp - lastFrameTime < frameInterval) {
+        frameId = requestAnimationFrame(draw);
+        return;
+      }
+      lastFrameTime = timestamp;
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -70,8 +92,8 @@ export default function SpaceCanvas({ zone }) {
         ctx.arc(s.x, s.y, pulseSize, 0, Math.PI * 2);
         ctx.fill();
         
-        // Add glow for special stars
-        if (s.r > 2) {
+        // Add glow for special stars (skip on mobile for performance)
+        if (s.r > 2 && !mobile) {
           const glow = ctx.createRadialGradient(
             s.x, s.y, 0,
             s.x, s.y, s.r * 3

@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react';
 import { useBreakpoint } from '../../hooks/useBreakpoint.js';
 import { observe as sharedObserve, unobserve as sharedUnobserve } from '../../utils/SharedIO';
+import { isMobile as detectMobile } from '../../utils/deviceTier'; // P2-2: Mobile detection
 
 /**
  * ParticleField - Creates ambient floating particles with random movement patterns
  * Optimized version using Canvas API for rendering instead of DOM elements
+ * 🎯 P2-2: Enhanced with mobile frame throttling for performance
  * 
  * @param {Object} props
  * @param {string} props.density - Particle density: 'low', 'medium', 'high'
@@ -31,6 +33,12 @@ const ParticleField = ({
   const animationRef = useRef(null);
   const frameCountRef = useRef(0); // Track frame count for throttling
   
+  // 🎯 P2-2: Mobile frame throttling state
+  const lastFrameTime = useRef(0);
+  const mobile = detectMobile();
+  const targetFPS = mobile ? 30 : 60;
+  const frameInterval = 1000 / targetFPS;
+  
   // State for tracking visibility and errors
   const [isVisible, setIsVisible] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -38,6 +46,13 @@ const ParticleField = ({
   
   // Check if we're on the client side
   const isClient = typeof window !== 'undefined';
+  
+  // P2-2: Log mobile detection
+  useEffect(() => {
+    if (mobile && isClient) {
+      console.log('[P2-2] ParticleField: Mobile detected - throttling to 30fps');
+    }
+  }, [mobile, isClient]);
   
   // Determine number of particles based on density and device - REDUCED COUNT BY 40%
   const getParticleCount = () => {
@@ -149,10 +164,17 @@ const ParticleField = ({
   };
   
   // Animation loop for Canvas rendering
-  const animate = () => {
+  const animate = (timestamp = 0) => {
     if (!canvasRef.current || !isVisible || !isClient) return;
     
     try {
+      // 🎯 P2-2: Mobile frame throttling
+      if (mobile && timestamp - lastFrameTime.current < frameInterval) {
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      lastFrameTime.current = timestamp;
+      
       // Throttle rendering on initial load to reduce DOM pressure
       if (!isScrolled && frameCountRef.current < 60) {
         // Only render every other frame during initial load
@@ -176,7 +198,7 @@ const ParticleField = ({
       // Update and draw regular particles
       particles.forEach(particle => {
         // Update progress
-        particle.progress += 1 / (particle.speed * 60); // 60fps target
+        particle.progress += 1 / (particle.speed * targetFPS); // P2-2: Use dynamic FPS
         if (particle.progress >= 1) particle.progress = 0;
         
         // Calculate position
@@ -195,10 +217,10 @@ const ParticleField = ({
         ctx.fill();
       });
       
-      // Draw bright particles
+      // Draw bright particles (skip glow effects on mobile for performance)
       brightParticles.forEach(particle => {
         // Update progress
-        particle.progress += 1 / (particle.speed * 60);
+        particle.progress += 1 / (particle.speed * targetFPS); // P2-2: Use dynamic FPS
         if (particle.progress >= 1) particle.progress = 0;
         
         // Calculate position
@@ -213,19 +235,22 @@ const ParticleField = ({
         // Fluctuating opacity based on progress
         const currentOpacity = particle.opacity * (0.8 + Math.sin(particle.progress * Math.PI * 2) * 0.2);
         
-        // Draw glow
-        const glow = ctx.createRadialGradient(
-          xPos, yPos, 0,
-          xPos, yPos, particle.size * 3
-        );
-        glow.addColorStop(0, particle.glowColor || 'rgba(147, 197, 253, 0.3)');
-        glow.addColorStop(1, 'rgba(147, 197, 253, 0)');
-        
-        ctx.globalAlpha = currentOpacity * 0.7;
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(xPos, yPos, particle.size * 3, 0, Math.PI * 2);
-        ctx.fill();
+        // P2-2: Skip glow effects on mobile for better performance
+        if (!mobile) {
+          // Draw glow
+          const glow = ctx.createRadialGradient(
+            xPos, yPos, 0,
+            xPos, yPos, particle.size * 3
+          );
+          glow.addColorStop(0, particle.glowColor || 'rgba(147, 197, 253, 0.3)');
+          glow.addColorStop(1, 'rgba(147, 197, 253, 0)');
+          
+          ctx.globalAlpha = currentOpacity * 0.7;
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(xPos, yPos, particle.size * 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
         
         // Draw center
         ctx.globalAlpha = currentOpacity;

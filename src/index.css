@@ -1,6 +1,9 @@
 /* Import cosmic styles first */
 @import './styles/cosmic.css';
 
+/* 🎯 COOLING PASS: Import mobile overrides AFTER cosmic.css for cascade victory */
+@import './styles/cosmic.mobile.css';
+
 /* Tailwind directives */
 @tailwind base;
 @tailwind components;

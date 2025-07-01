@@ -1,0 +1,173 @@
+/* 🎯 COOLING PASS: Mobile GPU Optimization Overrides */
+/* Contract v8.0 Compliant - Targeted mobile thermal relief */
+/* Import LAST to guarantee cascade victory without !important spam */
+
+/* Fade-in animation for remounted components */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 820px) {
+  /* 🔥 HIGH-IMPACT GPU REDUCTIONS */
+  
+  /* Backdrop blur optimization - 75% reduction */
+  .cosmic-card { 
+    backdrop-filter: blur(4px); /* Reduced from 12px */
+  }
+  
+  /* Filter blur optimization - 75% reduction */
+  .cosmic-card-glow { 
+    filter: blur(10px); /* Reduced from 40px */
+  }
+  
+  /* Tailwind blur utilities - Systematic reduction */
+  .filter-blur-\[80px\] { filter: blur(20px); }
+  .filter-blur-\[60px\] { filter: blur(15px); }
+  .filter-blur-\[40px\] { filter: blur(10px); }
+  .filter-blur-\[30px\] { filter: blur(8px); }
+  .filter-blur-\[20px\] { filter: blur(5px); }
+  
+  /* Blur class patterns - Systematic optimization */
+  .blur-\[80px\] { filter: blur(20px); }
+  .blur-\[60px\] { filter: blur(15px); }
+  .blur-\[40px\] { filter: blur(10px); }
+  .blur-\[30px\] { filter: blur(8px); }
+  .blur-\[20px\] { filter: blur(5px); }
+  
+  /* 🌟 TEXT SHADOW OPTIMIZATION */
+  
+  /* Cosmic text effects - Simplified */
+  .cosmic-text-glow { 
+    text-shadow: 0 0 5px rgba(168, 85, 247, 0.3); /* Single layer */
+  }
+  
+  /* Glow text effects - Reduced intensity */
+  .glow-text { 
+    text-shadow: 0 0 8px currentColor; /* Single glow */
+  }
+  
+  .glow-text-subtle { 
+    text-shadow: 0 0 4px rgba(102, 126, 234, 0.4); /* Minimal glow */
+  }
+  
+  /* Gradient text shadows - Simplified */
+  .text-shadow-glow { 
+    text-shadow: 0 0 6px currentColor; 
+  }
+  
+  .text-shadow-soft { 
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+  }
+  
+  /* 📦 BOX SHADOW OPTIMIZATION */
+  
+  /* Cosmic subtle effects - Minimal shadows */
+  .cosmic-subtle-glow { 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+  }
+  
+  /* Complex box shadows - Simplified */
+  .shadow-complex { 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+  }
+  
+  /* 🎯 WILDCARD CAPTURE PATTERNS */
+  /* Future-proof naming convention enforcement */
+  
+  /* GPU-intensive class markers */
+  [class*="-gpu"] { 
+    filter: none; 
+  }
+  
+  /* Blur effect markers */
+  [class*="-blur-heavy"] { 
+    filter: blur(5px); 
+  }
+  
+  [class*="-blur-intense"] { 
+    filter: blur(8px); 
+  }
+  
+  /* Glow effect markers */
+  [class*="-glow-heavy"] { 
+    text-shadow: 0 0 5px currentColor; 
+  }
+  
+  [class*="-glow-intense"] { 
+    text-shadow: 0 0 8px currentColor; 
+  }
+  
+  /* Shadow effect markers */
+  [class*="-shadow-heavy"] { 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+  }
+  
+  /* 🔥 SPECIFIC COMPONENT OPTIMIZATIONS */
+  
+  /* Journey visual effects */
+  .nebula-fade {
+    background-size: 100% 100%; /* Reduced from 200% */
+    animation-duration: 20s; /* Slower animation */
+  }
+  
+  /* Cosmic pulse effects */
+  .cosmic-pulse {
+    animation-duration: 4s; /* Slower pulse */
+  }
+  
+  /* Sun breathing animation */
+  .animate-sun-pulse {
+    filter: blur(1px); /* Reduced from 3px */
+    animation-duration: 8s; /* Slower breathing */
+  }
+  
+  /* 🎨 COMPONENT-SPECIFIC FIXES */
+  
+  /* Aurora effects - Simplified */
+  .aurora-effect {
+    filter: blur(15px); /* Reduced from 30px+ */
+  }
+  
+  /* Backdrop filters - Minimal */
+  .backdrop-blur-heavy {
+    backdrop-filter: blur(4px);
+  }
+  
+  .backdrop-blur-intense {
+    backdrop-filter: blur(8px);
+  }
+  
+  /* 🛡️ SAFETY OVERRIDES */
+  
+  /* Disable expensive CSS properties in emergency */
+  .mobile-safe-mode * {
+    filter: none !important;
+    backdrop-filter: none !important;
+    text-shadow: none !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+  }
+}
+
+/* 📱 EXTRA SMALL SCREENS - Additional optimization */
+@media (max-width: 480px) {
+  /* Ultra-conservative settings for small phones */
+  .cosmic-card { 
+    backdrop-filter: blur(2px); 
+  }
+  
+  .cosmic-card-glow { 
+    filter: blur(5px); 
+  }
+  
+  .glow-text { 
+    text-shadow: 0 0 4px currentColor; 
+  }
+  
+  /* Disable complex animations on tiny screens */
+  .nebula-fade,
+  .cosmic-pulse,
+  .animate-sun-pulse {
+    animation: none;
+  }
+} 

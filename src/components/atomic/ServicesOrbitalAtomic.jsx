@@ -96,28 +96,30 @@ const CosmicParticles = ({ activeService, prefersReducedMotion, isMobile }) => {
     if (prefersReducedMotion) return;
     
     const generateParticles = () => {
-      // 🎯 MOBILE OPTIMIZATION: Reduce particle count dramatically on mobile
-      const particleCount = isMobile ? 5 : 15; // 67% reduction for mobile
+      // 🚨 RAF BUDGET FIX: Reduce to 2 particles max on mobile (was 5-15)
+      const particleCount = isMobile ? 2 : 8; // Massive reduction for mobile
       const newParticles = Array.from({ length: particleCount }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: Math.random() * 2 + 1,
         opacity: Math.random() * 0.4 + 0.1,
-        // 🎯 MOBILE OPTIMIZATION: Shorter, simpler animations on mobile
+        // 🚨 RAF BUDGET FIX: Much longer durations to reduce RAF pressure
         duration: isMobile ? 
-          Math.random() * 4 + 6 :  // Mobile: 6-10 seconds
-          Math.random() * 8 + 12,  // Desktop: 12-20 seconds
+          Math.random() * 6 + 15 :  // Mobile: 15-21 seconds (was 6-10)
+          Math.random() * 8 + 12,   // Desktop: 12-20 seconds
         color: activeService.color
       }));
       setParticles(newParticles);
     };
     
     generateParticles();
-    // 🎯 MOBILE OPTIMIZATION: Longer intervals on mobile to reduce regeneration frequency
-    const interval = setInterval(generateParticles, isMobile ? 10000 : 6000); // Mobile: 10s, Desktop: 6s
     
-    return () => clearInterval(interval);
+    // 🚨 RAF BUDGET FIX: Disable setInterval regeneration on mobile entirely
+    if (!isMobile) {
+      const interval = setInterval(generateParticles, 10000); // Desktop only
+      return () => clearInterval(interval);
+    }
   }, [activeService.color, prefersReducedMotion, isMobile]);
   
   if (prefersReducedMotion) return null;
@@ -136,16 +138,21 @@ const CosmicParticles = ({ activeService, prefersReducedMotion, isMobile }) => {
             backgroundColor: particle.color,
           }}
           animate={{
-            opacity: [0, particle.opacity, 0],
-            scale: [0, 1, 0],
-            // 🎯 MOBILE OPTIMIZATION: Simpler Y-only movement on mobile
-            y: isMobile ? [0, -40] : [0, -60, -120], // Reduced complexity
+            // 🚨 RAF BUDGET FIX: Single-property animation on mobile
+            ...(isMobile ? 
+              { opacity: [0, particle.opacity, 0] } : 
+              {
+                opacity: [0, particle.opacity, 0],
+                scale: [0, 1, 0],
+                y: [0, -60, -120]
+              }
+            )
           }}
           transition={{
             duration: particle.duration,
             repeat: Infinity,
-            // 🎯 MOBILE OPTIMIZATION: Linear easing on mobile (less CPU intensive)
-            ease: isMobile ? "linear" : "easeOut"
+            // 🚨 RAF BUDGET FIX: Linear easing reduces CPU load
+            ease: "linear"
           }}
         />
       ))}
@@ -181,7 +188,7 @@ const ServiceCard = ({ service, isActive, prefersReducedMotion, isMobile }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`relative p-8 rounded-2xl backdrop-blur-sm bg-gradient-to-br ${service.gradient}
+      <div className={`relative p-8 rounded-2xl ${isMobile ? 'bg-gradient-to-br' : 'backdrop-blur-sm bg-gradient-to-br'} ${service.gradient}
         border-2 transition-all duration-500 ${
           isActive ? `border-[${service.color}]/50 ${service.glowColor} shadow-2xl` : 'border-gray-700/50'
         }`}>
@@ -307,7 +314,7 @@ const ServicesOrbitalAtomic = () => {
     
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % SERVICES.length);
-    }, isMobile ? 8000 : 6000); // 🎯 MOBILE OPTIMIZATION: Slower rotation on mobile
+    }, isMobile ? 8000 : 6000); // Slower rotation on mobile
     
     return () => clearInterval(interval);
   }, [prefersReducedMotion, isHovering, isMobile]);
@@ -366,98 +373,91 @@ const ServicesOrbitalAtomic = () => {
       />
       
       {/* PRESERVED: Enhanced orbital background rings with kinetic effect */}
-      <div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{
-          // Scale down the entire orbital system to reduce LCP footprint
-          // while preserving the beautiful "broken rings" kinetic effect
-          transform: 'scale(0.99)', // 95% scale - perfect balance: fits container better while maintaining overflow
-          transformOrigin: 'center center',
-          contain: 'layout style paint', // Isolate the scaled container
-          willChange: 'transform' // Optimize for scaling
-        }}
-      >
-        {SERVICES.map((service, index) => (
-          <motion.div
-            key={`orbit-${index}`}
-            className={`absolute border rounded-full transition-all duration-1000
-              ${index === activeIndex ? 'border-opacity-60' : 'border-opacity-25'}`}
-            style={{
-              width: `${(index + 2) * (isMobile ? 22 : 28)}%`,
-              height: `${(index + 2) * (isMobile ? 22 : 28)}%`,
-              borderColor: service.color,
-              borderWidth: index === activeIndex ? '2px' : '1px',
-              transform: `rotate(${index * 45}deg)`,
-              // 🎯 MOBILE OPTIMIZATION: Reduce box-shadow intensity on mobile
-              boxShadow: index === activeIndex ? 
-                (isMobile ? `0 0 15px ${service.color}20` : `0 0 30px ${service.color}30`) : 
-                'none'
-            }}
-            animate={{
-              rotate: prefersReducedMotion ? 0 : [index * 45, index * 45 + 360],
-            }}
-            transition={{
-              rotate: {
-                repeat: Infinity,
-                // 🎯 MOBILE OPTIMIZATION: Slower orbital rotation on mobile
-                duration: isMobile ? 
-                  180 - index * 30 :  // Mobile: slower rotation
-                  140 - index * 25,   // Desktop: current speed
-                ease: "linear"
-              }
-            }}
-          />
-        ))}
-        
-        {/* Additional orbital accent rings */}
-        {!prefersReducedMotion && (
-          <>
+      {/* 🚨 MOBILE OPTIMIZATION: Disable entire orbital system on mobile to reduce RAF budget */}
+      {!isMobile && (
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{
+            // Scale down the entire orbital system to reduce LCP footprint
+            // while preserving the beautiful "broken rings" kinetic effect
+            transform: 'scale(0.99)', // 95% scale - perfect balance: fits container better while maintaining overflow
+            transformOrigin: 'center center',
+            contain: 'layout style paint', // Isolate the scaled container
+            willChange: 'transform' // Optimize for scaling
+          }}
+        >
+          {SERVICES.map((service, index) => (
             <motion.div
-              className="absolute border border-cyan-400/20 rounded-full"
+              key={`orbit-${index}`}
+              className={`absolute border rounded-full transition-all duration-1000
+                ${index === activeIndex ? 'border-opacity-60' : 'border-opacity-25'}`}
               style={{
-                width: '90%',
-                height: '90%',
+                width: `${(index + 2) * 28}%`, // Removed mobile sizing since this won't render on mobile
+                height: `${(index + 2) * 28}%`,
+                borderColor: service.color,
+                borderWidth: index === activeIndex ? '2px' : '1px',
+                transform: `rotate(${index * 45}deg)`,
+                // Full desktop effects since mobile is disabled
+                boxShadow: (prefersReducedMotion) ? 'none' : 
+                  (index === activeIndex ? `0 0 30px ${service.color}30` : 'none')
               }}
-              animate={{ rotate: 360 }}
+              animate={{
+                // Full desktop rotation since mobile is disabled
+                rotate: prefersReducedMotion ? 0 : [index * 45, index * 45 + 360],
+              }}
               transition={{
-                repeat: Infinity,
-                // 🎯 MOBILE OPTIMIZATION: Slower accent ring rotation
-                duration: isMobile ? 280 : 200,
-                ease: "linear"
+                rotate: {
+                  repeat: prefersReducedMotion ? 0 : Infinity,
+                  duration: 200 - index * 30,
+                  ease: "linear"
+                }
               }}
             />
-            <motion.div
-              className="absolute border border-purple-400/15 rounded-full"
-              style={{
-                width: '110%',
-                height: '110%',
-              }}
-              animate={{ rotate: -360 }}
-              transition={{
-                repeat: Infinity,
-                // 🎯 MOBILE OPTIMIZATION: Slower accent ring rotation
-                duration: isMobile ? 350 : 250,
-                ease: "linear"
-              }}
-            />
-          </>
-        )}
-      </div>
+          ))}
+          
+          {/* Accent rings - desktop only */}
+          {!prefersReducedMotion && (
+            <>
+              <motion.div
+                className="absolute border border-cyan-400/20 rounded-full"
+                style={{
+                  width: '90%',
+                  height: '90%',
+                }}
+                animate={{ rotate: 360 }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 300,
+                  ease: "linear"
+                }}
+              />
+              <motion.div
+                className="absolute border border-purple-400/15 rounded-full"
+                style={{
+                  width: '110%',
+                  height: '110%',
+                }}
+                animate={{ rotate: -360 }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 400,
+                  ease: "linear"
+                }}
+              />
+            </>
+          )}
+        </div>
+      )}
       
-      {/* Enhanced central "cosmic core" */}
+      {/* Enhanced central "cosmic core" with mobile optimization */}
       <motion.div 
         className="absolute z-0"
-        animate={isMobile ? {
-          // 🎯 MOBILE OPTIMIZATION: Simpler core animation
-          scale: [1, 1.05, 1],
-          opacity: [0.6, 0.8, 0.6],
-        } : {
-          // Desktop: Full animation
+        animate={{
           scale: [1, 1.08, 1],
           opacity: [0.7, 0.9, 0.7],
         }}
         transition={{
-          duration: isMobile ? 8 : 10, // Slower on mobile
+          duration: isMobile ? 12 : 10, // Slightly slower on mobile
           repeat: Infinity,
           ease: "easeInOut"
         }}
@@ -466,10 +466,8 @@ const ServicesOrbitalAtomic = () => {
           className="w-[120px] h-[120px] md:w-[180px] md:h-[180px] rounded-full"
           style={{
             background: `radial-gradient(circle at center, ${activeService.color}40 0%, ${activeService.color}15 50%, transparent 80%)`,
-            // 🎯 MOBILE OPTIMIZATION: Reduced shadow complexity on mobile
-            boxShadow: isMobile ? 
-              `0 0 40px ${activeService.color}20, inset 0 0 20px ${activeService.color}15` :
-              `0 0 80px ${activeService.color}25, inset 0 0 40px ${activeService.color}20`
+            // ✅ RESTORED: Glow effects for both mobile and desktop
+            boxShadow: `0 0 80px ${activeService.color}25, inset 0 0 40px ${activeService.color}20`
           }}
         />
       </motion.div>
@@ -479,7 +477,7 @@ const ServicesOrbitalAtomic = () => {
         {/* Enhanced section header */}
         <motion.div className="text-center mb-20" variants={headerVariants}>
           <motion.div
-            className="inline-block mb-6 px-6 py-3 border border-cyan-400/30 rounded-full bg-cyan-400/10 backdrop-blur-sm"
+            className={`inline-block mb-6 px-6 py-3 border border-cyan-400/30 rounded-full ${isMobile ? 'bg-cyan-400/10' : 'bg-cyan-400/10 backdrop-blur-sm'}`}
             whileHover={{ scale: prefersReducedMotion ? 1 : 1.05 }}
           >
             <span className="text-cyan-400 text-sm font-mono">SERVICE MATRIX</span>

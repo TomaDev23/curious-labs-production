@@ -510,11 +510,14 @@ const MissionMoon = ({
   isEclipse = false,
   ...otherProps
 }) => {
-  // State management - PRESERVED from original
   const moonRef = useRef();
+  const groupRef = useRef();
   const [cameraFOV, setCameraFOV] = useState(25);
   const [prevAnomalyMode, setPrevAnomalyMode] = useState(null);
-  const animationRef = useRef(null);
+  const textureConfiguredRef = useRef(false);
+  
+  // Get invalidate function to force re-renders
+  const { invalidate } = useThree();
   
   // 🎯 FOLLOW HEROEARTH PATTERN: Performance tier detection
   const [performanceMode, setPerformanceMode] = useState('high');
@@ -542,7 +545,6 @@ const MissionMoon = ({
   }, []);
   
   // Texture loading - OPTIMIZED for WebP and mobile
-  const textureConfiguredRef = useRef(false);
   const stableIsMobile = useRef(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   
   // Only update mobile detection on significant viewport changes
@@ -565,6 +567,35 @@ const MissionMoon = ({
   
   const moonTexture = useLoader(TextureLoader, `${textureBasePath}moonmap2k.webp`);
   const moonBumpMap = useLoader(TextureLoader, `${textureBasePath}moonbump2k.webp`);
+  
+  // 🎯 GRACEFUL FADE-IN: Add opacity animation state
+  const [opacity, setOpacity] = useState(0);
+  const [isFullyLoaded, setIsFullyLoaded] = useState(false);
+
+  // ✅ PRESERVED: All existing useEffect hooks
+  useEffect(() => {
+    if (moonTexture && moonBumpMap) {
+      // Small delay to ensure textures are fully processed
+      const fadeTimer = setTimeout(() => {
+        setIsFullyLoaded(true);
+        
+        // Gradual fade-in over 1.2 seconds (slightly faster than Earth)
+        let currentOpacity = 0;
+        const fadeInterval = setInterval(() => {
+          currentOpacity += 0.025; // Smooth increment
+          setOpacity(Math.min(currentOpacity, 1));
+          
+          if (currentOpacity >= 1) {
+            clearInterval(fadeInterval);
+          }
+        }, 30); // 50fps fade animation
+        
+        return () => clearInterval(fadeInterval);
+      }, 100); // Brief delay to prevent texture pop
+      
+      return () => clearTimeout(fadeTimer);
+    }
+  }, [moonTexture, moonBumpMap]);
   
   // 🚨 CRITICAL FIX: Only configure textures once per mobile state change
   useEffect(() => {
@@ -605,12 +636,14 @@ const MissionMoon = ({
     console.log('[MOON_TEXTURE] Configured textures for performance mode:', performanceMode);
   }, [moonTexture, moonBumpMap, performanceMode]); // Include performanceMode in deps
   
-  // Rotation animation - REDUCED: Slower rotation to minimize stitch line visibility
+  // Rotation animation - FIXED: Smooth rotation with proper priority
   useGlobalFrame(() => {
     if (moonRef.current) {
-      moonRef.current.rotation.y += 0.0005; // Reduced from 0.001 to minimize stitch exposure
+      moonRef.current.rotation.y += 0.0008; // Slightly increased for smoother visual motion
+      moonRef.current.updateMatrix(); // Force Three.js to update the transformation matrix
+      invalidate(); // Force React Three Fiber to re-render
     }
-  }, 'low'); // Low priority since rotation is not critical
+  }, 'low'); // Back to low priority to test if low tasks are being blocked
   
   // 🚀 A-1: FOV Animation using GlobalFrameManager (replaces useUnifiedAnimationController)
   const fovAnimationRef = useRef(null);
@@ -820,8 +853,8 @@ const MissionMoon = ({
           emissiveIntensity={getMaterialEmissiveIntensity()}
           flatShading={false}
           dithering={enableDithering}
-          transparent={false}
-          opacity={1.0}
+          transparent={true}
+          opacity={opacity}
           depthWrite={true}
         />
       </mesh>

@@ -41,39 +41,11 @@ const MissionMoonWithCanvas = ({
     if (typeof window === 'undefined') return;
     
     const mobile = isMobile();
-    if (mobile) {
-      console.log('[P2-2] Mobile device detected - enabling 30fps frame throttling');
-      setMobileFrameControl('demand'); // Switch to manual frame control
-      
-      // P2-2: Custom 30fps throttling for mobile
-      const targetFrameTime = 1000 / 30; // 30fps = ~33.33ms per frame
-      
-      const throttledRender = (timestamp) => {
-        if (!mountedRef.current) return;
-        
-        const deltaTime = timestamp - lastFrameTime.current;
-        
-        if (deltaTime >= targetFrameTime) {
-          lastFrameTime.current = timestamp;
-          // Allow React Three Fiber to render this frame
-          if (rendererRef.current && sceneRef.current && cameraRef.current) {
-            rendererRef.current.render(sceneRef.current, cameraRef.current);
-          }
-        }
-        
-        // Continue the throttled loop
-        if (mountedRef.current) {
-          frameThrottleRef.current = requestAnimationFrame(throttledRender);
-        }
-      };
-      
-      // Start the throttled render loop for mobile
-      frameThrottleRef.current = requestAnimationFrame(throttledRender);
-    } else {
-      console.log('[P2-2] Desktop device - using native frame rate (60fps)');
-      setMobileFrameControl('auto'); // Let React Three Fiber handle frames naturally
-    }
     
+    // 🎯 RENDER FIX: Use demand mode for both desktop and mobile since we manually invalidate
+    setMobileFrameControl('demand');
+    
+    // Remove mobile-specific throttling since we're using manual invalidate() calls
     return () => {
       if (frameThrottleRef.current) {
         cancelAnimationFrame(frameThrottleRef.current);
@@ -98,7 +70,9 @@ const MissionMoonWithCanvas = ({
         return 1; // Safe fallback for invalid values
       }
       
-      return Math.min(window.devicePixelRatio, 2); // Cap at 2x for performance
+      // 🎯 DESKTOP FIX: Allow full DPR on desktop for crisp textures
+      const isDesktop = window.innerWidth >= 1024;
+      return isDesktop ? window.devicePixelRatio : Math.min(window.devicePixelRatio, 2);
     } catch (error) {
       console.warn('[MOON_CANVAS] devicePixelRatio access failed:', error);
       return 1; // Safe fallback on any error

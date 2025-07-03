@@ -25,15 +25,24 @@ import useGlobalFrame from '../../../hooks/useGlobalFrame';
 const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' }) => {
   const earthRef = useRef();
   const cloudsRef = useRef();
+  const groupRef = useRef();
+  
+  // 🎯 GRACEFUL FADE-IN: Add opacity animation state
+  const [opacity, setOpacity] = useState(0);
+  const [isFullyLoaded, setIsFullyLoaded] = useState(false);
   
   // 🎯 TILE MR-3.0 PHASE 4: Mobile-only effect suppression
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const shouldSuppressEffects = isMobile && performanceMode !== 'high';
   
+  // 🚨 ROTATION FIX: Increase desktop speed by 15% and restore mobile rotation
+  const desktopSpeed = 0.0002 * 1.15; // 15% faster: 0.00023
+  const mobileSpeed = 0.0001; // Restore mobile rotation instead of suppressing
+  
   // 🚨 MOBILE CRASH FIX: Replace manual frame skipping with useGlobalFrame
   useGlobalFrame(() => {
     if (earthRef.current) {
-      earthRef.current.rotation.y += shouldSuppressEffects ? 0.0001 : 0.0002;
+      earthRef.current.rotation.y += isMobile ? mobileSpeed : desktopSpeed;
       if (cloudsRef.current && !shouldSuppressEffects) {
         const rotationSpeed = performanceMode === 'minimal' ? 0.00015 : 0.0003;
         cloudsRef.current.rotation.y += rotationSpeed;
@@ -48,8 +57,35 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
   const bumpMap = useLoader(TextureLoader, `${textureBasePath}earthbump1k_LE_upscale_balanced_x4.webp`);
   const cloudMap = useLoader(TextureLoader, `${textureBasePath}earthcloudmap_LE_upscale_balanced_x4.webp`);
   
+  // 🎯 GRACEFUL FADE-IN: Trigger fade animation when all textures are loaded
+  useEffect(() => {
+    if (surfaceMap && bumpMap && cloudMap) {
+      // Small delay to ensure all textures are fully processed
+      const fadeTimer = setTimeout(() => {
+        setIsFullyLoaded(true);
+        
+        // Gradual fade-in over 1.5 seconds
+        let currentOpacity = 0;
+        const fadeInterval = setInterval(() => {
+          currentOpacity += 0.02; // Smooth increment
+          setOpacity(Math.min(currentOpacity, 1));
+          
+          if (currentOpacity >= 1) {
+            clearInterval(fadeInterval);
+          }
+        }, 30); // 50fps fade animation
+        
+        return () => clearInterval(fadeInterval);
+      }, 150); // Brief delay to prevent texture pop
+      
+      return () => clearTimeout(fadeTimer);
+    }
+  }, [surfaceMap, bumpMap, cloudMap]);
+  
   // Optimize texture settings for WebP and performance
   useEffect(() => {
+    if (!isFullyLoaded) return; // Only optimize after fade-in starts
+    
     // ✅ TILE MR-3.0 PHASE 4: Mobile-specific texture optimization
     const mobileAnisotropy = shouldSuppressEffects ? 4 : 8; // Further reduce on mobile
     const desktopAnisotropy = 16;
@@ -77,13 +113,13 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
     cloudMap.magFilter = LinearFilter;
     cloudMap.wrapS = ClampToEdgeWrapping;
     cloudMap.wrapT = ClampToEdgeWrapping;
-  }, [surfaceMap, bumpMap, cloudMap, isMobile, shouldSuppressEffects]);
+  }, [surfaceMap, bumpMap, cloudMap, isMobile, shouldSuppressEffects, isFullyLoaded]);
   
   // Responsive geometry settings
   const geometryDetail = performanceMode === 'minimal' ? 32 : performanceMode === 'low' ? 48 : 64;
   
   return (
-    <group scale={scaleFactor} rotation={[0, -0.5, 0.1]}>
+    <group ref={groupRef} scale={scaleFactor} rotation={[0, -0.5, 0.1]} opacity={opacity}>
       {/* Main Earth sphere */}
       <mesh ref={earthRef}>
         <sphereGeometry args={[4.16, geometryDetail, geometryDetail]} />
@@ -93,6 +129,8 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
           bumpScale={performanceMode === 'minimal' ? 0.02 : 0.05}
           metalness={0.1}
           roughness={0.7}
+          transparent={true}
+          opacity={opacity}
         />
       </mesh>
       
@@ -102,7 +140,7 @@ const EarthMesh = ({ scaleFactor = 1, rotationY = 0, performanceMode = 'high' })
         <meshStandardMaterial
           map={cloudMap}
           transparent={true}
-          opacity={performanceMode === 'minimal' ? 0.3 : 0.4}
+          opacity={(performanceMode === 'minimal' ? 0.3 : 0.4) * opacity}
           depthWrite={false}
         />
       </mesh>

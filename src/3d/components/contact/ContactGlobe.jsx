@@ -7,7 +7,7 @@
  */
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { useThree, extend } from '@react-three/fiber';
+import { useThree, extend, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Color, Group } from 'three';
 import countries from '../../../../data/globe.json';
@@ -69,6 +69,10 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const { isMobile } = useDeviceOptimization();
+  
+  // 🎯 GRACEFUL FADE-IN: Add opacity animation state like the Moon
+  const [opacity, setOpacity] = useState(0);
+  const [isFullyLoaded, setIsFullyLoaded] = useState(false);
 
   const defaultProps = {
     pointSize: 1,
@@ -102,7 +106,7 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
           setIsInitialized(true);
         }
       } catch (error) {
-        console.error('Failed to initialize globe:', error);
+        console.error('[GLOBE] Failed to initialize globe:', error);
         setLoadError(error);
       } finally {
         setIsLoading(false);
@@ -112,19 +116,47 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
     initializeGlobe();
   }, []);
 
-  // Rotate the globe
+  // 🎯 GRACEFUL FADE-IN: Smooth opacity animation after globe is fully configured
   useEffect(() => {
-    if (!groupRef.current || !isInitialized) return;
+    if (isInitialized && !isLoading && !isFullyLoaded) {
+      // Small delay to ensure globe is fully processed
+      const fadeTimer = setTimeout(() => {
+        setIsFullyLoaded(true);
+        
+        // Gradual fade-in over 1.5 seconds - longer and more graceful than Moon
+        let currentOpacity = 0;
+        const fadeInterval = setInterval(() => {
+          currentOpacity += 0.02; // Slower increment for more graceful fade
+          setOpacity(Math.min(currentOpacity, 1));
+          
+          if (currentOpacity >= 1) {
+            clearInterval(fadeInterval);
+          }
+        }, 35); // Slightly slower for extra smoothness
+        
+        return () => clearInterval(fadeInterval);
+      }, 150); // Brief delay to prevent pop-in
+      
+      return () => clearTimeout(fadeTimer);
+    }
+  }, [isInitialized, isLoading, isFullyLoaded]);
 
-    const animate = () => {
-      if (groupRef.current && isInitialized) {
-        groupRef.current.rotation.y += 0.001; // Slow rotation
+  // 🎯 RENDER FIX: Use useFrame instead of requestAnimationFrame for proper R3F integration
+  useFrame(() => {
+    if (groupRef.current && isInitialized) {
+      groupRef.current.rotation.y += 0.001; // Slow rotation
+      
+      // Apply opacity to the entire group and all its children
+      if (groupRef.current.children.length > 0) {
+        groupRef.current.traverse((child) => {
+          if (child.material) {
+            child.material.transparent = true;
+            child.material.opacity = opacity;
+          }
+        });
       }
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-  }, [isInitialized]);
+    }
+  });
 
   // Build material when globe is initialized
   useEffect(() => {
@@ -135,8 +167,13 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
     globeMaterial.emissive = new Color(globeConfig.emissive || defaultProps.emissive);
     globeMaterial.emissiveIntensity = globeConfig.emissiveIntensity || defaultProps.emissiveIntensity;
     globeMaterial.shininess = globeConfig.shininess || defaultProps.shininess;
+    
+    // 🎯 APPLY OPACITY: Set material opacity for smooth fade-in
+    globeMaterial.transparent = true;
+    globeMaterial.opacity = opacity;
   }, [
     isInitialized,
+    opacity, // Add opacity to dependencies
     globeConfig.globeColor,
     globeConfig.emissive,
     globeConfig.emissiveIntensity,
@@ -234,7 +271,7 @@ const GlobeScene = ({ globeConfig, data, performanceMode = 'high' }) => {
   ]);
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} visible={opacity > 0}>
       {/* Globe will be added to this group by useEffect */}
     </group>
   );

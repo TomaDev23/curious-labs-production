@@ -310,7 +310,7 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
 
   return (
     <section 
-      className={`relative w-full h-screen overflow-hidden ${className} ${isDebug ? 'debug-mode' : ''}`} 
+      className={`relative w-full overflow-hidden ${className} ${isDebug ? 'debug-mode' : ''} ${isMobile ? 'h-[140vh]' : 'h-screen'}`} 
       style={{ marginTop: '-10vh' }}
       ref={containerRef}
     >
@@ -386,7 +386,7 @@ const HorizontalProductScrollV6 = ({ className = '' }) => {
       >
         {/* Page 1: AEGIS */}
         <motion.div 
-          className="w-screen h-screen" 
+          className={`w-screen ${isMobile ? 'h-[140vh]' : 'h-screen'}`}
           variants={pageVariants} 
           initial="initial" 
           animate="animate" 

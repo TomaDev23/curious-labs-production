@@ -589,7 +589,7 @@ const MissionAtomic = () => {
       {/* Main content wrapper */}
       <div className="relative w-full h-full opacity-100" style={{ zIndex: 50 }}>
         {/* Right Section with Numbered Mission Points */}
-        <div className={`${isMobile ? 'px-6' : 'md:ml-[45%] md:mr-[5%] pr-4 md:pr-8'} flex flex-col space-y-16 md:space-y-32 mt-16 md:mt-24`}>
+        <div className={`${isMobile ? 'px-6' : 'md:ml-[45%] md:mr-[5%] pr-4 md:pr-8'} flex flex-col space-y-16 md:space-y-32 ${isMobile ? '-mt-[15vh]' : 'mt-16 md:mt-24'}`}>
           {MISSION_POINTS.map((point, index) => (
             <motion.div 
               key={point.id}
@@ -771,38 +771,40 @@ const MissionAtomic = () => {
           </div>
           
           {/* Text content container */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="absolute bottom-[2%] left-[8%] z-20 text-left max-w-[460px] p-6 rounded-lg backdrop-blur-sm bg-black/10"
-            style={{ zIndex: 38 }}
-          >
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.5, delay: 0.9 }}
-              className="uppercase tracking-widest text-sm text-white/60 mb-1 font-medium"
+          {!isMobile && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="absolute bottom-[2%] left-[8%] z-20 text-left max-w-[460px] p-6 rounded-lg backdrop-blur-sm bg-black/10"
+              style={{ zIndex: 38 }}
             >
-              <span className="inline-block mr-1 transform rotate-45">↑</span> our mission
-            </motion.p>
-            <motion.h2 
-              initial={{ opacity: 0 }}
-              animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.5, delay: 1.1 }}
-              className="text-4xl font-light mb-3 tracking-wide"
-            >
-              Human-first AI
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.5, delay: 1.3 }}
-              className="text-sm text-white/90 leading-relaxed max-w-[400px]"
-            >
-              We are building responsible, ethical systems for a future where technology aligns with human well-being.
-            </motion.p>
-          </motion.div>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.5, delay: 0.9 }}
+                className="uppercase tracking-widest text-sm text-white/60 mb-1 font-medium"
+              >
+                <span className="inline-block mr-1 transform rotate-45">↑</span> our mission
+              </motion.p>
+              <motion.h2 
+                initial={{ opacity: 0 }}
+                animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.5, delay: 1.1 }}
+                className="text-4xl font-light mb-3 tracking-wide"
+              >
+                Human-first AI
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.5, delay: 1.3 }}
+                className="text-sm text-white/90 leading-relaxed max-w-[400px]"
+              >
+                We are building responsible, ethical systems for a future where technology aligns with human well-being.
+              </motion.p>
+            </motion.div>
+          )}
         </div>
       </motion.div>
       

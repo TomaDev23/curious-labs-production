@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from '../../../../FramerProvider';
+import { useResponsive } from '../../../../hooks/useBreakpoint';
 
 /**
  * AEGIS Page Component - First page in horizontal scroll sequence
@@ -7,6 +8,7 @@ import { motion, AnimatePresence } from '../../../../FramerProvider';
  */
 export const AegisPage = () => {
   const [expandedCard, setExpandedCard] = useState(null);
+  const { isMobile } = useResponsive();
   
   // Animation variants for compact design
   const containerVariants = {
@@ -128,7 +130,7 @@ export const AegisPage = () => {
   
   return (
     <div 
-      className="relative w-screen h-screen flex overflow-hidden z-[3]" 
+      className={`relative w-screen flex overflow-hidden z-[3] ${isMobile ? 'h-[140vh]' : 'h-screen'}`}
       data-page="aegis"
       style={{
         mask: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 2vh, rgba(0,0,0,0.3) 4vh, rgba(0,0,0,0.6) 6vh, rgba(0,0,0,0.8) 8vh, black 10vh)',

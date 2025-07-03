@@ -63,7 +63,7 @@ const HeroAtomic = React.memo(() => {
   
   // Memoize subtext to prevent recreation
   const subText = React.useMemo(() => 
-    "We're1 building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.",
+    "We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.",
     []
   );
 
@@ -103,22 +103,21 @@ const HeroAtomic = React.memo(() => {
   }, [isMobile, isHydrated, start]);
 
   // Memoized responsive classes for performance
-  const responsiveClasses = React.useMemo(() => {
-    return {
-      container: `relative min-h-screen overflow-hidden`,
-      section: `relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden ${isMobile ? 'pt-16' : 'pt-14'}`,
-      planetBloom: `absolute z-[15] ${isMobile ? 'w-[450px] h-[450px]' : isTablet ? 'w-[675px] h-[675px]' : 'w-[1200px] h-[1200px]'} rounded-full blur-3xl pointer-events-none`,
-      planetContainer: `absolute z-[20] ${isMobile ? 'w-[375px] h-[375px]' : isTablet ? 'w-[525px] h-[525px]' : 'w-[800px] h-[800px]'}`,
-      // ✅ FIXED: Stabilized contentWrapper to prevent 0.279 CLS
-      contentWrapper: `absolute z-[250] ${
-        isMobile 
-          ? 'bottom-[8%] left-[4%] right-[4%] max-w-none' 
-          : 'bottom-[4%] left-[4%] max-w-[700px]'
-      }`,
-      title: `font-space font-semibold text-white leading-tight tracking-tight ${isMobile ? '' : 'whitespace-nowrap'} ${isMobile ? 'transition-opacity duration-300' : 'transition-all duration-300 group-hover:text-shadow-lg'}`,
-      subtitle: `font-space text-white/85 leading-relaxed tracking-wide mb-4 ${isMobile ? 'transition-opacity duration-300' : 'transition-all duration-300 group-hover:text-white/95'}`
-    };
-  }, [isMobile, isTablet]);
+  const responsiveClasses = React.useMemo(() => ({
+    container: `relative ${isMobile ? 'min-h-[120vh]' : 'min-h-screen'} overflow-hidden`,
+    section: `relative ${isMobile ? 'min-h-[120vh]' : 'min-h-screen'} w-full flex flex-col items-center justify-center overflow-hidden ${isMobile ? 'pt-16' : 'pt-14'}`,
+    contentContainer: `relative z-20 flex flex-col items-center justify-center text-center px-4 ${isMobile ? 'max-w-sm' : 'max-w-2xl'}`,
+    planetContainer: `absolute z-10 pointer-events-none select-none ${isMobile ? 'opacity-90' : 'opacity-100'}`,
+    backgroundContainer: 'absolute inset-0 z-0',
+    planetBloom: `absolute z-[15] ${isMobile ? 'w-[450px] h-[450px]' : isTablet ? 'w-[675px] h-[675px]' : 'w-[1200px] h-[1200px]'} rounded-full blur-3xl pointer-events-none`,
+    contentWrapper: `absolute z-[250] ${
+      isMobile 
+        ? 'bottom-[17%] left-[4%] right-[4%] max-w-none'
+        : 'bottom-[4%] left-[4%] max-w-[700px]'
+    }`,
+    title: `font-space font-semibold text-white leading-tight tracking-tight ${isMobile ? '' : 'whitespace-nowrap'} ${isMobile ? 'transition-opacity duration-300' : 'transition-all duration-300 group-hover:text-shadow-lg'}`,
+    subtitle: `font-space text-white/85 leading-relaxed tracking-wide mb-4 ${isMobile ? 'transition-opacity duration-300' : 'transition-all duration-300 group-hover:text-white/95'}`
+  }), [isMobile, isTablet]);
 
   // Pre-calculated stable dimensions to prevent layout shifts - OPTIMIZED
   const stableDimensions = React.useMemo(() => {
@@ -151,15 +150,15 @@ const HeroAtomic = React.memo(() => {
   const optimizedSubtitleText = React.useMemo(() => {
     if (isMobile) {
       // Mobile: Shorter, punchier text to reduce rendering size
-      return "Building1 next-generation AI experiences. Join us in shaping tomorrow's web.";
+      return "Building next-generation AI experiences. Join us in shaping tomorrow's web.";
     }
     // Desktop: Keep full text
-    return "We're test building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.";
+    return "We're building next-generation digital experiences powered by cutting-edge AI technology. Join us in shaping tomorrow's web.";
   }, [isMobile]);
 
   // Optimized planet positioning based on device
   const planetPosition = React.useMemo(() => {
-    if (isMobile) return { top: '15%', right: '5%' };
+    if (isMobile) return { top: '10%', right: '5%' }; // Mobile: Move planet up slightly
     if (isTablet) return { top: '18%', right: '8%' };
     return { top: '10%', right: '20%' };
   }, [isMobile, isTablet]);
@@ -426,7 +425,7 @@ const HeroAtomic = React.memo(() => {
                 {/* Quick Stats - Responsive layout */}
                 <div className={`flex ${isMobile ? 'justify-around' : 'justify-between'} items-center pt-2 border-t border-lime-400/10`}>
                   <div className="text-center">
-                    <div className={`text-lime-400 font-bold ${isMobile ? 'text-base' : 'text-lg'}`}>50+</div>
+                    <div className={`text-lime-400 font-bold ${isMobile ? 'text-base' : 'text-lg'}`}>10+</div>
                     <div className={`text-white/60 ${isMobile ? 'text-xs' : 'text-xs'}`}>Projects</div>
                   </div>
                   <div className="text-center">
@@ -495,7 +494,7 @@ const HeroAtomic = React.memo(() => {
                       contain: 'layout style'
                     }}
                   >
-                    <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'flex-row space-x-4'} items-center justify-center mt-6`}>
+                    <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'flex-row space-x-4'} items-center justify-center ${isMobile ? 'mt-3' : 'mt-6'}`}>
                       {/* Primary CTA - Restored original design with mobile-optimized functionality */}
                       <Link
                         to="/tools"

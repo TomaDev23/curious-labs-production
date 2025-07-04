@@ -105,17 +105,17 @@ const useMoonViewportLoading = () => {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            // 🚀 PERFORMANCE: Only load moon when 50% visible (was 10%)
-            // This prevents immediate loading on homepage load
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            // 🚀 PERFORMANCE: Only load moon when 20% visible (was 50%)
+            // This prevents immediate loading on homepage load but works on mobile
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
               setShouldLoadMoon(true);
               observer.disconnect(); // Load once and disconnect
             }
           });
         },
         { 
-          threshold: 0.5, // Changed from 0.1 to 0.5 for better performance
-          rootMargin: '0px 0px -100px 0px' // Added bottom margin to delay loading
+          threshold: 0.2, // Changed from 0.5 to 0.2 for mobile compatibility
+          rootMargin: '0px 0px -50px 0px' // Reduced from -100px to -50px
         }
       );
 

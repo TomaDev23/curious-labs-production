@@ -80,6 +80,7 @@ const useDeviceCapabilities = () => {
 // Starfield Canvas Component
 const StarfieldCanvas = ({ performanceTier, prefersReducedMotion }) => {
   const canvasRef = useRef(null);
+  const { isMobile } = useUnifiedMobile(); // 🔴 DEBUG: Add mobile detection
   
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -129,7 +130,7 @@ const StarfieldCanvas = ({ performanceTier, prefersReducedMotion }) => {
         }
         
         // Draw star
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.7})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.7})`; // Restored to original white
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fill();
@@ -138,13 +139,14 @@ const StarfieldCanvas = ({ performanceTier, prefersReducedMotion }) => {
       animationFrame = requestAnimationFrame(animate);
     };
     
-    // Start animation if not in reduced motion mode
-    if (!prefersReducedMotion) {
-      animate();
+    // Start animation if not in reduced motion mode OR not mobile
+    // 🔴 DEBUG: Force reduced motion (red stars) on mobile, animation (green stars) on desktop
+    if (!prefersReducedMotion && !isMobile) {
+      animate(); // Green animated stars on desktop
     } else {
-      // Draw static stars for reduced motion
+      // Draw static stars for reduced motion OR mobile
       stars.forEach(star => {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // Restored to original white
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fill();
@@ -379,13 +381,17 @@ export default function BackgroundLayerAtomic() {
         }}
       />
 
-      {/* Starfield layer */}
-      <div className="opacity-100">
-        <StarfieldCanvas 
-          performanceTier={performanceTier} 
-          prefersReducedMotion={prefersReducedMotion}
-        />
-      </div>
+      {/* Starfield layer - COMPLETELY DISABLED */}
+      {/* 
+      {!isMobile && (
+        <div className="opacity-100">
+          <StarfieldCanvas 
+            performanceTier={performanceTier} 
+            prefersReducedMotion={prefersReducedMotion}
+          />
+        </div>
+      )}
+      */}
       
       {/* Nebula effect - only show on high performance devices */}
       {performanceTier === 'high' && !isMobile && (

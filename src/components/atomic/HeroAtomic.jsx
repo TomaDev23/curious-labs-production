@@ -89,10 +89,11 @@ const HeroAtomic = React.memo(() => {
       }, 500);
     }
     
-    // Mobile: Simple delayed loading, Desktop: Keep original behavior
+    // 🚀 PERFORMANCE: Defer 3D loading to reduce initial bundle
+    // Mobile: 3s delay (users scroll slower), Desktop: 2s delay (faster interaction)
     const show3DTimer = isMobile 
-      ? setTimeout(() => setShow3D(true), 1200) // Mobile: Simple 1.2s delay
-      : setTimeout(() => setShow3D(true), 1500); // Desktop: Original timing
+      ? setTimeout(() => setShow3D(true), 3000) // Mobile: 3s delay for better LCP
+      : setTimeout(() => setShow3D(true), 2000); // Desktop: 2s delay for better FCP
     
     return () => {
       if (typewriterTimer) { // ✅ FIXED: Check if timer exists before clearing

@@ -89,109 +89,46 @@ const useSimpleVisibility = (ref) => {
 // Add new hook for moon viewport loading - MA-4 ENHANCED + MA-3 SHARED IO
 const useMoonViewportLoading = () => {
   const [shouldLoadMoon, setShouldLoadMoon] = useState(false);
-  const mountedRef = useRef(true);
-  const timersRef = useRef([]);
-  const unsubscribeRef = useRef(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // 🚨 MA-4: Enhanced timer management for this hook
-  const addTimer = useCallback((timerId) => {
-    if (mountedRef.current) {
-      timersRef.current.push(timerId);
-    }
-    return timerId;
-  }, []);
-
-  const clearAllTimers = useCallback(() => {
-    timersRef.current.forEach(timer => {
-      try {
-        clearTimeout(timer);
-      } catch (error) {
-        console.warn('[MA-4] useMoonViewportLoading timer cleanup failed:', error);
-      }
-    });
-    timersRef.current = [];
+  useEffect(() => {
+    setIsHydrated(true);
   }, []);
 
   useEffect(() => {
-    // Safety checks for mobile/older browsers
-    if (typeof window === 'undefined' || !window.IntersectionObserver) {
-      // Fallback: load immediately if IntersectionObserver not supported
-      if (mountedRef.current) setShouldLoadMoon(true);
-      return;
-    }
+    if (!isHydrated || typeof window === 'undefined') return;
 
-    // Observe the moon section with retry logic using SharedIO
     const observeMoonSection = () => {
       const moonSection = document.querySelector('[data-moon-section]');
-      if (moonSection) {
-        // 🚨 MA-3: Use SharedIO for moon section observation
-        const unsubscribe = sharedObserve(
-          moonSection,
-          (entry) => {
-            if (entry.isIntersecting && mountedRef.current) {
+      if (!moonSection) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            // 🚀 PERFORMANCE: Only load moon when 50% visible (was 10%)
+            // This prevents immediate loading on homepage load
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
               setShouldLoadMoon(true);
-              // Unsubscribe after first trigger (load once)
-              if (unsubscribeRef.current) {
-                unsubscribeRef.current();
-                unsubscribeRef.current = null;
-              }
+              observer.disconnect(); // Load once and disconnect
             }
-          },
-          { 
-            threshold: 0.1,
-            rootMargin: '200px 0px 0px 0px' // Start loading 200px before moon comes into view
-          }
-        );
-        
-        unsubscribeRef.current = unsubscribe;
-        return true;
-      }
-      return false;
+          });
+        },
+        { 
+          threshold: 0.5, // Changed from 0.1 to 0.5 for better performance
+          rootMargin: '0px 0px -100px 0px' // Added bottom margin to delay loading
+        }
+      );
+
+      observer.observe(moonSection);
+      return () => observer.disconnect();
     };
 
-    // Try to observe immediately
-    if (!observeMoonSection()) {
-      // If element not found, retry after a short delay (for hydration)
-      const retryTimeout = addTimer(setTimeout(() => {
-        if (!mountedRef.current) return; // 🚀 MA-4: Mount guard
-        if (!observeMoonSection()) {
-          // If still not found, fallback to immediate loading
-          if (mountedRef.current) setShouldLoadMoon(true);
-        }
-      }, 100));
-      
-      // 🚨 MA-4: Add fallback timeout to prevent infinite waiting
-      const fallbackTimeout = addTimer(setTimeout(() => {
-        if (mountedRef.current && !shouldLoadMoon) {
-          console.warn('[MA-4] Moon section not found, loading immediately');
-          setShouldLoadMoon(true);
-        }
-      }, 2000)); // 2 second fallback
+    // 🚀 PERFORMANCE: Add delay before setting up observer
+    const timer = setTimeout(observeMoonSection, 1000);
+    return () => clearTimeout(timer);
+  }, [isHydrated]);
 
-      return () => {
-        mountedRef.current = false;
-        // 🚨 MA-4: Clear all tracked timers
-        clearAllTimers();
-        // 🚨 MA-3: Clean up SharedIO subscription
-        if (unsubscribeRef.current) {
-          unsubscribeRef.current();
-          unsubscribeRef.current = null;
-        }
-      };
-    }
-
-    return () => {
-      mountedRef.current = false;
-      clearAllTimers();
-      // 🚨 MA-3: Clean up SharedIO subscription
-      if (unsubscribeRef.current) {
-        unsubscribeRef.current();
-        unsubscribeRef.current = null;
-      }
-    };
-  }, [addTimer, clearAllTimers]);
-
-  return shouldLoadMoon;
+  return { shouldLoadMoon, isHydrated };
 };
 
 // Advanced Neon Arc Animation Component - SIMPLIFIED + VIEWPORT OPTIMIZED + MA-3 SHARED IO
@@ -309,7 +246,7 @@ const MissionAtomic = () => {
   // 🚨 CRASH FIX: Simple visibility detection
   const { isVisible, hasBeenInView } = useSimpleVisibility(containerRef);
   
-  const shouldLoadMoon = useMoonViewportLoading();
+  const { shouldLoadMoon, isHydrated: moonHydrated } = useMoonViewportLoading();
   
   // 🚨 MA-4: Enhanced timer management utility functions
   const addTimer = useCallback((timerId) => {
@@ -760,7 +697,7 @@ const MissionAtomic = () => {
               </div>
             }>
               {/* 🚨 LAZY LOADING: Only load moon when scrolled into viewport */}
-              {isHydrated && typeof window !== 'undefined' && shouldLoadMoon && (
+              {moonHydrated && typeof window !== 'undefined' && shouldLoadMoon && (
                 <MoonSphereProxy 
                   className="w-[400px] h-[400px]" 
                   debugPhase={moonPhaseOverride}

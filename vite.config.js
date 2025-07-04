@@ -37,10 +37,70 @@ const performanceOptimizationPlugin = () => {
   };
 };
 
+// Critical CSS Plugin - Inline essential homepage styles
+const criticalCSSPlugin = () => {
+  return {
+    name: 'critical-css',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html) {
+        // Critical CSS for homepage - extracted from cosmic.css and index.css
+        const criticalCSS = `
+          /* Critical Homepage Styles */
+          html { overflow-x: hidden; }
+          body { overflow-x: hidden; }
+          
+          /* Critical Cosmic Gradients */
+          .cosmic-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          }
+          .cosmic-gradient-radial {
+            background: radial-gradient(circle at center, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 50%, rgba(17, 24, 39, 0) 100%);
+          }
+          
+          /* Critical Glow Effects */
+          .glow-text {
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5), 0 0 20px rgba(102, 126, 234, 0.3), 0 0 30px rgba(102, 126, 234, 0.2);
+          }
+          
+          /* Critical Animations */
+          @keyframes nebulaFade {
+            0% { background-position: 0% 50%; opacity: 0.4; }
+            50% { background-position: 100% 50%; opacity: 0.7; }
+            100% { background-position: 0% 50%; opacity: 0.4; }
+          }
+          .nebula-fade {
+            background: linear-gradient(135deg, #35204a, #4B2E83 30%, #A3E1B5 50%, #E1BEE7 70%, #6f71d9);
+            background-size: 200% 200%;
+            animation: nebulaFade 15s ease infinite;
+            will-change: background-position, opacity;
+          }
+          
+          /* Critical Layout */
+          .cosmic-card {
+            position: relative;
+            background-color: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 0.75rem;
+            border: 1px solid rgb(55, 65, 81);
+            overflow: hidden;
+          }
+        `;
+        
+        return html.replace(
+          '</head>',
+          `    <style>${criticalCSS}</style>\n    </head>`
+        );
+      }
+    }
+  };
+};
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    criticalCSSPlugin(), // Add critical CSS plugin
     // performanceOptimizationPlugin(), // DISABLED - Causing 404 errors
     {
       name: 'handle-client-side-routing',

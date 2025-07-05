@@ -217,26 +217,29 @@ const FooterExperience = () => {
           {/* Company - Compact mobile layout */}
           <motion.div variants={itemVariants} className="relative z-10">
             <h3 className="text-lg md:text-xl font-bold text-white mb-4 md:mb-6">Company</h3>
-            <ul className="space-y-2 md:space-y-3" role="list">
-              {links.company.map((link) => (
-                <li key={link.name}>
-                  <Link 
-                    to={link.path} 
-                    className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 -ml-2 relative z-10 cursor-pointer text-sm md:text-base"
-                    aria-label={`${link.name} company page`}
-                  >
-                    <motion.span 
-                      className="block w-1 h-1 rounded-full bg-purple-500 mr-2 pointer-events-none"
-                      whileHover={{ scale: 2 }}
-                      whileFocus={{ scale: 2 }}
-                      transition={{ duration: 0.2 }}
-                      aria-hidden="true"
-                    />
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* Mobile: Centered container with 2+2 grid, Desktop: original vertical list */}
+            <div className="flex justify-center md:justify-start">
+              <ul className="grid grid-cols-2 gap-4 md:block md:space-y-3" role="list">
+                {links.company.map((link) => (
+                  <li key={link.name}>
+                    <Link 
+                      to={link.path} 
+                      className="text-gray-400 hover:text-purple-400 focus:text-purple-400 transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 rounded-md px-2 py-1 relative z-10 cursor-pointer text-sm md:text-base"
+                      aria-label={`${link.name} company page`}
+                    >
+                      <motion.span 
+                        className="block w-1 h-1 rounded-full bg-purple-500 mr-2 pointer-events-none"
+                        whileHover={{ scale: 2 }}
+                        whileFocus={{ scale: 2 }}
+                        transition={{ duration: 0.2 }}
+                        aria-hidden="true"
+                      />
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </motion.div>
         </div>
         

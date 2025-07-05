@@ -77,6 +77,8 @@ const MissionStatementV6 = () => {
         ></div>
 
         {/* Cosmic Shimmering Gradient Layer (was Under-sphere nebula) */}
+        {/* COMMENTED OUT - SECOND PART OF RED NEBULA CAUSING MOBILE ISSUES */}
+        {/*
         <div 
           className="absolute animate-pulse" // Added animate-pulse
           style={{
@@ -88,6 +90,7 @@ const MissionStatementV6 = () => {
             zIndex: 0
           }}
         ></div>
+        */}
 
         {/* Combined and Reshaped Engulfing Nebula (Whitish + Subtle Purple) */}
         <div 

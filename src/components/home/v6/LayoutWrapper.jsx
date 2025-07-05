@@ -22,6 +22,8 @@ const LayoutWrapper = ({ children }) => {
           <CosmicBackgroundSystemV6 />
           
           {/* Planet Lighting Effect - OPTIMIZED SIZE - Atmospheric illumination */}
+          {/* COMMENTED OUT - RED NEBULA CAUSING MOBILE ISSUES */}
+          {/*
           <div
             className="fixed z-[11] w-[100vw] h-[200vh] pointer-events-none"
             style={{
@@ -34,6 +36,7 @@ const LayoutWrapper = ({ children }) => {
               background: 'radial-gradient(ellipse 65% 40% at 75% 30%, transparent 5%, rgba(255,0,0,0.3) 25%, rgba(255,0,0,0.6) 45%, rgba(255,0,0,0.8) 65%, rgba(255,0,0,0.95) 85%)'
             }}
           />
+          */}
           
           {/* Main content container - elevated to z-[50] per plan */}
           <main className="relative z-[50]">

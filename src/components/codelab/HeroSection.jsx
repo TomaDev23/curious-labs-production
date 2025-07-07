@@ -83,7 +83,7 @@ const HeroSection = () => {
       <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-blue-600/10 rounded-full filter blur-3xl z-0"></div>
 
       {/* Asymmetric layout container */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.2fr,0.8fr] gap-10 lg:gap-16 items-center">
+      <div className="relative z-10 grid grid-cols-1 gap-10 lg:gap-16 items-center">
         {/* Left column - Hero text */}
         <div className="flex flex-col justify-center">
           <motion.div variants={textVariants} className="mb-4">
@@ -185,12 +185,11 @@ const HeroSection = () => {
           </motion.div>
         </div>
         
-        {/* Right column - Orbiting elements */}
+        {/* COMMENTED OUT - Solar system animation (Right column - Orbiting elements)
         <motion.div 
           className="relative h-[350px] md:h-[400px] w-full"
           variants={textVariants}
         >
-          {/* Central element */}
           <motion.div
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-36 bg-gradient-to-br from-purple-900/30 to-indigo-900/30 border border-purple-500/20 rounded-full backdrop-blur-md z-20 flex items-center justify-center"
             initial={{ scale: 0, opacity: 0 }}
@@ -200,11 +199,9 @@ const HeroSection = () => {
             <div className="text-5xl">🚀</div>
           </motion.div>
           
-          {/* Orbital path indicators */}
           <motion.div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] border border-purple-500/10 rounded-full" />
           <motion.div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] border border-indigo-500/10 rounded-full" />
           
-          {/* Orbiting badges */}
           {[
             { id: 1, emoji: "⚡", label: "Fast", angle: 30, radius: 130 },
             { id: 2, emoji: "📝", label: "Documented", angle: 150, radius: 130 },
@@ -213,7 +210,6 @@ const HeroSection = () => {
             { id: 5, emoji: "🧪", label: "Tested", angle: 180, radius: 170 },
             { id: 6, emoji: "🤖", label: "Automated", angle: 300, radius: 170 },
           ].map((badge, index) => {
-            // Calculate position based on angle and radius
             const x = Math.cos(badge.angle * (Math.PI / 180)) * badge.radius;
             const y = Math.sin(badge.angle * (Math.PI / 180)) * badge.radius;
             
@@ -238,6 +234,7 @@ const HeroSection = () => {
             );
           })}
         </motion.div>
+        */}
       </div>
     </motion.section>
   );

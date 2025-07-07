@@ -205,7 +205,7 @@ export default function CodeLab() {
 
   return (
     <>
-      <div className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden font-['Space_Grotesk']">
+      <div className="min-h-screen bg-black text-white flex flex-col relative overflow-hidden font-mono">
         <Helmet>
           <title>Engineering Bay - Developer Arsenal | CuriousLabs</title>
           <meta name="description" content="Access our advanced engineering arsenal of LEGIT-compliant developer tools, patterns, and AI logic built for mission-critical systems." />
@@ -798,7 +798,8 @@ export default function CodeLab() {
             {/* Section Divider */}
             <hr className="my-12 border-lime-400/20" />
             
-            {/* Testimonials Section (Enhanced) */}
+            {/* Testimonials Section (Enhanced) - COMMENTED OUT - UNREADY */}
+            {/*
             <section className="max-w-7xl mx-auto mb-24">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -825,6 +826,7 @@ export default function CodeLab() {
                 <Testimonials />
               </motion.div>
             </section>
+            */}
           </CodelabFloatflowLayout>
         </main>
         

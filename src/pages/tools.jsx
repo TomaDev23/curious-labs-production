@@ -24,72 +24,6 @@ export default function Tools() {
 
   const tools = [
     {
-      name: "SweepHammer",
-      description: "High-performance file system cleaner with smart pattern recognition. Removes junk files, temporary data, and optimizes storage allocation with military-grade precision.",
-      icon: "🔨",
-      isAvailable: true,
-      downloadLink: "/tools/sweephammer/download",
-      category: "System Tools",
-      version: "v2.1.3",
-      status: "OPERATIONAL",
-      coordinates: "TOOL-001"
-    },
-    {
-      name: "Neural Debugger",
-      description: "AI-powered debugging assistant that uses machine learning to identify code issues, suggest fixes, and optimize performance bottlenecks in real-time.",
-      icon: "🧠",
-      isAvailable: true,
-      downloadLink: "/tools/neural-debugger/download", 
-      category: "Development",
-      version: "v1.8.7",
-      status: "OPERATIONAL",
-      coordinates: "TOOL-002"
-    },
-    {
-      name: "Quantum Profiler",
-      description: "Advanced performance analysis tool that provides quantum-level insights into application bottlenecks and memory usage patterns.",
-      icon: "⚛️",
-      isAvailable: false,
-      downloadLink: "/tools/quantum-profiler/download",
-      category: "Performance",
-      version: "v0.9.2",
-      status: "BETA",
-      coordinates: "TOOL-003"
-    },
-    {
-      name: "Code Synthesizer",
-      description: "Intelligent code generation platform that converts natural language descriptions into optimized, production-ready code across multiple languages.",
-      icon: "🧬",
-      isAvailable: false,
-      downloadLink: "/tools/code-synthesizer/download",
-      category: "AI Tools",
-      version: "v0.7.1",
-      status: "ALPHA",
-      coordinates: "TOOL-004"
-    },
-    {
-      name: "Mission Deployer",
-      description: "Zero-downtime deployment orchestrator with rollback capabilities, health monitoring, and automated scaling for mission-critical applications.",
-      icon: "🚀",
-      isAvailable: true,
-      downloadLink: "/tools/mission-deployer/download",
-      category: "DevOps",
-      version: "v3.2.1",
-      status: "OPERATIONAL",
-      coordinates: "TOOL-005"
-    },
-    {
-      name: "Security Scanner",
-      description: "Military-grade security audit tool that performs deep vulnerability assessments and provides actionable remediation strategies.",
-      icon: "🛡️",
-      isAvailable: true,
-      downloadLink: "/tools/security-scanner/download",
-      category: "Security",
-      version: "v2.5.4",
-      status: "OPERATIONAL",
-      coordinates: "TOOL-006"
-    },
-    {
       name: "Final Purge",
       description: "Eliminate codebase bloat by identifying and extracting only the files your production build actually uses. Achieve 98.9% reduction with zero functionality loss.",
       icon: "🔥",
@@ -99,6 +33,72 @@ export default function Tools() {
       version: "v1.0.0",
       status: "OPERATIONAL",
       coordinates: "TOOL-007"
+    },
+    {
+      name: "SweepHammer",
+      description: "High-performance file system cleaner with smart pattern recognition. Removes junk files, temporary data, and optimizes storage allocation with military-grade precision.",
+      icon: "🔨",
+      isAvailable: false,
+      downloadLink: "/UnderDevelopment",
+      category: "CLI Tools",
+      version: "v2.1.3",
+      status: "UNDER DEVELOPMENT",
+      coordinates: "TOOL-001"
+    },
+    {
+      name: "Neural Debugger",
+      description: "AI-powered debugging assistant that uses machine learning to identify code issues, suggest fixes, and optimize performance bottlenecks in real-time.",
+      icon: "🧠",
+      isAvailable: false,
+      downloadLink: "/UnderDevelopment", 
+      category: "AI Tools",
+      version: "v1.8.7",
+      status: "UNDER DEVELOPMENT",
+      coordinates: "TOOL-002"
+    },
+    {
+      name: "Quantum Profiler",
+      description: "Advanced performance analysis tool that provides quantum-level insights into application bottlenecks and memory usage patterns.",
+      icon: "⚛️",
+      isAvailable: false,
+      downloadLink: "/UnderDevelopment",
+      category: "Performance",
+      version: "v0.9.2",
+      status: "UNDER DEVELOPMENT",
+      coordinates: "TOOL-003"
+    },
+    {
+      name: "Code Synthesizer",
+      description: "Intelligent code generation platform that converts natural language descriptions into optimized, production-ready code across multiple languages.",
+      icon: "🧬",
+      isAvailable: false,
+      downloadLink: "/UnderDevelopment",
+      category: "AI Tools",
+      version: "v0.7.1",
+      status: "UNDER DEVELOPMENT",
+      coordinates: "TOOL-004"
+    },
+    {
+      name: "Mission Deployer",
+      description: "Zero-downtime deployment orchestrator with rollback capabilities, health monitoring, and automated scaling for mission-critical applications.",
+      icon: "🚀",
+      isAvailable: false,
+      downloadLink: "/UnderDevelopment",
+      category: "DevOps",
+      version: "v3.2.1",
+      status: "UNDER DEVELOPMENT",
+      coordinates: "TOOL-005"
+    },
+    {
+      name: "Security Scanner",
+      description: "Military-grade security audit tool that performs deep vulnerability assessments and provides actionable remediation strategies.",
+      icon: "🛡️",
+      isAvailable: false,
+      downloadLink: "/UnderDevelopment",
+      category: "Security",
+      version: "v2.5.4",
+      status: "UNDER DEVELOPMENT",
+      coordinates: "TOOL-006"
     }
   ];
 
@@ -120,8 +120,9 @@ export default function Tools() {
       case 'OPERATIONAL': return 'lime-400';
       case 'BETA': return 'yellow-400';
       case 'TESTING': return 'blue-400';
-      case 'DEVELOPMENT': return 'orange-400';
+      case 'UNDER DEVELOPMENT': return 'orange-400';
       case 'RESEARCH': return 'purple-400';
+      case 'COMING SOON': return 'gray-400';
       default: return 'gray-400';
     }
   };
@@ -228,7 +229,7 @@ export default function Tools() {
 
           {/* Tools Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               {filteredTools.map((tool, index) => (
                 <ToolCard 
                   key={`${selectedCategory}-${tool.name}`} 
@@ -263,8 +264,8 @@ export default function Tools() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { status: 'OPERATIONAL', count: tools.filter(t => t.status === 'OPERATIONAL').length, color: 'lime-400' },
+                  { status: 'UNDER DEVELOPMENT', count: tools.filter(t => t.status === 'UNDER DEVELOPMENT').length, color: 'orange-400' },
                   { status: 'BETA', count: tools.filter(t => t.status === 'BETA').length, color: 'yellow-400' },
-                  { status: 'DEVELOPMENT', count: tools.filter(t => t.status === 'DEVELOPMENT').length, color: 'orange-400' },
                   { status: 'RESEARCH', count: tools.filter(t => t.status === 'RESEARCH').length, color: 'purple-400' }
                 ].map((item, index) => (
                   <div key={item.status} className="text-center p-4 rounded-lg bg-black/30 border border-white/10">
@@ -339,12 +340,15 @@ function ToolCard({ tool, index, getStatusColor, setActiveSection, activeSection
               Download Tool
             </motion.a>
           ) : (
-            <div className="w-full bg-black/50 border border-white/20 text-white/60 font-medium py-3 px-4 rounded-lg text-center">
+            <Link 
+              to={tool.downloadLink}
+              className="inline-flex items-center justify-center w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-orange-400/20"
+            >
               <div className="flex items-center justify-center space-x-2">
                 <div className={`w-2 h-2 bg-${getStatusColor(tool.status)} rounded-full animate-pulse`}></div>
-                <span>In Development</span>
+                <span>Under Development</span>
               </div>
-            </div>
+            </Link>
           )}
         </div>
       </div>

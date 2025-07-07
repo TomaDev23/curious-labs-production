@@ -11,6 +11,26 @@
   animation: orbitSlow 60s linear infinite;
 }
 
+/* Slow spin animation for development page */
+@keyframes spinSlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 8s linear infinite;
+}
+
+/* Reverse spin animation for development page */
+@keyframes spinReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-spin-reverse {
+  animation: spinReverse 6s linear infinite;
+}
+
 /* Glow Effect Utilities - Subtle Enhancement */
 .glow-on-hover {
   position: relative;

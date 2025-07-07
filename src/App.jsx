@@ -45,6 +45,7 @@ const Curious = lazy(() => import('./pages/products/curious.jsx'));
 const Guardian = lazy(() => import('./pages/products/guardian.jsx'));
 const Tools = lazy(() => import('./pages/tools.jsx'));
 const FinalPurgePage = lazy(() => import('./pages/FinalPurgePage.jsx'));
+const UnderDevelopment = lazy(() => import('./pages/UnderDevelopment.jsx'));
 const CodeLab = lazy(() => import('./pages/codelab.jsx'));
 const Blog = lazy(() => import('./pages/blog.jsx'));
 const Transmissions = lazy(() => import('./pages/Transmissions.jsx'));
@@ -264,6 +265,11 @@ const AppRoutes = () => (
       <Route path="/tools/final-purge" element={
         <Suspense fallback={<SimpleLoader />}>
           <FinalPurgePage />
+        </Suspense>
+      } />
+      <Route path="/UnderDevelopment" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <UnderDevelopment />
         </Suspense>
       } />
       <Route path="/codelab" element={

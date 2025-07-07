@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 /**
  * Debug component to visualize homepage section boundaries with vh measurements
  * Only visible in development mode

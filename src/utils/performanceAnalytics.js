@@ -1,7 +1,7 @@
 /**
  * @module performanceAnalytics
  * @description Production-ready performance monitoring for smart lazy loading
- * @version 1.0.0
+ * @version 1.1.0 - PRODUCTION OPTIMIZED
  * @author CuriousLabs
  * 
  * Features:
@@ -12,17 +12,35 @@
  * - Production-safe logging
  */
 
+// 🚨 CRITICAL FIX: Safe environment variable access for both HMR and SSR
+const getEnvVar = (key, defaultValue = '') => {
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[key] || defaultValue;
+  }
+  // Fallback for browser environments where process is not defined
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    return import.meta.env[key] || defaultValue;
+  }
+  return defaultValue;
+};
+
 class PerformanceAnalytics {
   constructor() {
-    this.isDebugMode = false; // Add debug flag
+    // 🚨 PRODUCTION OPTIMIZATION: Complete debug elimination in production builds
+    const IS_PRODUCTION = getEnvVar('NODE_ENV') === 'production';
+    const IS_DEBUG_BUILD = getEnvVar('REACT_APP_DEBUG') === 'true';
+    
+    this.isDebugMode = false;
     this.metrics = new Map();
     this.componentTimings = new Map();
     this.lazyLoadEvents = [];
-    this.isProduction = process.env.NODE_ENV === 'production';
+    this.isProduction = IS_PRODUCTION;
     this.isEnabled = this.isProduction || localStorage.getItem('debug-perf') === 'true';
     
-    // Check if debug mode should be enabled
-    this.initializeDebugMode();
+    // 🚨 PRODUCTION OPTIMIZATION: Skip debug initialization in production
+    if (!IS_PRODUCTION || IS_DEBUG_BUILD) {
+      this.initializeDebugMode();
+    }
     
     if (this.isEnabled) {
       this.initializeCoreWebVitals();
@@ -31,6 +49,11 @@ class PerformanceAnalytics {
   }
 
   initializeDebugMode() {
+    // 🚨 PRODUCTION OPTIMIZATION: Complete bypass in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
+    
     // Check URL params for debug mode
     const urlParams = new URLSearchParams(window.location.search);
     const urlDebug = urlParams.get('perf-debug') === 'true';
@@ -39,23 +62,28 @@ class PerformanceAnalytics {
     const localDebug = localStorage.getItem('performance-debug') === 'true';
     
     // Check environment variable for development
-    const envDebug = process.env.NODE_ENV === 'development';
+    const envDebug = getEnvVar('NODE_ENV') === 'development';
     
     // Only enable debug mode if explicitly requested
     this.isDebugMode = urlDebug || localDebug;
     
     // 🎯 PRODUCTION CLEANUP: Only log in development
-    if (this.isDebugMode && process.env.NODE_ENV === 'development') {
+    if (this.isDebugMode && getEnvVar('NODE_ENV') === 'development') {
       console.log('📊 Performance Analytics Debug Mode: ENABLED');
       console.log('💡 Use performanceAnalytics.setDebug(false) to disable logging');
     }
   }
 
   setDebug(enabled) {
+    // 🚨 PRODUCTION OPTIMIZATION: Skip debug mode changes in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
+    
     this.isDebugMode = enabled;
     localStorage.setItem('performance-debug', enabled.toString());
     // 🎯 PRODUCTION CLEANUP: Only log in development
-    if (process.env.NODE_ENV === 'development') {
+    if (getEnvVar('NODE_ENV') === 'development') {
       console.log(`📊 Performance Analytics Debug: ${enabled ? 'ENABLED' : 'DISABLED'}`);
     }
   }
@@ -137,12 +165,12 @@ class PerformanceAnalytics {
     this.metrics.set(`${name}-${timestamp}`, metric);
 
     // 🎯 PRODUCTION CLEANUP: Only log in debug mode and development
-    if (this.isDebugMode && process.env.NODE_ENV === 'development') {
+    if (this.isDebugMode && getEnvVar('NODE_ENV') === 'development') {
       console.log(`📊 ${name}: ${typeof value === 'number' ? value.toFixed(2) : value}ms`, metadata);
     }
 
     // Send to analytics in production (you can integrate with your analytics service)
-    if (this.isProduction && window.gtag) {
+    if (this.isProduction && typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'performance_metric', {
         metric_name: name,
         metric_value: value,
@@ -263,21 +291,27 @@ class PerformanceAnalytics {
 
   // Enable debug mode
   enableDebug() {
-    localStorage.setItem('debug-perf', 'true');
-    this.isEnabled = true;
-    // 🎯 PRODUCTION CLEANUP: Only log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔧 Performance debugging enabled');
+    // 🚨 PRODUCTION OPTIMIZATION: Skip debug enabling in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
+    
+    this.setDebug(true);
+    if (typeof window !== 'undefined') {
+      window.performanceAnalytics = this;
     }
   }
 
   // Disable debug mode
   disableDebug() {
-    localStorage.setItem('debug-perf', 'false');
-    this.isEnabled = false;
-    // 🎯 PRODUCTION CLEANUP: Only log in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔇 Performance debugging disabled');
+    // 🚨 PRODUCTION OPTIMIZATION: Skip debug disabling in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
+    
+    this.setDebug(false);
+    if (typeof window !== 'undefined') {
+      delete window.performanceAnalytics;
     }
   }
 

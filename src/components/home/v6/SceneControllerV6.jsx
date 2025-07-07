@@ -3,11 +3,11 @@
  * @component SceneController
  * @description Root orchestrator that manages scroll, animation phasing, and performance detection
  * @legit true
- * @version 1.0.0
+ * @version 1.1.0 - MOBILE OPTIMIZED
  * @author CuriousLabs
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 // 🚨 SM-3: Replace useGlobalScroll with ScrollManager
 import { ScrollManager } from '../../../utils/ScrollManager';
 import { isMobile } from '../../../utils/deviceTier';
@@ -24,6 +24,15 @@ export const PerformanceTiers = {
   MEDIUM: 'medium',
   LOW: 'low',
   MINIMAL: 'minimal'
+};
+
+// Mobile-optimized device capabilities
+const MOBILE_CAPABILITIES = {
+  performanceTier: PerformanceTiers.LOW,
+  prefersReducedMotion: false,
+  isMobile: true,
+  isTablet: false,
+  devicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1
 };
 
 // Create the context with default values
@@ -47,10 +56,26 @@ export const SceneContext = createContext({
 export const useScene = () => useContext(SceneContext);
 
 const SceneControllerV6 = ({ children }) => {
-  // 🚨 MB-1: Mobile short-circuit - disable scroll-based scene phasing on mobile
+  // 🚨 MOBILE OPTIMIZATION: Complete bypass for mobile devices
   const mobile = isMobile();
   
-  // 🚨 SM-3: Replace useGlobalScroll with local ScrollManager subscription
+  // 🚨 MOBILE: Static phase for mobile, dynamic for desktop
+  const [scenePhase, setScenePhase] = useState(
+    mobile ? ScenePhases.ACTIVATION : ScenePhases.VOID
+  );
+  
+  // 🚨 MOBILE: Static capabilities for mobile, dynamic for desktop
+  const [deviceCapabilities, setDeviceCapabilities] = useState(
+    mobile ? MOBILE_CAPABILITIES : {
+      performanceTier: PerformanceTiers.HIGH,
+      prefersReducedMotion: false,
+      isMobile: false,
+      isTablet: false,
+      devicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1
+    }
+  );
+  
+  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
   const [scrollPosition, setScrollPosition] = useState(0);
   
   // 🚨 P2-1: Phase debouncing refs to prevent excessive re-renders
@@ -59,32 +84,26 @@ const SceneControllerV6 = ({ children }) => {
   const phaseUpdatePending = useRef(false);
   
   // Core state for scene management
-  const [scenePhase, setScenePhase] = useState(ScenePhases.VOID);
   const [horizontalScroll, setHorizontalScroll] = useState(0);
-  
-  // Device capabilities state
-  const [deviceCapabilities, setDeviceCapabilities] = useState({
-    performanceTier: PerformanceTiers.HIGH,
-    prefersReducedMotion: false,
-    isMobile: false,
-    isTablet: false,
-    devicePixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1
-  });
 
-  // 🚨 SM-3: ScrollManager subscription with mobile short-circuit
+  // 🚨 MOBILE OPTIMIZATION: Skip all scroll listeners on mobile
   useEffect(() => {
-    // 🚨 MB-1: Skip scroll listeners on mobile
-    if (mobile) return;
+    if (mobile) {
+      console.log('[MOBILE] Scene controller: Mobile bypass active - no scroll listeners');
+      return;
+    }
     
     const unsubscribe = ScrollManager.subscribe((newScrollY) => {
       setScrollPosition(newScrollY);
-    });
+    }, 'scene'); // Use 'scene' category for batched updates
 
     return unsubscribe;
   }, [mobile]);
 
-  // Detect device capabilities on component mount
+  // 🚨 MOBILE OPTIMIZATION: Skip device detection on mobile
   useEffect(() => {
+    if (mobile) return; // Complete bypass for mobile
+    
     const detectCapabilities = () => {
       // Check for reduced motion preference
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -125,21 +144,18 @@ const SceneControllerV6 = ({ children }) => {
     // Detect capabilities initially
     detectCapabilities();
     
-    // 🚨 MB-1: Skip resize listener on mobile
-    if (!mobile) {
-      window.addEventListener('resize', detectCapabilities);
-    }
+    window.addEventListener('resize', detectCapabilities);
     
     // Cleanup
     return () => {
-      if (!mobile) {
-        window.removeEventListener('resize', detectCapabilities);
-      }
+      window.removeEventListener('resize', detectCapabilities);
     };
   }, [mobile]);
 
-  // Handle automatic phase progression with appropriate timing
+  // 🚨 MOBILE OPTIMIZATION: Skip automatic phase progression on mobile
   useEffect(() => {
+    if (mobile) return; // Complete bypass for mobile
+    
     // Skip animations if user prefers reduced motion
     if (deviceCapabilities.prefersReducedMotion) {
       setScenePhase(ScenePhases.ACTIVATION);
@@ -170,19 +186,11 @@ const SceneControllerV6 = ({ children }) => {
       
       return () => clearTimeout(timer);
     }
-  }, [scenePhase, deviceCapabilities.prefersReducedMotion]);
+  }, [scenePhase, deviceCapabilities.prefersReducedMotion, mobile]);
 
-  // 🚨 P2-1: CRITICAL FIX - Debounced scroll-based phase progression
+  // 🚨 MOBILE OPTIMIZATION: Skip scroll-based phase progression on mobile
   useEffect(() => {
-    // 🚨 MB-1: Skip scroll-based scene phasing on mobile - use static phases
-    if (mobile) {
-      // Mobile gets simplified static progression - no scroll dependency
-      if (scenePhase === ScenePhases.VOID) {
-        const timer = setTimeout(() => setScenePhase(ScenePhases.EMERGENCE), 2000);
-        return () => clearTimeout(timer);
-      }
-      return;
-    }
+    if (mobile) return; // Complete bypass for mobile
     
     // 🚨 P2-1: DRAGON SLAYER - Debounced phase updates to prevent re-render storm
     const now = Date.now();
@@ -223,6 +231,8 @@ const SceneControllerV6 = ({ children }) => {
   
   // Function to advance to the next phase
   const advancePhase = useCallback(() => {
+    if (mobile) return; // No phase changes on mobile
+    
     setScenePhase(prevPhase => {
       switch (prevPhase) {
         case ScenePhases.VOID:
@@ -233,31 +243,33 @@ const SceneControllerV6 = ({ children }) => {
           return prevPhase;
       }
     });
-  }, []);
+  }, [mobile]);
   
   // Function to set phase directly
   const setPhase = useCallback((phase) => {
+    if (mobile) return; // No phase changes on mobile
+    
     if (Object.values(ScenePhases).includes(phase)) {
       setScenePhase(phase);
     } else {
       console.warn(`Invalid scene phase: ${phase}`);
     }
-  }, []);
+  }, [mobile]);
   
   // Handle horizontal scroll for product sections
   const handleHorizontalScroll = useCallback((scrollPosition) => {
     setHorizontalScroll(scrollPosition);
   }, []);
   
-  // 🚨 SM-4: Create context value WITHOUT scrollPosition to prevent re-renders
-  const contextValue = {
+  // 🚨 MOBILE OPTIMIZATION: Memoized context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
     scenePhase,
     deviceCapabilities,
     horizontalScroll,
     handleHorizontalScroll,
     advancePhase,
     setPhase
-  };
+  }), [scenePhase, deviceCapabilities, horizontalScroll, handleHorizontalScroll, advancePhase, setPhase]);
   
   return (
     <SceneContext.Provider value={contextValue}>

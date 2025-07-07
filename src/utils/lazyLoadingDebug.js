@@ -1,21 +1,47 @@
 /**
  * @module LazyLoadingDebug
  * @description Production-ready debug utilities for lazy loading system with smart logging
- * @version 1.1.0 - Reduced Console Spam
+ * @version 1.2.0 - PRODUCTION OPTIMIZED
  * @author CuriousLabs
  */
 
 import { isMobile } from './deviceTier';
 
+// 🚨 CRITICAL FIX: Safe environment variable access for both HMR and SSR
+const getEnvVar = (key, defaultValue = '') => {
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[key] || defaultValue;
+  }
+  // Fallback for browser environments where process is not defined
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    return import.meta.env[key] || defaultValue;
+  }
+  return defaultValue;
+};
+
 class LazyLoadingDebug {
   constructor() {
+    // 🚨 PRODUCTION OPTIMIZATION: Complete elimination in production builds
+    const IS_PRODUCTION = getEnvVar('NODE_ENV') === 'production';
+    const IS_DEBUG_BUILD = getEnvVar('REACT_APP_DEBUG') === 'true';
+    const IS_LOCALHOST = typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    
+    // Complete bypass in production (unless explicitly debug build)
+    if (IS_PRODUCTION && !IS_DEBUG_BUILD) {
+      this.isEnabled = false;
+      this.verboseMode = false;
+      this.isMobile = true; // Force mobile mode to skip all operations
+      return;
+    }
+    
     this.isMobile = isMobile();
     
-    this.isEnabled = !this.isMobile && (process.env.NODE_ENV === 'development' || 
+    this.isEnabled = !this.isMobile && (getEnvVar('NODE_ENV') === 'development' || 
                      new URLSearchParams(window.location.search).get('lazy-debug') === 'true');
     this.verboseMode = !this.isMobile && (localStorage.getItem('lazy-debug-verbose') === 'true');
     
-    if (this.isMobile && process.env.NODE_ENV === 'development') {
+    if (this.isMobile && getEnvVar('NODE_ENV') === 'development') {
       console.log('[PHASE1] LazyLoading debug disabled on mobile device');
     }
     
@@ -37,6 +63,11 @@ class LazyLoadingDebug {
   }
 
   initializeDebugMode() {
+    // 🚨 PRODUCTION OPTIMIZATION: Skip all initialization in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
+    
     if (this.isMobile) return;
     
     const debugParam = new URLSearchParams(window.location.search).get('lazy-debug') === 'true';
@@ -44,7 +75,7 @@ class LazyLoadingDebug {
     
     this.isEnabled = debugParam || debugStorage;
     
-    if (this.isEnabled && process.env.NODE_ENV === 'development') {
+    if (this.isEnabled && getEnvVar('NODE_ENV') === 'development') {
       console.log('🔍 Lazy Loading Debug Mode Enabled');
       this.attachToWindow();
       this.initializeCosmicEasterEggs();
@@ -52,6 +83,9 @@ class LazyLoadingDebug {
   }
 
   initializeCosmicEasterEggs() {
+    // 🚨 PRODUCTION OPTIMIZATION: Skip easter eggs in production
+    if (getEnvVar('NODE_ENV') === 'production') return;
+    
     const welcomeMessages = [
       '🌟 [STELLAR-VIEW] Your presence illuminates the cosmic interface',
       '🛰️ [COSMIC-NET] Neural pathways synchronized with developer systems',
@@ -68,6 +102,9 @@ class LazyLoadingDebug {
   }
 
   startCosmicEncouragement() {
+    // 🚨 PRODUCTION OPTIMIZATION: Skip encouragement in production
+    if (getEnvVar('NODE_ENV') === 'production') return;
+    
     const encouragementMessages = [
       '🌟 [QUANTUM-LINK] Developer intuition amplified',
       '⚡ [ENERGY-SURGE] Coding efficiency increased by cosmic forces',
@@ -77,7 +114,7 @@ class LazyLoadingDebug {
     ];
     
     const showEncouragement = () => {
-      if (process.env.NODE_ENV === 'development') {
+      if (getEnvVar('NODE_ENV') === 'development') {
         const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
         console.log(randomMessage);
         
@@ -90,6 +127,9 @@ class LazyLoadingDebug {
   }
 
   attachToWindow() {
+    // 🚨 PRODUCTION OPTIMIZATION: Skip window attachment in production
+    if (getEnvVar('NODE_ENV') === 'production') return;
+    
     if (typeof window !== 'undefined') {
       window.lazyDebug = this;
       
@@ -177,7 +217,7 @@ class LazyLoadingDebug {
   enable() {
     this.isEnabled = true;
     localStorage.setItem('lazy-loading-debug', 'true');
-    if (process.env.NODE_ENV === 'development') {
+    if (getEnvVar('NODE_ENV') === 'development') {
       console.log('🔧 Lazy Loading Debug: ENABLED');
     }
     this.attachToWindow();
@@ -186,7 +226,7 @@ class LazyLoadingDebug {
   disable() {
     this.isEnabled = false;
     localStorage.setItem('lazy-loading-debug', 'false');
-    if (process.env.NODE_ENV === 'development') {
+    if (getEnvVar('NODE_ENV') === 'development') {
       console.log('🔇 Lazy Loading Debug: DISABLED');
     }
   }
@@ -194,26 +234,34 @@ class LazyLoadingDebug {
   setVerbose(enabled) {
     this.verboseMode = enabled;
     localStorage.setItem('lazy-loading-verbose', enabled.toString());
-    if (process.env.NODE_ENV === 'development') {
+    if (getEnvVar('NODE_ENV') === 'development') {
       console.log(`📢 Verbose Mode: ${enabled ? 'ENABLED' : 'DISABLED'}`);
     }
   }
 
   log(message, data = null) {
-    if (!this.isEnabled || process.env.NODE_ENV !== 'development') return;
+    // 🚨 PRODUCTION OPTIMIZATION: Complete bypass in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
+    
+    if (!this.isEnabled) return;
     
     const now = Date.now();
     const cacheKey = message + (data ? JSON.stringify(data) : '');
-    const lastLogged = this.logCache.get(cacheKey);
     
-    if (lastLogged && (now - lastLogged) < this.rateLimitMs) {
-      return;
+    if (this.logCache.has(cacheKey)) {
+      const lastLogTime = this.logCache.get(cacheKey);
+      if (now - lastLogTime < this.rateLimitMs) {
+        return;
+      }
     }
     
     this.logCache.set(cacheKey, now);
     
-    const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
-    console.log(`[${timestamp}] 🔍 ${message}`, data || '');
+    if (this.verboseMode || this.isImportantMessage(message)) {
+      console.log(`[LazyDebug] ${message}`, data || '');
+    }
   }
 
   isImportantMessage(message) {
@@ -227,38 +275,44 @@ class LazyLoadingDebug {
   }
 
   trackComponentLoad(componentName, loadTime, metadata = {}) {
-    if (this.isMobile) return;
+    // 🚨 PRODUCTION OPTIMIZATION: Complete bypass in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
     
     if (!this.isEnabled) return;
     
+    this.stats.totalComponents++;
     this.stats.loadedComponents++;
+    this.stats.totalLoadTime += loadTime;
+    this.stats.averageLoadTime = this.stats.totalLoadTime / this.stats.loadedComponents;
     
-    const existing = this.stats.componentStats.get(componentName) || {
-      loadCount: 0,
-      totalLoadTime: 0,
-      averageLoadTime: 0,
-      lastLoaded: null,
-      metadata: {}
-    };
+    if (!this.stats.componentStats.has(componentName)) {
+      this.stats.componentStats.set(componentName, {
+        name: componentName,
+        loadCount: 0,
+        totalLoadTime: 0,
+        averageLoadTime: 0,
+        fastestLoad: Infinity,
+        slowestLoad: 0,
+        errors: 0,
+        metadata: []
+      });
+    }
     
-    existing.loadCount++;
-    existing.totalLoadTime += loadTime;
-    existing.averageLoadTime = existing.totalLoadTime / existing.loadCount;
-    existing.lastLoaded = new Date().toISOString();
-    existing.metadata = { ...existing.metadata, ...metadata };
-    
-    this.stats.componentStats.set(componentName, existing);
-    
-    const totalLoadTime = Array.from(this.stats.componentStats.values())
-      .reduce((sum, stat) => sum + stat.totalLoadTime, 0);
-    this.stats.averageLoadTime = totalLoadTime / this.stats.loadedComponents;
-    
-    this.log(`Component loaded: ${componentName}`, {
-      loadTime: `${loadTime.toFixed(2)}ms`,
-      totalLoaded: this.stats.loadedComponents,
-      averageLoadTime: `${this.stats.averageLoadTime.toFixed(2)}ms`,
+    const componentStat = this.stats.componentStats.get(componentName);
+    componentStat.loadCount++;
+    componentStat.totalLoadTime += loadTime;
+    componentStat.averageLoadTime = componentStat.totalLoadTime / componentStat.loadCount;
+    componentStat.fastestLoad = Math.min(componentStat.fastestLoad, loadTime);
+    componentStat.slowestLoad = Math.max(componentStat.slowestLoad, loadTime);
+    componentStat.metadata.push({
+      timestamp: Date.now(),
+      loadTime,
       ...metadata
     });
+    
+    this.showCosmicLoadMessage(componentName, loadTime, metadata);
   }
 
   showCosmicLoadMessage(componentName, loadTime, metadata) {
@@ -307,18 +361,33 @@ class LazyLoadingDebug {
   }
 
   trackComponentError(componentName, error, metadata = {}) {
-    if (this.isMobile) return;
+    // 🚨 PRODUCTION OPTIMIZATION: Complete bypass in production
+    if (getEnvVar('NODE_ENV') === 'production' && getEnvVar('REACT_APP_DEBUG') !== 'true') {
+      return;
+    }
     
     if (!this.isEnabled) return;
     
     this.stats.errorComponents++;
     
-    this.log(`Component failed: ${componentName}`, {
-      error: error.message,
-      stack: error.stack,
-      totalFailed: this.stats.errorComponents,
-      ...metadata
-    }, 'error');
+    if (!this.stats.componentStats.has(componentName)) {
+      this.stats.componentStats.set(componentName, {
+        name: componentName,
+        loadCount: 0,
+        totalLoadTime: 0,
+        averageLoadTime: 0,
+        fastestLoad: Infinity,
+        slowestLoad: 0,
+        errors: 0,
+        metadata: []
+      });
+    }
+    
+    const componentStat = this.stats.componentStats.get(componentName);
+    componentStat.errors++;
+    
+    console.error(`🚨 [COSMIC ERROR] Component "${componentName}" failed to load:`, error);
+    console.error('🔍 [ERROR METADATA]:', metadata);
   }
 
   logStateChange(componentName, newState, previousState = null) {
@@ -392,8 +461,8 @@ class LazyLoadingDebug {
 🎯 ${component.name}:
    📊 Loads: ${component.loadCount}
    ⏱️  Avg: ${component.averageLoadTime.toFixed(2)}ms
-   🚀 Min: ${component.minLoadTime === Infinity ? 'N/A' : component.minLoadTime.toFixed(2)}ms
-   🐌 Max: ${component.maxLoadTime.toFixed(2)}ms
+   🚀 Min: ${component.fastestLoad.toFixed(2)}ms
+   🐌 Max: ${component.slowestLoad.toFixed(2)}ms
    ❌ Errors: ${component.errors}
    📦 Strategy: ${component.metadata.strategy || 'N/A'}
    🎚️  Priority: ${component.metadata.priority || 'N/A'}
@@ -513,10 +582,10 @@ ${this.getRecommendations()}
     
     const fastest = Array.from(this.stats.componentStats.values())
       .reduce((fastest, current) => 
-        current.minLoadTime < fastest.minLoadTime ? current : fastest
+        current.fastestLoad < fastest.fastestLoad ? current : fastest
       );
     
-    return `${fastest.name} (${fastest.minLoadTime.toFixed(2)}ms)`;
+    return `${fastest.name} (${fastest.fastestLoad.toFixed(2)}ms)`;
   }
 
   getSlowestComponent() {
@@ -524,10 +593,10 @@ ${this.getRecommendations()}
     
     const slowest = Array.from(this.stats.componentStats.values())
       .reduce((slowest, current) => 
-        current.maxLoadTime > slowest.maxLoadTime ? current : slowest
+        current.slowestLoad > slowest.slowestLoad ? current : slowest
       );
     
-    return `${slowest.name} (${slowest.maxLoadTime.toFixed(2)}ms)`;
+    return `${slowest.name} (${slowest.slowestLoad.toFixed(2)}ms)`;
   }
 
   getRecommendations() {
@@ -650,7 +719,7 @@ ${this.getRecommendations()}
   }
 
   showRandomEncouragement() {
-    if (this.isMobile || !this.isEnabled || process.env.NODE_ENV !== 'development') return;
+    if (this.isMobile || !this.isEnabled || getEnvVar('NODE_ENV') !== 'development') return;
     
     const messages = [
       '🚀 Your code is reaching orbital velocity!',

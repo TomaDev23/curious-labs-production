@@ -20,7 +20,37 @@ import './aegis.css'; // Add CSS import for custom animations
 // ✅ KEEP - AEGIS PRODUCT COMPONENT
 import {  motion  } from '../../FramerProvider';
 
+// 🚨 PHASE 1 MOBILE OPTIMIZATION: Add mobile detection
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
+
+// 🚨 PHASE 1 MOBILE OPTIMIZATION: Safe environment variable access
+const getEnvVar = (key, defaultValue = '') => {
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[key] || defaultValue;
+  }
+  // Fallback for browser environments where process is not defined
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    return import.meta.env[key] || defaultValue;
+  }
+  return defaultValue;
+};
+
+// 🚨 PHASE 1 PRODUCTION CLEANUP: Conditional logging
+const isDev = getEnvVar('NODE_ENV') === 'development';
+const debugLog = (...args) => {
+  if (isDev) console.log(...args);
+};
+
 export default function Aegis() {
+  // 🚨 PHASE 1 MOBILE OPTIMIZATION: Mobile detection
+  const { isMobile } = useUnifiedMobile();
+  
+  // 🚨 PHASE 1 PRODUCTION CLEANUP: Debug initialization
+  if (isDev) {
+    debugLog('🛡️ [AEGIS] Command center initializing...');
+    debugLog('⚡ [SYSTEMS] All defensive protocols online');
+  }
+
   const [activeTab, setActiveTab] = useState('features');
   const [selectedFeature, setSelectedFeature] = useState(0);
   const [missionTime, setMissionTime] = useState(new Date());
@@ -37,19 +67,41 @@ export default function Aegis() {
     }
   };
 
-  // Update mission time every second
+  // 🚨 PHASE 1 MOBILE OPTIMIZATION: Reduce timer frequency on mobile
   useEffect(() => {
+    const interval = isMobile ? 5000 : 1000; // 5s on mobile, 1s on desktop
     const timer = setInterval(() => {
       setMissionTime(new Date());
-    }, 1000);
+    }, interval);
     return () => clearInterval(timer);
-  }, []);
+  }, [isMobile]);
+
+  // 🚨 PHASE 1 MOBILE OPTIMIZATION: Mobile-optimized animation variants
+  const mobileOptimizedVariants = {
+    // Disable complex animations on mobile
+    initial: isMobile ? { opacity: 1 } : { opacity: 0, y: 30 },
+    animate: isMobile ? { opacity: 1 } : { opacity: 1, y: 0 },
+    whileInView: isMobile ? { opacity: 1 } : { opacity: 1, y: 0 },
+    transition: isMobile ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }
+  };
+
+  // 🚨 PHASE 1 MOBILE OPTIMIZATION: Simplified motion props for mobile
+  const getMotionProps = (desktopProps) => {
+    if (isMobile) {
+      return {
+        initial: { opacity: 1 },
+        animate: { opacity: 1 },
+        transition: { duration: 0 }
+      };
+    }
+    return desktopProps;
+  };
 
   // Define the use cases array with enhanced data
   const useCases = [
     {
       title: "Core Platform for All CuriousLabs Products",
-      description: "AEGIS isn’t just a backend — it’s the mission runtime. Every intelligent product we build, from Curious to OpsPipe, runs through its contract-driven state machine. Shared memory. Fallback logic. Real trace control.\n\nAEGIS is the soul of the system.",
+      description: "AEGIS isn't just a backend — it's the mission runtime. Every intelligent product we build, from Curious to OpsPipe, runs through its contract-driven state machine. Shared memory. Fallback logic. Real trace control.\n\nAEGIS is the soul of the system.",
       icon: "🧠",
       coordinates: "AEG-001",
       status: "CORE",
@@ -57,7 +109,7 @@ export default function Aegis() {
     },
     {
       title: "Agentic Software Planning & Build System",
-      description: "AEGIS coordinates multi-agent teams for planning, building, testing, and validating full-stack applications. This is the backbone of CodeLab — where human users can spin up SaaS platforms with real audits, fallbacks, and memory — not brittle scripts.\n\nIt’s AI-assisted software creation, done right.",
+      description: "AEGIS coordinates multi-agent teams for planning, building, testing, and validating full-stack applications. This is the backbone of CodeLab — where human users can spin up SaaS platforms with real audits, fallbacks, and memory — not brittle scripts.\n\nIt's AI-assisted software creation, done right.",
       icon: "🧪",
       coordinates: "AEG-002",
       status: "OPERATIONAL",
@@ -65,7 +117,7 @@ export default function Aegis() {
     },
     {
       title: "Autonomous Manufacturing Logic",
-      description: "From procurement to production, AEGIS can run workflows that span multiple systems and AI agents. Each phase is state-tracked, decision-routed, and validated by function-specific models. Ideal for precision manufacturing and industrial AI.\n\nAutonomous doesn’t mean blind — it means accountable.",
+      description: "From procurement to production, AEGIS can run workflows that span multiple systems and AI agents. Each phase is state-tracked, decision-routed, and validated by function-specific models. Ideal for precision manufacturing and industrial AI.\n\nAutonomous doesn't mean blind — it means accountable.",
       icon: "🏭",
       coordinates: "AEG-003",
       status: "RESEARCH",
@@ -112,26 +164,30 @@ export default function Aegis() {
       {/* Background System */}
       <BackgroundLayerAtomic />
       
-      {/* Atmospheric Glow */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-yellow-500/5 to-transparent rounded-full blur-2xl" />
-      </div>
+      {/* 🚨 PHASE 1 MOBILE OPTIMIZATION: Reduce atmospheric effects on mobile */}
+      {!isMobile && (
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-yellow-500/5 to-transparent rounded-full blur-2xl" />
+        </div>
+      )}
       
       <MissionControlNavbar />
       
-      {/* Mission Status Panel */}
+      {/* 🚨 PHASE 1 MOBILE OPTIMIZATION: Simplified mission status on mobile */}
       <motion.div 
         className="fixed top-20 right-4 z-50 bg-black/80 backdrop-blur-md border border-yellow-400/30 rounded-lg p-3 text-xs"
-        initial={{ opacity: 0, x: 100 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.5 }}
+        {...getMotionProps({
+          initial: { opacity: 0, x: 100 },
+          animate: { opacity: 1, x: 0 },
+          transition: { delay: 0.5 }
+        })}
       >
         <div className="text-yellow-400 font-mono mb-1">AEGIS STATUS</div>
         <div className="text-white font-mono">{missionTime.toUTCString().slice(17, 25)} UTC</div>
         <div className="flex items-center gap-2 mt-1">
-          <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+          <div className={`w-2 h-2 bg-yellow-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`} />
           <span className="text-yellow-400">COMMAND READY</span>
         </div>
       </motion.div>
@@ -140,24 +196,28 @@ export default function Aegis() {
         {/* Overview Section with anchor ID */}
         <section id="overview" className="max-w-7xl mx-auto px-4 py-16 sm:py-24 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            {...getMotionProps({
+              initial: { opacity: 0, y: 30 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 1, ease: "easeOut" }
+            })}
             className="mb-8"
           >
             {/* New Aegis Logo */}
             <motion.div
               className="inline-block mb-8 relative"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+              {...getMotionProps({
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { opacity: 1, scale: 1 },
+                transition: { duration: 1, delay: 0.3, ease: "easeOut" }
+              })}
             >
               {/* Main Logo Container */}
               <motion.div
                 className="relative w-56 h-56 mx-auto"
-                whileHover={{ 
-                  scale: 1.05
-                }}
+                {...(!isMobile && {
+                  whileHover: { scale: 1.05 }
+                })}
               >
                 {/* Logo Image */}
                 <motion.img
@@ -170,9 +230,11 @@ export default function Aegis() {
           </motion.div>
           
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            {...getMotionProps({
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.8, delay: 0.3 }
+            })}
             className="mb-8"
           >
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -205,22 +267,22 @@ export default function Aegis() {
           >
             <Link 
               to="/contact" 
-              className="group bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/25"
+              className={`group bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 ${!isMobile ? 'transform hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/25' : ''}`}
             >
               <span className="flex items-center justify-center gap-2">
                 REQUEST ACCESS
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-4 h-4 ${!isMobile ? 'group-hover:translate-x-1' : ''} transition-transform`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
               </span>
             </Link>
             <Link 
               to="/products" 
-              className="group bg-black/40 backdrop-blur-md border border-yellow-500/50 text-white hover:bg-yellow-500/10 hover:border-yellow-400 font-medium py-4 px-8 rounded-lg transition-all duration-300"
+              className={`group bg-black/40 backdrop-blur-md border border-yellow-500/50 text-white hover:bg-yellow-500/10 hover:border-yellow-400 font-medium py-4 px-8 rounded-lg transition-all duration-300`}
             >
               <span className="flex items-center justify-center gap-2">
                 FLEET OVERVIEW
-                <svg className="w-4 h-4 group-hover:rotate-45 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-4 h-4 ${!isMobile ? 'group-hover:rotate-45' : ''} transition-transform`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </span>
@@ -229,9 +291,11 @@ export default function Aegis() {
 
           {/* System Status Grid */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
+            {...getMotionProps({
+              initial: { opacity: 0, y: 30 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.8, delay: 0.9 }
+            })}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto"
           >
             {[
@@ -244,10 +308,10 @@ export default function Aegis() {
                 <div className="text-yellow-400 text-xs font-mono mb-1">{item.label}</div>
                 <div className="text-white font-bold text-lg mb-1">{item.value}</div>
                 <div className="flex items-center gap-1">
-                  <div className="w-1 h-1 bg-lime-400 rounded-full animate-pulse"></div>
+                  <div className={`w-1 h-1 bg-lime-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                   <span className="text-lime-400 text-xs font-mono">{item.status}</span>
                 </div>
-          </div>
+              </div>
             ))}
           </motion.div>
         </section>
@@ -373,10 +437,12 @@ export default function Aegis() {
         {/* Features Section with anchor ID */}
         <section id="features" className="max-w-7xl mx-auto px-4 py-16 mb-16">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            {...getMotionProps({
+              initial: { opacity: 0, y: 20 },
+              whileInView: { opacity: 1, y: 0 },
+              viewport: { once: true },
+              transition: { duration: 0.8 }
+            })}
             className="text-center mb-16"
           >
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -442,12 +508,16 @@ export default function Aegis() {
             ].map((feature, index) => (
               <motion.div 
                 key={index} 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-black/30 backdrop-blur-md border border-yellow-400/20 rounded-2xl p-6 hover:border-yellow-400/50 hover:shadow-2xl hover:shadow-yellow-500/10 transition-all duration-300 group"
+                {...getMotionProps({
+                  initial: { opacity: 0, y: 30 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true },
+                  transition: { duration: 0.6, delay: index * 0.1 }
+                })}
+                {...(!isMobile && {
+                  whileHover: { y: -5, scale: 1.02 }
+                })}
+                className={`bg-black/30 backdrop-blur-md border border-yellow-400/20 rounded-2xl p-6 hover:border-yellow-400/50 hover:shadow-2xl hover:shadow-yellow-500/10 transition-all duration-300 group`}
               >
                 {/* Status Header */}
                 <div className="flex justify-between items-start mb-4">
@@ -458,11 +528,11 @@ export default function Aegis() {
                       {feature.status}
                     </span>
                   </div>
-                  <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse opacity-60" />
+                  <div className={`w-2 h-2 bg-yellow-400 rounded-full ${!isMobile ? 'animate-pulse' : ''} opacity-60`} />
                 </div>
 
-                <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-400 transition-colors">
+                <div className={`text-3xl mb-4 ${!isMobile ? 'group-hover:scale-110' : ''} transition-transform duration-300`}>{feature.icon}</div>
+                <h3 className={`text-xl font-bold text-white mb-3 ${!isMobile ? 'group-hover:text-yellow-400' : ''} transition-colors`}>
                   {feature.title}
                 </h3>
                 <p className="text-gray-300 text-sm leading-relaxed mb-4">{feature.description}</p>
@@ -470,10 +540,10 @@ export default function Aegis() {
                 {/* Progress indicator */}
                 <div className="flex items-center gap-2">
                   <div className="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-pulse"></div>
+                    <div className={`h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                   </div>
                   <span className="text-yellow-400 text-xs font-mono">READY</span>
-              </div>
+                </div>
               </motion.div>
             ))}
           </div>

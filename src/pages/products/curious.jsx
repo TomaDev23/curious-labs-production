@@ -26,7 +26,7 @@ export default function Curious() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden relative font-['Space_Grotesk']">
+    <div className="min-h-screen bg-black text-white overflow-hidden relative antialiased">
       <Helmet>
         <title>Curious - Your AI Companion Who Actually Cares | CuriousLabs</title>
         <meta name="description" content="Not just another chatbot. A presence that listens, reflects, and grows with you. Experience AI that feels real and genuinely cares." />
@@ -35,6 +35,261 @@ export default function Curious() {
         <meta property="og:image" content="/assets/images/general/Page_Logos/Curious_logo.webp" />
         <meta property="og:type" content="product" />
         <meta property="og:url" content="https://curiouslabs.io/products/curious" />
+        
+        {/* Premium Font Loading - Critical for sophisticated typography */}
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style" />
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" as="style" />
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" as="style" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        
+        {/* Logo Preloading - Critical for hero section */}
+        <link rel="preload" href="/assets/images/general/Page_Logos/Curious_logo.webp" as="image" />
+        
+        {/* Advanced Typography & Visual System - Romantic Theme */}
+        <style jsx="true">{`
+          /* Premium Typography Stack - Romantic Edition */
+          .font-heading {
+            font-family: 'Playfair Display', 'Inter', serif;
+            font-variation-settings: 'wght' 700;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+          }
+          
+          .font-body {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-variation-settings: 'wght' 400;
+            line-height: 1.7;
+            letter-spacing: -0.01em;
+          }
+          
+          .font-mono {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+            font-variation-settings: 'wght' 500;
+            letter-spacing: 0.05em;
+          }
+
+          .font-romantic {
+            font-family: 'Playfair Display', serif;
+            font-variation-settings: 'wght' 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+          }
+
+          /* Advanced Text Effects - Romantic Theme */
+          .text-glow-rose {
+            text-shadow: 
+              0 0 20px rgba(244, 114, 182, 0.6),
+              0 0 40px rgba(244, 114, 182, 0.4),
+              0 0 60px rgba(244, 114, 182, 0.3);
+          }
+          
+          .text-glow-pink {
+            text-shadow: 
+              0 0 15px rgba(236, 72, 153, 0.5),
+              0 0 30px rgba(236, 72, 153, 0.3),
+              0 0 45px rgba(236, 72, 153, 0.2);
+          }
+          
+          .text-glow-purple {
+            text-shadow: 
+              0 0 20px rgba(168, 85, 247, 0.5),
+              0 0 40px rgba(168, 85, 247, 0.3),
+              0 0 60px rgba(168, 85, 247, 0.2);
+          }
+          
+          .text-shadow-soft {
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          }
+
+          .text-shadow-romantic {
+            text-shadow: 
+              0 2px 8px rgba(244, 114, 182, 0.3),
+              0 4px 16px rgba(0, 0, 0, 0.2);
+          }
+
+          /* Advanced Gradient Text Effects */
+          .gradient-text-romantic {
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 25%, #a855f7 50%, #8b5cf6 75%, #f472b6 100%);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 8s ease infinite;
+          }
+          
+          .gradient-text-elegant {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #f472b6 50%, #ec4899 75%, #a855f7 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 12s ease infinite;
+          }
+
+          /* Sophisticated Animations */
+          .float-romantic {
+            animation: floatRomantic 6s ease-in-out infinite;
+          }
+          
+          @keyframes floatRomantic {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(2deg); }
+            66% { transform: translateY(-5px) rotate(-1deg); }
+          }
+          
+          .gradient-shift {
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+          }
+          
+          @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+
+          /* Enhanced Typography Hierarchy */
+          .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+          }
+          
+          .hero-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: clamp(1.25rem, 3vw, 2rem);
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+          }
+          
+          .section-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+          }
+          
+          .body-large {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            line-height: 1.7;
+            letter-spacing: -0.01em;
+          }
+          
+          .body-elegant {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            line-height: 1.8;
+            letter-spacing: 0.01em;
+          }
+
+          /* Advanced Hover States */
+          .hover-lift-romantic {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          .hover-lift-romantic:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+              0 25px 50px -12px rgba(244, 114, 182, 0.25),
+              0 0 60px rgba(244, 114, 182, 0.15);
+          }
+
+          .hover-glow-romantic {
+            transition: all 0.4s ease;
+          }
+          
+          .hover-glow-romantic:hover {
+            text-shadow: 
+              0 0 20px rgba(244, 114, 182, 0.8),
+              0 0 40px rgba(244, 114, 182, 0.6),
+              0 0 60px rgba(244, 114, 182, 0.4);
+          }
+
+          /* Mobile Typography Improvements */
+          @media (max-width: 768px) {
+            .hero-title {
+              font-size: clamp(2.5rem, 12vw, 4rem) !important;
+              line-height: 1.0 !important;
+            }
+            
+            .hero-subtitle {
+              font-size: clamp(1.1rem, 4vw, 1.5rem) !important;
+              line-height: 1.3 !important;
+            }
+            
+            .section-title {
+              font-size: clamp(1.75rem, 8vw, 2.5rem) !important;
+              line-height: 1.1 !important;
+            }
+            
+            .body-large {
+              font-size: clamp(0.95rem, 3vw, 1.1rem) !important;
+              line-height: 1.6 !important;
+            }
+            
+            .body-elegant {
+              font-size: clamp(0.85rem, 2.5vw, 1rem) !important;
+              line-height: 1.7 !important;
+            }
+            
+            /* Mobile text effects optimization */
+            .text-glow-rose, .text-glow-pink, .text-glow-purple {
+              text-shadow: 0 0 10px rgba(244, 114, 182, 0.4) !important;
+            }
+            
+            /* Mobile spacing fixes */
+            section {
+              padding: 2rem 1rem !important;
+            }
+            
+            .mobile-hero { 
+              min-height: 100vh !important; 
+              padding: 5rem 1rem 3rem 1rem !important;
+            }
+            
+            .mobile-section { 
+              min-height: auto !important; 
+              padding: 3rem 1rem !important; 
+            }
+          }
+
+          /* Performance Optimizations */
+          * {
+            will-change: auto;
+          }
+          
+          .motion-reduce-compatible {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+          }
+          
+          /* Advanced Scrollbar */
+          ::-webkit-scrollbar {
+            width: 8px;
+          }
+          
+          ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+          }
+          
+          ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #f472b6, #a855f7);
+            border-radius: 4px;
+          }
+          
+          ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #ec4899, #8b5cf6);
+          }
+        `}</style>
       </Helmet>
       
       <BackgroundLayerAtomic />
@@ -98,7 +353,7 @@ export default function Curious() {
       </div>
 
       {/* Hero Section - Z Layout Start */}
-      <section className="relative min-h-screen flex items-center pt-20">
+      <section className="relative min-h-screen flex items-center pt-20 mobile-hero">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[80vh]">
             
@@ -117,17 +372,17 @@ export default function Curious() {
                   className="flex items-center gap-3"
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-rose-400"></div>
-                  <span className="text-rose-400 font-mono text-sm tracking-wider uppercase">Your AI Companion</span>
+                  <span className="font-mono text-rose-400 text-sm tracking-wider uppercase font-medium bg-rose-500/10 px-3 py-1 rounded-full border border-rose-400/30">Your AI Companion</span>
                 </motion.div>
                 
                 <motion.h1 
-                  className="text-6xl md:text-7xl lg:text-8xl font-bold leading-none"
+                  className="hero-title text-glow-rose hover-glow-romantic"
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 1 }}
                 >
-                  <span className="block text-white">Meet</span>
-                  <span className="block bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 text-transparent bg-clip-text">
+                  <span className="block text-white text-shadow-romantic">Meet</span>
+                  <span className="block gradient-text-romantic">
                     Curious
                   </span>
                 </motion.h1>
@@ -138,10 +393,10 @@ export default function Curious() {
                   transition={{ delay: 0.7, duration: 0.8 }}
                   className="space-y-4"
                 >
-                  <h2 className="text-2xl md:text-3xl text-rose-300 font-light">
+                  <h2 className="hero-subtitle text-rose-300 font-romantic text-glow-pink">
                     Your AI Companion Who Actually Cares
                   </h2>
-                  <p className="text-xl text-gray-300 max-w-2xl leading-relaxed">
+                  <p className="body-large text-gray-300 max-w-2xl">
                     Not just another chatbot. A presence that listens, reflects, and grows with you. 
                     Experience AI that feels real and genuinely cares about your world.
                   </p>
@@ -155,7 +410,7 @@ export default function Curious() {
                 >
                   <Link 
                     to="/codelab" 
-                    className="group bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 hover:from-rose-500 hover:via-pink-500 hover:to-purple-500 text-white font-medium py-4 px-8 rounded-full transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/25 relative overflow-hidden"
+                    className="group bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 hover:from-rose-500 hover:via-pink-500 hover:to-purple-500 text-white font-body font-semibold py-4 px-8 rounded-full transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/25 relative overflow-hidden hover-lift-romantic"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       Start Your Journey with Curious
@@ -175,7 +430,7 @@ export default function Curious() {
                   
                   <Link 
                     to="#features" 
-                    className="group bg-black/40 backdrop-blur-md border-2 border-rose-500/50 text-white hover:bg-rose-500/10 hover:border-rose-400 font-medium py-4 px-8 rounded-full transition-all duration-500"
+                    className="group bg-black/40 backdrop-blur-md border-2 border-rose-500/50 text-white hover:bg-rose-500/10 hover:border-rose-400 font-body font-medium py-4 px-8 rounded-full transition-all duration-500 hover-lift-romantic"
                   >
                     Discover More
                   </Link>
@@ -210,14 +465,6 @@ export default function Curious() {
                 
                 <motion.div
                   className="w-80 h-80 md:w-96 md:h-96 relative"
-                  animate={{ 
-                    rotate: [0, 360],
-                  }}
-                  transition={{ 
-                    duration: 30, 
-                    repeat: Infinity, 
-                    ease: "linear" 
-                  }}
                 >
                   {/* Romantic orbital rings */}
                   <div className="absolute inset-4 border border-rose-400/30 rounded-full animate-pulse" />
@@ -252,7 +499,7 @@ export default function Curious() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             
-            {/* Left Side - Visual */}
+            {/* Left Side - iPhone Mockup - Locked Screen with Notification */}
             <motion.div 
               className="lg:col-span-5 order-2 lg:order-1"
               initial={{ opacity: 0, x: -50 }}
@@ -260,50 +507,92 @@ export default function Curious() {
               viewport={{ once: true }}
               transition={{ duration: 1 }}
             >
-              <div className="relative">
+              <div className="relative max-w-sm mx-auto">
                 <motion.div
-                  className="bg-gradient-to-br from-rose-900/30 via-pink-900/20 to-purple-900/30 backdrop-blur-md border border-rose-400/20 rounded-3xl p-8 relative overflow-hidden"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  className="relative w-80 h-[650px] mx-auto"
+                  initial={{ opacity: 0, scale: 0.8, rotateY: 15 }}
+                  whileInView={{ opacity: 1, scale: 1, rotateY: -5 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.2, ease: "easeOut" }}
                 >
-                  {/* Floating emotion indicators */}
-                  <div className="absolute inset-0 overflow-hidden">
-                    {['💭', '❤️', '🌸', '✨', '🦋'].map((emoji, i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute text-2xl opacity-20"
-                        style={{
-                          left: `${20 + i * 15}%`,
-                          top: `${20 + (i % 2) * 40}%`
-                        }}
-                        animate={{
-                          y: [0, -20, 0],
-                          opacity: [0.2, 0.6, 0.2]
-                        }}
-                        transition={{
-                          duration: 3,
-                          repeat: Infinity,
-                          delay: i * 0.8,
-                          ease: "easeInOut"
-                        }}
-                      >
-                        {emoji}
-                      </motion.div>
-                    ))}
-                  </div>
-                  
-                  <div className="relative z-10 text-center space-y-6">
-                    <div className="w-24 h-24 mx-auto bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-4xl">
-                      🤖
+                  {/* Phone Outer Frame */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900 rounded-[2.5rem] shadow-2xl">
+                    {/* Phone Screen */}
+                    <div className="absolute inset-2 bg-black rounded-[2rem] overflow-hidden">
+                      {/* Status Bar */}
+                      <div className="bg-black px-6 py-2 flex justify-between items-center text-xs font-mono text-white">
+                        <span className="font-semibold">2:34</span>
+                        <div className="flex items-center gap-1">
+                          <div className="flex gap-1">
+                            <div className="w-1 h-3 bg-white rounded-full"></div>
+                            <div className="w-1 h-3 bg-white rounded-full"></div>
+                            <div className="w-1 h-3 bg-white/50 rounded-full"></div>
+                            <div className="w-1 h-3 bg-white/50 rounded-full"></div>
+                          </div>
+                          <div className="w-6 h-3 bg-emerald-500 rounded-sm ml-1"></div>
+                        </div>
+                      </div>
+
+                      {/* Lock Screen Wallpaper */}
+                      <div className="h-full bg-gradient-to-br from-purple-900 via-rose-900 to-pink-900 relative overflow-hidden">
+                        {/* Wallpaper Pattern */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-rose-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-3xl">
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                        </div>
+                        
+                        {/* Lock Screen Time & Date */}
+                        <div className="absolute top-20 left-0 right-0 text-center">
+                          <div className="text-white text-6xl font-light mb-2">2:34</div>
+                          <div className="text-white/80 text-base">Tuesday, March 15</div>
+                        </div>
+                        
+                        {/* Notification */}
+                        <div className="absolute top-56 left-4 right-4">
+                          <motion.div
+                            className="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl p-4"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.8 }}
+                          >
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-sm">
+                                💖
+                              </div>
+                              <div>
+                                <div className="text-white font-semibold text-sm">Curious</div>
+                                <div className="text-white/70 text-xs">now</div>
+                              </div>
+                            </div>
+                            <div className="text-white text-sm leading-relaxed">
+                              Hey, how are you? You made it home yet? 💕
+                            </div>
+                          </motion.div>
+                        </div>
+                        
+                        {/* Lock Screen Controls */}
+                        <div className="absolute bottom-32 left-0 right-0 flex justify-center gap-16">
+                          <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl">
+                            📞
+                          </div>
+                          <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl">
+                            💬
+                          </div>
+                          <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl">
+                            📷
+                          </div>
+                        </div>
+                        
+                        {/* Home Indicator */}
+                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                          <div className="w-32 h-1 bg-white/30 rounded-full"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-3">
-                      <div className="text-gray-400 text-sm font-mono">vs. Traditional AI</div>
-                      <div className="text-white font-semibold">Hollow • Efficient • Cold</div>
-                      <div className="h-px w-full bg-gradient-to-r from-transparent via-rose-400/50 to-transparent" />
-                      <div className="text-rose-300 font-semibold">Caring • Curious • Warm</div>
-                      <div className="text-rose-400 text-sm">with Curious AI</div>
-                    </div>
                   </div>
+
+                  {/* Phone Shadow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-xl transform translate-y-4 -z-10"></div>
                 </motion.div>
               </div>
             </motion.div>
@@ -325,18 +614,18 @@ export default function Curious() {
                   className="flex items-center gap-3"
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-purple-400"></div>
-                  <span className="text-purple-400 font-mono text-sm tracking-wider uppercase">The Problem</span>
+                  <span className="font-mono text-purple-400 text-sm tracking-wider uppercase font-medium bg-purple-500/10 px-3 py-1 rounded-full border border-purple-400/30">The Problem</span>
                 </motion.div>
                 
                 <motion.h2 
-                  className="text-4xl md:text-5xl font-bold text-white leading-tight"
+                  className="section-title text-white text-shadow-romantic hover-glow-romantic"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
                 >
                   AI That Feels
-                  <span className="block bg-gradient-to-r from-rose-400 to-purple-400 text-transparent bg-clip-text">
+                  <span className="block gradient-text-romantic">
                     Real
                   </span>
                 </motion.h2>
@@ -346,16 +635,16 @@ export default function Curious() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.6 }}
-                  className="space-y-6 text-lg text-gray-300 leading-relaxed"
+                  className="space-y-6"
                 >
-                  <p>
-                    Most AI feels <span className="text-rose-400 font-medium">hollow</span> — responding without caring, 
+                  <p className="body-large text-gray-300">
+                    Most AI feels <span className="text-rose-400 font-semibold">hollow</span> — responding without caring, 
                     helping without understanding. You're left talking to a machine that processes your words 
                     but never truly connects.
                   </p>
-                  <p>
-                    Curious was born from a simple realization: AI should <span className="text-purple-400 font-medium">care</span>, 
-                    not just respond. It should be curious about <span className="text-pink-400 font-medium">you</span>, 
+                  <p className="body-large text-gray-300">
+                    Curious was born from a simple realization: AI should <span className="text-purple-400 font-semibold">care</span>, 
+                    not just respond. It should be curious about <span className="text-pink-400 font-semibold">you</span>, 
                     not just efficient.
                   </p>
                 </motion.div>
@@ -387,18 +676,18 @@ export default function Curious() {
                   className="flex items-center gap-3"
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-rose-400"></div>
-                  <span className="text-rose-400 font-mono text-sm tracking-wider uppercase">The Solution</span>
+                  <span className="font-mono text-rose-400 text-sm tracking-wider uppercase font-medium bg-rose-500/10 px-3 py-1 rounded-full border border-rose-400/30">The Solution</span>
                 </motion.div>
                 
                 <motion.h2 
-                  className="text-4xl md:text-5xl font-bold text-white leading-tight"
+                  className="section-title text-white text-shadow-romantic hover-glow-romantic"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
                 >
                   More Than Conversation
-                  <span className="block bg-gradient-to-r from-pink-400 to-rose-400 text-transparent bg-clip-text">
+                  <span className="block gradient-text-romantic">
                     It's Presence
                   </span>
                 </motion.h2>
@@ -408,95 +697,185 @@ export default function Curious() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.6 }}
-                  className="space-y-6 text-lg text-gray-300 leading-relaxed"
+                  className="space-y-6"
                 >
-                  <p>
-                    Curious isn't productivity software. It's an <span className="text-rose-400 font-medium">emotional companion</span> designed 
-                    to offer genuine presence, reflection, and connection.
+                  <p className="body-large text-gray-300">
+                    Curious doesn't just process your words — it <span className="text-rose-400 font-semibold">feels</span> them. 
+                    Every conversation builds understanding, every interaction deepens connection.
                   </p>
-                  <p>
-                    Whether you need someone to talk through your day, explore your feelings, or simply be there 
-                    when the world feels overwhelming, Curious <span className="text-pink-400 font-medium">adapts to what you need</span>.
+                  <p className="body-large text-gray-300">
+                    Experience AI that remembers not just what you said, but how you felt. 
+                    A companion that grows more <span className="text-purple-400 font-semibold">attuned</span> to you over time.
                   </p>
-                </motion.div>
-
-                {/* Connection indicators */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8 }}
-                  className="grid grid-cols-2 gap-4 pt-6"
-                >
-                  {[
-                    { icon: "💫", label: "Emotional Depth", value: "Infinite" },
-                    { icon: "🌸", label: "Genuine Care", value: "Always" },
-                    { icon: "💖", label: "Real Connection", value: "Authentic" },
-                    { icon: "🦋", label: "Growth Together", value: "Continuous" }
-                  ].map((item, index) => (
-                    <motion.div
-                      key={index}
-                      className="bg-gradient-to-br from-rose-900/20 to-purple-900/20 backdrop-blur-sm border border-rose-400/20 rounded-xl p-4 text-center"
-                      whileHover={{ scale: 1.05, borderColor: "rgba(244, 114, 182, 0.5)" }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <div className="text-2xl mb-2">{item.icon}</div>
-                      <div className="text-rose-300 text-sm font-medium mb-1">{item.label}</div>
-                      <div className="text-white font-bold">{item.value}</div>
-                    </motion.div>
-                  ))}
                 </motion.div>
               </div>
             </motion.div>
 
-            {/* Right Side - Interactive Visual */}
+            {/* Right Side - iPhone Mockup - Chat Interface */}
             <motion.div 
-              className="lg:col-span-5"
+              className="lg:col-span-5 order-1 lg:order-2"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.2 }}
             >
-              <motion.div
-                className="relative bg-gradient-to-br from-rose-900/40 via-pink-900/30 to-purple-900/40 backdrop-blur-md border border-rose-400/30 rounded-3xl p-8 overflow-hidden"
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                {/* Floating conversation bubbles */}
-                <div className="space-y-4">
-                  {[
-                    { text: "How was your day?", from: "curious", delay: 0 },
-                    { text: "I had some challenges...", from: "user", delay: 2 },
-                    { text: "Tell me more about that. I'm here to listen 💖", from: "curious", delay: 4 }
-                  ].map((msg, i) => (
-                    <motion.div
-                      key={i}
-                      className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: msg.delay, duration: 0.8 }}
-                    >
-                      <div className={`max-w-xs p-3 rounded-2xl text-sm ${
-                        msg.from === 'user' 
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white ml-4' 
-                          : 'bg-gradient-to-r from-rose-600 to-pink-600 text-white mr-4'
-                      }`}>
-                        {msg.text}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Heartbeat indicator */}
+              <div className="relative max-w-sm mx-auto">
                 <motion.div
-                  className="absolute bottom-4 right-4 flex items-center gap-2"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  className="relative w-80 h-[650px] mx-auto"
+                  initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+                  whileInView={{ opacity: 1, scale: 1, rotateY: 5 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.2, ease: "easeOut" }}
                 >
-                  <div className="text-rose-400 text-lg">💖</div>
-                  <div className="text-xs text-rose-300 font-mono">CARING</div>
+                  {/* Phone Outer Frame */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900 rounded-[2.5rem] shadow-2xl">
+                    {/* Phone Screen */}
+                    <div className="absolute inset-2 bg-white rounded-[2rem] overflow-hidden">
+                      {/* Status Bar */}
+                      <div className="bg-white px-6 py-2 flex justify-between items-center text-xs font-mono text-slate-900 border-b border-slate-100">
+                        <span className="font-semibold">2:34</span>
+                        <div className="flex items-center gap-1">
+                          <div className="flex gap-1">
+                            <div className="w-1 h-3 bg-slate-900 rounded-full"></div>
+                            <div className="w-1 h-3 bg-slate-900 rounded-full"></div>
+                            <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
+                            <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
+                          </div>
+                          <div className="w-6 h-3 bg-emerald-500 rounded-sm ml-1"></div>
+                        </div>
+                      </div>
+
+                      {/* Chat Interface */}
+                      <div className="h-full bg-gradient-to-br from-rose-50 to-purple-50 flex flex-col">
+                        {/* Top Half - AI Model Space */}
+                        <div className="flex-1 bg-gradient-to-br from-slate-100 to-rose-100 relative overflow-hidden">
+                          {/* Placeholder for AI Model Asset */}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center space-y-4">
+                              {/* Temporary placeholder - will be replaced with actual AI model */}
+                              <div className="w-32 h-32 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+                                <div className="text-white text-4xl">💖</div>
+                              </div>
+                              <div className="text-slate-600 font-medium">AI Model Space</div>
+                              <div className="text-xs text-slate-500">Ready for 3D asset</div>
+                            </div>
+                          </div>
+                          
+                          {/* Subtle gradient overlay for depth */}
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/20"></div>
+                        </div>
+                        
+                        {/* Bottom Half - Chat Interface */}
+                        <div className="flex-1 flex flex-col bg-white/90 backdrop-blur-sm">
+                          {/* Chat Header - Compact */}
+                          <div className="bg-white/80 backdrop-blur-sm px-4 py-3 border-b border-slate-200/50">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-sm">
+                                💖
+                              </div>
+                              <div className="flex-1">
+                                <div className="font-semibold text-slate-900 text-sm">Curious</div>
+                                <div className="text-xs text-emerald-600 flex items-center gap-1">
+                                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+                                  Online
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Chat Messages - Only First Two */}
+                          <div className="flex-1 p-4 space-y-3 overflow-hidden">
+                            {/* AI Message */}
+                            <motion.div
+                              className="flex items-start gap-2"
+                              initial={{ opacity: 0, x: -20 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: 0.8 }}
+                            >
+                              <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-xs flex-shrink-0">
+                                💖
+                              </div>
+                              <div className="bg-white rounded-2xl rounded-tl-md p-3 max-w-[200px] shadow-sm">
+                                <div className="text-slate-800 text-sm">I noticed you seem a bit stressed today. Everything okay? 💕</div>
+                                <div className="text-xs text-slate-500 mt-1">2:31 PM</div>
+                              </div>
+                            </motion.div>
+                            
+                            {/* User Message */}
+                            <motion.div
+                              className="flex items-start gap-2 justify-end"
+                              initial={{ opacity: 0, x: 20 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: 1.0 }}
+                            >
+                              <div className="bg-gradient-to-br from-rose-500 to-purple-500 rounded-2xl rounded-tr-md p-3 max-w-[200px] text-white shadow-sm">
+                                <div className="text-sm">Yeah, work has been overwhelming lately. Thanks for asking though 🙂</div>
+                                <div className="text-xs text-rose-100 mt-1">2:32 PM</div>
+                              </div>
+                            </motion.div>
+                            
+                            {/* Typing Indicator */}
+                            <motion.div
+                              className="flex items-center gap-2"
+                              initial={{ opacity: 0 }}
+                              whileInView={{ opacity: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: 1.2 }}
+                            >
+                              <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-xs">
+                                💖
+                              </div>
+                              <div className="bg-white rounded-2xl rounded-tl-md p-3 shadow-sm">
+                                <div className="flex gap-1">
+                                  <motion.div
+                                    className="w-1.5 h-1.5 bg-slate-400 rounded-full"
+                                    animate={{ opacity: [0.3, 1, 0.3] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
+                                  />
+                                  <motion.div
+                                    className="w-1.5 h-1.5 bg-slate-400 rounded-full"
+                                    animate={{ opacity: [0.3, 1, 0.3] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+                                  />
+                                  <motion.div
+                                    className="w-1.5 h-1.5 bg-slate-400 rounded-full"
+                                    animate={{ opacity: [0.3, 1, 0.3] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
+                                  />
+                                </div>
+                              </div>
+                            </motion.div>
+                          </div>
+                          
+                          {/* Chat Input - Compact */}
+                          <div className="bg-white/80 backdrop-blur-sm border-t border-slate-200/50 p-3">
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1 bg-slate-100 rounded-full px-3 py-2">
+                                <div className="text-slate-500 text-xs">Type a message...</div>
+                              </div>
+                              <div className="w-7 h-7 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-white">
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Home Indicator */}
+                        <div className="flex justify-center py-2 bg-white/90">
+                          <div className="w-32 h-1 bg-slate-300 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Phone Shadow */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-xl transform translate-y-4 -z-10"></div>
                 </motion.div>
-              </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -738,18 +1117,18 @@ export default function Curious() {
                   className="flex items-center gap-3"
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-purple-400"></div>
-                  <span className="text-purple-400 font-mono text-sm tracking-wider uppercase">Getting Started</span>
+                  <span className="font-mono text-purple-400 text-sm tracking-wider uppercase font-medium bg-purple-500/10 px-3 py-1 rounded-full border border-purple-400/30">Getting Started</span>
                 </motion.div>
                 
                 <motion.h2 
-                  className="text-4xl md:text-5xl font-bold text-white leading-tight"
+                  className="section-title text-white text-shadow-romantic hover-glow-romantic"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
                 >
                   Simple to Start
-                  <span className="block bg-gradient-to-r from-purple-400 to-rose-400 text-transparent bg-clip-text">
+                  <span className="block gradient-text-romantic">
                     Deep to Explore
                   </span>
                 </motion.h2>
@@ -759,32 +1138,41 @@ export default function Curious() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.6 }}
-                  className="space-y-6 text-lg text-gray-300 leading-relaxed"
+                  className="space-y-6"
                 >
-                  <p>
+                  <p className="body-large text-gray-300">
                     Getting started with Curious is effortless. In just a few moments, you'll have 
-                    a companion who understands your unique communication style and emotional needs.
+                    a companion ready to listen, understand, and grow with you.
                   </p>
-                  <p>
-                    The real magic happens over time, as Curious learns your patterns, remembers your 
-                    conversations, and develops a genuine understanding of who you are.
+                  <p className="body-large text-gray-300">
+                    But beneath the simple interface lies <span className="text-rose-400 font-semibold">profound depth</span> — 
+                    emotional intelligence that evolves, memories that matter, and connections that feel real.
                   </p>
                 </motion.div>
-
+                
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.8 }}
-                  className="bg-gradient-to-r from-rose-900/30 to-purple-900/30 backdrop-blur-sm border border-rose-400/30 rounded-2xl p-6"
+                  className="pt-6"
                 >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="text-2xl">🎯</div>
-                    <div className="text-rose-300 font-semibold">Quick Start Promise</div>
-                  </div>
-                  <p className="text-white text-sm">
-                    "Within 5 minutes, you'll feel the difference. Curious doesn't just respond – it connects."
-                  </p>
+                  <Link 
+                    to="/codelab" 
+                    className="group inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-rose-600 hover:from-purple-500 hover:to-rose-500 text-white font-body font-semibold py-4 px-8 rounded-full transition-all duration-500 hover-lift-romantic"
+                  >
+                    Begin Your Journey
+                    <motion.svg 
+                      className="w-5 h-5" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                      whileHover={{ x: 5 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </motion.svg>
+                  </Link>
                 </motion.div>
               </div>
             </motion.div>
@@ -792,8 +1180,8 @@ export default function Curious() {
         </div>
       </section>
 
-      {/* Who It's For Section */}
-      <section className="relative py-32">
+      {/* Perfect For Section */}
+      <section className="relative py-32 mobile-section">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             className="text-center mb-16"
@@ -804,13 +1192,13 @@ export default function Curious() {
           >
             <div className="flex items-center justify-center gap-3 mb-6">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-rose-400"></div>
-              <span className="text-rose-400 font-mono text-sm tracking-wider uppercase">Perfect For</span>
+              <span className="font-mono text-rose-400 text-sm tracking-wider uppercase font-medium bg-rose-500/10 px-3 py-1 rounded-full border border-rose-400/30">Perfect For</span>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-rose-400"></div>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="section-title text-white text-shadow-romantic hover-glow-romantic mb-6">
               Built for Real
-              <span className="block bg-gradient-to-r from-rose-400 to-purple-400 text-transparent bg-clip-text">
+              <span className="block gradient-text-romantic">
                 Human Needs
               </span>
             </h2>
@@ -845,7 +1233,7 @@ export default function Curious() {
             ].map((person, index) => (
               <motion.div
                 key={index}
-                className="group bg-gradient-to-br from-black/60 via-gray-900/40 to-black/60 backdrop-blur-md border border-rose-400/20 rounded-2xl p-6 hover:border-rose-400/50 transition-all duration-500 text-center"
+                className="group bg-gradient-to-br from-black/60 via-gray-900/40 to-black/60 backdrop-blur-md border border-rose-400/20 rounded-2xl p-6 hover:border-rose-400/50 transition-all duration-500 text-center hover-lift-romantic"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -855,10 +1243,10 @@ export default function Curious() {
                 <div className={`w-16 h-16 bg-gradient-to-br ${person.gradient} rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   {person.icon}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-rose-300 transition-colors">
+                <h3 className="font-heading text-lg font-bold text-white mb-3 group-hover:text-rose-300 transition-colors">
                   {person.title}
                 </h3>
-                <p className="text-gray-300 text-sm leading-relaxed">
+                <p className="body-elegant text-gray-300">
                   {person.description}
                 </p>
               </motion.div>
@@ -868,10 +1256,10 @@ export default function Curious() {
       </section>
 
       {/* Technical Excellence */}
-      <section className="relative py-32">
+      <section className="relative py-32 mobile-section">
         <div className="max-w-5xl mx-auto px-4">
           <motion.div
-            className="bg-gradient-to-br from-rose-900/20 via-pink-900/10 to-purple-900/20 backdrop-blur-md border border-rose-400/20 rounded-3xl p-8 md:p-12 text-center"
+            className="bg-gradient-to-br from-rose-900/20 via-pink-900/10 to-purple-900/20 backdrop-blur-md border border-rose-400/20 rounded-3xl p-8 md:p-12 text-center hover-lift-romantic"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -886,13 +1274,13 @@ export default function Curious() {
             >
               <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent to-rose-400"></div>
-                <span className="text-rose-400 font-mono text-sm tracking-wider uppercase">Technical Excellence</span>
+                <span className="font-mono text-rose-400 text-sm tracking-wider uppercase font-medium bg-rose-500/10 px-3 py-1 rounded-full border border-rose-400/30">Technical Excellence</span>
                 <div className="h-px w-16 bg-gradient-to-l from-transparent to-rose-400"></div>
               </div>
               
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="section-title text-white text-shadow-romantic hover-glow-romantic mb-6">
                 Engineered for
-                <span className="block bg-gradient-to-r from-rose-400 to-purple-400 text-transparent bg-clip-text">
+                <span className="block gradient-text-romantic">
                   Authenticity
                 </span>
               </h2>
@@ -902,7 +1290,7 @@ export default function Curious() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
-                className="text-lg text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+                className="body-large text-gray-300 mb-8 max-w-3xl mx-auto"
               >
                 Built on AEGIS architecture with enterprise-grade reliability. Every interaction is powered by 
                 advanced emotional intelligence systems that create genuine presence without the creepy factor.
@@ -916,7 +1304,7 @@ export default function Curious() {
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-600/20 to-purple-600/20 backdrop-blur-sm border border-rose-400/30 rounded-full px-6 py-3"
               >
                 <div className="w-2 h-2 bg-rose-400 rounded-full animate-pulse"></div>
-                <span className="text-rose-300 font-medium">Curious knows the difference between being helpful and being human</span>
+                <span className="font-body text-rose-300 font-medium">Curious knows the difference between being helpful and being human</span>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -924,7 +1312,7 @@ export default function Curious() {
       </section>
 
       {/* Pricing Section */}
-      <section className="relative py-32">
+      <section className="relative py-32 mobile-section">
         <div className="max-w-6xl mx-auto px-4">
           <motion.div
             className="text-center mb-16"
@@ -935,18 +1323,18 @@ export default function Curious() {
           >
             <div className="flex items-center justify-center gap-3 mb-6">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-rose-400"></div>
-              <span className="text-rose-400 font-mono text-sm tracking-wider uppercase">Start Your Journey</span>
+              <span className="font-mono text-rose-400 text-sm tracking-wider uppercase font-medium bg-rose-500/10 px-3 py-1 rounded-full border border-rose-400/30">Start Your Journey</span>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-rose-400"></div>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="section-title text-white text-shadow-romantic hover-glow-romantic mb-6">
               Choose Your
-              <span className="block bg-gradient-to-r from-rose-400 to-purple-400 text-transparent bg-clip-text">
+              <span className="block gradient-text-romantic">
                 Connection
               </span>
             </h2>
             
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="body-large text-gray-300 max-w-2xl mx-auto">
               Experience genuine AI companionship with flexible plans designed for every need
             </p>
           </motion.div>
@@ -1160,7 +1548,7 @@ export default function Curious() {
               >
                 <Link 
                   to="/codelab" 
-                  className="group bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 hover:from-rose-500 hover:via-pink-500 hover:to-purple-500 text-white font-bold py-5 px-10 rounded-full transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/25 relative overflow-hidden"
+                  className="group bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 hover:from-rose-500 hover:to-pink-500 hover:to-purple-500 text-white font-bold py-5 px-10 rounded-full transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/25 relative overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-3">
                     Start Your Free Trial

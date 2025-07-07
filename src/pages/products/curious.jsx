@@ -1392,33 +1392,44 @@ export default function Curious() {
             ].map((plan, index) => (
               <motion.div
                 key={index}
-                className={`relative bg-gradient-to-br from-black/60 via-gray-900/40 to-black/60 backdrop-blur-md border rounded-3xl p-8 hover:scale-105 transition-all duration-500 ${
+                className={`relative overflow-hidden backdrop-blur-xl bg-white/5 border rounded-3xl p-8 hover:scale-105 transition-all duration-500 ${
                   plan.popular 
-                    ? 'border-rose-400/50 shadow-2xl shadow-rose-500/20' 
-                    : 'border-rose-400/20 hover:border-rose-400/40'
-                }`}
+                    ? 'border-rose-400/50 shadow-2xl shadow-rose-500/20 bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-purple-500/10' 
+                    : 'border-white/20 hover:border-rose-400/40 bg-gradient-to-br from-white/5 via-gray-500/5 to-white/5'
+                } hover:bg-white/10 hover:shadow-2xl hover:shadow-rose-500/10`}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: index * 0.2 }}
                 whileHover={{ y: -10 }}
               >
+                {/* Glassmorphism top layer */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 rounded-3xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-white/10 rounded-3xl"></div>
+                
+                {/* Coming Soon Ribbon */}
+                <div className="absolute -top-2 -right-2 z-20">
+                  <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg transform rotate-12 animate-pulse">
+                    Coming Soon
+                  </div>
+                </div>
+                
                 {plan.popular && (
                   <motion.div
-                    className="absolute -top-4 left-1/2 transform -translate-x-1/2"
+                    className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10"
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 }}
                   >
-                    <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                    <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
                       Most Popular ✨
                     </div>
                   </motion.div>
                 )}
                 
-                <div className="text-center space-y-6">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${plan.gradient} rounded-2xl flex items-center justify-center text-2xl mx-auto`}>
+                <div className="relative z-10 text-center space-y-6">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${plan.gradient} rounded-2xl flex items-center justify-center text-2xl mx-auto backdrop-blur-sm shadow-lg`}>
                     {index === 0 ? '🎁' : index === 1 ? '💖' : '👑'}
                   </div>
                   
@@ -1426,30 +1437,29 @@ export default function Curious() {
                     <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
                     <div className="flex items-baseline justify-center gap-1 mb-2">
                       <span className="text-4xl font-bold text-white">{plan.price}</span>
-                      <span className="text-gray-400 text-sm">/{plan.period}</span>
+                      <span className="text-gray-300 text-sm">/{plan.period}</span>
                     </div>
-                    <p className="text-gray-300 text-sm">{plan.description}</p>
+                    <p className="text-gray-200 text-sm">{plan.description}</p>
                   </div>
                   
                   <div className="space-y-3">
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-center gap-3 text-sm">
-                        <div className="w-2 h-2 bg-rose-400 rounded-full flex-shrink-0"></div>
-                        <span className="text-gray-300">{feature}</span>
+                        <div className="w-2 h-2 bg-rose-400 rounded-full flex-shrink-0 shadow-sm"></div>
+                        <span className="text-gray-200">{feature}</span>
                       </div>
                     ))}
                   </div>
                   
-                  <Link
-                    to="/codelab"
-                    className={`block w-full py-4 px-6 rounded-2xl font-medium transition-all duration-300 ${
+                  <div
+                    className={`block w-full py-4 px-6 rounded-2xl font-medium transition-all duration-300 cursor-not-allowed opacity-75 ${
                       plan.popular
-                        ? 'bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white shadow-lg shadow-rose-500/25'
-                        : 'bg-black/40 border-2 border-rose-400/30 text-white hover:bg-rose-500/10 hover:border-rose-400'
+                        ? 'bg-gradient-to-r from-rose-600/50 to-pink-600/50 text-white shadow-lg shadow-rose-500/10 backdrop-blur-sm'
+                        : 'bg-black/20 border-2 border-white/20 text-gray-300 backdrop-blur-sm'
                     }`}
                   >
-                    {index === 0 ? 'Start Free Trial' : 'Get Started'}
-                  </Link>
+                    {index === 0 ? 'Coming Soon' : 'Coming Soon'}
+                  </div>
                 </div>
               </motion.div>
             ))}

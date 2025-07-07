@@ -209,17 +209,17 @@ ArchitectureCard.displayName = 'ArchitectureCard';
 const GuardianKidsSection = memo(() => {
   // Memoize expensive style calculations
   const phoneStyle = useMemo(() => ({
-    width: '380px',
-    height: '820px',
+    width: '320px',
+    height: '640px',
     background: 'linear-gradient(145deg, #1d1d1f, #2d2d30)',
-    borderRadius: '55px',
+    borderRadius: '2.5rem',
     padding: '8px',
     boxShadow: `
       0 0 0 2px #86868b,
       0 25px 80px rgba(0,0,0,0.3),
       inset 0 0 0 1px rgba(255,255,255,0.1)
     `,
-    transform: 'perspective(1000px) rotateY(-8deg) rotateX(2deg)'
+    transform: 'perspective(1000px) rotateY(-5deg) rotateX(2deg)'
   }), []);
 
   const dynamicIslandStyle = useMemo(() => ({
@@ -243,8 +243,9 @@ const GuardianKidsSection = memo(() => {
   }), []);
 
   return (
-    <section id="kids-methodology" className="relative py-20">
-      <div className="max-w-[1400px] mx-auto px-10">
+    <section id="kids-methodology" className="relative py-24 z-10 mobile-section">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-emerald-50/20 to-purple-50/30" />
+      <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
         
         {/* Header */}
         <motion.div 
@@ -254,116 +255,117 @@ const GuardianKidsSection = memo(() => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="h-px w-16 bg-gradient-to-r from-transparent to-emerald-600"></div>
-            <span className="text-emerald-700 font-mono text-sm tracking-wider uppercase font-medium">Guardian Child Experience</span>
-            <div className="h-px w-16 bg-gradient-to-l from-transparent to-emerald-600"></div>
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="h-[1px] w-20 bg-gradient-to-r from-transparent via-slate-400 to-slate-600"></div>
+            <span className="font-mono text-slate-700 text-sm tracking-[0.2em] uppercase font-medium bg-slate-100 px-4 py-2 rounded-full border border-slate-300">
+              Guardian Child Experience
+            </span>
+            <div className="h-[1px] w-20 bg-gradient-to-l from-transparent via-slate-400 to-slate-600"></div>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 leading-tight tracking-tight">
+          <h2 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tight mb-8">
             Unified Child Development
-            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text font-black">
+            <span className="block bg-gradient-to-r from-blue-700 to-purple-700 text-transparent bg-clip-text font-black">
               Architecture
             </span>
           </h2>
-
-          <p className="text-xl text-gray-700 leading-relaxed max-w-4xl mx-auto">
-            A sophisticated AI companion that grows with your child through every developmental stage, 
-            <strong className="text-emerald-700"> combining cutting-edge technology with child psychology</strong> to create 
-            meaningful, lasting relationships that support healthy emotional development.
-          </p>
         </motion.div>
 
-        {/* Main Grid Layout */}
-        <div className="guardian-child-section grid grid-cols-[1fr_380px_1fr] grid-rows-[auto_1fr_auto] gap-10 items-start">
-          
-          {/* Left Panel: Development Engine */}
-          <motion.div 
-            className="development-panel self-center space-y-6"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <div className="bg-white/90 backdrop-blur-sm border border-blue-200/50 rounded-2xl p-8 shadow-lg">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="text-3xl">🧠</span>
-                <h3 className="font-bold text-slate-900 text-xl">Child Development Engine</h3>
-              </div>
-              
-              <div className="analysis-section mb-8">
-                <h4 className="font-semibold text-slate-800 text-lg mb-4">Real-Time Analysis:</h4>
-                <ul className="analysis-list space-y-3">
-                  {ANALYSIS_ITEMS.map((item, i) => (
-                    <AnalysisItem key={i} item={item} index={i} />
-                  ))}
-                </ul>
-              </div>
+        {/* Main Content Grid - Following Parent Section Pattern */}
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+        >
+          {/* Left Side - Child Development Engine */}
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="glass-emerald rounded-3xl p-8 shadow-xl relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 to-purple-100/30" />
+              <div className="relative z-10 space-y-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">🧠</span>
+                  <h3 className="font-heading text-2xl font-bold text-slate-900">Child Development Engine</h3>
+                </div>
+                
+                <div className="space-y-4 font-body text-slate-800 leading-relaxed">
+                  <div className="analysis-section">
+                    <h4 className="font-semibold text-slate-800 text-lg mb-4">Real-Time Analysis:</h4>
+                    <ul className="analysis-list space-y-3">
+                      {ANALYSIS_ITEMS.map((item, i) => (
+                        <AnalysisItem key={i} item={item} index={i} />
+                      ))}
+                    </ul>
+                  </div>
 
-              <div className="current-insights">
-                <h4 className="font-semibold text-slate-800 text-lg mb-4">Current Session:</h4>
-                <div className="space-y-3">
-                  <div className="insight-item positive bg-emerald-50 border border-emerald-200 rounded-lg p-3">
-                    <span className="font-medium text-emerald-800">Confidence: High</span>
-                    <span className="text-emerald-600 text-sm ml-2">(art discussion)</span>
+                  <div className="bg-white/60 rounded-xl p-4 border-l-4 border-blue-500">
+                    <p className="text-base">
+                      <span className="font-semibold text-blue-800">Advanced AI Psychology:</span> Guardian understands developmental stages and adapts conversations to support healthy emotional growth.
+                    </p>
                   </div>
-                  <div className="insight-item growth bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <span className="font-medium text-blue-800">Vocabulary: "frustrated" → "disappointed"</span>
+                  
+                  <div className="current-insights">
+                    <h4 className="font-semibold text-slate-800 text-lg mb-4">Current Session Insights:</h4>
+                    <div className="space-y-3">
+                      <div className="insight-item positive bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                        <span className="font-medium text-emerald-800">Confidence: High</span>
+                        <span className="text-emerald-600 text-sm ml-2">(art discussion)</span>
+                      </div>
+                      <div className="insight-item growth bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <span className="font-medium text-blue-800">Vocabulary: "frustrated" → "disappointed"</span>
+                      </div>
+                      <div className="insight-item social bg-purple-50 border border-purple-200 rounded-lg p-3">
+                        <span className="font-medium text-purple-800">Social awareness: Mentioned helping friend</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="insight-item social bg-purple-50 border border-purple-200 rounded-lg p-3">
-                    <span className="font-medium text-purple-800">Social awareness: Mentioned helping friend</span>
-                  </div>
-                  <div className="insight-item creative bg-amber-50 border border-amber-200 rounded-lg p-3">
-                    <span className="font-medium text-amber-800">Creative engagement: 340% above baseline</span>
+                  
+                  <div className="bg-gradient-to-r from-purple-100/60 to-pink-100/60 rounded-xl p-4">
+                    <p className="text-base font-medium text-purple-800">
+                      Guardian creates a safe space for children to explore emotions and develop critical thinking skills.
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
-          {/* Central Phone Mockup */}
-          <motion.div 
-            className="phone-container col-start-2 row-start-1 row-end-3 z-10 relative flex justify-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-          >
-            {/* iPhone 15 Pro Frame */}
+          {/* Right Side - Child Phone Mockup */}
+          <div className="relative">
             <motion.div 
-              className="iphone-mockup relative"
+              className="relative mx-auto"
               style={phoneStyle}
-              animate={{ 
-                rotateY: [-8, -6, -8],
-                rotateX: [2, 1, 2]
-              }}
-              transition={{ 
-                duration: 8,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
+              initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+              whileInView={{ opacity: 1, scale: 1, rotateY: -5 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
             >
-              {/* Screen */}
-              <div className="screen w-full h-full bg-black rounded-[47px] overflow-hidden relative">
-                
-                {/* Dynamic Island */}
-                <div 
-                  className="dynamic-island absolute top-[11px] left-1/2 transform -translate-x-1/2 z-20"
-                  style={dynamicIslandStyle}
-                ></div>
+              {/* Phone Screen */}
+              <div className="absolute inset-2 bg-white rounded-[2rem] overflow-hidden">
+                {/* Status Bar */}
+                <div className="bg-white px-6 py-2 flex justify-between items-center text-xs font-mono text-slate-900 border-b border-slate-100">
+                  <span className="font-semibold">9:41</span>
+                  <div className="flex items-center gap-1">
+                    <div className="flex gap-1">
+                      <div className="w-1 h-3 bg-slate-900 rounded-full"></div>
+                      <div className="w-1 h-3 bg-slate-900 rounded-full"></div>
+                      <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
+                      <div className="w-1 h-3 bg-slate-400 rounded-full"></div>
+                    </div>
+                    <div className="w-6 h-3 bg-emerald-500 rounded-sm ml-1"></div>
+                  </div>
+                </div>
 
                 {/* Guardian Interface */}
-                <div className="guardian-interface h-full overflow-y-auto" style={guardianInterfaceStyle}>
+                <div className="h-full bg-gradient-to-br from-blue-50 to-emerald-50 overflow-y-auto" style={guardianInterfaceStyle}>
                   
-                  {/* Status Bar */}
-                  <div className="status-bar flex justify-between items-center mb-6 text-sm font-semibold text-slate-700">
-                    <span>9:41</span>
-                    <div className="battery flex items-center gap-2">
-                      <div className="w-6 h-3 bg-emerald-500 rounded-sm"></div>
-                      <span>94%</span>
-                    </div>
-                  </div>
-
                   {/* App Header */}
                   <div className="app-header text-center mb-8">
                     <div className="child-profile">
@@ -496,53 +498,68 @@ const GuardianKidsSection = memo(() => {
             </motion.div>
 
             {/* Phone Shadow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[55px] blur-3xl transform translate-y-12 translate-x-8 -z-10"></div>
-          </motion.div>
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-3xl transform translate-y-12 translate-x-8 -z-10"></div>
+          </div>
+        </motion.div>
 
-          {/* Right Panel: Developmental Journey */}
-          <motion.div 
-            className="journey-panel self-center space-y-6"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.3 }}
-          >
-            <div className="bg-white/90 backdrop-blur-sm border border-purple-200/50 rounded-2xl p-8 shadow-lg">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="text-3xl">🚀</span>
-                <h3 className="font-bold text-slate-900 text-xl">14-Year Journey</h3>
+        {/* Journey Phases Section */}
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.3 }}
+        >
+          {/* Left Side - Journey Phases */}
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="glass-emerald rounded-3xl p-8 shadow-xl relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-100/40 to-pink-100/30" />
+              <div className="relative z-10 space-y-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-3xl">🚀</span>
+                  <h3 className="font-heading text-2xl font-bold text-slate-900">14-Year Journey</h3>
+                </div>
+                
+                <div className="space-y-6">
+                  {JOURNEY_PHASES.map((phase, i) => (
+                    <JourneyStage key={i} phase={phase} index={i} />
+                  ))}
+                </div>
               </div>
-              
-              <div className="space-y-6">
-                {JOURNEY_PHASES.map((phase, i) => (
-                  <JourneyStage key={i} phase={phase} index={i} />
-                ))}
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
-          {/* Bottom: Technical Architecture */}
-          <motion.div
-            className="architecture-grid col-span-3 mt-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.6 }}
-          >
-            <div className="bg-gradient-to-r from-slate-900/5 to-blue-900/10 backdrop-blur-md border border-gray-300/40 rounded-3xl p-10">
-              <div className="text-center mb-10">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Runtime Architecture Supporting Every Conversation</h3>
-                <p className="text-gray-600 max-w-3xl mx-auto">Enterprise-grade technology designed specifically for child development and family relationships</p>
+          {/* Right Side - Architecture Cards */}
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="glass-emerald rounded-3xl p-8 shadow-xl relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-100/40 to-blue-100/30" />
+              <div className="relative z-10 space-y-6">
+                <div className="text-center mb-8">
+                  <h3 className="font-heading text-2xl font-bold text-slate-900 mb-4">Runtime Architecture</h3>
+                  <p className="text-slate-600">Enterprise-grade technology designed for child development</p>
+                </div>
+                
+                <div className="arch-cards grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {ARCHITECTURE_CARDS.map((card, i) => (
+                    <ArchitectureCard key={i} card={card} index={i} />
+                  ))}
+                </div>
               </div>
-              
-              <div className="arch-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {ARCHITECTURE_CARDS.map((card, i) => (
-                  <ArchitectureCard key={i} card={card} index={i} />
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

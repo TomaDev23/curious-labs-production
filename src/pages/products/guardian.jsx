@@ -35,11 +35,6 @@ export default function Guardian() {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         
-        {/* Space Grotesk Fallback */}
-        <link rel="preload" href="/fonts/SpaceGrotesk-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/SpaceGrotesk-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/SpaceGrotesk-Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        
         {/* Logo Preloading - Critical for hero section */}
         <link rel="preload" href="/assets/images/general/Page_Logos/Guardian_logo.webp" as="image" />
         
@@ -47,13 +42,13 @@ export default function Guardian() {
         <style jsx="true">{`
           /* Premium Typography Stack */
           .font-heading {
-            font-family: 'Inter', 'Monument Extended', 'Space Grotesk', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             font-variation-settings: 'wght' 700;
             letter-spacing: -0.02em;
           }
           
           .font-body {
-            font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             font-variation-settings: 'wght' 400;
             line-height: 1.7;
           }
@@ -161,6 +156,70 @@ export default function Guardian() {
             .text-glow-emerald {
               text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
             }
+            
+            /* Mobile typography improvements */
+            h1 {
+              font-size: clamp(2rem, 8vw, 4rem) !important;
+              line-height: 1.1 !important;
+            }
+            
+            h2 {
+              font-size: clamp(1.5rem, 6vw, 3rem) !important;
+              line-height: 1.2 !important;
+            }
+            
+            /* Mobile spacing fixes */
+            section {
+              min-height: auto !important;
+              padding: 2rem 1rem !important;
+            }
+            
+            /* Mobile text sizing */
+            .font-body {
+              font-size: clamp(0.875rem, 2.5vw, 1.125rem) !important;
+              line-height: 1.6 !important;
+            }
+            
+            /* Mobile button improvements */
+            .group {
+              padding: 0.75rem 1.5rem !important;
+              font-size: 0.875rem !important;
+            }
+            
+            /* Mobile height fixes - Phase 1 */
+            .mobile-hero { 
+              min-height: 100vh !important; 
+              height: auto !important; 
+              padding: 5rem 1rem 3rem 1rem !important;
+            }
+            
+            .mobile-section { 
+              min-height: auto !important; 
+              height: auto !important; 
+              padding: 3rem 1rem !important; 
+            }
+            
+            .mobile-pricing { 
+              min-height: auto !important; 
+              height: auto !important; 
+              padding: 3rem 1rem !important;
+            }
+            
+            .mobile-footer { 
+              min-height: 60vh !important; 
+              height: auto !important; 
+              padding: 3rem 1rem !important;
+            }
+            
+            /* Mobile spacing adjustments */
+            .mobile-spacing {
+              padding: 1rem !important;
+              margin: 1rem 0 !important;
+            }
+            
+            .mobile-gap {
+              gap: 1rem !important;
+            }
           }
 
           /* Performance Optimizations */
@@ -184,7 +243,7 @@ export default function Guardian() {
       <MissionControlNavbar />
       
       {/* Hero Section - Fixed proportions and dark text */}
-      <section className="relative h-[90vh] flex items-center pt-20 z-10">
+      <section className="relative min-h-screen flex items-center pt-20 px-4 sm:px-6 lg:px-8 z-10 mobile-hero">
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[70vh]">
             
@@ -318,7 +377,7 @@ export default function Guardian() {
       </section>
 
       {/* Problem Statement - Dark text */}
-      <section className="relative h-[70vh] flex items-center z-10">
+      <section className="relative min-h-screen flex items-center py-12 px-4 sm:px-6 lg:px-8 z-10 mobile-section">
         <div className="absolute inset-0 glass-ultra" />
         <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -406,7 +465,7 @@ export default function Guardian() {
       <GuardianKidsSection />
 
       {/* Parents Side Section - Mature & Comprehensive */}
-      <section className="relative min-h-[200vh] py-24 z-10">
+      <section className="relative min-h-[200vh] py-24 z-10 mobile-section">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-emerald-50/20" />
         <div className="max-w-7xl mx-auto px-4 w-full relative z-10">
           
@@ -483,8 +542,8 @@ export default function Guardian() {
                       </p>
                     </div>
                   </div>
-              </div>
-            </motion.div>
+                </div>
+              </motion.div>
             </div>
 
             {/* Right Side - Enhanced Mobile Phone Dashboard Mockup */}
@@ -786,7 +845,7 @@ export default function Guardian() {
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-xl transform translate-y-4 -z-10"></div>
               </motion.div>
                 </div>
-              </motion.div>
+          </motion.div>
 
           {/* Guardian Unified Component - Investor Product Overview */}
               <motion.div 
@@ -1139,9 +1198,31 @@ export default function Guardian() {
       </section>
 
       {/* Pricing Section - Dark text and better proportions */}
-      <section className="relative h-[110vh] flex items-center py-12 z-10">
+      <section className="relative h-[110vh] flex items-center py-12 z-10 mobile-pricing">
         <div className="absolute inset-0 glass-ultra" />
-        <div className="max-w-6xl mx-auto px-4 relative z-10">
+        
+        {/* COMING SOON Banner */}
+        <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white py-4 shadow-lg">
+          <div className="max-w-6xl mx-auto px-4 text-center">
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-2xl animate-pulse">🚧</span>
+              <span className="font-heading text-lg md:text-xl font-bold tracking-wide">
+                COMING SOON
+              </span>
+              <span className="text-2xl animate-pulse">🚧</span>
+            </div>
+            <p className="font-body text-sm md:text-base mt-2 opacity-90">
+              Guardian pricing plans are currently in development
+            </p>
+          </div>
+        </div>
+
+        {/* Glass Morphism Overlay */}
+        <div className="absolute inset-0 z-20 backdrop-blur-sm bg-white/30 border border-white/20 shadow-xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 relative z-10 pointer-events-none opacity-80">
           <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 30 }}
@@ -1327,7 +1408,7 @@ export default function Guardian() {
       </section>
 
       {/* Final CTA - Dark text and better proportions */}
-      <footer className="relative h-[80vh] flex items-center py-12 z-10">
+      <footer className="relative h-[80vh] flex items-center py-12 z-10 mobile-footer">
         <div className="absolute inset-0 glass-ultra" />
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/20 via-blue-100/20 to-purple-100/20" />
         <div className="max-w-6xl mx-auto px-4 w-full relative z-10">

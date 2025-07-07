@@ -83,14 +83,15 @@ const BackgroundLayerGuardian = memo(() => {
   const baseGradientStyle = useMemo(() => ({
     background: `
       linear-gradient(180deg, 
-        #fef3c7 0%,     /* Warm golden sunrise */
-        #fed7aa 15%,    /* Soft peach */
-        #fbbf24 30%,    /* Golden yellow */
-        #f59e0b 45%,    /* Amber */
-        #d97706 60%,    /* Orange */
-        #ea580c 75%,    /* Deep orange */
-        #dc2626 90%,    /* Red */
-        #7c2d12 100%    /* Deep brown-red */
+        #1e3a8a 0%,           /* Deep blue at top (hero) */
+        #3b82f6 15%,          /* Medium blue */
+        #60a5fa 30%,          /* Lighter blue */
+        #93c5fd 45%,          /* Sky blue */
+        #dbeafe 60%,          /* Very light blue */
+        #f0f9ff 75%,          /* Almost white */
+        #fef3c7 85%,          /* Warm sunrise yellow */
+        #fed7aa 95%,          /* Soft peach */
+        #fecaca 100%          /* Gentle pink at bottom */
       )
     `,
     zIndex: 1

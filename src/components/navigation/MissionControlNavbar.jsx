@@ -24,6 +24,7 @@ import {  motion, AnimatePresence  } from '../../FramerProvider';
  * - Mission control theme with status indicators
  * - Full routing support
  * - Mobile hamburger menu with Mission Control styling
+ * - Fixed font definitions for consistency across all pages
  * 
  * @param {Object} props
  * @param {string} props.className - Additional CSS classes
@@ -41,6 +42,22 @@ const MissionControlNavbar = ({
   const [systemStatus] = useState('OPERATIONAL');
   const [isCommandPanelOpen, setIsCommandPanelOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Fixed font styles for consistent appearance across all pages
+  const navbarFontStyles = {
+    fontFamily: "'Space Grotesk', 'Inter', system-ui, sans-serif",
+    fontWeight: '400'
+  };
+
+  const navbarMonoFontStyles = {
+    fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace",
+    fontWeight: '500'
+  };
+
+  const navbarBoldFontStyles = {
+    fontFamily: "'Space Grotesk', 'Inter', system-ui, sans-serif",
+    fontWeight: '700'
+  };
 
   // Navigation sections with correct routing
   const navigationSections = [
@@ -213,8 +230,8 @@ const MissionControlNavbar = ({
                           style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
                         />
                         <div>
-                          <div className="text-lime-400 font-bold text-sm tracking-wide">CuriousLabs</div>
-                          <div className="text-xs font-mono text-white/60 tracking-wider">MISSION CONTROL</div>
+                          <div className="text-lime-400 font-bold text-sm tracking-wide" style={navbarBoldFontStyles}>CuriousLabs</div>
+                          <div className="text-xs text-white/60 tracking-wider" style={navbarMonoFontStyles}>MISSION CONTROL</div>
                         </div>
                       </div>
                     </motion.div>
@@ -228,7 +245,7 @@ const MissionControlNavbar = ({
                         variants={statusIndicatorVariants}
                         animate="operational"
                       />
-                      <span className="text-xs font-mono text-lime-400 tracking-wider font-semibold">
+                      <span className="text-xs text-lime-400 tracking-wider font-semibold" style={navbarMonoFontStyles}>
                         {systemStatus}
                       </span>
                     </div>
@@ -256,7 +273,7 @@ const MissionControlNavbar = ({
                     style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
                   />
                   <div>
-                    <div className="text-lime-400 font-bold text-xs tracking-wide">CuriousLabs</div>
+                    <div className="text-lime-400 font-bold text-xs tracking-wide" style={navbarBoldFontStyles}>CuriousLabs</div>
                   </div>
                 </motion.div>
               </Link>
@@ -271,7 +288,7 @@ const MissionControlNavbar = ({
                       variants={statusIndicatorVariants}
                       animate="operational"
                     />
-                    <span className="text-xs font-mono text-lime-400 tracking-wider font-semibold">
+                    <span className="text-xs text-lime-400 tracking-wider font-semibold" style={navbarMonoFontStyles}>
                       OP
                     </span>
                   </div>
@@ -338,8 +355,8 @@ const MissionControlNavbar = ({
                         style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
                       />
                       <div>
-                        <div className="text-lime-400 font-bold text-sm tracking-wide">CuriousLabs</div>
-                        <div className="text-xs font-mono text-white/60 tracking-wider">MISSION CONTROL</div>
+                        <div className="text-lime-400 font-bold text-sm tracking-wide" style={navbarBoldFontStyles}>CuriousLabs</div>
+                        <div className="text-xs text-white/60 tracking-wider" style={navbarMonoFontStyles}>MISSION CONTROL</div>
                       </div>
                     </div>
                   </motion.div>
@@ -353,7 +370,7 @@ const MissionControlNavbar = ({
                       variants={statusIndicatorVariants}
                       animate="operational"
                     />
-                    <span className="text-xs font-mono text-lime-400 tracking-wider font-semibold">
+                    <span className="text-xs text-lime-400 tracking-wider font-semibold" style={navbarMonoFontStyles}>
                       {systemStatus}
                     </span>
                   </div>
@@ -381,7 +398,7 @@ const MissionControlNavbar = ({
                       >
                         <div className="flex items-center space-x-1.5">
                           <span className="text-xs">{section.icon}</span>
-                          <span className="font-mono tracking-wide">{section.label}</span>
+                          <span className="tracking-wide" style={navbarMonoFontStyles}>{section.label}</span>
                         </div>
                       </Link>
 
@@ -398,14 +415,14 @@ const MissionControlNavbar = ({
                           >
                             <div className="space-y-3">
                               <div className="flex items-center justify-between">
-                                <div className="text-lime-400 font-bold text-sm">{section.label}</div>
-                                <div className="text-xs font-mono text-white/50 bg-black/30 px-2 py-0.5 rounded">{section.coordinates}</div>
+                                <div className="text-lime-400 font-bold text-sm" style={navbarBoldFontStyles}>{section.label}</div>
+                                <div className="text-xs text-white/50 bg-black/30 px-2 py-0.5 rounded" style={navbarMonoFontStyles}>{section.coordinates}</div>
                               </div>
                               
-                              <div className="text-white/90 text-xs leading-relaxed">{section.description}</div>
+                              <div className="text-white/90 text-xs leading-relaxed" style={navbarFontStyles}>{section.description}</div>
                               
                               <div className="flex items-center justify-between pt-2 border-t border-white/15">
-                                <div className="text-xs font-mono text-white/70">
+                                <div className="text-xs text-white/70" style={navbarMonoFontStyles}>
                                   ORIG: <span className="text-lime-400">{section.original}</span>
                                 </div>
                                 <div className="flex items-center space-x-1.5">
@@ -415,7 +432,7 @@ const MissionControlNavbar = ({
                                       section.status === 'STANDBY' ? 'bg-yellow-400 animate-pulse' : 'bg-red-400'
                                     }`}
                                   />
-                                  <span className="text-xs font-mono text-white/70">{section.status}</span>
+                                  <span className="text-xs text-white/70" style={navbarMonoFontStyles}>{section.status}</span>
                                 </div>
                               </div>
                             </div>
@@ -431,8 +448,8 @@ const MissionControlNavbar = ({
               <div className="flex items-center space-x-3">
                 {/* UTC Timer */}
                 <div className="hidden md:flex items-center space-x-2 px-3 py-1 rounded-lg bg-black/60 border border-white/15 backdrop-blur-sm">
-                  <div className="text-xs font-mono text-white/70">UTC</div>
-                  <div className="font-mono text-xs text-lime-400 tracking-wider font-semibold">{utcTime}</div>
+                  <div className="text-xs text-white/70" style={navbarMonoFontStyles}>UTC</div>
+                  <div className="text-xs text-lime-400 tracking-wider font-semibold" style={navbarMonoFontStyles}>{utcTime}</div>
                 </div>
 
                 {/* Emergency Command Panel */}
@@ -475,7 +492,7 @@ const MissionControlNavbar = ({
                       className="h-5 w-auto object-contain"
                       style={{ filter: 'drop-shadow(0 0 6px rgba(132, 204, 22, 0.4))' }}
                     />
-                    <div className="text-lime-400 font-bold text-sm tracking-wide">CuriousLabs</div>
+                    <div className="text-lime-400 font-bold text-sm tracking-wide" style={navbarBoldFontStyles}>CuriousLabs</div>
                   </div>
                   
                   <motion.button
@@ -508,7 +525,7 @@ const MissionControlNavbar = ({
                         className="group flex items-center space-x-3 p-3 rounded-lg bg-black/30 border border-white/10 hover:border-lime-400/30 hover:bg-lime-400/5 transition-all duration-300"
                       >
                         <span className="text-base">{section.icon}</span>
-                        <span className="font-mono text-white text-sm tracking-wide group-hover:text-lime-400 transition-colors duration-300">
+                        <span className="text-white text-sm tracking-wide group-hover:text-lime-400 transition-colors duration-300" style={navbarMonoFontStyles}>
                           {section.label}
                         </span>
                       </Link>

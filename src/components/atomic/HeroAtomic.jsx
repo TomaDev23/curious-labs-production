@@ -498,7 +498,7 @@ const HeroAtomic = React.memo(() => {
                     <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'flex-row space-x-4'} items-center justify-center ${isMobile ? 'mt-3' : 'mt-6'}`}>
                       {/* Primary CTA - Restored original design with mobile-optimized functionality */}
                       <Link
-                        to="/tools"
+                        to="/arsenal"
                         className={`group/btn relative px-6 py-3 bg-gradient-to-r from-lime-400 to-emerald-500 text-curious-dark-900 font-medium rounded-full hover:shadow-lg hover:shadow-lime-400/20 transition-shadow inline-block ${
                           isMobile 
                             ? 'transition-opacity duration-300 active:opacity-75' // Mobile: No scale, opacity only
@@ -514,7 +514,7 @@ const HeroAtomic = React.memo(() => {
 
                       {/* Secondary CTA - Restored original design with mobile-optimized functionality */}
                       <Link
-                        to="/products"
+                        to="/mission-control"
                         className={`group/btn2 relative px-6 py-3 bg-transparent border border-lime-400/30 text-lime-400 font-medium rounded-full tracking-wide inline-block flex items-center gap-2 ${
                           isMobile 
                             ? 'transition-colors duration-300 active:bg-lime-400/10' // Mobile: No scale, colors only

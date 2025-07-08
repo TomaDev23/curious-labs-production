@@ -8,7 +8,7 @@ import {  motion  } from '../../FramerProvider';
  * Warning: DO NOT REMOVE - CORE PRODUCT SUB-ROUTE
  * Bundle: Products sub-module
  * Type: Product Page Component
- * Dependencies: MissionControlNavbar, BackgroundLayerAtomic, ScrollToTop
+ * Dependencies: MissionControlNavbar, BackgroundLayerAtomic, ScrollToTop, FooterExperience
  */
 
 import React, { useState, useEffect } from 'react';
@@ -18,6 +18,7 @@ import { Helmet } from 'react-helmet-async';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
+import FooterExperience from '../../components/home/v4/FooterExperience';
 import './opspipe.css'; // For custom animations
 
 // OpsPipe Architecture Diagram Component
@@ -164,10 +165,10 @@ const OpsPipeArchitectureDiagram = () => {
     
     style OS fill:#3b82f6,stroke:#000,color:#fff,stroke-width:2px
     style SM fill:#3b82f6,stroke:#000,color:#fff,stroke-width:2px
-    style DE fill:#06b6d4,stroke:#000,color:#000,stroke-width:2px
+    style DE fill:#06b6d4,stroke:#000,color:#fff,stroke-width:2px
     style AL fill:#8b5cf6,stroke:#000,color:#fff,stroke-width:2px
     style DASH fill:#ef4444,stroke:#000,color:#fff,stroke-width:2px
-    style KB fill:#10b981,stroke:#000,color:#000,stroke-width:2px`}
+    style KB fill:#10b981,stroke:#000,color:#fff,stroke-width:2px`}
         </div>
       ) : (
         <div className="text-center py-8 w-full">
@@ -262,6 +263,147 @@ export default function OpsPipe() {
         <meta property="og:image" content="/images/logo.svg" />
         <meta property="og:type" content="product" />
         <meta property="og:url" content="https://curiouslabs.io/products/opspipe" />
+        
+        {/* Mobile-First Responsive Typography & Layout System */}
+        <style jsx="true">{`
+          /* Mobile-First Typography */
+          @media (max-width: 768px) {
+            .hero-title {
+              font-size: clamp(2.5rem, 10vw, 4rem) !important;
+              line-height: 1.1 !important;
+              margin-bottom: 1rem !important;
+            }
+            
+            .hero-subtitle {
+              font-size: clamp(1.1rem, 4vw, 1.5rem) !important;
+              line-height: 1.3 !important;
+              margin-bottom: 2rem !important;
+            }
+            
+            .section-title {
+              font-size: clamp(1.75rem, 7vw, 2.5rem) !important;
+              line-height: 1.2 !important;
+            }
+            
+            .mobile-text {
+              font-size: clamp(0.9rem, 3vw, 1.1rem) !important;
+              line-height: 1.6 !important;
+            }
+            
+            /* Mobile Layout Fixes */
+            .mobile-section {
+              padding: 2rem 1rem !important;
+              min-height: auto !important;
+            }
+            
+            .mobile-hero {
+              padding: 5rem 1rem 3rem 1rem !important;
+              min-height: 100vh !important;
+            }
+            
+            .mobile-status-panel {
+              flex-direction: column !important;
+              gap: 0.75rem !important;
+              padding: 1rem !important;
+            }
+            
+            .mobile-status-items {
+              flex-direction: column !important;
+              gap: 0.5rem !important;
+            }
+            
+            .mobile-grid {
+              grid-template-columns: 1fr !important;
+              gap: 1rem !important;
+            }
+            
+            .mobile-flex {
+              flex-direction: column !important;
+              gap: 1rem !important;
+            }
+            
+            .mobile-card {
+              padding: 1.5rem !important;
+              margin-bottom: 1rem !important;
+            }
+            
+            /* Mobile Button Fixes */
+            .mobile-button {
+              width: 100% !important;
+              padding: 0.75rem 1.5rem !important;
+              font-size: 0.9rem !important;
+            }
+            
+            /* Mobile Architecture Diagram */
+            .mobile-diagram {
+              overflow-x: auto !important;
+              padding: 1rem !important;
+            }
+            
+            .mobile-diagram .mermaid {
+              min-width: 600px !important;
+              font-size: 10px !important;
+            }
+            
+            /* Mobile Status Cards */
+            .mobile-status-card {
+              padding: 0.75rem !important;
+              font-size: 0.8rem !important;
+            }
+            
+            /* Mobile LEGIT Grid */
+            .mobile-legit-grid {
+              grid-template-columns: 1fr !important;
+              gap: 1rem !important;
+            }
+            
+            /* Mobile Height Constraints */
+            .mobile-constrained {
+              max-height: 80vh !important;
+              overflow-y: auto !important;
+            }
+            
+            /* Mobile Text Wrapping */
+            .mobile-wrap {
+              word-wrap: break-word !important;
+              overflow-wrap: break-word !important;
+            }
+            
+            /* Mobile Spacing */
+            .mobile-spacing {
+              margin: 1rem 0 !important;
+            }
+            
+            .mobile-padding {
+              padding: 1rem !important;
+            }
+          }
+          
+          /* Tablet Responsive */
+          @media (min-width: 769px) and (max-width: 1024px) {
+            .hero-title {
+              font-size: clamp(3rem, 8vw, 5rem) !important;
+            }
+            
+            .hero-subtitle {
+              font-size: clamp(1.2rem, 3vw, 1.8rem) !important;
+            }
+            
+            .tablet-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+            }
+          }
+          
+          /* Performance Optimizations */
+          * {
+            will-change: auto;
+          }
+          
+          .motion-reduce-compatible {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+          }
+        `}</style>
       </Helmet>
       
       {/* Background System */}
@@ -295,17 +437,17 @@ export default function OpsPipe() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-                  <span className="font-mono text-blue-400 text-sm tracking-wider font-semibold">OPS-002</span>
-                  <span className="font-mono text-white/70 text-sm">AUTOMATION_SUITE</span>
+                  <span className="font-mono-enhanced text-mono-caption text-blue-400 text-glow-blue">OPS-002</span>
+                  <span className="font-mono-enhanced text-mono-caption text-white/70">AUTOMATION_SUITE</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2 px-3 py-1 rounded-full border border-blue-400/30 bg-black/40">
-                    <span className="text-xs font-mono text-white/70">STATUS:</span>
-                    <span className="text-xs font-mono text-blue-400 font-semibold">ACTIVE</span>
+                    <span className="font-mono-enhanced text-mono-caption text-white/70">STATUS:</span>
+                    <span className="font-mono-enhanced text-mono-caption text-blue-400 text-glow-blue">ACTIVE</span>
                   </div>
                   <div className="flex items-center space-x-2 px-3 py-1 rounded-full border border-lime-400/30 bg-black/40">
-                    <span className="text-xs font-mono text-white/70">TIME:</span>
-                    <span className="text-xs font-mono text-lime-400 font-semibold">{missionTime}</span>
+                    <span className="font-mono-enhanced text-mono-caption text-white/70">TIME:</span>
+                    <span className="font-mono-enhanced text-mono-caption text-lime-400 text-glow-lime">{missionTime}</span>
                   </div>
                 </div>
               </div>
@@ -338,8 +480,8 @@ export default function OpsPipe() {
                 />
               </motion.div>
               
-              <h1 className="font-space text-5xl md:text-7xl font-bold text-white leading-tight tracking-tight mb-4">
-                Ops<span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]">Pipe</span>
+              <h1 className="font-space-enhanced text-hero text-white leading-tight tracking-tight mb-4" style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', color: '#ffffff !important', fontWeight: '700' }}>
+                Ops<span className="gradient-blue-cyan text-glow-blue">Pipe</span>
               </h1>
               <div className="h-0.5 bg-gradient-to-r from-blue-400/0 via-blue-400/60 to-blue-400/0 w-32 mx-auto"></div>
             </motion.div>
@@ -348,7 +490,7 @@ export default function OpsPipe() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-space text-xl md:text-2xl text-white/85 max-w-4xl mx-auto leading-relaxed mb-10"
+              className="font-space-enhanced text-subhead text-white/85 text-readable leading-relaxed mb-10"
             >
               Enterprise-grade operational automation with real-time monitoring and intelligent workflows
             </motion.p>
@@ -361,7 +503,7 @@ export default function OpsPipe() {
             >
             <Link
               to="/codelab" 
-                className="inline-flex items-center bg-gradient-to-r from-blue-400 to-cyan-400 text-black font-medium py-3 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-400/20"
+                className="inline-flex items-center bg-gradient-to-r from-blue-400 to-cyan-400 text-white font-space-enhanced font-medium py-3 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-400/20"
             >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -370,7 +512,7 @@ export default function OpsPipe() {
             </Link>
             <a 
               href="#features" 
-                className="inline-flex items-center bg-black/50 border border-blue-400/30 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 hover:border-blue-400/50 hover:bg-black/70"
+                className="inline-flex items-center bg-black/50 border border-blue-400/30 text-white font-space-enhanced font-medium py-3 px-8 rounded-lg transition-all duration-300 hover:border-blue-400/50 hover:bg-black/70"
             >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -393,14 +535,14 @@ export default function OpsPipe() {
               <div className="backdrop-blur-2xl bg-black/40 border border-blue-400/20 rounded-xl p-8 shadow-2xl shadow-black/60">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-                  <span className="font-mono text-blue-400 text-sm tracking-wider font-semibold">MISSION BRIEF</span>
+                  <span className="font-mono-enhanced text-mono-caption text-blue-400 text-glow-blue">MISSION BRIEF</span>
                 </div>
                 
-                <h2 className="font-space text-3xl md:text-4xl font-bold text-white mb-6">
-                  Transform Chaos into <span className="text-blue-400">Order</span>
+                <h2 className="font-space-enhanced text-display text-premium mb-6">
+                  Transform Chaos into <span className="gradient-blue-cyan text-glow-blue">Order</span>
                 </h2>
                 
-                <p className="text-white/80 mb-6 leading-relaxed">
+                <p className="text-body-enhanced text-white/80 text-readable mb-6 leading-relaxed">
                 OpsPipe is the enterprise-grade solution for automating, monitoring, and optimizing your operational processes. 
                 Built with flexibility in mind, OpsPipe integrates seamlessly with your existing infrastructure while providing 
                 the tools you need to scale efficiently.
@@ -422,7 +564,7 @@ export default function OpsPipe() {
                       className="flex items-start space-x-3"
                     >
                       <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 animate-pulse"></div>
-                      <span className="text-white/90">{item}</span>
+                      <span className="text-body-enhanced text-white/90">{item}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -445,10 +587,10 @@ export default function OpsPipe() {
                       backgroundRepeat: "repeat",
                       backgroundSize: "100px 50px"
                     }}></div>
-            </div>
+                  </div>
                   
                   <div className="relative w-full h-full bg-black/60 rounded-lg flex items-center justify-center">
-                  <div className="text-center p-8">
+                    <div className="text-center p-8">
                       <motion.div
                         className="w-32 h-32 mx-auto mb-6 relative"
                         animate={{ 
@@ -456,24 +598,26 @@ export default function OpsPipe() {
                           opacity: [0.8, 1, 0.8]
                         }}
                         transition={{ 
-                          duration: 3, 
+                          duration: 4, 
                           repeat: Infinity, 
                           ease: "easeInOut" 
                         }}
                       >
-                        <img 
-                          src="/assets/images/general/Page_Logos/OpsPipe_logo.webp" 
-                          alt="OpsPipe Logo" 
-                          className="w-full h-full object-contain"
-                        />
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-cyan-400/20 rounded-full blur-xl"></div>
+                        <div className="relative w-full h-full bg-gradient-to-br from-blue-400/20 to-cyan-400/10 rounded-full border border-blue-400/30 flex items-center justify-center">
+                          <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                            </svg>
+                          </div>
+                        </div>
                       </motion.div>
                       
                       <div className="space-y-2">
-                        <div className="font-mono text-blue-400 text-sm tracking-wider">SYSTEM INTERFACE</div>
-                        <div className="font-space text-white/80 text-lg">OpsPipe Command Center</div>
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                          <span className="font-mono text-xs text-white/60">OPERATIONAL</span>
+                        <div className="font-mono-enhanced text-mono-caption text-blue-400 text-glow-blue">SYSTEM INTERFACE</div>
+                        <div className="font-space-enhanced text-subhead text-white/80">OpsPipe Command Center</div>
+                        <div className="px-3 py-1 bg-black/40 rounded-full border border-blue-400/30 inline-block">
+                          <span className="font-mono-enhanced text-mono-caption text-white/60">OPERATIONAL</span>
                         </div>
                       </div>
                     </div>
@@ -493,8 +637,8 @@ export default function OpsPipe() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="font-space text-3xl md:text-4xl font-bold text-white mb-4">
-              System <span className="text-blue-400">Capabilities</span>
+            <h2 className="font-space-enhanced text-display text-premium mb-4 text-center">
+              System <span className="gradient-blue-cyan text-glow-blue">Capabilities</span>
             </h2>
             <div className="h-0.5 bg-gradient-to-r from-blue-400/0 via-blue-400/60 to-blue-400/0 w-32 mx-auto"></div>
           </motion.div>
@@ -574,37 +718,31 @@ export default function OpsPipe() {
                   className="group h-full"
                 >
                   <div className="backdrop-blur-2xl bg-black/30 border border-blue-400/10 rounded-xl p-6 shadow-2xl shadow-black/60 hover:border-blue-400/30 transition-all duration-300 h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-400/20 to-cyan-400/20 flex items-center justify-center border border-blue-400/30">
-                  <span className="text-2xl">{feature.icon}</span>
-                </div>
-                      <div className="text-xs font-mono text-white/50 bg-black/30 px-2 py-1 rounded">
-                        {feature.coordinates}
+                    <div className="flex items-center justify-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-400/20 to-cyan-400/10 rounded-lg flex items-center justify-center border border-blue-400/30">
+                        <span className="text-2xl">{feature.icon}</span>
+                      </div>
+                      <div className="ml-3 flex-1">
+                        <div className="font-mono-enhanced text-mono-caption text-white/50 bg-black/30 px-2 py-1 rounded">
+                          {feature.coordinates}
+                        </div>
                       </div>
                     </div>
                     
-                    <h3 className="font-space text-xl font-semibold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">
+                    <h3 className="font-space-enhanced text-headline text-premium mb-3 group-hover:text-blue-400 transition-colors duration-300">
                       {feature.title}
                     </h3>
                     
-                    <div className="flex items-center space-x-2 mb-4">
-                      <div className={`w-2 h-2 rounded-full animate-pulse ${getStatusBg(feature.status)}`}></div>
-                      <span className={`text-xs font-mono tracking-wider ${getStatusColor(feature.status)}`}>
+                    <p className="text-body-enhanced text-white/80 text-readable mb-4 leading-relaxed flex-1">
+                      {feature.description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className={`font-mono-enhanced text-mono-caption tracking-wider ${getStatusColor(feature.status)}`}>
                         {feature.status}
                       </span>
                     </div>
-                    
-                    <p className="text-white/70 leading-relaxed flex-grow">{feature.description}</p>
-                    
-                    <div className="mt-4 pt-4 border-t border-white/10">
-                      <div className="flex items-center text-blue-400 text-sm font-medium">
-                        <span>System Ready</span>
-                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </div>
-                    </div>
-              </div>
+                  </div>
                 </motion.div>
               );
             })}
@@ -620,8 +758,8 @@ export default function OpsPipe() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="font-space text-3xl md:text-4xl font-bold text-white mb-4">
-              Execution <span className="text-blue-400">Architecture</span>
+            <h2 className="font-space-enhanced text-display text-premium mb-4 text-center">
+              Execution <span className="gradient-blue-cyan text-glow-blue">Architecture</span>
             </h2>
             <div className="h-0.5 bg-gradient-to-r from-blue-400/0 via-blue-400/60 to-blue-400/0 w-32 mx-auto"></div>
           </motion.div>
@@ -705,8 +843,8 @@ export default function OpsPipe() {
                         <span className={`text-xs font-mono ${getStatusColor(component.status)}`}>
                           {component.status}
                         </span>
-              </div>
-              </div>
+                      </div>
+                    </div>
                     <p className="text-sm text-white/70">{component.description}</p>
                   </motion.div>
                 );
@@ -715,84 +853,213 @@ export default function OpsPipe() {
           </motion.div>
         </section>
         
-        {/* Use Cases Section */}
-        <section className="max-w-7xl mx-auto px-4 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="font-space text-3xl md:text-4xl font-bold text-white mb-4">
-              Mission <span className="text-blue-400">Scenarios</span>
-            </h2>
-            <div className="h-0.5 bg-gradient-to-r from-blue-400/0 via-blue-400/60 to-blue-400/0 w-32 mx-auto"></div>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Financial Document Processing",
-                description: "Ideal for growing businesses buried in receipts and invoices. OpsPipe parses documents, checks for errors, and auto-generates summaries — ready to sync with Xero, QuickBooks, or local accountants.\n\nCloses the gap between small ops and real bookkeeping, with zero manual entry.",
-                icon: "💼",
-                coordinates: "FDP-001"
-              },
-              {
-                title: "F&B Back-Office Automation",
-                description: "Streamline supplier invoices, inventory counts, and delivery platform sync. OpsPipe runs loops for restaurant chains, cafes, and hotels — no full-time admin needed.\n\nYou stay focused on food, we handle the paperwork.",
-                icon: "🍽️",
-                coordinates: "FNB-002"
-              },
-              {
-                title: "Clinic Intake & Record Flow",
-                description: "Simplifies form intake, ID validation, and patient routing. Clinics use OpsPipe to collect and process patient data while staying compliant and secure.\n\nCuts down wait times and admin load without touching your EMR.",
-                icon: "🏥",
-                coordinates: "HCR-003"
-              },
-              {
-                title: "Academic Data Management",
-                description: "Researchers and departments use OpsPipe to process survey data, lab reports, and grant paperwork. Auto-tagged, versioned, and export-ready — without spending hours on formatting.\n\nPerfect for teams who publish, not wrangle PDFs.",
-                icon: "🎓",
-                coordinates: "ADM-004"
-              },
-              {
-                title: "Retail Ops + Metrics Loop",
-                description: "Daily receipts, stock counts, vendor slips — OpsPipe turns it all into structured dashboards. Supports POS exports, trend snapshots, and alert flags for busy stores.\n\nNo more waiting for accounting to understand what’s happening in your own shop.",
-                icon: "🛍️",
-                coordinates: "RTL-005"
-              },
-              {
-                title: "Personal Doc Manager",
-                description: "A future consumer app powered by OpsPipe — designed to manage life’s paperwork with zero stress. From receipts and bills to school forms and IDs, everything is auto-sorted, summarized, and searchable.\n\nOps-grade infrastructure, simplified for everyday use.",
-                icon: "📂",
-                coordinates: "PDM-006"
-              }
-            ].map((useCase, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group"
-              >
-                <div className="backdrop-blur-2xl bg-black/30 border border-blue-400/10 rounded-xl p-6 shadow-2xl shadow-black/60 hover:border-blue-400/30 transition-all duration-300 h-full flex flex-col">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-2xl">{useCase.icon}</div>
-                    <div className="text-xs font-mono text-white/50 bg-black/30 px-2 py-1 rounded">
-                      {useCase.coordinates}
+        {/* Mission Scenarios - Interactive Timeline Design */}
+        <section id="scenarios" className="py-16 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12"
+            >
+              <h2 className="font-space-enhanced text-display text-premium mb-4 text-center">
+                Mission <span className="gradient-blue-cyan text-glow-blue">Timeline</span>
+              </h2>
+              <p className="text-body-enhanced text-white/80 text-readable max-w-2xl mx-auto mb-6">
+                Follow the OpsPipe workflow from chaos to complete operational control.
+              </p>
+            </motion.div>
+
+            {/* Interactive Timeline */}
+            <div className="relative">
+              {/* Timeline Line - Hidden on mobile */}
+              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-400/30 via-cyan-400/50 to-lime-400/30 rounded-full"></div>
+              
+              {/* Timeline Nodes */}
+              <div className="space-y-6 md:space-y-16">
+                {[
+                  {
+                    phase: "01",
+                    title: "Chaos Detection",
+                    subtitle: "System Analysis",
+                    description: "OpsPipe scans your infrastructure, identifying bottlenecks and inefficiencies across all systems.",
+                    icon: "🔍",
+                    status: "SCANNING",
+                    color: "blue",
+                    side: "left"
+                  },
+                  {
+                    phase: "02", 
+                    title: "Pipeline Design",
+                    subtitle: "Automation Architecture",
+                    description: "AI-powered pipeline generation creates custom workflows tailored to your requirements.",
+                    icon: "⚙️",
+                    status: "DESIGNING",
+                    color: "cyan",
+                    side: "right"
+                  },
+                  {
+                    phase: "03",
+                    title: "Deployment Phase",
+                    subtitle: "System Integration",
+                    description: "Zero-downtime deployment with real-time monitoring and rollback capabilities.",
+                    icon: "🚀",
+                    status: "DEPLOYING",
+                    color: "blue",
+                    side: "left"
+                  },
+                  {
+                    phase: "04",
+                    title: "Active Monitoring",
+                    subtitle: "Real-time Control",
+                    description: "Continuous monitoring with predictive analytics and automated incident response.",
+                    icon: "📊",
+                    status: "MONITORING",
+                    color: "cyan",
+                    side: "right"
+                  },
+                  {
+                    phase: "05",
+                    title: "Optimization Loop",
+                    subtitle: "Continuous Improvement",
+                    description: "Machine learning algorithms optimize performance and reduce costs over time.",
+                    icon: "🔄",
+                    status: "OPTIMIZING",
+                    color: "lime",
+                    side: "left"
+                  },
+                  {
+                    phase: "06",
+                    title: "Mission Complete",
+                    subtitle: "Operational Excellence",
+                    description: "Full operational control with 99.9% uptime and predictable performance.",
+                    icon: "✅",
+                    status: "COMPLETE",
+                    color: "lime",
+                    side: "right"
+                  }
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.phase}
+                    initial={{ opacity: 0, x: item.side === 'left' ? -30 : 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    className={`relative flex items-center ${item.side === 'left' ? 'md:justify-start' : 'md:justify-end'} justify-center`}
+                  >
+                    {/* Timeline Node - Desktop only */}
+                    <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
+                      <motion.div
+                        className={`w-12 h-12 rounded-full border-2 border-${item.color}-400/50 bg-black/80 flex items-center justify-center shadow-lg shadow-${item.color}-400/20`}
+                        whileHover={{ scale: 1.1 }}
+                        animate={{ 
+                          boxShadow: [
+                            `0 0 15px rgba(${item.color === 'blue' ? '59,130,246' : item.color === 'cyan' ? '34,211,238' : '163,230,53'}, 0.3)`,
+                            `0 0 25px rgba(${item.color === 'blue' ? '59,130,246' : item.color === 'cyan' ? '34,211,238' : '163,230,53'}, 0.1)`,
+                            `0 0 15px rgba(${item.color === 'blue' ? '59,130,246' : item.color === 'cyan' ? '34,211,238' : '163,230,53'}, 0.3)`
+                          ]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        <span className="text-lg">{item.icon}</span>
+                      </motion.div>
                     </div>
-                  </div>
-                  
-                  <h3 className="font-space text-lg font-semibold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300">
-                    {useCase.title}
-                  </h3>
-                  
-                  <p className="text-xs text-white/70 whitespace-pre-line leading-relaxed flex-grow">{useCase.description}</p>
+
+                    {/* Content Card */}
+                    <motion.div
+                      className={`w-full max-w-sm md:max-w-md ${item.side === 'left' ? 'md:mr-auto md:pr-16' : 'md:ml-auto md:pl-16'}`}
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="group relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-cyan-400/5 rounded-lg blur-lg group-hover:blur-xl transition-all duration-300"></div>
+                        <div className="relative backdrop-blur-2xl bg-black/40 border border-blue-400/20 rounded-lg p-4 md:p-5 shadow-2xl shadow-black/60 group-hover:border-blue-400/40 transition-all duration-300">
+                          {/* Mobile Icon + Phase */}
+                          <div className="flex items-center md:hidden mb-3">
+                            <span className="text-2xl mr-3">{item.icon}</span>
+                            <div className={`font-mono-enhanced text-mono-caption text-${item.color}-400 text-glow-${item.color} bg-black/30 px-2 py-1 rounded border border-${item.color}-400/30`}>
+                              PHASE {item.phase}
+                            </div>
+                          </div>
+
+                          {/* Desktop Phase Number */}
+                          <div className="hidden md:flex items-center justify-between mb-3">
+                            <div className={`font-mono-enhanced text-mono-caption text-${item.color}-400 text-glow-${item.color} bg-black/30 px-2 py-1 rounded border border-${item.color}-400/30`}>
+                              PHASE {item.phase}
+                            </div>
+                            <div className={`font-mono-enhanced text-mono-caption text-${item.color}-400 text-glow-${item.color} bg-black/30 px-2 py-1 rounded border border-${item.color}-400/30`}>
+                              {item.status}
+                            </div>
+                          </div>
+
+                          {/* Title */}
+                          <h3 className="font-space-enhanced text-lg md:text-xl text-premium mb-1 group-hover:text-blue-400 transition-colors duration-300">
+                            {item.title}
+                          </h3>
+                          
+                          {/* Subtitle */}
+                          <div className={`font-mono-enhanced text-xs md:text-sm text-${item.color}-400 text-glow-${item.color} mb-2`}>
+                            {item.subtitle}
+                          </div>
+
+                          {/* Description */}
+                          <p className="text-body-enhanced text-white/80 text-sm md:text-base leading-relaxed mb-3">
+                            {item.description}
+                          </p>
+
+                          {/* Progress Indicator */}
+                          <div className="flex items-center space-x-2">
+                            <div className="flex-1 h-1 bg-black/40 rounded-full overflow-hidden">
+                              <motion.div
+                                className={`h-full bg-gradient-to-r from-${item.color}-400 to-${item.color}-300`}
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${(parseInt(item.phase) / 6) * 100}%` }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1, delay: index * 0.1 }}
+                              />
+                            </div>
+                            <span className={`font-mono-enhanced text-xs text-${item.color}-400`}>
+                              {Math.round((parseInt(item.phase) / 6) * 100)}%
+                            </span>
+                          </div>
+
+                          {/* Mobile Status */}
+                          <div className="md:hidden mt-2">
+                            <div className={`font-mono-enhanced text-xs text-${item.color}-400 text-glow-${item.color} bg-black/30 px-2 py-1 rounded border border-${item.color}-400/30 inline-block`}>
+                              {item.status}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                ))}
               </div>
-              </motion.div>
-            ))}
+
+              {/* Floating Background Elements - Reduced count */}
+              <div className="absolute inset-0 -z-10">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-blue-400/20 rounded-full"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                    }}
+                    animate={{
+                      y: [0, -15, 0],
+                      opacity: [0.2, 0.4, 0.2],
+                    }}
+                    transition={{
+                      duration: 4 + Math.random() * 2,
+                      repeat: Infinity,
+                      delay: Math.random() * 2,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
         
@@ -811,10 +1078,10 @@ export default function OpsPipe() {
             
             <div className="relative z-10">
               <div className="text-center mb-8">
-                <h2 className="font-space text-2xl font-bold text-blue-400 mb-4">
+                <h2 className="font-space-enhanced text-headline text-blue-400 text-glow-blue mb-4">
                 Built LEGIT for Operational Accountability
               </h2>
-                <p className="text-white/80 max-w-3xl mx-auto mb-8">
+                <p className="text-body-enhanced text-white/80 text-readable max-w-3xl mx-auto mb-8">
                 OpsPipe follows the <span className="font-semibold text-blue-300">LEGIT</span> standard — our framework for secure, testable, and audit-compliant operational systems.
               </p>
                 </div>
@@ -880,18 +1147,18 @@ export default function OpsPipe() {
               </svg>
             </div>
             
-            <h2 className="font-space text-3xl md:text-4xl font-bold text-white mb-6">
-              Own Your <span className="text-blue-400">Operations</span>
+            <h2 className="font-space-enhanced text-display text-premium mb-6">
+              Own Your <span className="gradient-blue-cyan text-glow-blue">Operations</span>
             </h2>
             
-            <p className="text-xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-body-enhanced text-white/80 text-readable mb-8 max-w-3xl mx-auto leading-relaxed">
               Take control of your operational workflow with enterprise-grade automation and intelligence that scales with your business.
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link
                 to="/contact"
-                className="inline-flex items-center bg-gradient-to-r from-blue-400 to-cyan-400 text-black font-medium py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-400/20"
+                className="inline-flex items-center bg-gradient-to-r from-blue-400 to-cyan-400 text-white font-medium py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-400/20"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -914,6 +1181,161 @@ export default function OpsPipe() {
       
       <ScrollToTop />
       <MissionControlNavbar />
+      <FooterExperience />
     </div>
   );
 } 
+
+<style jsx>{`
+  .opspipe-architecture-diagram {
+    background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(30,30,30,0.9) 100%);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
+  }
+  
+  .motion-reduce-compatible {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Enhanced Typography System */
+  .font-space-enhanced {
+    font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+  }
+
+  .font-mono-enhanced {
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+    font-variant-numeric: tabular-nums;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Typography Hierarchy */
+  .text-hero {
+    font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .text-display {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+  }
+
+  .text-headline {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+
+  .text-subhead {
+    font-size: clamp(1.125rem, 3vw, 1.25rem);
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+    font-weight: 500;
+  }
+
+  .text-body-enhanced {
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    line-height: 1.6;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  .text-caption-enhanced {
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    line-height: 1.5;
+    letter-spacing: 0.025em;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  /* Technical Typography */
+  .text-mono-display {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+    line-height: 1.4;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
+  .text-mono-caption {
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    line-height: 1.3;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  /* Text Effects */
+  .text-glow-blue {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.3);
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(34, 211, 238, 0.3);
+  }
+
+  .text-glow-lime {
+    text-shadow: 0 0 20px rgba(132, 204, 22, 0.5), 0 0 40px rgba(132, 204, 22, 0.3);
+  }
+
+  .text-premium {
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  /* Enhanced Gradients */
+  .gradient-blue-cyan {
+    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .gradient-cyan-lime {
+    background: linear-gradient(135deg, #06b6d4 0%, #84cc16 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Responsive Typography */
+  @media (max-width: 768px) {
+    .text-hero {
+      font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+    
+    .text-display {
+      font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+
+    .text-headline {
+      font-size: clamp(1.25rem, 6vw, 1.75rem);
+    }
+  }
+
+  /* Enhanced Readability */
+  .text-readable {
+    max-width: 65ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .text-technical {
+    max-width: 80ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+`}</style> 

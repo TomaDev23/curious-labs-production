@@ -8,21 +8,47 @@
 // 🎯 ROUTE: /products/curious
 // 🔗 PARENT: Products Portal (/products)
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
+import FooterExperience from '../../components/home/v4/FooterExperience';
 import { motion } from '../../FramerProvider';
 
 export default function Curious() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isHovered, setIsHovered] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [isVideoInView, setIsVideoInView] = useState(false);
+  const videoRef = useRef(null);
+  const videoContainerRef = useRef(null);
   
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Intersection Observer for video performance
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVideoInView(entry.isIntersecting);
+        if (entry.isIntersecting && videoRef.current) {
+          videoRef.current.play().catch(console.log);
+        } else if (videoRef.current) {
+          videoRef.current.pause();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (videoContainerRef.current) {
+      observer.observe(videoContainerRef.current);
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -747,44 +773,91 @@ export default function Curious() {
 
                       {/* Chat Interface */}
                       <div className="h-full bg-gradient-to-br from-rose-50 to-purple-50 flex flex-col">
-                        {/* Top Half - AI Model Space */}
-                        <div className="flex-1 bg-gradient-to-br from-slate-100 to-rose-100 relative overflow-hidden">
-                          {/* Placeholder for AI Model Asset */}
+                        {/* Top Half - AI Model Space - Expanded */}
+                        <div className="flex-[2] bg-gradient-to-br from-slate-100 to-rose-100 relative overflow-hidden" ref={videoContainerRef}>
+                          {/* AI Model Video */}
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-center space-y-4">
-                              {/* Temporary placeholder - will be replaced with actual AI model */}
-                              <div className="w-32 h-32 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-2xl">
-                                <div className="text-white text-4xl">💖</div>
-                              </div>
-                              <div className="text-slate-600 font-medium">AI Model Space</div>
-                              <div className="text-xs text-slate-500">Ready for 3D asset</div>
-                            </div>
-                          </div>
-                          
-                          {/* Subtle gradient overlay for depth */}
-                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/20"></div>
-                        </div>
-                        
-                        {/* Bottom Half - Chat Interface */}
-                        <div className="flex-1 flex flex-col bg-white/90 backdrop-blur-sm">
-                          {/* Chat Header - Compact */}
-                          <div className="bg-white/80 backdrop-blur-sm px-4 py-3 border-b border-slate-200/50">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-sm">
-                                💖
-                              </div>
-                              <div className="flex-1">
-                                <div className="font-semibold text-slate-900 text-sm">Curious</div>
-                                <div className="text-xs text-emerald-600 flex items-center gap-1">
-                                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                                  Online
+                            <div className="relative w-full h-full">
+                              {/* Video Element */}
+                              <video
+                                ref={videoRef}
+                                className={`w-full h-full object-cover transition-opacity duration-700 ${
+                                  isVideoLoaded ? 'opacity-100' : 'opacity-0'
+                                }`}
+                                src="/assets/videos/Ai_Model_Curious.mp4"
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                preload="metadata"
+                                onLoadedData={() => setIsVideoLoaded(true)}
+                                onError={() => setIsVideoLoaded(false)}
+                              />
+                              
+                              {/* Loading Placeholder - shown until video loads */}
+                              <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-700 ${
+                                isVideoLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                              }`}>
+                                <div className="text-center space-y-4">
+                                  <motion.div 
+                                    className="w-32 h-32 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-2xl"
+                                    animate={{ 
+                                      scale: [1, 1.05, 1],
+                                      boxShadow: [
+                                        "0 20px 40px rgba(244, 114, 182, 0.3)",
+                                        "0 25px 50px rgba(244, 114, 182, 0.4)",
+                                        "0 20px 40px rgba(244, 114, 182, 0.3)"
+                                      ]
+                                    }}
+                                    transition={{ 
+                                      duration: 2,
+                                      repeat: Infinity,
+                                      ease: "easeInOut"
+                                    }}
+                                  >
+                                    <div className="text-white text-4xl">💖</div>
+                                  </motion.div>
+                                  <div className="text-slate-600 font-medium">Loading AI Model...</div>
+                                  <div className="flex justify-center gap-1">
+                                    {[0, 1, 2].map((i) => (
+                                      <motion.div
+                                        key={i}
+                                        className="w-2 h-2 bg-rose-400 rounded-full"
+                                        animate={{ opacity: [0.3, 1, 0.3] }}
+                                        transition={{
+                                          duration: 1.5,
+                                          repeat: Infinity,
+                                          delay: i * 0.2
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
+
+                              {/* Error Fallback */}
+                              {!isVideoLoaded && isVideoInView && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-100 to-rose-100">
+                                  <div className="text-center space-y-4">
+                                    <div className="w-32 h-32 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+                                      <div className="text-white text-4xl">💖</div>
+                                    </div>
+                                    <div className="text-slate-600 font-medium">AI Model Space</div>
+                                    <div className="text-xs text-slate-500">Ready for interaction</div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                           
-                          {/* Chat Messages - Only First Two */}
-                          <div className="flex-1 p-4 space-y-3 overflow-hidden">
+                          {/* Subtle gradient overlay for depth - preserved */}
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/20 pointer-events-none"></div>
+                        </div>
+                        
+                        {/* Bottom Half - Chat Interface - Compact */}
+                        <div className="flex-1 flex flex-col bg-white/90 backdrop-blur-sm">
+                          {/* Chat Messages - Compact Layout */}
+                          <div className="flex-1 p-3 space-y-2 overflow-hidden">
                             {/* AI Message */}
                             <motion.div
                               className="flex items-start gap-2"
@@ -793,11 +866,11 @@ export default function Curious() {
                               viewport={{ once: true }}
                               transition={{ delay: 0.8 }}
                             >
-                              <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-xs flex-shrink-0">
+                              <div className="w-5 h-5 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-xs flex-shrink-0">
                                 💖
                               </div>
-                              <div className="bg-white rounded-2xl rounded-tl-md p-3 max-w-[200px] shadow-sm">
-                                <div className="text-slate-800 text-sm">I noticed you seem a bit stressed today. Everything okay? 💕</div>
+                              <div className="bg-white rounded-2xl rounded-tl-md p-2 max-w-[180px] shadow-sm">
+                                <div className="text-slate-800 text-xs">I noticed you seem a bit stressed today. Everything okay? 💕</div>
                                 <div className="text-xs text-slate-500 mt-1">2:31 PM</div>
                               </div>
                             </motion.div>
@@ -810,8 +883,8 @@ export default function Curious() {
                               viewport={{ once: true }}
                               transition={{ delay: 1.0 }}
                             >
-                              <div className="bg-gradient-to-br from-rose-500 to-purple-500 rounded-2xl rounded-tr-md p-3 max-w-[200px] text-white shadow-sm">
-                                <div className="text-sm">Yeah, work has been overwhelming lately. Thanks for asking though 🙂</div>
+                              <div className="bg-gradient-to-br from-rose-500 to-purple-500 rounded-2xl rounded-tr-md p-2 max-w-[180px] text-white shadow-sm">
+                                <div className="text-xs">Yeah, work has been overwhelming lately. Thanks for asking though 🙂</div>
                                 <div className="text-xs text-rose-100 mt-1">2:32 PM</div>
                               </div>
                             </motion.div>
@@ -824,23 +897,23 @@ export default function Curious() {
                               viewport={{ once: true }}
                               transition={{ delay: 1.2 }}
                             >
-                              <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-xs">
+                              <div className="w-5 h-5 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-xs">
                                 💖
                               </div>
-                              <div className="bg-white rounded-2xl rounded-tl-md p-3 shadow-sm">
+                              <div className="bg-white rounded-2xl rounded-tl-md p-2 shadow-sm">
                                 <div className="flex gap-1">
                                   <motion.div
-                                    className="w-1.5 h-1.5 bg-slate-400 rounded-full"
+                                    className="w-1 h-1 bg-slate-400 rounded-full"
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
                                   />
                                   <motion.div
-                                    className="w-1.5 h-1.5 bg-slate-400 rounded-full"
+                                    className="w-1 h-1 bg-slate-400 rounded-full"
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
                                   />
                                   <motion.div
-                                    className="w-1.5 h-1.5 bg-slate-400 rounded-full"
+                                    className="w-1 h-1 bg-slate-400 rounded-full"
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
                                   />
@@ -849,14 +922,14 @@ export default function Curious() {
                             </motion.div>
                           </div>
                           
-                          {/* Chat Input - Compact */}
-                          <div className="bg-white/80 backdrop-blur-sm border-t border-slate-200/50 p-3">
+                          {/* Chat Input - Very Compact */}
+                          <div className="bg-white/80 backdrop-blur-sm border-t border-slate-200/50 p-2">
                             <div className="flex items-center gap-2">
-                              <div className="flex-1 bg-slate-100 rounded-full px-3 py-2">
+                              <div className="flex-1 bg-slate-100 rounded-full px-3 py-1">
                                 <div className="text-slate-500 text-xs">Type a message...</div>
                               </div>
-                              <div className="w-7 h-7 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-white">
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-white">
+                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                 </svg>
                               </div>
@@ -865,7 +938,7 @@ export default function Curious() {
                         </div>
                         
                         {/* Home Indicator */}
-                        <div className="flex justify-center py-2 bg-white/90">
+                        <div className="flex justify-center py-1 bg-white/90">
                           <div className="w-32 h-1 bg-slate-300 rounded-full"></div>
                         </div>
                       </div>
@@ -1615,6 +1688,7 @@ export default function Curious() {
 
       <ScrollToTop />
       <MissionControlNavbar />
+      <FooterExperience />
     </div>
   );
 } 

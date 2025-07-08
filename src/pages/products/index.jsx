@@ -14,9 +14,48 @@ import MissionControlNavbar from '../../components/navigation/MissionControlNavb
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import SolarSystemLayout from '../../components/SolarSystemLayout';
+import FooterExperience from '../../components/home/v4/FooterExperience';
 
 // Product data for mobile view
 import {  motion  } from '../../FramerProvider';
+
+// Enhanced Typography CSS Styles
+const typographyStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+  
+  .font-inter-enhanced { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+  .font-playfair-enhanced { font-family: 'Playfair Display', Georgia, serif; }
+  .font-mono-enhanced { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+  
+  .text-hero-cosmic { font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; line-height: 0.9; }
+  .text-display-cosmic { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; line-height: 1.1; }
+  .text-headline-cosmic { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 600; line-height: 1.2; }
+  .text-subhead-cosmic { font-size: clamp(1.125rem, 3vw, 1.5rem); font-weight: 500; line-height: 1.4; }
+  .text-body-cosmic { font-size: clamp(1rem, 2.5vw, 1.125rem); font-weight: 400; line-height: 1.6; }
+  .text-caption-cosmic { font-size: clamp(0.875rem, 2vw, 1rem); font-weight: 400; line-height: 1.5; }
+  .text-mono-cosmic { font-size: clamp(0.75rem, 1.5vw, 0.875rem); font-weight: 500; letter-spacing: 0.05em; }
+  
+  .gradient-cosmic-primary { background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .gradient-cosmic-curious { background: linear-gradient(135deg, #ec4899, #f43f5e, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .gradient-cosmic-guardian { background: linear-gradient(135deg, #f59e0b, #fbbf24, #facc15); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .gradient-cosmic-opspipe { background: linear-gradient(135deg, #06b6d4, #0891b2, #0e7490); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .gradient-cosmic-moonsignal { background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .gradient-cosmic-aegis { background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706, #92400e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  
+  .text-glow-cosmic { text-shadow: 0 0 10px rgba(251, 191, 36, 0.5), 0 0 20px rgba(251, 191, 36, 0.3), 0 0 30px rgba(251, 191, 36, 0.1); }
+  .text-glow-curious { text-shadow: 0 0 10px rgba(236, 72, 153, 0.5), 0 0 20px rgba(236, 72, 153, 0.3), 0 0 30px rgba(236, 72, 153, 0.1); }
+  .text-glow-guardian { text-shadow: 0 0 10px rgba(245, 158, 11, 0.5), 0 0 20px rgba(245, 158, 11, 0.3), 0 0 30px rgba(245, 158, 11, 0.1); }
+  .text-glow-opspipe { text-shadow: 0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.3), 0 0 30px rgba(6, 182, 212, 0.1); }
+  .text-glow-moonsignal { text-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3), 0 0 30px rgba(139, 92, 246, 0.1); }
+  .text-glow-aegis { text-shadow: 0 0 15px rgba(251, 191, 36, 0.6), 0 0 30px rgba(251, 191, 36, 0.4), 0 0 45px rgba(251, 191, 36, 0.2); }
+  
+  .text-shadow-cosmic { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), 0 4px 8px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.4); }
+  .text-shadow-soft { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4); }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .text-glow-cosmic, .text-glow-curious, .text-glow-guardian, .text-glow-opspipe, .text-glow-moonsignal, .text-glow-aegis { text-shadow: none; }
+  }
+`;
 
 const productData = [
   { 
@@ -26,7 +65,8 @@ const productData = [
     description: "Core Runtime Engine",
     status: "OPERATIONAL",
     coordinates: "CORE-001",
-    classification: "CENTRAL_COMMAND"
+    classification: "CENTRAL_COMMAND",
+    theme: "aegis"
   },
   { 
     icon: "/assets/images/general/Page_Logos/OpsPipe_logo.webp", 
@@ -35,7 +75,8 @@ const productData = [
     description: "Operational Automation",
     status: "ACTIVE",
     coordinates: "OPS-002",
-    classification: "AUTOMATION_SUITE"
+    classification: "AUTOMATION_SUITE",
+    theme: "opspipe"
   },
   { 
     icon: "/assets/images/general/Page_Logos/MoonSignal_logo.webp", 
@@ -44,7 +85,8 @@ const productData = [
     description: "Analytics & Insights",
     status: "MONITORING",
     coordinates: "ANA-003",
-    classification: "INTELLIGENCE_HUB"
+    classification: "INTELLIGENCE_HUB",
+    theme: "moonsignal"
   },
   { 
     icon: "/assets/images/general/Page_Logos/Guardian_logo.webp", 
@@ -53,7 +95,8 @@ const productData = [
     description: "Security & Monitoring",
     status: "STANDBY",
     coordinates: "SEC-004",
-    classification: "DEFENSE_GRID"
+    classification: "DEFENSE_GRID",
+    theme: "guardian"
   },
   { 
     icon: "/assets/images/general/Page_Logos/Curious_logo.webp", 
@@ -62,7 +105,8 @@ const productData = [
     description: "Intelligent Exploration",
     status: "RESEARCH",
     coordinates: "EXP-005",
-    classification: "DISCOVERY_ENGINE"
+    classification: "DISCOVERY_ENGINE",
+    theme: "curious"
   }
 ];
 
@@ -116,353 +160,216 @@ export default function ProductsPortal() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'OPERATIONAL': return 'text-lime-400';
-      case 'ACTIVE': return 'text-blue-400';
-      case 'MONITORING': return 'text-yellow-400';
-      case 'STANDBY': return 'text-orange-400';
-      case 'RESEARCH': return 'text-purple-400';
+      case 'OPERATIONAL': return 'text-amber-400';
+      case 'ACTIVE': return 'text-cyan-400';
+      case 'MONITORING': return 'text-purple-400';
+      case 'STANDBY': return 'text-yellow-400';
+      case 'RESEARCH': return 'text-pink-400';
       default: return 'text-gray-400';
     }
   };
 
   const getStatusBg = (status) => {
     switch (status) {
-      case 'OPERATIONAL': return 'bg-lime-400';
-      case 'ACTIVE': return 'bg-blue-400';
-      case 'MONITORING': return 'bg-yellow-400';
-      case 'STANDBY': return 'bg-orange-400';
-      case 'RESEARCH': return 'bg-purple-400';
+      case 'OPERATIONAL': return 'bg-amber-400';
+      case 'ACTIVE': return 'bg-cyan-400';
+      case 'MONITORING': return 'bg-purple-400';
+      case 'STANDBY': return 'bg-yellow-400';
+      case 'RESEARCH': return 'bg-pink-400';
       default: return 'bg-gray-400';
+    }
+  };
+
+  const getProductTheme = (theme) => {
+    switch (theme) {
+      case 'aegis': return {
+        gradient: 'from-amber-500/20 to-yellow-600/10',
+        border: 'border-amber-400/20 hover:border-amber-400/40',
+        glow: 'hover:shadow-amber-500/20',
+        text: 'group-hover:text-amber-400'
+      };
+      case 'opspipe': return {
+        gradient: 'from-cyan-500/20 to-blue-600/10',
+        border: 'border-cyan-400/20 hover:border-cyan-400/40',
+        glow: 'hover:shadow-cyan-500/20',
+        text: 'group-hover:text-cyan-400'
+      };
+      case 'moonsignal': return {
+        gradient: 'from-purple-500/20 to-violet-600/10',
+        border: 'border-purple-400/20 hover:border-purple-400/40',
+        glow: 'hover:shadow-purple-500/20',
+        text: 'group-hover:text-purple-400'
+      };
+      case 'guardian': return {
+        gradient: 'from-yellow-500/20 to-amber-600/10',
+        border: 'border-yellow-400/20 hover:border-yellow-400/40',
+        glow: 'hover:shadow-yellow-500/20',
+        text: 'group-hover:text-yellow-400'
+      };
+      case 'curious': return {
+        gradient: 'from-pink-500/20 to-rose-600/10',
+        border: 'border-pink-400/20 hover:border-pink-400/40',
+        glow: 'hover:shadow-pink-500/20',
+        text: 'group-hover:text-pink-400'
+      };
+      default: return {
+        gradient: 'from-gray-500/20 to-gray-600/10',
+        border: 'border-gray-400/20 hover:border-gray-400/40',
+        glow: 'hover:shadow-gray-500/20',
+        text: 'group-hover:text-gray-400'
+      };
     }
   };
 
   return (
     <div className="relative min-h-screen bg-black overflow-hidden">
+      {/* Enhanced Typography Styles */}
+      <style dangerouslySetInnerHTML={{ __html: typographyStyles }} />
+      
       {/* Background System */}
       <BackgroundLayerAtomic />
       
       {/* Mission Control Navbar */}
       <MissionControlNavbar />
       
-      {/* Atmospheric glow effects */}
-      <div
-        className="absolute z-[15] w-[1000px] h-[1000px] rounded-full blur-3xl pointer-events-none"
-        style={{
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(ellipse, rgba(132,204,22,0.03) 0%, transparent 70%)'
-        }}
-      />
-      
       {/* Main Content */}
-      <main className="relative z-20 pt-20 pb-16">
-        {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 py-16">
-          <div className="text-center mb-16">
+      <main className="relative z-20 pt-20 pb-8" style={{ paddingBottom: '22vh' }}>
+        {/* Streamlined Hero Section */}
+        <section className="max-w-7xl mx-auto px-4 py-8">
+          <div className="text-center mb-8">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1, ease: "easeOut" }}
               className="mb-6"
             >
-              <h1 className="font-space text-4xl md:text-6xl font-bold text-white leading-tight tracking-tight mb-4">
-                Fleet <span className="bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">Arsenal</span>
+              <h1 className="text-5xl lg:text-6xl font-bold text-white mb-4">
+                Fleet <span className="bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent">Arsenal</span>
               </h1>
-              <div className="h-0.5 bg-gradient-to-r from-lime-400/0 via-lime-400/60 to-lime-400/0 w-32 mx-auto"></div>
+              <div className="h-0.5 bg-gradient-to-r from-lime-400/0 via-lime-400/60 to-lime-400/0 w-32 mx-auto rounded-full"></div>
             </motion.div>
             
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-space text-lg md:text-xl text-white/85 max-w-3xl mx-auto leading-relaxed"
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-lg text-white/80 max-w-2xl mx-auto mb-6"
             >
-              A constellation of integrated solutions orbiting around our Aegis core runtime engine.
+              A constellation of integrated solutions orbiting around our <span className="text-lime-400 font-semibold">Aegis</span> core runtime engine.
             </motion.p>
-          </div>
 
-          {/* Fleet Status Panel */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="max-w-6xl mx-auto mb-16"
-          >
-            <div className="backdrop-blur-2xl bg-black/40 border border-lime-400/20 rounded-xl p-6 shadow-2xl shadow-black/60">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 bg-lime-400 rounded-full animate-pulse"></div>
-                  <span className="font-mono text-lime-400 text-sm tracking-wider font-semibold">FLEET STATUS</span>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2 px-3 py-1 rounded-full border border-lime-400/30 bg-black/40">
-                    <span className="text-xs font-mono text-white/70">MISSION TIME:</span>
-                    <span className="text-xs font-mono text-lime-400 font-semibold">{missionTime}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 px-3 py-1 rounded-full border border-lime-400/30 bg-black/40">
-                    <span className="text-xs font-mono text-white/70">SYSTEMS:</span>
-                    <span className="text-xs font-mono text-lime-400 font-semibold">ONLINE</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {productData.map((product, index) => (
-                  <motion.div
-                    key={product.title}
-                    className="group cursor-pointer p-3 rounded-lg bg-gradient-to-br from-lime-400/5 to-emerald-500/5 border border-lime-400/10 hover:border-lime-400/30 transition-all duration-300"
-                    whileHover={{ scale: 1.02 }}
-                    onMouseEnter={() => setActiveProduct(product.title)}
-                    onMouseLeave={() => setActiveProduct(null)}
-                  >
-                    <div className="text-center">
-                      <div className="w-8 h-8 mx-auto mb-2 flex items-center justify-center">
-                        <img 
-                          src={product.icon} 
-                          alt={`${product.title} Logo`} 
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                      <div className="text-sm font-medium text-white mb-1">{product.title}</div>
-                      <div className="flex items-center justify-center space-x-1 mb-2">
-                        <div className={`w-2 h-2 rounded-full animate-pulse ${getStatusBg(product.status)}`}></div>
-                        <span className={`text-xs font-mono tracking-wider ${getStatusColor(product.status)}`}>
-                          {product.status}
-                        </span>
-                      </div>
-                      <div className="text-xs font-mono text-white/50 bg-black/30 px-2 py-0.5 rounded">
-                        {product.coordinates}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Solar System Section - Desktop */}
-        <section id="solar-system" className="relative py-16 px-4 sm:px-8 hidden lg:block">
-          {/* Enhanced star background with atomic styling */}
-          <motion.div 
-            className="absolute inset-0 opacity-20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.2 }}
-            transition={{ duration: 1 }}
-            style={{
-              backgroundImage: "radial-gradient(2px 2px at 20px 30px, rgba(132,204,22,0.3), transparent), radial-gradient(2px 2px at 40px 70px, rgba(132,204,22,0.2), transparent), radial-gradient(1px 1px at 90px 40px, rgba(132,204,22,0.4), transparent), radial-gradient(1px 1px at 130px 80px, rgba(132,204,22,0.2), transparent), radial-gradient(2px 2px at 160px 30px, rgba(132,204,22,0.3), transparent)",
-              backgroundRepeat: "repeat",
-              backgroundSize: "200px 100px"
-            }}
-          />
-          
-          {/* Title overlay with atomic styling */}
-          <motion.div 
-            className="absolute top-24 left-10 z-20 max-w-md"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="backdrop-blur-2xl bg-black/40 border border-lime-400/20 rounded-xl p-6 shadow-2xl shadow-black/60">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-3 h-3 bg-lime-400 rounded-full animate-pulse"></div>
-                <span className="font-mono text-lime-400 text-sm tracking-wider font-semibold">SYSTEM OVERVIEW</span>
-              </div>
-              
-            <div className="flex flex-col text-left">
-                <span className="font-space text-2xl sm:text-3xl font-bold text-white tracking-wider mb-1">
-                  Product
-              </span>
-                <span className="font-space text-3xl sm:text-4xl font-bold tracking-wider uppercase bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(132,204,22,0.6)]">
-                  Constellation
-              </span>
-              </div>
-              
-              <p className="text-white/70 mt-4 leading-relaxed">
-                Every CuriousLabs solution orbits around <span className="text-lime-400 font-medium">Aegis</span> — our mission-critical runtime core.
-              </p>
-              
-              {activeProduct && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 p-3 rounded-lg bg-lime-400/10 border border-lime-400/20"
-                >
-                  <div className="text-sm font-medium text-lime-400">Active Scan:</div>
-                  <div className="text-sm text-white/80">{activeProduct}</div>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-          
-          {/* Solar System visualization with enhanced styling */}
-          <div className="relative">
-          <SolarSystemLayout />
-          </div>
-        </section>
-        
-        {/* Mobile Fallback - Enhanced with atomic styling */}
-        <section className="lg:hidden block py-16 px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-space text-3xl font-bold text-white mb-4">
-              Product <span className="text-lime-400">Constellation</span>
-            </h2>
-            <p className="text-white/70 max-w-md mx-auto leading-relaxed">
-              Discover our suite of integrated solutions powered by the Aegis runtime core.
-            </p>
-          </div>
-          
-          {/* Aegis Feature Card - Enhanced */}
-          <motion.div
-            className="mx-auto max-w-sm mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="backdrop-blur-2xl bg-black/40 border border-lime-400/30 rounded-xl p-6 shadow-2xl shadow-black/60">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 flex items-center justify-center">
-                  <img 
-                    src="/assets/images/general/Page_Logos/Aegis_logo.webp" 
-                    alt="Aegis Logo" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="text-xs font-mono text-white/50 bg-black/30 px-2 py-1 rounded">
-                  CORE-001
-                </div>
-              </div>
-              
-              <h3 className="font-space text-xl font-bold text-white mb-2">Aegis</h3>
-              <p className="text-white/70 text-sm mb-3">Core Runtime Engine</p>
-              
-              <div className="flex items-center space-x-2 mb-4">
+            {/* Integrated Fleet Status */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="inline-flex items-center gap-4 bg-black/30 backdrop-blur-sm border border-white/10 rounded-full px-6 py-3"
+            >
+              <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse"></div>
-                <span className="text-xs font-mono text-lime-400 tracking-wider">OPERATIONAL</span>
+                <span className="text-sm text-white/90">All Systems Operational</span>
               </div>
-              
-              <div className="text-xs text-white/60 mb-4">CENTRAL_COMMAND</div>
-              
-              <Link 
-                to="/products/aegis" 
-                className="inline-flex items-center justify-center w-full bg-gradient-to-r from-lime-400 to-emerald-500 text-black font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-lime-400/20"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Access Core
-              </Link>
-            </div>
-          </motion.div>
-          
-          {/* Other Products Grid - Enhanced */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {productData.slice(1).map((product, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: 0.1 * index, duration: 0.5 }}
-                className="group"
-              >
-                <Link 
-                  to={product.path} 
-                  className="block backdrop-blur-2xl bg-black/30 border border-white/10 rounded-xl p-5 transition-all duration-500 hover:border-lime-400/30 hover:bg-black/40 hover:scale-105"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="w-8 h-8 flex items-center justify-center">
-                      <img 
-                        src={product.icon} 
-                        alt={`${product.title} Logo`} 
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div className="text-xs font-mono text-white/50 bg-black/30 px-2 py-1 rounded">
-                      {product.coordinates}
-                    </div>
-                  </div>
-                  
-                  <h3 className="font-space text-lg font-semibold text-white mb-1 group-hover:text-lime-400 transition-colors duration-300">
-                    {product.title}
-                  </h3>
-                  
-                  <div className="flex items-center space-x-2 mb-2">
-                    <div className={`w-2 h-2 rounded-full animate-pulse ${getStatusBg(product.status)}`}></div>
-                    <span className={`text-xs font-mono tracking-wider ${getStatusColor(product.status)}`}>
-                      {product.status}
-                    </span>
-                  </div>
-                  
-                  <p className="text-white/60 text-sm mb-3">{product.description}</p>
-                  <div className="text-xs text-white/50 mb-3">{product.classification}</div>
-                  
-                  <div className="flex items-center text-lime-400 text-sm font-medium">
-                    <span>Explore System</span>
-                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+              <div className="w-px h-4 bg-white/20"></div>
+              <div className="text-sm text-lime-400 font-mono">
+                {missionTime}
+              </div>
+            </motion.div>
           </div>
         </section>
-        
-        {/* Enhanced CTA Section */}
-        <div className="pt-16 pb-32">
-          <motion.div 
-            className="max-w-4xl mx-auto px-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="backdrop-blur-2xl bg-black/40 border border-lime-400/20 rounded-xl p-8 shadow-2xl shadow-black/60">
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-lime-400/20 to-emerald-500/20 rounded-full flex items-center justify-center">
-                  <svg className="w-8 h-8 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                  </svg>
+
+        {/* Enhanced Solar System Section - Desktop */}
+        <section className="hidden lg:block w-full py-8">
+          <div className="relative w-full">
+            {/* System Overview Container */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+              className="absolute z-30 max-w-sm left-8 top-1/2 transform -translate-y-1/2 xl:left-[calc(8rem+15vh)] xl:top-[calc(50%-15vh)]"
+            >
+              <div className="bg-black/80 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+                {/* System Overview Header */}
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse"></div>
+                  <span className="font-mono bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent text-sm uppercase tracking-wider font-semibold">
+                    SYSTEM OVERVIEW
+                  </span>
                 </div>
                 
-                <h2 className="font-space text-2xl md:text-3xl font-bold text-white mb-4">
-                  Ready to <span className="text-lime-400">Deploy</span>?
+                {/* Main Title */}
+                <h2 className="text-white text-4xl font-bold mb-3">
+                  Product
+                </h2>
+                <h2 className="bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(132,204,22,0.6)] text-4xl font-bold mb-4">
+                  CONSTELLATION
                 </h2>
                 
-                <p className="text-white/70 text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-                  Our integrated product constellation makes engineering excellence accessible to teams of all sizes. 
-                  Start your mission with CuriousLabs today.
+                {/* Description */}
+                <p className="text-white/70 text-sm leading-relaxed">
+                  Every CuriousLabs solution orbits around <span className="bg-gradient-to-r from-lime-400 to-emerald-500 bg-clip-text text-transparent font-semibold">Aegis</span> — our mission-critical runtime core.
                 </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <Link 
-                    to="/contact" 
-                    className="inline-flex items-center bg-gradient-to-r from-lime-400 to-emerald-500 text-black font-medium py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-lime-400/20"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    Contact Mission Control
-                  </Link>
-                  
-                  <Link 
-                    to="/about" 
-                    className="inline-flex items-center bg-black/50 border border-lime-400/30 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 hover:border-lime-400/50 hover:bg-black/70"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                    Meet the Crew
-              </Link>
-                </div>
               </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+            
+            <SolarSystemLayout 
+              products={productData} 
+              onProductHover={setActiveProduct}
+              activeProduct={activeProduct}
+            />
+          </div>
+        </section>
+
+        {/* Compact Mobile View */}
+        <section className="lg:hidden max-w-4xl mx-auto px-4 py-8">
+          <div className="grid gap-4">
+            {productData.map((product, index) => {
+              const theme = getProductTheme(product.theme);
+              
+              return (
+                <motion.div
+                  key={product.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+                >
+                  <Link
+                    to={product.path}
+                    className={`block bg-gradient-to-br ${theme.gradient} backdrop-blur-sm border ${theme.border} rounded-lg p-4 transition-all duration-300 ${theme.glow} hover:shadow-lg hover:scale-[1.01]`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+                        <img 
+                          src={product.icon} 
+                          alt={`${product.title} icon`} 
+                          className="w-8 h-8 object-contain"
+                        />
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-lg font-semibold text-white">
+                            {product.title}
+                          </h3>
+                          <div className={`w-1.5 h-1.5 ${getStatusBg(product.status)} rounded-full`}></div>
+                        </div>
+                        <p className="text-sm text-white/70">
+                          {product.description}
+                        </p>
+                      </div>
+                      
+                      <svg className="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
       </main>
       
+      <FooterExperience />
       <ScrollToTop />
     </div>
   );

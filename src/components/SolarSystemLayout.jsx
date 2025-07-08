@@ -2,12 +2,11 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from '../FramerProvider';
 
-
 const orbitData = [
-  { icon: "/assets/images/general/Page_Logos/OpsPipe_logo.webp", title: "OpsPipe", path: "/products/opspipe", angle: 0, adjustX: 100, adjustY: 20 },
-  { icon: "/assets/images/general/Page_Logos/MoonSignal_logo.webp", title: "MoonSignal", path: "/products/moonsignal", angle: 90, adjustX: 20, adjustY: 100 },
-  { icon: "/assets/images/general/Page_Logos/Guardian_logo.webp", title: "Guardian", path: "/products/guardian", angle: 180, adjustX: -20, adjustY: 0 },
-  { icon: "/assets/images/general/Page_Logos/Curious_logo.webp", title: "Curious", path: "/products/curious", angle: 270, adjustX: 0, adjustY: 30 },
+  { icon: "/assets/images/general/Page_Logos/OpsPipe_logo.webp", title: "OpsPipe", path: "/products/opspipe", angle: 0, adjustX: 100, adjustY: 20, theme: "opspipe" },
+  { icon: "/assets/images/general/Page_Logos/MoonSignal_logo.webp", title: "MoonSignal", path: "/products/moonsignal", angle: 90, adjustX: 20, adjustY: 100, theme: "moonsignal" },
+  { icon: "/assets/images/general/Page_Logos/Guardian_logo.webp", title: "Guardian", path: "/products/guardian", angle: 180, adjustX: -20, adjustY: 0, theme: "guardian" },
+  { icon: "/assets/images/general/Page_Logos/Curious_logo.webp", title: "Curious", path: "/products/curious", angle: 270, adjustX: 0, adjustY: 30, theme: "curious" },
 ];
 
 // Comet paths for more variety
@@ -77,16 +76,40 @@ const Comet = ({ delay, angle, duration, size = "md", pathIndex }) => {
   );
 };
 
-// Product card color mapping for unique identity
+// Enhanced product colors for the new cosmic theme
 const productColors = {
-  "OpsPipe": "from-blue-500/20 to-blue-600/5 hover:border-blue-400/40 hover:shadow-blue-500/10",
-  "MoonSignal": "from-purple-500/20 to-purple-600/5 hover:border-purple-400/40 hover:shadow-purple-500/10",
-  "Guardian": "from-red-500/20 to-red-600/5 hover:border-red-400/40 hover:shadow-red-500/10",
-  "Curious": "from-green-500/20 to-green-600/5 hover:border-green-400/40 hover:shadow-green-500/10"
+  "OpsPipe": {
+    gradient: "from-cyan-500/20 to-blue-600/10",
+    border: "border-cyan-400/20 hover:border-cyan-400/60",
+    glow: "hover:shadow-cyan-500/30",
+    text: "text-cyan-400",
+    ring: "border-cyan-400/40"
+  },
+  "MoonSignal": {
+    gradient: "from-purple-500/20 to-violet-600/10",
+    border: "border-purple-400/20 hover:border-purple-400/60",
+    glow: "hover:shadow-purple-500/30",
+    text: "text-purple-400",
+    ring: "border-purple-400/40"
+  },
+  "Guardian": {
+    gradient: "from-red-500/20 to-red-600/10",
+    border: "border-red-400/20 hover:border-red-400/60",
+    glow: "hover:shadow-red-500/30",
+    text: "text-red-400",
+    ring: "border-red-400/40"
+  },
+  "Curious": {
+    gradient: "from-pink-500/20 to-rose-600/10",
+    border: "border-pink-400/20 hover:border-pink-400/60",
+    glow: "hover:shadow-pink-500/30",
+    text: "text-pink-400",
+    ring: "border-pink-400/40"
+  }
 };
 
-export default function SolarSystemLayout() {
-  const radius = 220; // adjust as needed
+export default function SolarSystemLayout({ products, onProductHover, activeProduct }) {
+  const radius = 220;
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   
   // Check for reduced motion preference
@@ -94,7 +117,6 @@ export default function SolarSystemLayout() {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
     
-    // Add listener for changes
     const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
     mediaQuery.addEventListener('change', handleChange);
     
@@ -113,20 +135,17 @@ export default function SolarSystemLayout() {
 
   return (
     <div className="relative w-full h-[700px] sm:h-[700px] overflow-visible">
-      {/* Full viewport nebula background - extends beyond component boundaries */}
+      {/* Enhanced Cosmic Background */}
       <div className="absolute inset-0 w-full h-[350%]" style={{ zIndex: 0 }}>
-        {/* Moon-like nebula effect */}
-        <div className="absolute inset-0 w-full h-full bg-gradient-radial from-purple-900/10 via-purple-800/5 to-transparent opacity-40" />
-        
-        {/* Upper nebula cloud with purple hue */}
+        {/* Primary cosmic nebula with golden amber core */}
         <motion.div 
-          className="absolute top-0 left-0 w-full h-[150%] opacity-30"
+          className="absolute top-0 left-0 w-full h-[150%] opacity-20"
           style={{
-            background: 'radial-gradient(circle at 50% 30%, rgba(147, 51, 234, 0.15) 0%, rgba(139, 92, 246, 0.05) 40%, transparent 70%)',
+            background: 'radial-gradient(circle at 50% 30%, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.08) 40%, transparent 70%)',
           }}
           animate={{ 
             scale: prefersReducedMotion ? 1 : [1, 1.05, 1],
-            opacity: prefersReducedMotion ? 0.3 : [0.25, 0.35, 0.25],
+            opacity: prefersReducedMotion ? 0.2 : [0.15, 0.25, 0.15],
           }}
           transition={{ 
             duration: 15, 
@@ -136,15 +155,15 @@ export default function SolarSystemLayout() {
           }}
         />
         
-        {/* Lower nebula cloud that extends to the bottom - ensures no cut off */}
+        {/* Secondary nebula with purple-violet hues */}
         <motion.div 
-          className="absolute top-[30%] left-0 w-full h-[200%] opacity-20" 
+          className="absolute top-[30%] left-0 w-full h-[200%] opacity-15" 
           style={{
-            background: 'radial-gradient(ellipse at 50% 30%, rgba(192, 132, 252, 0.15) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 75%)',
+            background: 'radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.06) 50%, transparent 75%)',
           }}
           animate={{ 
             scale: prefersReducedMotion ? 1 : [1, 1.1, 1],
-            opacity: prefersReducedMotion ? 0.2 : [0.15, 0.25, 0.15],
+            opacity: prefersReducedMotion ? 0.15 : [0.1, 0.2, 0.1],
           }}
           transition={{ 
             duration: 20, 
@@ -155,15 +174,15 @@ export default function SolarSystemLayout() {
           }}
         />
 
-        {/* Additional moon-like glow at the bottom */}
+        {/* Tertiary nebula with cyan accents */}
         <motion.div 
-          className="absolute top-[60%] left-0 w-full h-[200%] opacity-30"
+          className="absolute top-[60%] left-0 w-full h-[200%] opacity-12"
           style={{
-            background: 'radial-gradient(ellipse at 50% 100%, rgba(216, 180, 254, 0.15) 0%, rgba(192, 132, 252, 0.05) 40%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 50% 100%, rgba(6, 182, 212, 0.12) 0%, rgba(8, 145, 178, 0.06) 40%, transparent 70%)',
           }}
           animate={{ 
             scale: prefersReducedMotion ? 1 : [1, 1.08, 1],
-            opacity: prefersReducedMotion ? 0.3 : [0.2, 0.3, 0.2],
+            opacity: prefersReducedMotion ? 0.12 : [0.08, 0.15, 0.08],
           }}
           transition={{ 
             duration: 12, 
@@ -174,139 +193,50 @@ export default function SolarSystemLayout() {
           }}
         />
         
-        {/* Direct connection to CTA purple line - solid gradient that seamlessly transitions */}
+        {/* Warm gradient connection */}
         <div 
           className="absolute bottom-0 left-0 w-full h-[30%]"
           style={{
-            background: 'linear-gradient(to bottom, rgba(139, 92, 246, 0.01) 0%, rgba(139, 92, 246, 0.07) 85%, rgba(139, 92, 246, 0.15) 100%)',
+            background: 'linear-gradient(to bottom, rgba(251, 191, 36, 0.01) 0%, rgba(245, 158, 11, 0.05) 85%, rgba(217, 119, 6, 0.08) 100%)',
             zIndex: 2
           }}
         />
       </div>
       
-      {/* Z-index hierarchy:
-        - Background nebula: z-0
-        - Background stars/parallax: z-1
-        - Comets/trails: z-5
-        - Orbital rings: z-10
-        - Aegis glow ring: z-20
-        - Product nodes: z-30
-        - Aegis core: z-40
-      */}
-      
       {/* Desktop layout with orbital positions */}
       <div className="hidden lg:block relative h-full">
-        {/* Deepest background star layer - slowest movement */}
-        <motion.div 
-          className="absolute inset-0 h-[160%] z-1 opacity-40"
-          style={{
-            backgroundImage: "url(/images/placeholders/stars-layer-1.svg)",
-            backgroundSize: "cover"
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ 
-            opacity: 0.4,
-            backgroundPosition: prefersReducedMotion ? "0% 0%" : ["0% 0%", "1% 1%"]
-          }}
-          transition={{ 
-            opacity: { duration: 2 },
-            backgroundPosition: { 
-              duration: 180, 
-              repeat: Infinity, 
-              repeatType: "reverse", 
-              ease: "linear" 
-            }
-          }}
-        />
-        
-        {/* Middle star layer - medium movement */}
-        <motion.div 
-          className="absolute inset-0 h-[160%] z-1 opacity-50"
-          style={{
-            backgroundImage: "url(/images/placeholders/stars-layer-2.svg)",
-            backgroundSize: "cover"
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ 
-            opacity: 0.5,
-            backgroundPosition: prefersReducedMotion ? "0% 0%" : ["0% 0%", "2% 2%"]
-          }}
-          transition={{ 
-            opacity: { duration: 2 },
-            backgroundPosition: { 
-              duration: 120, 
-              repeat: Infinity, 
-              repeatType: "reverse", 
-              ease: "linear" 
-            }
-          }}
-        />
-        
-        {/* Foreground star layer - faster movement */}
+        {/* Enhanced star field layers */}
         <motion.div 
           className="absolute inset-0 h-[160%] z-1 opacity-30"
           style={{
-            backgroundImage: "url(/images/placeholders/stars-layer-3.svg)",
-            backgroundSize: "cover"
+            backgroundImage: `
+              radial-gradient(2px 2px at 20px 30px, rgba(251, 191, 36, 0.4), transparent),
+              radial-gradient(2px 2px at 40px 70px, rgba(6, 182, 212, 0.3), transparent),
+              radial-gradient(1px 1px at 90px 40px, rgba(139, 92, 246, 0.4), transparent),
+              radial-gradient(1px 1px at 130px 80px, rgba(236, 72, 153, 0.3), transparent),
+              radial-gradient(2px 2px at 160px 30px, rgba(239, 68, 68, 0.3), transparent)
+            `,
+            backgroundRepeat: "repeat",
+            backgroundSize: "200px 100px"
           }}
-          initial={{ opacity: 0 }}
           animate={{ 
-            opacity: 0.3,
-            backgroundPosition: prefersReducedMotion ? "0% 0%" : ["0% 0%", "3% 3%"]
+            backgroundPosition: prefersReducedMotion ? "0% 0%" : ["0% 0%", "100% 100%"]
           }}
           transition={{ 
-            opacity: { duration: 2 },
-            backgroundPosition: { 
-              duration: 90, 
-              repeat: Infinity, 
-              repeatType: "reverse", 
-              ease: "linear" 
-            }
+            duration: 200, 
+            repeat: Infinity, 
+            repeatType: "reverse", 
+            ease: "linear" 
           }}
         />
         
-        {/* Comet trails - dynamic elements with randomization */}
-        {!prefersReducedMotion && (
-          <>
-            {comets.map((comet, index) => (
-              <Comet 
-                key={index}
-                delay={comet.delay} 
-                angle={comet.angle} 
-                duration={comet.duration} 
-                size={comet.size} 
-                pathIndex={comet.pathIndex}
-              />
-            ))}
-          </>
-        )}
-        
-        {/* Animated orbit rings with rotation - adjusted to match asymmetric layout */}
+        {/* Animated orbit rings with enhanced cosmic theme */}
         <motion.div 
-          className="absolute left-[52%] top-[48%] w-[30rem] h-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-purple-700/30 pointer-events-none z-10"
+          className="absolute left-[52%] top-[48%] w-[30rem] h-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-amber-400/30 pointer-events-none z-10"
           initial={{ opacity: 0 }}
           animate={{ 
             opacity: 1,
             rotate: prefersReducedMotion ? 0 : 360
-          }}
-          transition={{ 
-            opacity: { duration: 1 }, 
-            rotate: { 
-              duration: 45, 
-              repeat: Infinity, 
-              ease: "linear",
-              repeatDelay: 0 
-            } 
-          }}
-        />
-        
-        {/* Additional inner ring for effect - adjusted to match asymmetric layout */}
-        <motion.div 
-          className="absolute left-[52%] top-[48%] w-[28rem] h-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-purple-700/20 pointer-events-none z-10"
-          initial={{ opacity: 0 }}
-          animate={{ 
-            opacity: 1,
-            rotate: prefersReducedMotion ? 0 : -360 
           }}
           transition={{ 
             opacity: { duration: 1 }, 
@@ -318,14 +248,33 @@ export default function SolarSystemLayout() {
             } 
           }}
         />
+        
+        {/* Inner ring with complementary rotation */}
+        <motion.div 
+          className="absolute left-[52%] top-[48%] w-[28rem] h-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-amber-400/20 pointer-events-none z-10"
+          initial={{ opacity: 0 }}
+          animate={{ 
+            opacity: 1,
+            rotate: prefersReducedMotion ? 0 : -360 
+          }}
+          transition={{ 
+            opacity: { duration: 1 }, 
+            rotate: { 
+              duration: 80, 
+              repeat: Infinity, 
+              ease: "linear",
+              repeatDelay: 0 
+            } 
+          }}
+        />
 
-        {/* Aegis Glow Ring - adds deeper visual atmosphere */}
+        {/* Enhanced Aegis Glow Ring - Sun-like center */}
         <motion.div
-          className="absolute left-[52%] top-[48%] -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-orange-500/10 blur-xl z-20"
+          className="absolute left-[52%] top-[48%] -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-radial from-amber-400/15 via-yellow-500/10 to-transparent blur-xl z-20"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ 
-            opacity: prefersReducedMotion ? 0.4 : [0.3, 0.6, 0.3],
-            scale: prefersReducedMotion ? 1 : [0.8, 1.2, 0.8]
+            opacity: prefersReducedMotion ? 0.5 : [0.4, 0.7, 0.4],
+            scale: prefersReducedMotion ? 1 : [0.8, 1.3, 0.8]
           }}
           transition={{ 
             duration: 8,
@@ -335,101 +284,136 @@ export default function SolarSystemLayout() {
           }}
         />
 
-        {/* Aegis Core with enhanced pulsing animation */}
+        {/* Enhanced Aegis Core - Sun representation */}
         <motion.div
-          className="absolute left-[52%] top-[48%] -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full shadow-xl flex flex-col items-center justify-center z-40"
+          className="absolute left-[52%] top-[48%] -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-600 rounded-full shadow-xl flex flex-col items-center justify-center z-40"
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ 
             opacity: 1, 
             scale: 1,
             boxShadow: prefersReducedMotion ? 
-              "0 0 40px 15px rgba(252, 211, 77, 0.1)" :
-              ["0 0 0 0 rgba(252, 211, 77, 0.2)", "0 0 40px 25px rgba(252, 211, 77, 0.1)", "0 0 0 0 rgba(252, 211, 77, 0.2)"]
+              "0 0 40px 15px rgba(251, 191, 36, 0.2)" :
+              ["0 0 20px 10px rgba(251, 191, 36, 0.3)", "0 0 60px 30px rgba(251, 191, 36, 0.1)", "0 0 20px 10px rgba(251, 191, 36, 0.3)"]
           }}
           transition={{ 
-            duration: 2,
+            opacity: { duration: 1 },
+            scale: { duration: 1, delay: 0.5 },
             boxShadow: { 
-              duration: 4,
-              repeat: Infinity,
-              repeatType: "reverse" 
+              duration: 4, 
+              repeat: Infinity, 
+              repeatType: "reverse",
+              ease: "easeInOut"
             }
           }}
+          whileHover={{ scale: 1.05 }}
         >
-          <motion.div 
-            className="w-12 h-12 flex items-center justify-center"
-            animate={{ 
-              opacity: prefersReducedMotion ? 1 : [1, 0.8, 1] 
-            }}
-            transition={{ 
-              duration: 3, 
-              repeat: Infinity 
-            }}
-          >
-            <img 
-              src="/assets/images/general/Page_Logos/Aegis_logo.webp" 
-              alt="Aegis Logo" 
-              className="w-full h-full object-contain"
-            />
-          </motion.div>
-          <h3 className="font-bold text-xl text-white tracking-wider uppercase">Aegis</h3>
-          <p className="text-sm text-white/70">Core Runtime</p>
-          <Link to="/products/aegis" className="mt-2 text-xs text-white/90 bg-black/30 px-3 py-1 rounded-full hover:bg-black/50 transition-all">
-            Explore
+          <Link to="/products/aegis" className="w-full h-full flex flex-col items-center justify-center text-center group">
+            <div className="w-16 h-16 mb-2 flex items-center justify-center">
+              <img 
+                src="/assets/images/general/Page_Logos/Aegis_logo.webp" 
+                alt="Aegis Logo" 
+                className="w-full h-full object-contain drop-shadow-lg"
+              />
+            </div>
+            <h3 className="text-white font-bold text-lg mb-1 drop-shadow-lg group-hover:text-amber-100 transition-colors">
+              Aegis
+            </h3>
+            <p className="text-amber-100/80 text-sm font-medium drop-shadow-md group-hover:text-amber-100 transition-colors">
+              Core Runtime
+            </p>
           </Link>
         </motion.div>
 
-        {/* Orbiting Satellites with enhanced styling and staggered entry */}
-        <div className="absolute inset-0">
-          {orbitData.map(({ icon, title, path, angle, adjustX, adjustY }, i) => {
-            const rad = (angle * Math.PI) / 180;
-            const x = radius * Math.cos(rad) + adjustX;
-            const y = radius * Math.sin(rad) + adjustY;
-            
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ 
-                  delay: 0.5 + (i * 0.2), // Staggered entry
-                  duration: 1.5
-                }}
-                style={{
-                  position: 'absolute',
-                  left: '52%',
-                  top: '48%',
-                  width: '170px', // Slightly larger
-                  height: '170px', // Slightly larger
-                  marginLeft: '-85px',
-                  marginTop: '-85px',
-                  zIndex: 30,
-                  transform: `translate(${x}px, ${y}px)`
-                }}
-              >
-                <Link
-                  to={path}
-                  className={`w-full h-full p-3 rounded-xl bg-gradient-to-br ${productColors[title]} border border-purple-400/20 backdrop-blur-md flex flex-col items-start justify-between transition-all duration-300 hover:scale-105 hover:-translate-y-1 hover:shadow-lg`}
-                >
-                  <motion.div 
-                    className="text-xl mb-1.5"
-                    animate={{ 
-                      y: prefersReducedMotion ? 0 : [0, -5, 0] 
-                    }}
-                    transition={{ 
-                      duration: 3 + i, 
-                      repeat: Infinity, 
-                      ease: "easeInOut" 
-                    }}
-                  >
-                    <img src={icon} alt={title} className="w-16 h-16" />
-                  </motion.div>
-                  <h3 className="text-base font-semibold text-white tracking-wider uppercase">{title}</h3>
-                  <p className="text-xs text-gray-400 mt-auto">Explore →</p>
-                </Link>
-              </motion.div>
-            );
-          })}
-        </div>
+        {/* Enhanced Product Nodes - Orbital planets */}
+        {orbitData.map((product, index) => {
+          const angle = (product.angle * Math.PI) / 180;
+          const x = Math.cos(angle) * radius + product.adjustX;
+          const y = Math.sin(angle) * radius + product.adjustY;
+          const colors = productColors[product.title];
+          
+          return (
+            <motion.div
+              key={product.title}
+              className="absolute z-30"
+              style={{
+                left: `calc(52% + ${x}px)`,
+                top: `calc(48% + ${y}px)`,
+                transform: 'translate(-50%, -50%)'
+              }}
+              initial={{ opacity: 0, scale: 0.3 }}
+              animate={{ 
+                opacity: 1, 
+                scale: 1,
+                y: prefersReducedMotion ? 0 : [0, -8, 0]
+              }}
+              transition={{ 
+                opacity: { duration: 0.8, delay: 0.2 + index * 0.2 },
+                scale: { duration: 0.8, delay: 0.2 + index * 0.2 },
+                y: { 
+                  duration: 3 + index * 0.5, 
+                  repeat: Infinity, 
+                  repeatType: "reverse",
+                  ease: "easeInOut",
+                  delay: index * 0.5
+                }
+              }}
+              whileHover={{ scale: 1.1 }}
+              onHoverStart={() => onProductHover?.(product.title)}
+              onHoverEnd={() => onProductHover?.(null)}
+            >
+              <Link to={product.path} className="group block">
+                <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${colors.gradient} backdrop-blur-sm border-2 ${colors.border} ${colors.glow} hover:shadow-2xl transition-all duration-300 flex flex-col items-center justify-center`}>
+                  <div className="w-12 h-12 mb-2 flex items-center justify-center">
+                    <img 
+                      src={product.icon} 
+                      alt={`${product.title} Logo`} 
+                      className="w-full h-full object-contain drop-shadow-lg"
+                    />
+                  </div>
+                  <h3 className={`${colors.text} font-semibold text-sm mb-1 drop-shadow-lg group-hover:text-white transition-colors`}>
+                    {product.title}
+                  </h3>
+                  <div className={`w-2 h-2 ${colors.ring.replace('border-', 'bg-').replace('/40', '')} rounded-full animate-pulse`}></div>
+                </div>
+              </Link>
+            </motion.div>
+          );
+        })}
+
+        {/* Enhanced connection lines between products and Aegis */}
+        {orbitData.map((product, index) => {
+          const angle = (product.angle * Math.PI) / 180;
+          const x = Math.cos(angle) * radius + product.adjustX;
+          const y = Math.sin(angle) * radius + product.adjustY;
+          const colors = productColors[product.title];
+          
+          return (
+            <motion.div
+              key={`line-${product.title}`}
+              className="absolute z-5 pointer-events-none"
+              style={{
+                left: '52%',
+                top: '48%',
+                transform: 'translate(-50%, -50%)',
+                width: Math.sqrt(x * x + y * y) + 'px',
+                height: '2px',
+                transformOrigin: '0 50%',
+                rotate: Math.atan2(y, x) + 'rad'
+              }}
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ 
+                opacity: activeProduct === product.title ? 0.6 : 0.2,
+                scaleX: 1
+              }}
+              transition={{ 
+                opacity: { duration: 0.3 },
+                scaleX: { duration: 1, delay: 0.5 + index * 0.1 }
+              }}
+            >
+              <div className={`w-full h-full bg-gradient-to-r from-amber-400/40 ${colors.ring.replace('border-', 'to-').replace('/40', '/60')} rounded-full`}></div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Mobile fallback view with enhanced styling */}
@@ -497,7 +481,7 @@ export default function SolarSystemLayout() {
             >
               <Link 
                 to={product.path} 
-                className={`bg-gradient-to-br ${productColors[product.title]} p-5 rounded-xl border border-purple-500/20 flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-lg`}
+                className={`bg-gradient-to-br ${productColors[product.title].gradient} p-5 rounded-xl border border-purple-500/20 flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-lg`}
               >
                 <motion.div 
                   className="text-2xl mb-2"

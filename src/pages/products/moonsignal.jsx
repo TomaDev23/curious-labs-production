@@ -523,7 +523,7 @@ export default function MoonSignal() {
             </motion.div>
 
             <motion.h2 
-              className="text-4xl sm:text-5xl font-financial font-bold mb-6 bg-gradient-premium bg-clip-text text-transparent glow-gold"
+              className="text-4xl sm:text-5xl font-financial font-bold mb-6 text-profit glow-profit"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -641,7 +641,7 @@ export default function MoonSignal() {
             </motion.div>
             
             <motion.h2 
-              className="text-4xl sm:text-5xl font-financial font-bold mb-6 bg-gradient-to-r from-silver to-platinum bg-clip-text text-transparent glow-silver"
+              className="text-4xl sm:text-5xl font-financial font-bold mb-6 text-silver glow-silver"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -1022,7 +1022,7 @@ export default function MoonSignal() {
             </motion.div>
 
             <motion.h2 
-              className="text-4xl sm:text-5xl font-financial font-bold mb-6 bg-gradient-to-r from-profit to-gold bg-clip-text text-transparent glow-profit"
+              className="text-4xl sm:text-5xl font-financial font-bold mb-6 text-profit glow-profit"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}

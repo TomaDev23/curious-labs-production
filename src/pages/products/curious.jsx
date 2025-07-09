@@ -574,7 +574,7 @@ export default function Curious() {
                         
                         {/* Notification */}
                         <div className="absolute top-56 left-4 right-4">
-                          <motion.div
+                      <motion.div
                             className="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl p-4"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -593,20 +593,20 @@ export default function Curious() {
                             <div className="text-white text-sm leading-relaxed">
                               Hey, how are you? You made it home yet? 💕
                             </div>
-                          </motion.div>
-                        </div>
-                        
+                      </motion.div>
+                  </div>
+                  
                         {/* Lock Screen Controls */}
                         <div className="absolute bottom-32 left-0 right-0 flex justify-center gap-16">
                           <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl">
                             📞
-                          </div>
+                    </div>
                           <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl">
                             💬
-                          </div>
+                    </div>
                           <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white text-xl">
                             📷
-                          </div>
+                  </div>
                         </div>
                         
                         {/* Home Indicator */}
@@ -735,18 +735,18 @@ export default function Curious() {
                   </p>
                 </motion.div>
               </div>
-            </motion.div>
+                </motion.div>
 
             {/* Right Side - iPhone Mockup - Chat Interface */}
-            <motion.div 
+                <motion.div
               className="lg:col-span-5 order-1 lg:order-2"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+                  viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.2 }}
             >
               <div className="relative max-w-sm mx-auto">
-                <motion.div
+                    <motion.div
                   className="relative w-80 h-[650px] mx-auto"
                   initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
                   whileInView={{ opacity: 1, scale: 1, rotateY: 5 }}
@@ -816,7 +816,7 @@ export default function Curious() {
                                     }}
                                   >
                                     <div className="text-white text-4xl">💖</div>
-                                  </motion.div>
+                    </motion.div>
                                   <div className="text-slate-600 font-medium">Loading AI Model...</div>
                                   <div className="flex justify-center gap-1">
                                     {[0, 1, 2].map((i) => (
@@ -831,7 +831,7 @@ export default function Curious() {
                                         }}
                                       />
                                     ))}
-                                  </div>
+              </div>
                                 </div>
                               </div>
 
@@ -859,11 +859,11 @@ export default function Curious() {
                           {/* Chat Messages - Compact Layout */}
                           <div className="flex-1 p-3 space-y-2 overflow-hidden">
                             {/* AI Message */}
-                            <motion.div
+            <motion.div 
                               className="flex items-start gap-2"
                               initial={{ opacity: 0, x: -20 }}
-                              whileInView={{ opacity: 1, x: 0 }}
-                              viewport={{ once: true }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
                               transition={{ delay: 0.8 }}
                             >
                               <div className="w-5 h-5 bg-gradient-to-br from-rose-500 to-purple-500 rounded-full flex items-center justify-center text-xs flex-shrink-0">
@@ -876,7 +876,7 @@ export default function Curious() {
                             </motion.div>
                             
                             {/* User Message */}
-                            <motion.div
+              <motion.div
                               className="flex items-start gap-2 justify-end"
                               initial={{ opacity: 0, x: 20 }}
                               whileInView={{ opacity: 1, x: 0 }}
@@ -890,7 +890,7 @@ export default function Curious() {
                             </motion.div>
                             
                             {/* Typing Indicator */}
-                            <motion.div
+                    <motion.div
                               className="flex items-center gap-2"
                               initial={{ opacity: 0 }}
                               whileInView={{ opacity: 1 }}
@@ -918,10 +918,10 @@ export default function Curious() {
                                     transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
                                   />
                                 </div>
-                              </div>
-                            </motion.div>
-                          </div>
-                          
+                      </div>
+                    </motion.div>
+                </div>
+
                           {/* Chat Input - Very Compact */}
                           <div className="bg-white/80 backdrop-blur-sm border-t border-slate-200/50 p-2">
                             <div className="flex items-center gap-2">
@@ -1222,7 +1222,7 @@ export default function Curious() {
                     emotional intelligence that evolves, memories that matter, and connections that feel real.
                   </p>
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}

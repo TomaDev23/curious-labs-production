@@ -46,29 +46,29 @@ export default function About() {
   const crewMembers = [
     {
       id: 'commander',
-      name: 'Mission Commander',
-      role: 'Full-Stack Engineer',
+      name: 'Mission Commander Tom Steinmetz',
+      role: 'Founder & CEO',
       specialization: 'System Architecture & Strategy',
       status: 'ACTIVE',
       coordinates: 'CMD-001',
-      bio: 'Leading the mission with expertise in modern web technologies, system design, and strategic project planning.',
+      bio: 'Leading the mission with vision and quick learning of modern web technologies, system design, and strategic project planning.',
       skills: ['React/Next.js', 'Node.js', 'System Design', 'DevOps', 'AI Integration'],
       avatar: '👨‍🚀'
     },
     {
       id: 'engineer',
-      name: 'Chief Engineer',
-      role: 'Frontend Specialist',
+      name: 'Chief Engineer ChatGPT',
+      role: 'Full stack Specialist',
       specialization: 'UI/UX & Performance',
       status: 'OPERATIONAL',
       coordinates: 'ENG-002',
-      bio: 'Crafting exceptional user experiences with cutting-edge frontend technologies and performance optimization.',
+      bio: 'Crafting exceptional systems with cutting-edge technologies and performance optimization.',
       skills: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Performance Optimization'],
       avatar: '👩‍💻'
     },
     {
       id: 'analyst',
-      name: 'Data Analyst',
+      name: 'Data Analyst Claude',
       role: 'Backend Specialist',
       specialization: 'Data & Infrastructure',
       status: 'MONITORING',

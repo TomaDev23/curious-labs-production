@@ -23,24 +23,11 @@ import {  motion  } from '../../FramerProvider';
 
 export default function MoonSignal() {
   const [missionTime, setMissionTime] = useState(new Date());
-  const [marketData, setMarketData] = useState({
-    btc: { price: 67234.56, change: 2.34, trend: 'up' },
-    eth: { price: 3456.78, change: -1.23, trend: 'down' },
-    sol: { price: 234.56, change: 5.67, trend: 'up' },
-    ada: { price: 0.8934, change: 3.45, trend: 'up' }
-  });
 
   useEffect(() => {
     const timer = setInterval(() => {
       setMissionTime(new Date());
-      // Simulate live price updates
-      setMarketData(prev => ({
-        btc: { ...prev.btc, price: prev.btc.price + (Math.random() - 0.5) * 100 },
-        eth: { ...prev.eth, price: prev.eth.price + (Math.random() - 0.5) * 50 },
-        sol: { ...prev.sol, price: prev.sol.price + (Math.random() - 0.5) * 10 },
-        ada: { ...prev.ada, price: prev.ada.price + (Math.random() - 0.5) * 0.1 }
-      }));
-    }, 3000);
+    }, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -201,12 +188,12 @@ export default function MoonSignal() {
         /* Trading Interface Elements */
         .price-ticker {
           background: linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.1) 50%, transparent 100%);
-          animation: ticker-scroll 20s linear infinite;
+          animation: ticker-scroll 60s linear infinite;
         }
         
         @keyframes ticker-scroll {
           0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
+          100% { transform: translateX(-200%); }
         }
         
         .signal-pulse {
@@ -252,23 +239,84 @@ export default function MoonSignal() {
         </div>
         <div className="text-xs text-silver mt-1">COORD: LUNAR-ALPHA</div>
         <div className="mt-2 pt-2 border-t border-gold-500/20">
-          <div className="text-profit text-xs">BTC: ${marketData.btc.price.toFixed(2)}</div>
-          <div className="text-neutral text-xs">ETH: ${marketData.eth.price.toFixed(2)}</div>
+          <div className="text-gold text-xs">30 ASSETS TRACKED</div>
+          <div className="text-silver text-xs">MULTI-MARKET COVERAGE</div>
         </div>
       </motion.div>
-
-      {/* Live Price Ticker */}
+      
+      {/* Asset Coverage Ticker */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="fixed top-16 left-0 right-0 z-40 bg-black/80 backdrop-blur-sm border-b border-gold-500/20 py-2 overflow-hidden"
+        className="fixed top-16 left-0 right-0 z-40 bg-black/80 backdrop-blur-sm border-b border-gold-500/20 py-3 overflow-hidden"
       >
         <div className="price-ticker whitespace-nowrap font-ticker text-sm">
-          <span className="text-gold mr-8">BTC ${marketData.btc.price.toFixed(2)} {marketData.btc.change > 0 ? '↗' : '↘'} {Math.abs(marketData.btc.change).toFixed(2)}%</span>
-          <span className="text-silver mr-8">ETH ${marketData.eth.price.toFixed(2)} {marketData.eth.change > 0 ? '↗' : '↘'} {Math.abs(marketData.eth.change).toFixed(2)}%</span>
-          <span className="text-neutral mr-8">SOL ${marketData.sol.price.toFixed(2)} {marketData.sol.change > 0 ? '↗' : '↘'} {Math.abs(marketData.sol.change).toFixed(2)}%</span>
-          <span className="text-platinum mr-8">ADA ${marketData.ada.price.toFixed(4)} {marketData.ada.change > 0 ? '↗' : '↘'} {Math.abs(marketData.ada.change).toFixed(2)}%</span>
+          {/* Cryptocurrency Assets - 20 total */}
+          <span className="text-gold mr-8">Bitcoin</span>
+          <span className="text-gold mr-8">Ethereum</span>
+          <span className="text-gold mr-8">Solana</span>
+          <span className="text-gold mr-8">Cardano</span>
+          <span className="text-gold mr-8">Polygon</span>
+          <span className="text-gold mr-8">Chainlink</span>
+          <span className="text-gold mr-8">Avalanche</span>
+          <span className="text-gold mr-8">Polkadot</span>
+          <span className="text-gold mr-8">Litecoin</span>
+          <span className="text-gold mr-8">XRP</span>
+          <span className="text-gold mr-8">Binance Coin</span>
+          <span className="text-gold mr-8">Dogecoin</span>
+          <span className="text-gold mr-8">Shiba Inu</span>
+          <span className="text-gold mr-8">Cosmos</span>
+          <span className="text-gold mr-8">Algorand</span>
+          <span className="text-gold mr-8">VeChain</span>
+          <span className="text-gold mr-8">Tron</span>
+          <span className="text-gold mr-8">Stellar</span>
+          <span className="text-gold mr-8">Monero</span>
+          <span className="text-gold mr-8">Ethereum Classic</span>
+          
+          {/* Stock Market Composites & Major Stocks - 25 total */}
+          <span className="text-silver mr-8">S&P 500</span>
+          <span className="text-silver mr-8">NASDAQ</span>
+          <span className="text-silver mr-8">Dow Jones</span>
+          <span className="text-silver mr-8">Russell 2000</span>
+          <span className="text-silver mr-8">FTSE 100</span>
+          <span className="text-silver mr-8">Apple</span>
+          <span className="text-silver mr-8">Microsoft</span>
+          <span className="text-silver mr-8">Tesla</span>
+          <span className="text-silver mr-8">Google</span>
+          <span className="text-silver mr-8">Amazon</span>
+          <span className="text-silver mr-8">NVIDIA</span>
+          <span className="text-silver mr-8">Meta</span>
+          <span className="text-silver mr-8">Netflix</span>
+          <span className="text-silver mr-8">PayPal</span>
+          <span className="text-silver mr-8">Shopify</span>
+          <span className="text-silver mr-8">AMD</span>
+          <span className="text-silver mr-8">Intel</span>
+          <span className="text-silver mr-8">Salesforce</span>
+          <span className="text-silver mr-8">Adobe</span>
+          <span className="text-silver mr-8">Oracle</span>
+          <span className="text-silver mr-8">Zoom</span>
+          <span className="text-silver mr-8">Uber</span>
+          <span className="text-silver mr-8">Airbnb</span>
+          <span className="text-silver mr-8">Square</span>
+          <span className="text-silver mr-8">Palantir</span>
+          
+          {/* Commodities - 15 total */}
+          <span className="text-neutral mr-8">Gold</span>
+          <span className="text-neutral mr-8">Silver</span>
+          <span className="text-neutral mr-8">Crude Oil</span>
+          <span className="text-neutral mr-8">Natural Gas</span>
+          <span className="text-neutral mr-8">Platinum</span>
+          <span className="text-neutral mr-8">Copper</span>
+          <span className="text-neutral mr-8">Palladium</span>
+          <span className="text-neutral mr-8">Brent Oil</span>
+          <span className="text-neutral mr-8">Heating Oil</span>
+          <span className="text-neutral mr-8">Gasoline</span>
+          <span className="text-neutral mr-8">Wheat</span>
+          <span className="text-neutral mr-8">Corn</span>
+          <span className="text-neutral mr-8">Soybeans</span>
+          <span className="text-neutral mr-8">Coffee</span>
+          <span className="text-neutral mr-8">Sugar</span>
         </div>
       </motion.div>
       
@@ -407,7 +455,7 @@ export default function MoonSignal() {
               <div className="mt-2 flex items-center gap-2">
                 <div className="w-2 h-2 bg-profit rounded-full signal-pulse" />
                 <span className="text-xs text-profit font-ticker">REAL-TIME</span>
-              </div>
+            </div>
             </motion.div>
             
             <motion.div 
@@ -420,7 +468,7 @@ export default function MoonSignal() {
               <div className="mt-2 flex items-center gap-2">
                 <div className="w-2 h-2 bg-gold rounded-full signal-pulse" />
                 <span className="text-xs text-gold font-ticker">VERIFIED</span>
-              </div>
+            </div>
             </motion.div>
             
             <motion.div 
@@ -433,7 +481,7 @@ export default function MoonSignal() {
               <div className="mt-2 flex items-center gap-2">
                 <div className="w-2 h-2 bg-silver rounded-full signal-pulse" />
                 <span className="text-xs text-silver font-ticker">OPTIMIZED</span>
-              </div>
+            </div>
             </motion.div>
             
             <motion.div 
@@ -446,7 +494,7 @@ export default function MoonSignal() {
               <div className="mt-2 flex items-center gap-2">
                 <div className="w-2 h-2 bg-neutral rounded-full signal-pulse" />
                 <span className="text-xs text-neutral font-ticker">CONTINUOUS</span>
-              </div>
+            </div>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -514,10 +562,10 @@ export default function MoonSignal() {
                   </span>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs font-ticker ${getStatusColor(capability.status)}`}>
-                      {capability.status}
-                    </span>
+                    {capability.status}
+                  </span>
                     <div className={`w-2 h-2 rounded-full signal-pulse ${getStatusColor(capability.status).replace('text-', 'bg-')}`} />
-                  </div>
+                </div>
                 </div>
 
                 {/* Icon and Title */}
@@ -530,7 +578,7 @@ export default function MoonSignal() {
                     <span className="text-xs font-ticker text-silver bg-silver/10 px-2 py-1 rounded mt-1 inline-block">
                       {capability.signalType}
                     </span>
-                  </div>
+                </div>
                 </div>
 
                 {/* Description */}
@@ -636,7 +684,7 @@ export default function MoonSignal() {
                     {metric.value}
                   </span>
                   <span className="text-silver ml-1 font-ticker">{metric.unit}</span>
-                </div>
+            </div>
 
                 {/* Metric Label */}
                 <h3 className="text-lg font-financial font-bold text-platinum mb-3 group-hover:text-gold transition-colors duration-300">
@@ -654,7 +702,7 @@ export default function MoonSignal() {
                   <span className="text-xs font-ticker text-silver uppercase tracking-wider">
                     {metric.status}
                   </span>
-                </div>
+                  </div>
 
                 {/* Trend Indicator */}
                 <div className="text-sm font-ticker text-profit bg-profit/10 px-3 py-1 rounded-full border border-profit/20">
@@ -707,7 +755,7 @@ export default function MoonSignal() {
                 <div className="flex items-center justify-center gap-3 mb-3">
                   <div className="w-3 h-3 bg-profit rounded-full signal-pulse" />
                   <span className="text-profit font-ticker text-sm font-bold">LIVE PROCESSING</span>
-                </div>
+              </div>
                 <div className="text-2xl font-currency text-gold mb-1">1,247</div>
                 <div className="text-sm text-silver font-financial">Active Signals</div>
               </div>
@@ -812,28 +860,28 @@ export default function MoonSignal() {
               <div className="text-4xl mb-4 text-center">₿</div>
               <h3 className="text-xl font-financial font-bold text-gold mb-4 text-center">Cryptocurrency</h3>
               <ul className="space-y-3 text-silver font-financial">
-                <li className="flex items-start">
+                  <li className="flex items-start">
                   <span className="text-gold mr-2">•</span>
                   Bitcoin, Ethereum, Altcoins
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-profit mr-2">•</span>
                   DeFi protocol monitoring
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-neutral mr-2">•</span>
                   On-chain analytics integration
                 </li>
                 <li className="flex items-start">
                   <span className="text-silver mr-2">•</span>
                   24/7 market coverage
-                </li>
-              </ul>
+                  </li>
+                </ul>
               <div className="mt-4 pt-4 border-t border-gold/20">
                 <div className="text-center">
                   <span className="text-2xl font-currency text-profit">847</span>
                   <div className="text-xs font-ticker text-silver">Active Pairs</div>
-                </div>
+              </div>
               </div>
             </motion.div>
 
@@ -849,28 +897,28 @@ export default function MoonSignal() {
               <div className="text-4xl mb-4 text-center">💱</div>
               <h3 className="text-xl font-financial font-bold text-silver mb-4 text-center">Foreign Exchange</h3>
               <ul className="space-y-3 text-silver font-financial">
-                <li className="flex items-start">
+                  <li className="flex items-start">
                   <span className="text-gold mr-2">•</span>
                   Major currency pairs (EUR/USD, GBP/USD)
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-profit mr-2">•</span>
                   Central bank policy analysis
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-neutral mr-2">•</span>
                   Economic indicator correlation
                 </li>
                 <li className="flex items-start">
                   <span className="text-silver mr-2">•</span>
                   Institutional flow tracking
-                </li>
-              </ul>
+                  </li>
+                </ul>
               <div className="mt-4 pt-4 border-t border-silver/20">
                 <div className="text-center">
                   <span className="text-2xl font-currency text-profit">156</span>
                   <div className="text-xs font-ticker text-silver">Currency Pairs</div>
-                </div>
+              </div>
               </div>
             </motion.div>
 
@@ -886,29 +934,29 @@ export default function MoonSignal() {
               <div className="text-4xl mb-4 text-center">🥇</div>
               <h3 className="text-xl font-financial font-bold text-neutral mb-4 text-center">Commodities</h3>
               <ul className="space-y-3 text-silver font-financial">
-                <li className="flex items-start">
+                  <li className="flex items-start">
                   <span className="text-gold mr-2">•</span>
                   Precious metals (Gold, Silver, Platinum)
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-profit mr-2">•</span>
                   Energy markets (Oil, Gas, Renewables)
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-neutral mr-2">•</span>
                   Agricultural futures
                 </li>
                 <li className="flex items-start">
                   <span className="text-silver mr-2">•</span>
                   Supply chain intelligence
-                </li>
-              </ul>
+                  </li>
+                </ul>
               <div className="mt-4 pt-4 border-t border-neutral/20">
                 <div className="text-center">
                   <span className="text-2xl font-currency text-profit">89</span>
                   <div className="text-xs font-ticker text-silver">Commodity Contracts</div>
-                </div>
               </div>
+            </div>
             </motion.div>
 
             {/* Traditional Equities */}
@@ -995,7 +1043,7 @@ export default function MoonSignal() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Momentum Strategies */}
             <motion.div
               className="bg-black/70 backdrop-blur-md border border-profit/30 rounded-lg p-8 market-glow"
@@ -1006,38 +1054,38 @@ export default function MoonSignal() {
             >
               <div className="flex items-center mb-6">
                 <div className="text-4xl mr-4">🚀</div>
-                <div>
+              <div>
                   <h3 className="text-2xl font-financial font-bold text-profit mb-2">Momentum Strategies</h3>
                   <span className="text-sm font-ticker text-gold bg-gold/10 px-2 py-1 rounded">TREND-FOLLOWING</span>
                 </div>
               </div>
               
               <ul className="space-y-4 text-silver font-financial mb-6">
-                <li className="flex items-start">
+                  <li className="flex items-start">
                   <span className="text-profit mr-3">▶</span>
                   <div>
                     <strong className="text-platinum">Breakout Detection:</strong> Identify key resistance/support breaks with 96.3% accuracy
                   </div>
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-gold mr-3">▶</span>
                   <div>
                     <strong className="text-platinum">Volume Confirmation:</strong> Smart volume analysis to validate momentum signals
                   </div>
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-neutral mr-3">▶</span>
                   <div>
                     <strong className="text-platinum">Risk Management:</strong> Dynamic stop-loss and profit-taking algorithms
                   </div>
-                </li>
-              </ul>
+                  </li>
+                </ul>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-profit/10 rounded border border-profit/20">
                   <div className="text-2xl font-currency text-profit">23.7%</div>
                   <div className="text-xs font-ticker text-silver">Avg Monthly Return</div>
-                </div>
+              </div>
                 <div className="text-center p-3 bg-gold/10 rounded border border-gold/20">
                   <div className="text-2xl font-currency text-gold">1.47</div>
                   <div className="text-xs font-ticker text-silver">Sharpe Ratio</div>
@@ -1055,42 +1103,42 @@ export default function MoonSignal() {
             >
               <div className="flex items-center mb-6">
                 <div className="text-4xl mr-4">⚖️</div>
-                <div>
+              <div>
                   <h3 className="text-2xl font-financial font-bold text-gold mb-2">Mean Reversion</h3>
                   <span className="text-sm font-ticker text-silver bg-silver/10 px-2 py-1 rounded">COUNTER-TREND</span>
                 </div>
               </div>
               
               <ul className="space-y-4 text-silver font-financial mb-6">
-                <li className="flex items-start">
+                  <li className="flex items-start">
                   <span className="text-gold mr-3">▶</span>
                   <div>
                     <strong className="text-platinum">Oversold/Overbought:</strong> Statistical analysis of price deviations from mean
                   </div>
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-profit mr-3">▶</span>
                   <div>
                     <strong className="text-platinum">Volatility Scaling:</strong> Position sizing based on current market volatility
                   </div>
-                </li>
-                <li className="flex items-start">
+                  </li>
+                  <li className="flex items-start">
                   <span className="text-neutral mr-3">▶</span>
                   <div>
                     <strong className="text-platinum">Multi-Timeframe:</strong> Signals validated across multiple time horizons
                   </div>
-                </li>
-              </ul>
+                  </li>
+                </ul>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-gold/10 rounded border border-gold/20">
                   <div className="text-2xl font-currency text-gold">18.2%</div>
                   <div className="text-xs font-ticker text-silver">Avg Monthly Return</div>
-                </div>
+          </div>
                 <div className="text-center p-3 bg-silver/10 rounded border border-silver/20">
                   <div className="text-2xl font-currency text-silver">92.1%</div>
                   <div className="text-xs font-ticker text-silver">Win Rate</div>
-                </div>
+            </div>
               </div>
             </motion.div>
           </div>
@@ -1122,7 +1170,7 @@ export default function MoonSignal() {
                 <div className="h-px w-24 bg-gradient-to-r from-transparent via-gold to-transparent"></div>
                 <span className="text-gold font-ticker text-sm tracking-wider bg-gold/10 px-4 py-2 rounded-full border border-gold/20">PREMIUM-ACCESS</span>
                 <div className="h-px w-24 bg-gradient-to-l from-transparent via-gold to-transparent"></div>
-              </div>
+      </div>
             </motion.div>
 
             <motion.h2 
@@ -1186,16 +1234,16 @@ export default function MoonSignal() {
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
               <div className="text-center">
-                <div className="text-3xl font-currency text-profit mb-2">10,000+</div>
-                <div className="text-sm font-financial text-silver">Active Traders</div>
+                <div className="text-3xl font-currency text-profit mb-2">1,000+</div>
+                <div className="text-sm font-financial text-silver">Assets</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-currency text-gold mb-2">$2.4B+</div>
-                <div className="text-sm font-financial text-silver">Assets Under Management</div>
+                <div className="text-3xl font-currency text-gold mb-2">20+</div>
+                <div className="text-sm font-financial text-silver">Wallets Supported</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-currency text-silver mb-2">99.9%</div>
-                <div className="text-sm font-financial text-silver">Uptime Guarantee</div>
+                <div className="text-3xl font-currency text-silver mb-2">24/7</div>
+                <div className="text-sm font-financial text-silver">Strategy Uptime</div>
               </div>
             </motion.div>
           </motion.div>

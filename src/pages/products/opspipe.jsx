@@ -11,7 +11,7 @@ import {  motion  } from '../../FramerProvider';
  * Dependencies: MissionControlNavbar, BackgroundLayerAtomic, ScrollToTop, FooterExperience
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
@@ -19,7 +19,198 @@ import MissionControlNavbar from '../../components/navigation/MissionControlNavb
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import FooterExperience from '../../components/home/v4/FooterExperience';
+import { useUnifiedMobile } from '../../hooks/useBreakpoint';
+import { useUnifiedDeviceCapabilities } from '../../hooks/useUnifiedDeviceCapabilities';
 import './opspipe.css'; // For custom animations
+
+// ========== PHASE 4: ANIMATION OPTIMIZATION ==========
+
+// Animation Performance Manager
+const useAnimationOptimization = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const rafRef = useRef(null);
+  const animationPoolRef = useRef(new Map());
+
+  useEffect(() => {
+    // Check for reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    const handleChange = (e) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Consolidated RAF for all animations
+  const scheduleAnimation = useCallback((callback) => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+    
+    rafRef.current = requestAnimationFrame(() => {
+      if (isVisible && !prefersReducedMotion) {
+        callback();
+      }
+    });
+  }, [isVisible, prefersReducedMotion]);
+
+  // Animation pool for reusing instances
+  const getAnimation = useCallback((key, factory) => {
+    if (!animationPoolRef.current.has(key)) {
+      animationPoolRef.current.set(key, factory());
+    }
+    return animationPoolRef.current.get(key);
+  }, []);
+
+  return {
+    isVisible,
+    setIsVisible,
+    prefersReducedMotion,
+    scheduleAnimation,
+    getAnimation,
+    shouldAnimate: isVisible && !prefersReducedMotion
+  };
+};
+
+// Optimized Motion Component with intersection observer
+const OptimizedMotion = ({ children, className, ...motionProps }) => {
+  const [ref, setRef] = useState(null);
+  const { isVisible, setIsVisible, shouldAnimate } = useAnimationOptimization();
+
+  useEffect(() => {
+    if (!ref) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    observer.observe(ref);
+    
+    return () => {
+      if (ref) observer.unobserve(ref);
+    };
+  }, [ref, setIsVisible]);
+
+  // Optimized animation variants
+  const optimizedVariants = useMemo(() => {
+    if (!shouldAnimate) {
+      return {
+        initial: { opacity: 1, y: 0 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0 }
+      };
+    }
+    
+    return {
+      initial: motionProps.initial || { opacity: 0, y: 20 },
+      animate: motionProps.animate || { opacity: 1, y: 0 },
+      transition: {
+        duration: motionProps.transition?.duration || 0.6,
+        ease: [0.25, 0.1, 0.25, 1], // Optimized cubic-bezier
+        ...motionProps.transition
+      }
+    };
+  }, [shouldAnimate, motionProps]);
+
+  return (
+    <motion.div
+      ref={setRef}
+      className={className}
+      {...optimizedVariants}
+      style={{
+        willChange: shouldAnimate ? 'transform, opacity' : 'auto',
+        transform: 'translateZ(0)', // Force GPU acceleration
+        ...motionProps.style
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// Performance-aware particle system
+const useOptimizedParticles = (baseCount, deviceCapabilities) => {
+  return useMemo(() => {
+    // Handle null deviceCapabilities
+    if (!deviceCapabilities) {
+      return baseCount; // Default to full count if capabilities not loaded
+    }
+    
+    const { isMobile, isLowPerformance } = deviceCapabilities;
+    
+    // Reduced particle counts for better performance
+    if (isLowPerformance) return Math.max(1, Math.floor(baseCount * 0.3));
+    if (isMobile) return Math.max(2, Math.floor(baseCount * 0.5));
+    return baseCount;
+  }, [baseCount, deviceCapabilities]);
+};
+
+// Optimized animation variants with hardware acceleration
+const createOptimizedVariants = (prefersReducedMotion) => {
+  if (prefersReducedMotion) {
+    return {
+      initial: { opacity: 1, scale: 1 },
+      animate: { opacity: 1, scale: 1 },
+      transition: { duration: 0 }
+    };
+  }
+
+  return {
+    initial: { opacity: 0, scale: 0.95, y: 20 },
+    animate: { opacity: 1, scale: 1, y: 0 },
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 0.1, 0.25, 1],
+      staggerChildren: 0.05
+    }
+  };
+};
+
+// ========== END PHASE 4 OPTIMIZATION ==========
+
+// Loading placeholder for lazy sections
+const LazyLoadPlaceholder = () => (
+  <div className="flex justify-center items-center py-20">
+    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
+
+// Intersection Observer component for lazy loading
+const IntersectionComponent = ({ children, threshold = 0.1 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [ref, setRef] = useState(null);
+
+  useEffect(() => {
+    if (!ref) return;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    
+    observer.observe(ref);
+    
+    return () => {
+      if (ref) observer.unobserve(ref);
+    };
+  }, [ref, threshold]);
+
+  return (
+    <div ref={setRef} className="w-full">
+      {isVisible ? children : <LazyLoadPlaceholder />}
+    </div>
+  );
+};
 
 // OpsPipe Architecture Diagram Component
 const OpsPipeArchitectureDiagram = () => {
@@ -227,18 +418,50 @@ const OpsPipeArchitectureDiagram = () => {
 
 // ✅ KEEP - OPSPIPE PRODUCT COMPONENT
 export default function OpsPipe() {
-  const [missionTime, setMissionTime] = useState('');
+  const { isMobile } = useUnifiedMobile();
+  const deviceCapabilities = useUnifiedDeviceCapabilities();
+  const [currentTime, setCurrentTime] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
   
-  // Mission time updater
+  // Phase 4: Animation optimization hooks
+  const { shouldAnimate, prefersReducedMotion } = useAnimationOptimization();
+  
+  // Phase 4: Optimized particle counts
+  const particleCount = useOptimizedParticles(12, deviceCapabilities);
+  const dataStreamCount = useOptimizedParticles(6, deviceCapabilities);
+  const energyBeamCount = useOptimizedParticles(3, deviceCapabilities);
+  
+  // Phase 4: Optimized animation variants
+  const optimizedVariants = useMemo(() => createOptimizedVariants(prefersReducedMotion), [prefersReducedMotion]);
+
+  // Performance-aware animation settings with null checks
+  const animationSettings = useMemo(() => ({
+    reducedMotion: prefersReducedMotion || (deviceCapabilities?.isLowPerformance || false),
+    particleCount,
+    dataStreamCount,
+    energyBeamCount,
+    enableHeavyAnimations: shouldAnimate && !(deviceCapabilities?.isLowPerformance || false),
+    enableGpuAcceleration: !(deviceCapabilities?.isLowPerformance || false)
+  }), [prefersReducedMotion, deviceCapabilities, shouldAnimate, particleCount, dataStreamCount, energyBeamCount]);
+
+  const updateTime = () => {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { 
+      hour12: false, 
+      timeZone: 'UTC' 
+    });
+    setCurrentTime(`${timeString} UTC`);
+  };
+
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setMissionTime(now.toUTCString().slice(17, 25));
-    };
-    
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -255,29 +478,47 @@ export default function OpsPipe() {
         {/* Premium Font Loading - Critical for sophisticated typography */}
         <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style" />
         <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" as="style" />
-        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" as="style" />
-        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" as="style" />
+        {!isMobile && !(deviceCapabilities?.isLowPerf || false) && (
+          <>
+            <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" as="style" />
+            <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" as="style" />
+          </>
+        )}
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        {!isMobile && !(deviceCapabilities?.isLowPerf || false) && (
+          <>
+            <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+            <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+          </>
+        )}
         
         {/* Advanced Typography & Visual System - OpsPipe Technical Theme */}
         <style jsx="true">{`
+          /* Performance-aware CSS - Load based on device capabilities */
+          ${!animationSettings.reducedMotion ? `
           /* Premium Typography Stack - Technical Operations Edition */
           .font-display {
-            font-family: 'Orbitron', 'Space Grotesk', system-ui, sans-serif;
+            font-family: ${isMobile ? "'Inter', system-ui, sans-serif" : "'Orbitron', 'Space Grotesk', system-ui, sans-serif"};
             font-variation-settings: 'wght' 700;
             letter-spacing: -0.025em;
             line-height: 1.1;
           }
           
           .font-technical {
-            font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+            font-family: ${isMobile ? "'Inter', system-ui, sans-serif" : "'Space Grotesk', 'Inter', system-ui, sans-serif"};
             font-variation-settings: 'wght' 600;
             letter-spacing: -0.015em;
             line-height: 1.2;
           }
+          ` : `
+          /* Reduced motion fallbacks */
+          .font-display, .font-technical {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+          }
+          `}
           
           .font-body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -292,14 +533,23 @@ export default function OpsPipe() {
             letter-spacing: 0.05em;
           }
 
+          ${!isMobile && !(deviceCapabilities?.isLowPerf || false) ? `
           .font-operational {
             font-family: 'Orbitron', 'Space Grotesk', sans-serif;
             font-variation-settings: 'wght' 600;
             letter-spacing: 0.02em;
             line-height: 1.3;
           }
+          ` : `
+          .font-operational {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+          }
+          `}
 
-          /* Advanced Text Effects - OpsPipe Color Palette */
+          /* Advanced Text Effects - Performance Conditional */
+          ${!animationSettings.reducedMotion ? `
           .text-glow-blue {
             text-shadow: 
               0 0 20px rgba(59, 130, 246, 0.6),
@@ -341,88 +591,13 @@ export default function OpsPipe() {
               0 0 40px rgba(16, 185, 129, 0.3),
               0 0 60px rgba(16, 185, 129, 0.2);
           }
-
-          /* Holographic text effects */
-          .text-holographic {
-            background: linear-gradient(45deg, #3b82f6, #06b6d4, #84cc16, #fb923c, #8b5cf6);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: holographicShift 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+          ` : `
+          /* Simplified text effects for low performance */
+          .text-glow-blue, .text-glow-cyan, .text-glow-orange, 
+          .text-glow-lime, .text-glow-purple, .text-glow-emerald {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
           }
-
-          @keyframes holographicShift {
-            0%, 100% { 
-              background-position: 0% 50%;
-              filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
-            }
-            25% { 
-              background-position: 100% 50%;
-              filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5));
-            }
-            50% { 
-              background-position: 50% 0%;
-              filter: drop-shadow(0 0 10px rgba(132, 204, 22, 0.5));
-            }
-            75% { 
-              background-position: 50% 100%;
-              filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.5));
-            }
-          }
-
-          /* Enhanced glitch effects */
-          .text-glitch {
-            position: relative;
-            animation: glitch 2s infinite;
-          }
-
-          .text-glitch::before,
-          .text-glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-          }
-
-          .text-glitch::before {
-            animation: glitch-1 0.5s infinite;
-            color: #ff0000;
-            z-index: -1;
-          }
-
-          .text-glitch::after {
-            animation: glitch-2 0.5s infinite;
-            color: #00ff00;
-            z-index: -2;
-          }
-
-          @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-          }
-
-          @keyframes glitch-1 {
-            0%, 100% { transform: translate(0); }
-            10% { transform: translate(-2px, -2px); }
-            20% { transform: translate(2px, 2px); }
-            30% { transform: translate(-2px, 2px); }
-            40% { transform: translate(2px, -2px); }
-          }
-
-          @keyframes glitch-2 {
-            0%, 100% { transform: translate(0); }
-            10% { transform: translate(2px, 2px); }
-            20% { transform: translate(-2px, -2px); }
-            30% { transform: translate(2px, -2px); }
-            40% { transform: translate(-2px, 2px); }
-          }
+          `}
           
           .text-shadow-soft {
             text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -743,6 +918,96 @@ export default function OpsPipe() {
           ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(to bottom, #2563eb, #0891b2);
           }
+
+          /* Holographic text effects */
+          ${!animationSettings.reducedMotion ? `
+          .text-holographic {
+            background: linear-gradient(45deg, #3b82f6, #06b6d4, #84cc16, #fb923c, #8b5cf6);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: holographicShift 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+          }
+
+          @keyframes holographicShift {
+            0%, 100% { 
+              background-position: 0% 50%;
+              filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+            }
+            25% { 
+              background-position: 100% 50%;
+              filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5));
+            }
+            50% { 
+              background-position: 50% 0%;
+              filter: drop-shadow(0 0 10px rgba(132, 204, 22, 0.5));
+            }
+            75% { 
+              background-position: 50% 100%;
+              filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.5));
+            }
+          }
+          ` : `
+          .text-holographic {
+            color: #3b82f6;
+          }
+          `}
+
+          /* Enhanced glitch effects - Performance conditional */
+          ${!animationSettings.reducedMotion && !isMobile ? `
+          .text-glitch {
+            position: relative;
+            animation: glitch 2s infinite;
+          }
+
+          .text-glitch::before,
+          .text-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
+
+          .text-glitch::before {
+            animation: glitch-1 0.5s infinite;
+            color: #ff0000;
+            z-index: -1;
+          }
+
+          .text-glitch::after {
+            animation: glitch-2 0.5s infinite;
+            color: #00ff00;
+            z-index: -2;
+          }
+
+          @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+          }
+
+          @keyframes glitch-1 {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(-2px, -2px); }
+            20% { transform: translate(2px, 2px); }
+            30% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+          }
+
+          @keyframes glitch-2 {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(2px, 2px); }
+            20% { transform: translate(-2px, -2px); }
+            30% { transform: translate(2px, -2px); }
+            40% { transform: translate(-2px, 2px); }
+          }
+          ` : ''}
         `}</style>
       </Helmet>
       
@@ -807,7 +1072,7 @@ export default function OpsPipe() {
         />
 
         {/* Advanced particle system - operational icons */}
-        {Array.from({ length: 12 }).map((_, i) => (
+        {Array.from({ length: animationSettings.particleCount }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute text-blue-500/20 text-lg"
@@ -833,7 +1098,7 @@ export default function OpsPipe() {
         ))}
 
         {/* Floating data streams */}
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: animationSettings.dataStreamCount }).map((_, i) => (
           <motion.div
             key={`stream-${i}`}
             className="absolute w-px h-20 bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent"
@@ -876,7 +1141,7 @@ export default function OpsPipe() {
         />
 
         {/* Dynamic energy beams */}
-        {Array.from({ length: 3 }).map((_, i) => (
+        {Array.from({ length: animationSettings.energyBeamCount }).map((_, i) => (
           <motion.div
             key={`beam-${i}`}
             className="absolute w-full h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
@@ -902,7 +1167,7 @@ export default function OpsPipe() {
         {/* Enhanced Hero Section */}
         <section id="overview" className="max-w-7xl mx-auto px-4 py-16 mobile-hero">
           {/* Status Panel */}
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -918,7 +1183,7 @@ export default function OpsPipe() {
                 <div className="flex items-center space-x-4 mobile-flex">
                   <div className="text-center">
                     <div className="caption-technical text-orange-400 text-glow-orange">MISSION TIME</div>
-                    <div className="font-mono text-white">{missionTime}</div>
+                    <div className="font-mono text-white">{currentTime}</div>
                   </div>
                   <div className="text-center">
                     <div className="caption-technical text-lime-400 text-glow-lime">STATUS</div>
@@ -942,11 +1207,11 @@ export default function OpsPipe() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </OptimizedMotion>
 
           {/* Hero Content */}
           <div className="text-center space-y-8">
-            <motion.div
+            <OptimizedMotion
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2 }}
@@ -957,9 +1222,9 @@ export default function OpsPipe() {
               <div className="hero-subtitle text-white/90 text-shadow-technical max-w-4xl mx-auto mt-6">
                 Enterprise-grade <span className="gradient-text-technical text-glow-cyan">operational automation</span> that transforms chaos into <span className="gradient-text-premium text-glow-orange">orchestrated precision</span>. Real-time monitoring, intelligent workflows, and defense-grade telemetry.
               </div>
-            </motion.div>
+            </OptimizedMotion>
 
-            <motion.div
+            <OptimizedMotion
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -983,14 +1248,14 @@ export default function OpsPipe() {
                 </svg>
                 Explore Architecture
               </Link>
-            </motion.div>
+            </OptimizedMotion>
           </div>
         </section>
         
         {/* Product Description */}
         <section className="max-w-7xl mx-auto px-4 py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
+            <OptimizedMotion
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -1019,7 +1284,7 @@ export default function OpsPipe() {
                     'Custom automation workflows', 
                     'Comprehensive API'
                   ].map((item, index) => (
-                    <motion.div
+                    <OptimizedMotion
                       key={index}
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
@@ -1029,13 +1294,13 @@ export default function OpsPipe() {
                     >
                       <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 animate-pulse"></div>
                       <span className="text-body-enhanced text-white/90">{item}</span>
-                    </motion.div>
+                    </OptimizedMotion>
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </OptimizedMotion>
             
-            <motion.div
+            <OptimizedMotion
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -1055,7 +1320,7 @@ export default function OpsPipe() {
                   
                   <div className="relative w-full h-full bg-black/60 rounded-lg flex items-center justify-center">
                     <div className="text-center p-8">
-                      <motion.div
+                      <OptimizedMotion
                         className="w-32 h-32 mx-auto mb-6 relative"
                         animate={{ 
                           scale: [1, 1.05, 1],
@@ -1075,7 +1340,7 @@ export default function OpsPipe() {
                             </svg>
                           </div>
                         </div>
-                      </motion.div>
+                      </OptimizedMotion>
                       
                       <div className="space-y-2">
                         <div className="font-mono-enhanced text-mono-caption text-blue-400 text-glow-blue">SYSTEM INTERFACE</div>
@@ -1088,13 +1353,13 @@ export default function OpsPipe() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </OptimizedMotion>
           </div>
         </section>
         
         {/* Enhanced Features Section */}
         <section id="features" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1107,7 +1372,7 @@ export default function OpsPipe() {
             <p className="body-large text-white/80 max-w-3xl mx-auto text-shadow-technical">
               Transform your operations with <span className="gradient-text-technical text-glow-cyan">intelligent automation</span> that adapts, learns, and scales with your business requirements.
             </p>
-          </motion.div>
+          </OptimizedMotion>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mobile-grid">
             {[
@@ -1160,7 +1425,7 @@ export default function OpsPipe() {
                 border: "border-emerald-400/30"
               }
             ].map((feature, index) => (
-              <motion.div
+              <OptimizedMotion
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1175,113 +1440,129 @@ export default function OpsPipe() {
                 <p className="body-technical text-white/70">
                   {feature.description}
                 </p>
-              </motion.div>
+              </OptimizedMotion>
             ))}
           </div>
         </section>
         
         {/* Enhanced Architecture Section */}
-        <section id="architecture" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title gradient-text-premium text-glow-orange mb-6">
-              System Architecture
-            </h2>
-            <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
-              Built on a <span className="gradient-text-technical text-glow-cyan">microservices architecture</span> that ensures scalability, reliability, and <span className="gradient-text-operational text-glow-lime">operational excellence</span> at enterprise scale.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="backdrop-blur-2xl bg-operational-primary border border-operational-primary rounded-xl p-8 mb-12"
-          >
-            <OpsPipeArchitectureDiagram />
-          </motion.div>
-
-          {/* Technical Specifications */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mobile-grid">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+        <IntersectionComponent threshold={0.1}>
+          <section id="architecture" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="backdrop-blur-2xl bg-operational-secondary border border-operational-secondary rounded-xl p-6"
+              className="text-center mb-16"
             >
-              <h3 className="section-subtitle text-orange-400 text-glow-orange mb-6">
-                Core Components
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { label: "OpsPipe OS", desc: "AI-powered orchestration engine", status: "ACTIVE" },
-                  { label: "State Machine", desc: "Workflow coordination system", status: "OPERATIONAL" },
-                  { label: "Decision Engine", desc: "Intelligent routing and logic", status: "OPTIMIZED" },
-                  { label: "Recovery Manager", desc: "Fault tolerance and healing", status: "STANDBY" }
-                ].map((component, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-orange-400/20">
-                    <div>
-                      <div className="feature-title text-white">{component.label}</div>
-                      <div className="body-technical text-white/60">{component.desc}</div>
-                    </div>
-                    <div className={`caption-technical px-3 py-1 rounded-full ${
-                      component.status === 'ACTIVE' ? 'bg-blue-400/20 text-blue-400' :
-                      component.status === 'OPERATIONAL' ? 'bg-lime-400/20 text-lime-400' :
-                      component.status === 'OPTIMIZED' ? 'bg-emerald-400/20 text-emerald-400' :
-                      'bg-orange-400/20 text-orange-400'
-                    }`}>
-                      {component.status}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+              <h2 className="section-title gradient-text-premium text-glow-orange mb-6">
+                System Architecture
+              </h2>
+              <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
+                Built on a <span className="gradient-text-technical text-glow-cyan">microservices architecture</span> that ensures scalability, reliability, and <span className="gradient-text-operational text-glow-lime">operational excellence</span> at enterprise scale.
+              </p>
+            </OptimizedMotion>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="backdrop-blur-2xl bg-operational-premium border border-operational-premium rounded-xl p-6"
+              className="backdrop-blur-2xl bg-operational-primary border border-operational-primary rounded-xl p-8 mb-12"
             >
-              <h3 className="section-subtitle text-purple-400 text-glow-purple mb-6">
-                Performance Metrics
-              </h3>
-              <div className="space-y-6">
-                {[
-                  { metric: "Throughput", value: "1.2K ops/sec", change: "+15%", color: "cyan" },
-                  { metric: "Latency", value: "< 50ms", change: "-23%", color: "lime" },
-                  { metric: "Availability", value: "99.97%", change: "+0.02%", color: "emerald" },
-                  { metric: "Error Rate", value: "0.03%", change: "-67%", color: "blue" }
-                ].map((stat, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="body-technical text-white/80">{stat.metric}</div>
-                    <div className="text-right">
-                      <div className={`feature-title text-${stat.color}-400 text-glow-${stat.color}`}>
-                        {stat.value}
+              <OpsPipeArchitectureDiagram />
+            </OptimizedMotion>
+
+            {/* Technical Specifications */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mobile-grid">
+              <OptimizedMotion
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="backdrop-blur-2xl bg-operational-secondary border border-operational-secondary rounded-xl p-6"
+              >
+                <h3 className="section-subtitle text-orange-400 text-glow-orange mb-6">
+                  Core Components
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    { label: "OpsPipe OS", desc: "AI-powered orchestration engine", status: "ACTIVE" },
+                    { label: "State Machine", desc: "Workflow coordination system", status: "OPERATIONAL" },
+                    { label: "Decision Engine", desc: "Intelligent routing and logic", status: "OPTIMIZED" },
+                    { label: "Recovery Manager", desc: "Fault tolerance and healing", status: "STANDBY" }
+                  ].map((component, index) => (
+                    <OptimizedMotion
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-orange-400/20"
+                    >
+                      <div>
+                        <div className="feature-title text-white">{component.label}</div>
+                        <div className="body-technical text-white/60">{component.desc}</div>
                       </div>
-                      <div className={`caption-technical text-${stat.color}-300`}>
-                        {stat.change}
+                      <div className={`caption-technical px-3 py-1 rounded-full ${
+                        component.status === 'ACTIVE' ? 'bg-blue-400/20 text-blue-400' :
+                        component.status === 'OPERATIONAL' ? 'bg-lime-400/20 text-lime-400' :
+                        component.status === 'OPTIMIZED' ? 'bg-emerald-400/20 text-emerald-400' :
+                        'bg-orange-400/20 text-orange-400'
+                      }`}>
+                        {component.status}
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
+                    </OptimizedMotion>
+                  ))}
+                </div>
+              </OptimizedMotion>
+
+              <OptimizedMotion
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="backdrop-blur-2xl bg-operational-premium border border-operational-premium rounded-xl p-6"
+              >
+                <h3 className="section-subtitle text-purple-400 text-glow-purple mb-6">
+                  Performance Metrics
+                </h3>
+                <div className="space-y-6">
+                  {[
+                    { metric: "Throughput", value: "1.2K ops/sec", change: "+15%", color: "cyan" },
+                    { metric: "Latency", value: "< 50ms", change: "-23%", color: "lime" },
+                    { metric: "Availability", value: "99.97%", change: "+0.02%", color: "emerald" },
+                    { metric: "Error Rate", value: "0.03%", change: "-67%", color: "blue" }
+                  ].map((stat, index) => (
+                    <OptimizedMotion
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="body-technical text-white/80">{stat.metric}</div>
+                      <div className="text-right">
+                        <div className={`feature-title text-${stat.color}-400 text-glow-${stat.color}`}>
+                          {stat.value}
+                        </div>
+                        <div className={`caption-technical text-${stat.color}-300`}>
+                          {stat.change}
+                        </div>
+                      </div>
+                    </OptimizedMotion>
+                  ))}
+                </div>
+              </OptimizedMotion>
+            </div>
+          </section>
+        </IntersectionComponent>
         
         {/* Mission Scenarios - Interactive Timeline Design */}
         <section id="scenarios" className="py-16 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4">
-            <motion.div
+            <OptimizedMotion
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1294,7 +1575,7 @@ export default function OpsPipe() {
               <p className="text-body-enhanced text-white/80 text-readable max-w-2xl mx-auto mb-6">
                 Follow the OpsPipe workflow from chaos to complete operational control.
               </p>
-            </motion.div>
+            </OptimizedMotion>
 
             {/* Interactive Timeline */}
             <div className="relative">
@@ -1365,7 +1646,7 @@ export default function OpsPipe() {
                     side: "right"
                   }
                 ].map((item, index) => (
-                  <motion.div
+                  <OptimizedMotion
                     key={item.phase}
                     initial={{ opacity: 0, x: item.side === 'left' ? -30 : 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -1375,7 +1656,7 @@ export default function OpsPipe() {
                   >
                     {/* Timeline Node - Desktop only */}
                     <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 z-10">
-                      <motion.div
+                      <OptimizedMotion
                         className={`w-12 h-12 rounded-full border-2 border-${item.color}-400/50 bg-black/80 flex items-center justify-center shadow-lg shadow-${item.color}-400/20`}
                         whileHover={{ scale: 1.1 }}
                         animate={{ 
@@ -1388,11 +1669,11 @@ export default function OpsPipe() {
                         transition={{ duration: 2, repeat: Infinity }}
                       >
                         <span className="text-lg">{item.icon}</span>
-                      </motion.div>
+                      </OptimizedMotion>
                     </div>
 
                     {/* Content Card */}
-                    <motion.div
+                    <OptimizedMotion
                       className={`w-full max-w-sm md:max-w-md ${item.side === 'left' ? 'md:mr-auto md:pr-16' : 'md:ml-auto md:pl-16'}`}
                       whileHover={{ scale: 1.02 }}
                       transition={{ duration: 0.3 }}
@@ -1436,7 +1717,7 @@ export default function OpsPipe() {
                           {/* Progress Indicator */}
                           <div className="flex items-center space-x-2">
                             <div className="flex-1 h-1 bg-black/40 rounded-full overflow-hidden">
-                              <motion.div
+                              <OptimizedMotion
                                 className={`h-full bg-gradient-to-r from-${item.color}-400 to-${item.color}-300`}
                                 initial={{ width: 0 }}
                                 whileInView={{ width: `${(parseInt(item.phase) / 6) * 100}%` }}
@@ -1457,29 +1738,79 @@ export default function OpsPipe() {
                           </div>
                         </div>
                       </div>
-                    </motion.div>
-                  </motion.div>
+                    </OptimizedMotion>
+                  </OptimizedMotion>
                 ))}
               </div>
 
-              {/* Floating Background Elements - Reduced count */}
+              {/* Background particles - Performance optimized */}
               <div className="absolute inset-0 -z-10">
-                {[...Array(3)].map((_, i) => (
-                  <motion.div
+                {[...Array(animationSettings.particleCount)].map((_, i) => (
+                  <OptimizedMotion
                     key={i}
                     className="absolute w-1 h-1 bg-blue-400/20 rounded-full"
                     style={{
                       left: `${Math.random() * 100}%`,
                       top: `${Math.random() * 100}%`,
+                      willChange: animationSettings.enableGpuAcceleration ? 'transform' : 'auto'
+                    }}
+                    animate={animationSettings.enableHeavyAnimations ? {
+                      y: [0, -20, 0],
+                      opacity: [0.2, 0.8, 0.2],
+                      scale: [1, 1.2, 1]
+                    } : {}}
+                    transition={{
+                      duration: animationSettings.reducedMotion ? 0 : 4 + Math.random() * 2,
+                      repeat: animationSettings.reducedMotion ? 0 : Infinity,
+                      delay: Math.random() * 2,
+                      ease: "easeInOut"
+                    }}
+                  />
+                ))}
+
+                {/* Data streams - Performance optimized */}
+                {[...Array(animationSettings.dataStreamCount)].map((_, i) => (
+                  <OptimizedMotion
+                    key={`stream-${i}`}
+                    className="absolute w-px h-16 bg-gradient-to-b from-cyan-400/40 to-transparent"
+                    style={{
+                      left: `${20 + Math.random() * 60}%`,
+                      top: `${Math.random() * 80}%`,
+                      willChange: animationSettings.enableGpuAcceleration ? 'transform' : 'auto'
+                    }}
+                    animate={animationSettings.enableHeavyAnimations ? {
+                      y: [0, -100],
+                      opacity: [0, 1, 0]
+                    } : {}}
+                    transition={{
+                      duration: animationSettings.reducedMotion ? 0 : 3,
+                      repeat: animationSettings.reducedMotion ? 0 : Infinity,
+                      delay: Math.random() * 3,
+                      ease: "linear"
+                    }}
+                  />
+                ))}
+
+                {/* Energy beams - Only on high performance */}
+                {animationSettings.enableHeavyAnimations && [...Array(animationSettings.energyBeamCount)].map((_, i) => (
+                  <OptimizedMotion
+                    key={`beam-${i}`}
+                    className="absolute h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent"
+                    style={{
+                      left: '10%',
+                      right: '10%',
+                      top: `${30 + Math.random() * 40}%`,
+                      willChange: 'transform'
                     }}
                     animate={{
-                      y: [0, -15, 0],
-                      opacity: [0.2, 0.4, 0.2],
+                      scaleX: [0, 1, 0],
+                      opacity: [0, 0.8, 0]
                     }}
                     transition={{
-                      duration: 4 + Math.random() * 2,
+                      duration: 2,
                       repeat: Infinity,
                       delay: Math.random() * 2,
+                      ease: "easeInOut"
                     }}
                   />
                 ))}
@@ -1489,532 +1820,570 @@ export default function OpsPipe() {
         </section>
         
         {/* Enhanced LEGIT Framework Section */}
-        <section id="legit" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title gradient-text-technical text-glow-cyan mb-6">
-              LEGIT Framework
-            </h2>
-            <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
-              Our <span className="gradient-text-premium text-glow-orange">Logged, Enforced, Grounded, Isolated, Tested</span> framework ensures every operation meets the highest standards of <span className="gradient-text-operational text-glow-lime">reliability and accountability</span>.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mobile-grid">
-            {[
-              {
-                icon: "📝",
-                title: "Logged", 
-                description: "Complete audit trails with detailed operation logging and traceability.",
-                color: "blue",
-                gradient: "from-blue-500/20 to-blue-600/20"
-              },
-              {
-                icon: "⚖️",
-                title: "Enforced",
-                description: "Strict policy enforcement with automated compliance monitoring.",
-                color: "orange",
-                gradient: "from-orange-500/20 to-amber-600/20"
-              },
-              {
-                icon: "🧠",
-                title: "Grounded", 
-                description: "All data processing follows strict schema validation rules.",
-                color: "cyan",
-                gradient: "from-cyan-500/20 to-teal-600/20"
-              },
-              {
-                icon: "🛡️",
-                title: "Isolated",
-                description: "Each operation runs in its own context without shared state risk.",
-                color: "purple",
-                gradient: "from-purple-500/20 to-violet-600/20"
-              },
-              {
-                icon: "✅",
-                title: "Tested",
-                description: "Continuous evaluation ensures consistent and reliable results.",
-                color: "emerald",
-                gradient: "from-emerald-500/20 to-green-600/20"
-              }
-            ].map((principle, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`backdrop-blur-2xl bg-gradient-to-br ${principle.gradient} border border-${principle.color}-400/30 rounded-xl p-6 text-center hover-lift-technical mobile-card`}
-              >
-                <div className="text-3xl mb-4 float-technical">{principle.icon}</div>
-                <h3 className={`feature-title text-${principle.color}-400 text-glow-${principle.color} mb-3`}>
-                  {principle.title}
-                </h3>
-                <p className="body-technical text-white/70">
-                  {principle.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Enhanced Use Cases Gallery - Mission Scenarios */}
-        <section id="use-cases" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title gradient-text-operational text-glow-blue mb-6">
-              Mission Scenarios
-            </h2>
-            <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
-              Real-world <span className="gradient-text-technical text-glow-cyan">operational deployments</span> across industries, demonstrating OpsPipe's <span className="gradient-text-premium text-glow-orange">versatility and impact</span> in transforming business processes.
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mobile-grid">
-            {[
-              {
-                title: "Financial Document Processing",
-                description: "Ideal for growing businesses buried in receipts and invoices. OpsPipe parses documents, checks for errors, and auto-generates summaries — ready to sync with Xero, QuickBooks, or local accountants.\n\nCloses the gap between small ops and real bookkeeping, with zero manual entry.",
-                icon: "💼",
-                coordinates: "FDP-001",
-                color: "blue",
-                gradient: "from-blue-500/20 to-cyan-500/20",
-                industry: "Financial Services"
-              },
-              {
-                title: "F&B Back-Office Automation",
-                description: "Streamline supplier invoices, inventory counts, and delivery platform sync. OpsPipe runs loops for restaurant chains, cafes, and hotels — no full-time admin needed.\n\nYou stay focused on food, we handle the paperwork.",
-                icon: "🍽️",
-                coordinates: "FNB-002",
-                color: "orange",
-                gradient: "from-orange-500/20 to-amber-500/20",
-                industry: "Food & Beverage"
-              },
-              {
-                title: "Clinic Intake & Record Flow",
-                description: "Simplifies form intake, ID validation, and patient routing. Clinics use OpsPipe to collect and process patient data while staying compliant and secure.\n\nCuts down wait times and admin load without touching your EMR.",
-                icon: "🏥",
-                coordinates: "HCR-003",
-                color: "emerald",
-                gradient: "from-emerald-500/20 to-green-500/20",
-                industry: "Healthcare"
-              },
-              {
-                title: "Academic Data Management",
-                description: "Researchers and departments use OpsPipe to process survey data, lab reports, and grant paperwork. Auto-tagged, versioned, and export-ready — without spending hours on formatting.\n\nPerfect for teams who publish, not wrangle PDFs.",
-                icon: "🎓",
-                coordinates: "ADM-004",
-                color: "purple",
-                gradient: "from-purple-500/20 to-violet-500/20",
-                industry: "Education"
-              },
-              {
-                title: "Retail Ops + Metrics Loop",
-                description: "Daily receipts, stock counts, vendor slips — OpsPipe turns it all into structured dashboards. Supports POS exports, trend snapshots, and alert flags for busy stores.\n\nNo more waiting for accounting to understand what's happening in your own shop.",
-                icon: "🛍️",
-                coordinates: "RTL-005",
-                color: "lime",
-                gradient: "from-lime-500/20 to-emerald-500/20",
-                industry: "Retail"
-              },
-              {
-                title: "Personal Doc Manager",
-                description: "A future consumer app powered by OpsPipe — designed to manage life's paperwork with zero stress. From receipts and bills to school forms and IDs, everything is auto-sorted, summarized, and searchable.\n\nOps-grade infrastructure, simplified for everyday use.",
-                icon: "📂",
-                coordinates: "PDM-006",
-                color: "cyan",
-                gradient: "from-cyan-500/20 to-teal-500/20",
-                industry: "Consumer"
-              }
-            ].map((useCase, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group h-full"
-              >
-                <div className={`backdrop-blur-2xl bg-gradient-to-br ${useCase.gradient} border border-${useCase.color}-400/30 rounded-xl p-6 shadow-2xl shadow-black/60 hover:border-${useCase.color}-400/50 hover-lift-technical h-full flex flex-col mobile-card`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-3xl float-technical">{useCase.icon}</div>
-                    <div className={`caption-technical text-${useCase.color}-400 text-glow-${useCase.color} bg-black/30 px-2 py-1 rounded border border-${useCase.color}-400/30`}>
-                      {useCase.coordinates}
-                    </div>
-                  </div>
-                  
-                  <div className={`caption-technical text-${useCase.color}-300 mb-2`}>
-                    {useCase.industry}
-                  </div>
-                  
-                  <h3 className={`feature-title text-${useCase.color}-400 text-glow-${useCase.color} mb-3 group-hover:text-${useCase.color}-300 transition-colors duration-300`}>
-                    {useCase.title}
-                  </h3>
-                  
-                  <p className="body-technical text-white/70 whitespace-pre-line leading-relaxed flex-grow">
-                    {useCase.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Integration Ecosystem Section */}
-        <section id="integrations" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title gradient-text-premium text-glow-orange mb-6">
-              Integration Ecosystem
-            </h2>
-            <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
-              OpsPipe connects seamlessly with your existing <span className="gradient-text-technical text-glow-cyan">technology stack</span>, providing <span className="gradient-text-operational text-glow-lime">unified operational control</span> across all your business systems.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mobile-grid">
-            {/* Input Sources */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+        <IntersectionComponent threshold={0.1}>
+          <section id="legit" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="backdrop-blur-2xl bg-operational-accent border border-operational-accent rounded-xl p-8"
+              className="text-center mb-16"
             >
-              <h3 className="section-subtitle text-lime-400 text-glow-lime mb-6">
-                📥 Input Sources
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { name: "Telegram Bot", desc: "Chat-based operations", status: "ACTIVE" },
-                  { name: "File Upload", desc: "Document processing", status: "READY" },
-                  { name: "POS Systems", desc: "Retail integration", status: "BETA" },
-                  { name: "API Gateway", desc: "REST/GraphQL", status: "STABLE" },
-                  { name: "Email Parser", desc: "Automated intake", status: "DEV" },
-                  { name: "Web Forms", desc: "Direct submission", status: "ACTIVE" }
-                ].map((source, index) => (
-                  <div key={index} className="bg-black/20 p-3 rounded-lg border border-lime-400/20">
-                    <div className="feature-title text-white text-sm mb-1">{source.name}</div>
-                    <div className="body-technical text-white/60 text-xs mb-2">{source.desc}</div>
-                    <div className={`caption-technical px-2 py-1 rounded-full text-xs ${
-                      source.status === 'ACTIVE' ? 'bg-emerald-400/20 text-emerald-400' :
-                      source.status === 'STABLE' ? 'bg-blue-400/20 text-blue-400' :
-                      source.status === 'READY' ? 'bg-cyan-400/20 text-cyan-400' :
-                      source.status === 'BETA' ? 'bg-orange-400/20 text-orange-400' :
-                      'bg-purple-400/20 text-purple-400'
-                    }`}>
-                      {source.status}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+              <h2 className="section-title gradient-text-technical text-glow-cyan mb-6">
+                LEGIT Framework
+              </h2>
+              <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
+                Our <span className="gradient-text-premium text-glow-orange">Logged, Enforced, Grounded, Isolated, Tested</span> framework ensures every operation meets the highest standards of <span className="gradient-text-operational text-glow-lime">reliability and accountability</span>.
+              </p>
+            </OptimizedMotion>
 
-            {/* Output Systems */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="backdrop-blur-2xl bg-operational-premium border border-operational-premium rounded-xl p-8"
-            >
-              <h3 className="section-subtitle text-purple-400 text-glow-purple mb-6">
-                📤 Output Systems
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { name: "OpsCockpit", desc: "Real-time dashboard", status: "LIVE" },
-                  { name: "Web Admin", desc: "Control panel", status: "STABLE" },
-                  { name: "OpsField Mobile", desc: "Field operations", status: "BETA" },
-                  { name: "StaffBot", desc: "Team notifications", status: "ACTIVE" },
-                  { name: "Knowledge Base", desc: "Documentation", status: "AUTO" },
-                  { name: "Data Exports", desc: "Analytics feeds", status: "READY" }
-                ].map((output, index) => (
-                  <div key={index} className="bg-black/20 p-3 rounded-lg border border-purple-400/20">
-                    <div className="feature-title text-white text-sm mb-1">{output.name}</div>
-                    <div className="body-technical text-white/60 text-xs mb-2">{output.desc}</div>
-                    <div className={`caption-technical px-2 py-1 rounded-full text-xs ${
-                      output.status === 'LIVE' ? 'bg-emerald-400/20 text-emerald-400' :
-                      output.status === 'STABLE' ? 'bg-blue-400/20 text-blue-400' :
-                      output.status === 'ACTIVE' ? 'bg-cyan-400/20 text-cyan-400' :
-                      output.status === 'BETA' ? 'bg-orange-400/20 text-orange-400' :
-                      output.status === 'AUTO' ? 'bg-lime-400/20 text-lime-400' :
-                      'bg-purple-400/20 text-purple-400'
-                    }`}>
-                      {output.status}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Enterprise Connectors */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mt-12 backdrop-blur-2xl bg-operational-secondary border border-operational-secondary rounded-xl p-8"
-          >
-            <h3 className="section-subtitle text-orange-400 text-glow-orange mb-6 text-center">
-              🔗 Enterprise Connectors
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mobile-grid">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mobile-grid">
               {[
-                { name: "Xero", type: "Accounting" },
-                { name: "QuickBooks", type: "Finance" },
-                { name: "Slack", type: "Communication" },
-                { name: "Teams", type: "Collaboration" },
-                { name: "Salesforce", type: "CRM" },
-                { name: "HubSpot", type: "Marketing" },
-                { name: "Shopify", type: "E-commerce" },
-                { name: "AWS", type: "Cloud" },
-                { name: "Azure", type: "Platform" },
-                { name: "GCP", type: "Infrastructure" },
-                { name: "Stripe", type: "Payments" },
-                { name: "Zapier", type: "Automation" }
-              ].map((connector, index) => (
-                <div key={index} className="bg-black/20 p-3 rounded-lg border border-orange-400/20 text-center mobile-card">
-                  <div className="feature-title text-white text-sm mb-1">{connector.name}</div>
-                  <div className="caption-technical text-orange-300 text-xs">{connector.type}</div>
-                </div>
+                {
+                  icon: "📝",
+                  title: "Logged", 
+                  description: "Complete audit trails with detailed operation logging and traceability.",
+                  color: "blue",
+                  gradient: "from-blue-500/20 to-blue-600/20"
+                },
+                {
+                  icon: "⚖️",
+                  title: "Enforced",
+                  description: "Strict policy enforcement with automated compliance monitoring.",
+                  color: "orange",
+                  gradient: "from-orange-500/20 to-amber-600/20"
+                },
+                {
+                  icon: "🧠",
+                  title: "Grounded", 
+                  description: "All data processing follows strict schema validation rules.",
+                  color: "cyan",
+                  gradient: "from-cyan-500/20 to-teal-600/20"
+                },
+                {
+                  icon: "🛡️",
+                  title: "Isolated",
+                  description: "Each operation runs in its own context without shared state risk.",
+                  color: "purple",
+                  gradient: "from-purple-500/20 to-violet-600/20"
+                },
+                {
+                  icon: "✅",
+                  title: "Tested",
+                  description: "Continuous evaluation ensures consistent and reliable results.",
+                  color: "emerald",
+                  gradient: "from-emerald-500/20 to-green-600/20"
+                }
+              ].map((principle, index) => (
+                <OptimizedMotion
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className={`backdrop-blur-2xl bg-gradient-to-br ${principle.gradient} border border-${principle.color}-400/30 rounded-xl p-6 text-center hover-lift-technical mobile-card`}
+                >
+                  <div className="text-3xl mb-4 float-technical">{principle.icon}</div>
+                  <h3 className={`feature-title text-${principle.color}-400 text-glow-${principle.color} mb-3`}>
+                    {principle.title}
+                  </h3>
+                  <p className="body-technical text-white/70">
+                    {principle.description}
+                  </p>
+                </OptimizedMotion>
               ))}
             </div>
-          </motion.div>
-        </section>
+          </section>
+        </IntersectionComponent>
 
-        {/* Performance Metrics & ROI Section */}
-        <section id="performance" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title gradient-text-technical text-glow-cyan mb-6">
-              Quantified Impact
-            </h2>
-            <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
-              Measurable <span className="gradient-text-premium text-glow-orange">operational improvements</span> and <span className="gradient-text-operational text-glow-lime">ROI metrics</span> from real OpsPipe deployments across industries.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mobile-grid mb-16">
-            {[
-              {
-                metric: "Processing Speed",
-                value: "10x",
-                improvement: "faster document processing",
-                color: "blue",
-                icon: "⚡"
-              },
-              {
-                metric: "Error Reduction",
-                value: "94%",
-                improvement: "fewer manual errors",
-                color: "emerald",
-                icon: "🎯"
-              },
-              {
-                metric: "Cost Savings",
-                value: "$50K+",
-                improvement: "annual operational savings",
-                color: "orange",
-                icon: "💰"
-              },
-              {
-                metric: "Time Recovery",
-                value: "15hrs",
-                improvement: "per week saved per team",
-                color: "purple",
-                icon: "⏰"
-              }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`backdrop-blur-2xl bg-gradient-to-br from-${stat.color}-500/20 to-${stat.color}-600/20 border border-${stat.color}-400/30 rounded-xl p-6 text-center hover-lift-technical mobile-card`}
-              >
-                <div className="text-3xl mb-4 float-technical">{stat.icon}</div>
-                <div className={`hero-subtitle text-${stat.color}-400 text-glow-${stat.color} mb-2`}>
-                  {stat.value}
-                </div>
-                <div className={`feature-title text-${stat.color}-300 mb-2`}>
-                  {stat.metric}
-                </div>
-                <div className="body-technical text-white/70">
-                  {stat.improvement}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* ROI Calculator Preview */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="backdrop-blur-2xl bg-operational-primary border border-operational-primary rounded-xl p-8"
-          >
-            <h3 className="section-subtitle text-blue-400 text-glow-blue mb-6 text-center">
-              📊 ROI Impact Calculator
-            </h3>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mobile-grid">
-              <div className="text-center">
-                <div className="caption-technical text-cyan-400 text-glow-cyan mb-2">CURRENT MANUAL HOURS</div>
-                <div className="hero-subtitle text-white mb-2">40hrs/week</div>
-                <div className="body-technical text-white/60">Average team processing time</div>
-              </div>
-              <div className="text-center">
-                <div className="caption-technical text-lime-400 text-glow-lime mb-2">WITH OPSPIPE</div>
-                <div className="hero-subtitle text-lime-400 text-glow-lime mb-2">4hrs/week</div>
-                <div className="body-technical text-white/60">90% automation achieved</div>
-              </div>
-              <div className="text-center">
-                <div className="caption-technical text-orange-400 text-glow-orange mb-2">ANNUAL SAVINGS</div>
-                <div className="hero-subtitle text-orange-400 text-glow-orange mb-2">$75,600</div>
-                <div className="body-technical text-white/60">Based on $40/hr operational cost</div>
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Customer Success Stories */}
-        <section id="success-stories" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="section-title gradient-text-operational text-glow-blue mb-6">
-              Mission Success Stories
-            </h2>
-            <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
-              Real results from <span className="gradient-text-premium text-glow-orange">operational transformations</span> across diverse industries and <span className="gradient-text-technical text-glow-cyan">business scales</span>.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mobile-grid">
-            {[
-              {
-                company: "TechFlow Solutions",
-                industry: "SaaS Startup",
-                challenge: "Manual invoice processing consuming 20+ hours weekly",
-                solution: "OpsPipe automated document parsing and validation workflows",
-                result: "95% time reduction, zero processing errors in 6 months",
-                metrics: { time: "18hrs saved/week", accuracy: "100%", roi: "340%" },
-                color: "blue",
-                avatar: "🏢"
-              },
-              {
-                company: "Coastal Cafe Chain",
-                industry: "Food & Beverage",
-                challenge: "Multiple location inventory and supplier coordination chaos",
-                solution: "Unified OpsPipe dashboard with real-time supplier sync",
-                result: "Streamlined operations across 12 locations with predictive inventory",
-                metrics: { efficiency: "+85%", waste: "-60%", profit: "+23%" },
-                color: "orange",
-                avatar: "☕"
-              },
-              {
-                company: "MedCore Clinics",
-                industry: "Healthcare",
-                challenge: "Patient intake bottlenecks and compliance documentation",
-                solution: "HIPAA-compliant OpsPipe workflows for patient processing",
-                result: "50% faster patient onboarding with complete audit trails",
-                metrics: { speed: "+120%", compliance: "100%", satisfaction: "+45%" },
-                color: "emerald",
-                avatar: "🏥"
-              },
-              {
-                company: "Research University",
-                industry: "Education",
-                challenge: "Grant application and research data management inefficiencies",
-                solution: "Academic-focused OpsPipe with automated report generation",
-                result: "Doubled research output with standardized documentation",
-                metrics: { output: "+200%", accuracy: "99.8%", time: "25hrs saved/week" },
-                color: "purple",
-                avatar: "🎓"
-              }
-            ].map((story, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                className={`backdrop-blur-2xl bg-gradient-to-br from-${story.color}-500/20 to-${story.color}-600/20 border border-${story.color}-400/30 rounded-xl p-8 hover-lift-technical mobile-card`}
-              >
-                <div className="flex items-center mb-6">
-                  <div className="text-3xl mr-4">{story.avatar}</div>
-                  <div>
-                    <h3 className={`feature-title text-${story.color}-400 text-glow-${story.color}`}>
-                      {story.company}
+        {/* Enhanced Use Cases Gallery - Mission Scenarios */}
+        <IntersectionComponent threshold={0.1}>
+          <section id="use-cases" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="section-title gradient-text-operational text-glow-blue mb-6">
+                Mission Scenarios
+              </h2>
+              <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
+                Real-world <span className="gradient-text-technical text-glow-cyan">operational deployments</span> across industries, demonstrating OpsPipe's <span className="gradient-text-premium text-glow-orange">versatility and impact</span> in transforming business processes.
+              </p>
+            </OptimizedMotion>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mobile-grid">
+              {[
+                {
+                  title: "Financial Document Processing",
+                  description: "Ideal for growing businesses buried in receipts and invoices. OpsPipe parses documents, checks for errors, and auto-generates summaries — ready to sync with Xero, QuickBooks, or local accountants.\n\nCloses the gap between small ops and real bookkeeping, with zero manual entry.",
+                  icon: "💼",
+                  coordinates: "FDP-001",
+                  color: "blue",
+                  gradient: "from-blue-500/20 to-cyan-500/20",
+                  industry: "Financial Services"
+                },
+                {
+                  title: "F&B Back-Office Automation",
+                  description: "Streamline supplier invoices, inventory counts, and delivery platform sync. OpsPipe runs loops for restaurant chains, cafes, and hotels — no full-time admin needed.\n\nYou stay focused on food, we handle the paperwork.",
+                  icon: "🍽️",
+                  coordinates: "FNB-002",
+                  color: "orange",
+                  gradient: "from-orange-500/20 to-amber-500/20",
+                  industry: "Food & Beverage"
+                },
+                {
+                  title: "Clinic Intake & Record Flow",
+                  description: "Simplifies form intake, ID validation, and patient routing. Clinics use OpsPipe to collect and process patient data while staying compliant and secure.\n\nCuts down wait times and admin load without touching your EMR.",
+                  icon: "🏥",
+                  coordinates: "HCR-003",
+                  color: "emerald",
+                  gradient: "from-emerald-500/20 to-green-500/20",
+                  industry: "Healthcare"
+                },
+                {
+                  title: "Academic Data Management",
+                  description: "Researchers and departments use OpsPipe to process survey data, lab reports, and grant paperwork. Auto-tagged, versioned, and export-ready — without spending hours on formatting.\n\nPerfect for teams who publish, not wrangle PDFs.",
+                  icon: "🎓",
+                  coordinates: "ADM-004",
+                  color: "purple",
+                  gradient: "from-purple-500/20 to-violet-500/20",
+                  industry: "Education"
+                },
+                {
+                  title: "Retail Ops + Metrics Loop",
+                  description: "Daily receipts, stock counts, vendor slips — OpsPipe turns it all into structured dashboards. Supports POS exports, trend snapshots, and alert flags for busy stores.\n\nNo more waiting for accounting to understand what's happening in your own shop.",
+                  icon: "🛍️",
+                  coordinates: "RTL-005",
+                  color: "lime",
+                  gradient: "from-lime-500/20 to-emerald-500/20",
+                  industry: "Retail"
+                },
+                {
+                  title: "Personal Doc Manager",
+                  description: "A future consumer app powered by OpsPipe — designed to manage life's paperwork with zero stress. From receipts and bills to school forms and IDs, everything is auto-sorted, summarized, and searchable.\n\nOps-grade infrastructure, simplified for everyday use.",
+                  icon: "📂",
+                  coordinates: "PDM-006",
+                  color: "cyan",
+                  gradient: "from-cyan-500/20 to-teal-500/20",
+                  industry: "Consumer"
+                }
+              ].map((useCase, index) => (
+                <OptimizedMotion
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="group h-full"
+                >
+                  <div className={`backdrop-blur-2xl bg-gradient-to-br ${useCase.gradient} border border-${useCase.color}-400/30 rounded-xl p-6 shadow-2xl shadow-black/60 hover:border-${useCase.color}-400/50 hover-lift-technical h-full flex flex-col mobile-card`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="text-3xl float-technical">{useCase.icon}</div>
+                      <div className={`caption-technical text-${useCase.color}-400 text-glow-${useCase.color} bg-black/30 px-2 py-1 rounded border border-${useCase.color}-400/30`}>
+                        {useCase.coordinates}
+                      </div>
+                    </div>
+                    
+                    <div className={`caption-technical text-${useCase.color}-300 mb-2`}>
+                      {useCase.industry}
+                    </div>
+                    
+                    <h3 className={`feature-title text-${useCase.color}-400 text-glow-${useCase.color} mb-3 group-hover:text-${useCase.color}-300 transition-colors duration-300`}>
+                      {useCase.title}
                     </h3>
-                    <div className={`caption-technical text-${story.color}-300`}>
-                      {story.industry}
-                    </div>
+                    
+                    <p className="body-technical text-white/70 whitespace-pre-line leading-relaxed flex-grow">
+                      {useCase.description}
+                    </p>
                   </div>
-                </div>
+                </OptimizedMotion>
+              ))}
+            </div>
+          </section>
+        </IntersectionComponent>
 
-                <div className="space-y-4 mb-6">
-                  <div>
-                    <div className="caption-technical text-white/60 mb-1">CHALLENGE</div>
-                    <div className="body-technical text-white/80">{story.challenge}</div>
-                  </div>
-                  <div>
-                    <div className="caption-technical text-white/60 mb-1">SOLUTION</div>
-                    <div className="body-technical text-white/80">{story.solution}</div>
-                  </div>
-                  <div>
-                    <div className="caption-technical text-white/60 mb-1">RESULT</div>
-                    <div className={`body-technical text-${story.color}-300`}>{story.result}</div>
-                  </div>
-                </div>
+        {/* Integration Ecosystem Section */}
+        <IntersectionComponent threshold={0.1}>
+          <section id="integrations" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="section-title gradient-text-premium text-glow-orange mb-6">
+                Integration Ecosystem
+              </h2>
+              <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
+                OpsPipe connects seamlessly with your existing <span className="gradient-text-technical text-glow-cyan">technology stack</span>, providing <span className="gradient-text-operational text-glow-lime">unified operational control</span> across all your business systems.
+              </p>
+            </OptimizedMotion>
 
-                <div className="grid grid-cols-3 gap-4">
-                  {Object.entries(story.metrics).map(([key, value], metricIndex) => (
-                    <div key={metricIndex} className="text-center p-3 bg-black/20 rounded-lg border border-white/10">
-                      <div className={`feature-title text-${story.color}-400 text-glow-${story.color} text-sm`}>
-                        {value}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mobile-grid">
+              {/* Input Sources */}
+              <OptimizedMotion
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="backdrop-blur-2xl bg-operational-accent border border-operational-accent rounded-xl p-8"
+              >
+                <h3 className="section-subtitle text-lime-400 text-glow-lime mb-6">
+                  📥 Input Sources
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { name: "Telegram Bot", desc: "Chat-based operations", status: "ACTIVE" },
+                    { name: "File Upload", desc: "Document processing", status: "READY" },
+                    { name: "POS Systems", desc: "Retail integration", status: "BETA" },
+                    { name: "API Gateway", desc: "REST/GraphQL", status: "STABLE" },
+                    { name: "Email Parser", desc: "Automated intake", status: "DEV" },
+                    { name: "Web Forms", desc: "Direct submission", status: "ACTIVE" }
+                  ].map((source, index) => (
+                    <OptimizedMotion
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="bg-black/20 p-3 rounded-lg border border-lime-400/20"
+                    >
+                      <div className="feature-title text-white text-sm mb-1">{source.name}</div>
+                      <div className="body-technical text-white/60 text-xs mb-2">{source.desc}</div>
+                      <div className={`caption-technical px-2 py-1 rounded-full text-xs ${
+                        source.status === 'ACTIVE' ? 'bg-emerald-400/20 text-emerald-400' :
+                        source.status === 'STABLE' ? 'bg-blue-400/20 text-blue-400' :
+                        source.status === 'READY' ? 'bg-cyan-400/20 text-cyan-400' :
+                        source.status === 'BETA' ? 'bg-orange-400/20 text-orange-400' :
+                        'bg-purple-400/20 text-purple-400'
+                      }`}>
+                        {source.status}
                       </div>
-                      <div className="caption-technical text-white/60 text-xs uppercase">
-                        {key}
-                      </div>
-                    </div>
+                    </OptimizedMotion>
                   ))}
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
+              </OptimizedMotion>
+
+              {/* Output Systems */}
+              <OptimizedMotion
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="backdrop-blur-2xl bg-operational-premium border border-operational-premium rounded-xl p-8"
+              >
+                <h3 className="section-subtitle text-purple-400 text-glow-purple mb-6">
+                  📤 Output Systems
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { name: "OpsCockpit", desc: "Real-time dashboard", status: "LIVE" },
+                    { name: "Web Admin", desc: "Control panel", status: "STABLE" },
+                    { name: "OpsField Mobile", desc: "Field operations", status: "BETA" },
+                    { name: "StaffBot", desc: "Team notifications", status: "ACTIVE" },
+                    { name: "Knowledge Base", desc: "Documentation", status: "AUTO" },
+                    { name: "Data Exports", desc: "Analytics feeds", status: "READY" }
+                  ].map((output, index) => (
+                    <OptimizedMotion
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="bg-black/20 p-3 rounded-lg border border-purple-400/20"
+                    >
+                      <div className="feature-title text-white text-sm mb-1">{output.name}</div>
+                      <div className="body-technical text-white/60 text-xs mb-2">{output.desc}</div>
+                      <div className={`caption-technical px-2 py-1 rounded-full text-xs ${
+                        output.status === 'LIVE' ? 'bg-emerald-400/20 text-emerald-400' :
+                        output.status === 'STABLE' ? 'bg-blue-400/20 text-blue-400' :
+                        output.status === 'ACTIVE' ? 'bg-cyan-400/20 text-cyan-400' :
+                        output.status === 'BETA' ? 'bg-orange-400/20 text-orange-400' :
+                        output.status === 'AUTO' ? 'bg-lime-400/20 text-lime-400' :
+                        'bg-purple-400/20 text-purple-400'
+                      }`}>
+                        {output.status}
+                      </div>
+                    </OptimizedMotion>
+                  ))}
+                </div>
+              </OptimizedMotion>
+            </div>
+
+            {/* Enterprise Connectors */}
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="mt-12 backdrop-blur-2xl bg-operational-secondary border border-operational-secondary rounded-xl p-8"
+            >
+              <h3 className="section-subtitle text-orange-400 text-glow-orange mb-6 text-center">
+                🔗 Enterprise Connectors
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mobile-grid">
+                {[
+                  { name: "Xero", type: "Accounting" },
+                  { name: "QuickBooks", type: "Finance" },
+                  { name: "Slack", type: "Communication" },
+                  { name: "Teams", type: "Collaboration" },
+                  { name: "Salesforce", type: "CRM" },
+                  { name: "HubSpot", type: "Marketing" },
+                  { name: "Shopify", type: "E-commerce" },
+                  { name: "AWS", type: "Cloud" },
+                  { name: "Azure", type: "Platform" },
+                  { name: "GCP", type: "Infrastructure" },
+                  { name: "Stripe", type: "Payments" },
+                  { name: "Zapier", type: "Automation" }
+                ].map((connector, index) => (
+                  <OptimizedMotion
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="bg-black/20 p-3 rounded-lg border border-orange-400/20 text-center mobile-card"
+                  >
+                    <div className="feature-title text-white text-sm mb-1">{connector.name}</div>
+                    <div className="caption-technical text-orange-300 text-xs">{connector.type}</div>
+                  </OptimizedMotion>
+                ))}
+              </div>
+            </OptimizedMotion>
+          </section>
+        </IntersectionComponent>
+
+        {/* Performance Metrics & ROI Section */}
+        <IntersectionComponent threshold={0.1}>
+          <section id="performance" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="section-title gradient-text-technical text-glow-cyan mb-6">
+                Quantified Impact
+              </h2>
+              <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
+                Measurable <span className="gradient-text-premium text-glow-orange">operational improvements</span> and <span className="gradient-text-operational text-glow-lime">ROI metrics</span> from real OpsPipe deployments across industries.
+              </p>
+            </OptimizedMotion>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mobile-grid mb-16">
+              {[
+                {
+                  metric: "Processing Speed",
+                  value: "10x",
+                  improvement: "faster document processing",
+                  color: "blue",
+                  icon: "⚡"
+                },
+                {
+                  metric: "Error Reduction",
+                  value: "94%",
+                  improvement: "fewer manual errors",
+                  color: "emerald",
+                  icon: "🎯"
+                },
+                {
+                  metric: "Cost Savings",
+                  value: "$50K+",
+                  improvement: "annual operational savings",
+                  color: "orange",
+                  icon: "💰"
+                },
+                {
+                  metric: "Time Recovery",
+                  value: "15hrs",
+                  improvement: "per week saved per team",
+                  color: "purple",
+                  icon: "⏰"
+                }
+              ].map((stat, index) => (
+                <OptimizedMotion
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className={`backdrop-blur-2xl bg-gradient-to-br from-${stat.color}-500/20 to-${stat.color}-600/20 border border-${stat.color}-400/30 rounded-xl p-6 text-center hover-lift-technical mobile-card`}
+                >
+                  <div className="text-3xl mb-4 float-technical">{stat.icon}</div>
+                  <div className={`hero-subtitle text-${stat.color}-400 text-glow-${stat.color} mb-2`}>
+                    {stat.value}
+                  </div>
+                  <div className={`feature-title text-${stat.color}-300 mb-2`}>
+                    {stat.metric}
+                  </div>
+                  <div className="body-technical text-white/70">
+                    {stat.improvement}
+                  </div>
+                </OptimizedMotion>
+              ))}
+            </div>
+
+            {/* ROI Calculator Preview */}
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="backdrop-blur-2xl bg-operational-primary border border-operational-primary rounded-xl p-8"
+            >
+              <h3 className="section-subtitle text-blue-400 text-glow-blue mb-6 text-center">
+                📊 ROI Impact Calculator
+              </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mobile-grid">
+                <div className="text-center">
+                  <div className="caption-technical text-cyan-400 text-glow-cyan mb-2">CURRENT MANUAL HOURS</div>
+                  <div className="hero-subtitle text-white mb-2">40hrs/week</div>
+                  <div className="body-technical text-white/60">Average team processing time</div>
+                </div>
+                <div className="text-center">
+                  <div className="caption-technical text-lime-400 text-glow-lime mb-2">WITH OPSPIPE</div>
+                  <div className="hero-subtitle text-lime-400 text-glow-lime mb-2">4hrs/week</div>
+                  <div className="body-technical text-white/60">90% automation achieved</div>
+                </div>
+                <div className="text-center">
+                  <div className="caption-technical text-orange-400 text-glow-orange mb-2">ANNUAL SAVINGS</div>
+                  <div className="hero-subtitle text-orange-400 text-glow-orange mb-2">$75,600</div>
+                  <div className="body-technical text-white/60">Based on $40/hr operational cost</div>
+                </div>
+              </div>
+            </OptimizedMotion>
+          </section>
+        </IntersectionComponent>
+
+        {/* Customer Success Stories */}
+        <IntersectionComponent threshold={0.1}>
+          <section id="success-stories" className="max-w-7xl mx-auto px-4 py-20 mobile-section">
+            <OptimizedMotion
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="section-title gradient-text-operational text-glow-blue mb-6">
+                Mission Success Stories
+              </h2>
+              <p className="body-large text-white/80 max-w-4xl mx-auto text-shadow-technical">
+                Real results from <span className="gradient-text-premium text-glow-orange">operational transformations</span> across diverse industries and <span className="gradient-text-technical text-glow-cyan">business scales</span>.
+              </p>
+            </OptimizedMotion>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mobile-grid">
+              {[
+                {
+                  company: "TechFlow Solutions",
+                  industry: "SaaS Startup",
+                  challenge: "Manual invoice processing consuming 20+ hours weekly",
+                  solution: "OpsPipe automated document parsing and validation workflows",
+                  result: "95% time reduction, zero processing errors in 6 months",
+                  metrics: { time: "18hrs saved/week", accuracy: "100%", roi: "340%" },
+                  color: "blue",
+                  avatar: "🏢"
+                },
+                {
+                  company: "Coastal Cafe Chain",
+                  industry: "Food & Beverage",
+                  challenge: "Multiple location inventory and supplier coordination chaos",
+                  solution: "Unified OpsPipe dashboard with real-time supplier sync",
+                  result: "Streamlined operations across 12 locations with predictive inventory",
+                  metrics: { efficiency: "+85%", waste: "-60%", profit: "+23%" },
+                  color: "orange",
+                  avatar: "☕"
+                },
+                {
+                  company: "MedCore Clinics",
+                  industry: "Healthcare",
+                  challenge: "Patient intake bottlenecks and compliance documentation",
+                  solution: "HIPAA-compliant OpsPipe workflows for patient processing",
+                  result: "50% faster patient onboarding with complete audit trails",
+                  metrics: { speed: "+120%", compliance: "100%", satisfaction: "+45%" },
+                  color: "emerald",
+                  avatar: "🏥"
+                },
+                {
+                  company: "Research University",
+                  industry: "Education",
+                  challenge: "Grant application and research data management inefficiencies",
+                  solution: "Academic-focused OpsPipe with automated report generation",
+                  result: "Doubled research output with standardized documentation",
+                  metrics: { output: "+200%", accuracy: "99.8%", time: "25hrs saved/week" },
+                  color: "purple",
+                  avatar: "🎓"
+                }
+              ].map((story, index) => (
+                <OptimizedMotion
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  className={`backdrop-blur-2xl bg-gradient-to-br from-${story.color}-500/20 to-${story.color}-600/20 border border-${story.color}-400/30 rounded-xl p-8 hover-lift-technical mobile-card`}
+                >
+                  <div className="flex items-center mb-6">
+                    <div className="text-3xl mr-4">{story.avatar}</div>
+                    <div>
+                      <h3 className={`feature-title text-${story.color}-400 text-glow-${story.color}`}>
+                        {story.company}
+                      </h3>
+                      <div className={`caption-technical text-${story.color}-300`}>
+                        {story.industry}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 mb-6">
+                    <div>
+                      <div className="caption-technical text-white/60 mb-1">CHALLENGE</div>
+                      <div className="body-technical text-white/80">{story.challenge}</div>
+                    </div>
+                    <div>
+                      <div className="caption-technical text-white/60 mb-1">SOLUTION</div>
+                      <div className="body-technical text-white/80">{story.solution}</div>
+                    </div>
+                    <div>
+                      <div className="caption-technical text-white/60 mb-1">RESULT</div>
+                      <div className={`body-technical text-${story.color}-300`}>{story.result}</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    {Object.entries(story.metrics).map(([key, value], metricIndex) => (
+                      <OptimizedMotion
+                        key={metricIndex}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: metricIndex * 0.1 }}
+                        className="text-center p-3 bg-black/20 rounded-lg border border-white/10"
+                      >
+                        <div className={`feature-title text-${story.color}-400 text-glow-${story.color} text-sm`}>
+                          {value}
+                        </div>
+                        <div className="caption-technical text-white/60 text-xs uppercase">
+                          {key}
+                        </div>
+                      </OptimizedMotion>
+                    ))}
+                  </div>
+                </OptimizedMotion>
+              ))}
+            </div>
+          </section>
+        </IntersectionComponent>
         
         {/* CTA Section */}
         <section id="cta" className="max-w-7xl mx-auto px-4 py-16">
-          <motion.div
+          <OptimizedMotion
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -2055,7 +2424,7 @@ export default function OpsPipe() {
                 Access Engineering Bay
               </Link>
             </div>
-          </motion.div>
+          </OptimizedMotion>
         </section>
       </main>
       

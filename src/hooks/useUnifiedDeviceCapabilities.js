@@ -241,8 +241,7 @@ export const useUnifiedDeviceCapabilities = () => {
           viewport: {
             width: (typeof window !== 'undefined' && window.innerWidth) || 1024,
             height: (typeof window !== 'undefined' && window.innerHeight) || 768
-          },
-          timestamp: Date.now()
+          }
         });
       } catch (error) {
         console.warn('Device profile update failed:', error);
@@ -257,8 +256,7 @@ export const useUnifiedDeviceCapabilities = () => {
           isDesktop: true,
           breakpoint: 'md',
           isLowPerf: true,
-          viewport: { width: 1024, height: 768 },
-          timestamp: Date.now()
+          viewport: { width: 1024, height: 768 }
         });
       }
     };
@@ -292,7 +290,7 @@ export const useUnifiedDeviceCapabilities = () => {
     
     // No cleanup needed if event listener setup failed
     return () => {};
-  }, [performanceProfile, breakpoint]);
+  }, [performanceProfile.performanceLevel, performanceProfile.isSlowNetwork, breakpoint]);
 
   return deviceProfile;
 };

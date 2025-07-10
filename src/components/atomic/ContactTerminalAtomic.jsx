@@ -225,9 +225,9 @@ const ContactTerminalAtomic = () => {
                     <a 
                       href="mailto:hello@curiouslabs.ai" 
                       className="hover:text-lime-400 transition-colors"
-                      aria-label="Email us at hello@curiouslabs.ai"
+                      aria-label="Email us at hello@curiouslabs.space"
                     >
-                      hello@curiouslabs.ai
+                      hello@curiouslabs.space
                     </a>
                   </div>
                   <div className="text-white flex items-center">

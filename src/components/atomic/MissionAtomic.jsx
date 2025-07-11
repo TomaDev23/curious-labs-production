@@ -157,12 +157,8 @@ const NeonArcAnimation = ({ children, prefersReducedMotion = false }) => {
         
         // 🚨 MA-1: Pause/resume animations based on viewport
         if (isVisible && !prefersReducedMotion) {
-          // Resume animation when in viewport
-          controls.start({
-            opacity: 1.0,
-            textShadow: '0 0 8px rgba(0, 255, 255, 0.6), 0 0 16px rgba(0, 255, 255, 0.3)',
-            transition: { duration: 0.3 }
-          });
+          // Start neon stutter animation when in viewport
+          startNeonStutter();
         } else {
           // Pause animation when off-screen or reduced motion
           controls.stop();
@@ -187,6 +183,66 @@ const NeonArcAnimation = ({ children, prefersReducedMotion = false }) => {
       }
     };
   }, [controls, prefersReducedMotion]);
+
+  // Neon stutter animation function
+  const startNeonStutter = useCallback(() => {
+    if (prefersReducedMotion) return;
+    
+    const stutterSequence = async () => {
+      // Normal glow state
+      await controls.start({
+        opacity: 1.0,
+        textShadow: '0 0 8px rgba(0, 255, 255, 0.8), 0 0 16px rgba(0, 255, 255, 0.4), 0 0 24px rgba(0, 255, 255, 0.2)',
+        transition: { duration: 0.1 }
+      });
+      
+      // Random pause (1-3 seconds)
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+      
+      // Quick flicker off
+      await controls.start({
+        opacity: 0.3,
+        textShadow: '0 0 2px rgba(0, 255, 255, 0.2)',
+        transition: { duration: 0.05 }
+      });
+      
+      // Quick flicker on
+      await controls.start({
+        opacity: 1.0,
+        textShadow: '0 0 12px rgba(0, 255, 255, 0.9), 0 0 20px rgba(0, 255, 255, 0.5)',
+        transition: { duration: 0.05 }
+      });
+      
+      // Brief off again
+      await controls.start({
+        opacity: 0.2,
+        textShadow: '0 0 1px rgba(0, 255, 255, 0.1)',
+        transition: { duration: 0.03 }
+      });
+      
+      // Strong comeback
+      await controls.start({
+        opacity: 1.0,
+        textShadow: '0 0 10px rgba(0, 255, 255, 0.8), 0 0 18px rgba(0, 255, 255, 0.4), 0 0 28px rgba(0, 255, 255, 0.2)',
+        transition: { duration: 0.1 }
+      });
+      
+      // Settle to normal
+      await controls.start({
+        opacity: 0.9,
+        textShadow: '0 0 6px rgba(0, 255, 255, 0.6), 0 0 12px rgba(0, 255, 255, 0.3)',
+        transition: { duration: 0.2 }
+      });
+      
+      // Schedule next stutter (3-8 seconds)
+      if (isInViewport) {
+        setTimeout(stutterSequence, 3000 + Math.random() * 5000);
+      }
+    };
+    
+    // Start the stutter sequence
+    stutterSequence();
+  }, [controls, isInViewport, prefersReducedMotion]);
 
   // Set initial state immediately
   React.useLayoutEffect(() => {
@@ -418,19 +474,19 @@ const MissionAtomic = () => {
   // Self-contained mission points data
   const MISSION_POINTS = [
     {
-      id: "01",
-      title: "Intelligence with memory",
-      description: "Our systems don't just execute—they learn, evolve, and genuinely understand you."
+      id: "①",
+      title: "Intelligence with Memory",
+      description: "Our systems don't just react — they evolve, remember, and genuinely understand you. They learn who you are, not just what you do."
     },
     {
-      id: "02", 
-      title: "Judgment with humanity",
-      description: "Every interface we craft keeps the human in command—enhancing, not replacing, your intuition."
+      id: "②", 
+      title: "Decisions with Empathy",
+      description: "Every interface we build keeps the human in command. We don't automate intuition — we empower it."
     },
     {
-      id: "03",
-      title: "Innovation with conscience", 
-      description: "We fuse ethical clarity into code and design—because responsible AI isn't optional, it's foundational."
+      id: "③",
+      title: "Innovation with Conscience", 
+      description: "We encode ethical clarity into every line of code. Because in the age of AI, responsibility isn't optional — it's foundational."
     }
   ];
 
@@ -548,11 +604,15 @@ const MissionAtomic = () => {
                 <>
                   <div className="col-span-7 col-start-1 pr-4 relative z-10">
                     <div className="text-right transform group-hover:translate-x-[-8px] transition-transform duration-300">
-                      <h3 className="text-white text-xl md:text-2xl mb-2 group-hover:text-lime-400 transition-colors duration-300 relative">
+                      <h3 className="text-white text-xl md:text-2xl lg:text-3xl mb-3 group-hover:text-lime-400 transition-colors duration-300 relative font-semibold tracking-tight"
+                          style={{
+                            textShadow: '0 0 20px rgba(132, 204, 22, 0.3), 0 0 40px rgba(132, 204, 22, 0.2)',
+                            filter: 'drop-shadow(0 0 8px rgba(132, 204, 22, 0.4))'
+                          }}>
                         {point.title}
                         <div className="absolute bottom-0 right-0 h-0.5 bg-gradient-to-l from-lime-400 to-emerald-500 w-0 group-hover:w-full transition-all duration-500" />
                       </h3>
-                      <p className="text-white/70 text-xs md:text-sm group-hover:text-white/90 transition-colors duration-300 leading-relaxed">
+                      <p className="text-white/80 text-xs md:text-sm lg:text-base group-hover:text-white/95 transition-colors duration-300 leading-relaxed font-medium">
                         {point.description}
                       </p>
                     </div>
@@ -579,11 +639,15 @@ const MissionAtomic = () => {
                       </div>
                     )}
                     <div className="transform group-hover:translate-x-2 transition-transform duration-300">
-                      <h3 className="text-white text-xl md:text-2xl mb-2 group-hover:text-lime-400 transition-colors duration-300 relative">
+                      <h3 className="text-white text-xl md:text-2xl lg:text-3xl mb-3 group-hover:text-lime-400 transition-colors duration-300 relative font-semibold tracking-tight"
+                          style={{
+                            textShadow: '0 0 20px rgba(132, 204, 22, 0.3), 0 0 40px rgba(132, 204, 22, 0.2)',
+                            filter: 'drop-shadow(0 0 8px rgba(132, 204, 22, 0.4))'
+                          }}>
                         {point.title}
                         <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-lime-400 to-emerald-500 w-0 group-hover:w-full transition-all duration-500" />
                       </h3>
-                      <p className="text-white/70 text-xs md:text-sm group-hover:text-white/90 transition-colors duration-300 leading-relaxed">
+                      <p className="text-white/80 text-xs md:text-sm lg:text-base group-hover:text-white/95 transition-colors duration-300 leading-relaxed font-medium">
                         {point.description}
                       </p>
                     </div>

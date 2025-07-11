@@ -19,6 +19,7 @@ import MissionControlNavbar from '../../components/navigation/MissionControlNavb
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import FooterExperience from '../../components/home/v4/FooterExperience';
+import LegalLink from '../../components/LegalLink';
 import { useUnifiedMobile } from '../../hooks/useBreakpoint';
 import { useUnifiedDeviceCapabilities } from '../../hooks/useUnifiedDeviceCapabilities';
 // Phase 3: Component Breakdown - Import extracted components
@@ -2025,6 +2026,7 @@ export default function OpsPipe() {
       </main>
       
       <ScrollToTop />
+      <LegalLink />
       <MissionControlNavbar />
       <FooterExperience />
     </div>

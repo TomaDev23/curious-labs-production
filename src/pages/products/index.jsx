@@ -15,6 +15,7 @@ import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import SolarSystemLayout from '../../components/SolarSystemLayout';
 import FooterExperience from '../../components/home/v4/FooterExperience';
+import LegalLink from '../../components/LegalLink';
 
 // Product data for mobile view
 import {  motion  } from '../../FramerProvider';
@@ -117,6 +118,23 @@ export default function ProductsPortal() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
   const [missionTime, setMissionTime] = useState('');
+  const [showIPScreen, setShowIPScreen] = useState(false);
+  
+  // Check if IP screen should be shown (once per session)
+  useEffect(() => {
+    const hasSeenIPScreen = sessionStorage.getItem('curiouslabs-ip-screen-shown');
+    if (!hasSeenIPScreen) {
+      setShowIPScreen(true);
+      sessionStorage.setItem('curiouslabs-ip-screen-shown', 'true');
+      
+      // Auto-hide after 3 seconds
+      const timer = setTimeout(() => {
+        setShowIPScreen(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
   
   // Mission time updater
   useEffect(() => {
@@ -225,6 +243,70 @@ export default function ProductsPortal() {
     <div className="relative min-h-screen bg-black overflow-hidden">
       {/* Enhanced Typography Styles */}
       <style dangerouslySetInnerHTML={{ __html: typographyStyles }} />
+      
+      {/* IP Protection Pre-Screen */}
+      {showIPScreen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          style={{
+            background: 'rgba(0, 0, 0, 0.3)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)'
+          }}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative max-w-md mx-4 p-8 rounded-2xl border border-amber-400/30 text-center"
+            style={{
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(245, 158, 11, 0.1)'
+            }}
+          >
+            {/* Warning Icon */}
+            <div className="mb-4">
+              <div className="w-16 h-16 mx-auto bg-amber-400/20 rounded-full flex items-center justify-center">
+                <span className="text-3xl">🛡️</span>
+              </div>
+            </div>
+            
+            {/* Title */}
+            <h2 className="text-2xl font-bold text-amber-400 mb-3 font-mono tracking-wide">
+              IP PROTECTED ZONE
+            </h2>
+            
+            {/* Message */}
+            <p className="text-white/90 text-sm leading-relaxed mb-6">
+              This product portfolio contains protected intellectual property and strategic blueprints.
+            </p>
+            
+            {/* Legal Link */}
+            <div className="flex items-center justify-center space-x-2 px-4 py-2 bg-amber-400/10 border border-amber-400/30 rounded-lg">
+              <span className="text-amber-400 text-sm">📄</span>
+              <Link 
+                to="/legal" 
+                className="text-amber-400 hover:text-white transition-colors text-sm font-mono"
+                onClick={() => setShowIPScreen(false)}
+              >
+                View Legal Declaration
+              </Link>
+            </div>
+            
+            {/* Auto-close indicator */}
+            <div className="mt-4 flex items-center justify-center space-x-2">
+              <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
+              <span className="text-xs text-white/60 font-mono">Auto-closing...</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
       
       {/* Background System */}
       <BackgroundLayerAtomic />
@@ -371,6 +453,7 @@ export default function ProductsPortal() {
       
       <FooterExperience />
       <ScrollToTop />
+      <LegalLink />
     </div>
   );
 } 

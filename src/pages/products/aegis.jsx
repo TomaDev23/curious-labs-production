@@ -15,6 +15,7 @@ import MissionControlNavbar from '../../components/navigation/MissionControlNavb
 import { IMAGES } from '../../utils/assets';
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
+import LegalLink from '../../components/LegalLink';
 import './aegis.css'; // Add CSS import for custom animations
 
 // ✅ KEEP - AEGIS PRODUCT COMPONENT
@@ -568,7 +569,7 @@ export default function Aegis() {
       
       <MissionControlNavbar />
       
-      {/* 🚨 PHASE 1 MOBILE OPTIMIZATION: Simplified mission status on mobile */}
+      {/* �� PHASE 1 MOBILE OPTIMIZATION: Simplified mission status on mobile */}
       <motion.div 
         className="fixed top-20 right-4 z-50 bg-black/80 backdrop-blur-md border border-amber-400/30 rounded-lg p-3 text-xs"
         {...getMotionProps({
@@ -1279,6 +1280,7 @@ export default function Aegis() {
       </main>
       
       <ScrollToTop />
+      <LegalLink />
       <MissionControlNavbar />
     </div>
   );

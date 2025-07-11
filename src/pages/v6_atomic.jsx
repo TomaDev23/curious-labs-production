@@ -24,6 +24,7 @@ import SmartLazySection from '../components/lazy/SmartLazySection';
 // 🔴 KEEP - SHARED COMPONENTS 🔴
 import FooterExperience from '../components/home/v4/FooterExperience'; // CODE: FOOTER-001
 import ScrollToTop from '../components/ScrollToTop'; // CODE: SCROLL-001
+import LegalLink from '../components/LegalLink'; // CODE: LEGAL-LINK-001
 
 // --- TEMPORARY: Scene imports will be replaced one by one ---
 // import HeroSequenceV6 from '../components/home/v6/HeroSequenceV6'; // Removed
@@ -120,6 +121,7 @@ const V6AtomicPage = () => {
       </LayoutWrapper>
       <FooterExperience />
       <ScrollToTop />
+      <LegalLink />
     </SceneControllerV6>
   );
 };

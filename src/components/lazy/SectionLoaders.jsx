@@ -38,22 +38,22 @@ const BaseLoader = ({
   );
 };
 
-// Mission section loader - matches mission theme
+// Mission section loader - lime theme
 export const MissionLoader = ({ height = "min-h-screen" }) => (
-  <BaseLoader height={height} priority="high" backgroundColor="bg-gradient-to-b from-black to-gray-900/50">
+  <BaseLoader height={height} priority="high" backgroundColor="bg-black/80">
     <div className="text-lime-400/70 text-sm font-space mb-2">Loading Mission</div>
-    <div className="text-lime-400/40 text-xs font-space">Preparing strategy overview...</div>
-    <div className="mt-3 text-lime-400/30 text-xs">~20KB • High Priority</div>
+    <div className="text-lime-400/80 text-xs font-space">Initializing command center...</div>
+    <div className="mt-3 text-lime-400/70 text-xs">~22KB • Critical Component</div>
   </BaseLoader>
 );
 
-// Products section loader - indicates heavy content
+// Products section loader - lime theme
 export const ProductsLoader = ({ height = "min-h-screen" }) => (
-  <BaseLoader height={height} priority="high" backgroundColor="bg-gradient-to-r from-black via-gray-900/50 to-black">
+  <BaseLoader height={height} priority="high" backgroundColor="bg-black/70">
     <div className="text-lime-400/70 text-sm font-space mb-2">Loading Products</div>
-    <div className="text-lime-400/40 text-xs font-space">Initializing product showcase...</div>
-    <div className="mt-3 text-lime-400/30 text-xs">~86KB • Heavy Component</div>
-    <div className="mt-1 text-lime-400/20 text-xs">Please wait...</div>
+    <div className="text-lime-400/80 text-xs font-space">Preparing product matrix...</div>
+    <div className="mt-3 text-lime-400/70 text-xs">~86KB • Heavy Component</div>
+    <div className="mt-1 text-lime-400/60 text-xs">Please wait...</div>
   </BaseLoader>
 );
 
@@ -61,8 +61,8 @@ export const ProductsLoader = ({ height = "min-h-screen" }) => (
 export const ServicesLoader = ({ height = "min-h-screen" }) => (
   <BaseLoader height={height} priority="medium" backgroundColor="bg-black/60">
     <div className="text-emerald-400/70 text-sm font-space mb-2">Loading Services</div>
-    <div className="text-emerald-400/40 text-xs font-space">Preparing service matrix...</div>
-    <div className="mt-3 text-emerald-400/30 text-xs">~11KB • Standard Load</div>
+    <div className="text-emerald-400/80 text-xs font-space">Preparing service matrix...</div>
+    <div className="mt-3 text-emerald-400/70 text-xs">~11KB • Standard Load</div>
   </BaseLoader>
 );
 
@@ -70,8 +70,8 @@ export const ServicesLoader = ({ height = "min-h-screen" }) => (
 export const ContactLoader = ({ height = "min-h-[80vh]" }) => (
   <BaseLoader height={height} priority="low" backgroundColor="bg-gradient-to-t from-gray-900/80 to-black/40">
     <div className="text-cyan-400/70 text-sm font-space mb-2">Loading Contact</div>
-    <div className="text-cyan-400/40 text-xs font-space">Initializing terminal...</div>
-    <div className="mt-3 text-cyan-400/30 text-xs">~9KB • Footer Component</div>
+    <div className="text-cyan-400/80 text-xs font-space">Initializing terminal...</div>
+    <div className="mt-3 text-cyan-400/70 text-xs">~9KB • Footer Component</div>
   </BaseLoader>
 );
 
@@ -84,8 +84,8 @@ export const GenericSectionLoader = ({
 }) => (
   <BaseLoader height={height} priority={priority}>
     <div className="text-white/70 text-sm font-space mb-2">Loading {sectionName}</div>
-    <div className="text-white/40 text-xs font-space">Preparing content...</div>
-    <div className="mt-3 text-white/30 text-xs">{size} • {priority} priority</div>
+    <div className="text-white/80 text-xs font-space">Preparing content...</div>
+    <div className="mt-3 text-white/70 text-xs">{size} • {priority} priority</div>
   </BaseLoader>
 );
 
@@ -95,14 +95,14 @@ export const SafeModeLoader = ({ componentName = "Component", error = null }) =>
     <div className="text-center p-8 bg-gray-900/50 border border-red-400/30 rounded-lg max-w-md mx-4">
       <div className="text-red-400 text-lg font-space mb-4">⚠️ Safe Mode</div>
       <div className="text-white/70 text-sm mb-2">Failed to load: {componentName}</div>
-      <div className="text-white/50 text-xs mb-4">System has switched to safe mode</div>
+      <div className="text-white/70 text-xs mb-4">System has switched to safe mode</div>
       {error && (
-        <details className="text-left text-xs text-white/40 bg-black/30 p-2 rounded">
+        <details className="text-left text-xs text-white/70 bg-black/30 p-2 rounded">
           <summary className="cursor-pointer">Error Details</summary>
           <pre className="mt-2 whitespace-pre-wrap">{error.toString()}</pre>
         </details>
       )}
-      <div className="mt-4 text-white/30 text-xs">
+      <div className="mt-4 text-white/60 text-xs">
         Refresh page or check console for more details
       </div>
     </div>
@@ -137,8 +137,8 @@ export const PerformanceAwareLoader = ({
     return (
       <div className="min-h-screen flex items-center justify-center bg-black/50">
         <div className="text-center">
-          <div className="w-6 h-6 bg-lime-400/60 rounded-full mx-auto mb-3"></div>
-          <div className="text-lime-400/60 text-xs font-space">Loading...</div>
+          <div className="w-6 h-6 bg-lime-400/70 rounded-full mx-auto mb-3"></div>
+          <div className="text-lime-400/80 text-xs font-space">Loading...</div>
         </div>
       </div>
     );

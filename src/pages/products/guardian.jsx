@@ -15,6 +15,7 @@ import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerGuardian from '../../components/atomic/BackgroundLayerGuardian';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import GuardianKidsSection from '../../components/guardian/GuardianKidsSection';
+import LegalLink from '../../components/LegalLink';
 import { motion } from '../../FramerProvider';
 
 export default function Guardian() {
@@ -1481,6 +1482,7 @@ export default function Guardian() {
       </footer>
       
       <ScrollToTop />
+      <LegalLink />
     </div>
   );
 }

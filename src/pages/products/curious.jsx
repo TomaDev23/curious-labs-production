@@ -15,6 +15,7 @@ import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
 import FooterExperience from '../../components/home/v4/FooterExperience';
+import LegalLink from '../../components/LegalLink';
 import { motion } from '../../FramerProvider';
 
 export default function Curious() {
@@ -1689,6 +1690,7 @@ export default function Curious() {
       <ScrollToTop />
       <MissionControlNavbar />
       <FooterExperience />
+      <LegalLink />
     </div>
   );
 } 

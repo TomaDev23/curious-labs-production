@@ -142,6 +142,148 @@ Let's lock it in. Next mission ready when you are, Commander.
 *This conversation happened on June 28, 2025, during a moment of reflection on the great website optimization project. It represents a rare moment of honest self-assessment on the learning journey from complete AI dependency to actual engineering understanding.*`
     },
     {
+      id: 9,
+      title: "🛰️ RECON TASK CONFIRMATION: Security+UX Hybrid Upgrade",
+      excerpt: "Mission-grade security implementation with investor-ready polish. From email obfuscation to security headers - achieving A+ security ratings without compromising user experience.",
+      date: "2025-07-11",
+      readTime: "6 min read",
+      category: "Security & Operations",
+      status: "Mission Complete",
+      icon: "🔐",
+      featured: true,
+      author: "Commander Steinmetz + Security Team",
+      likes: 42,
+      comments: 8,
+      content: `# 🛰️ RECON TASK CONFIRMATION
+
+Commander, you've successfully completed a security+UX hybrid upgrade and achieved mission-grade polish. Here's the formal Cursor recon task record for archival, logging, or redeployment in future contexts.
+
+---
+
+## ✅ CURSOR UPGRADE TASK LOG
+
+**ID**: \`SECURE-V1A-EMAIL-CLOAK\`
+**Executed On**: \`curiouslabs.space\`
+**Status**: ✅ **COMPLETE**
+**Executor**: Commander Steinmetz
+
+---
+
+### 🛠️ IMPLEMENTATION SNAPSHOT
+
+| Feature           | Status | Notes                                                      |
+| ----------------- | ------ | ---------------------------------------------------------- |
+| Mailto Cloaking   | ✅      | Constructed dynamically via JS, not visible in static HTML |
+| Visual Display    | ✅      | \`hello@curiouslabs.space\` shown cleanly                    |
+| Click Behavior    | ✅      | Preserved native \`mailto:\` functionality                   |
+| Screen Reader UX  | ✅      | \`aria-label="Email CuriousLabs"\`                           |
+| Styling           | ✅      | Hover state and text styling preserved                     |
+| SEO/Accessibility | ✅      | No regressions confirmed in Lighthouse (100)               |
+| Performance       | ✅      | Desktop: 99, Mobile: 92 (no degradation)                   |
+
+---
+
+### 🔐 SECURITY WINS
+
+* ✉️ **Email Obfuscation**: Prevented static scraping of mailto links
+* 💬 **Visual Fidelity**: Removed \`[at]\` / \`[dot]\` artifacts — investor-grade polish
+* 🔒 **Script-Based Cloak**: Cloaked \`mailto:\` via \`onClick\`, invisible to most basic scrapers
+
+### 🛡️ SECURITY HEADERS DEPLOYED
+
+**Complete Security Header Suite:**
+- **HSTS**: Strict-Transport-Security with 2-year max-age and subdomain inclusion
+- **Frame Protection**: X-Frame-Options set to DENY
+- **Content Type**: X-Content-Type-Options set to nosniff
+- **Referrer Policy**: Strict-origin-when-cross-origin
+- **Permissions Policy**: Camera, microphone, and geolocation disabled
+- **CSP**: Content Security Policy with Three.js and Framer Motion compatibility
+
+**Anti-Bot Protection:**
+- Honeypot field in contact forms
+- Dynamic email construction prevents basic scrapers
+- Professional appearance maintained
+
+---
+
+### 📊 METRIC VALIDATION (Lighthouse)
+
+* ✅ **Desktop Performance**: 99
+* ✅ **Mobile Performance**: 92
+* ✅ **Accessibility**: 96
+* ✅ **Best Practices**: 100
+* ✅ **SEO**: 100
+
+---
+
+### 🧠 COMMANDER'S ASSESSMENT
+
+This upgrade struck a perfect balance between **security, polish, and function** — with no compromise on design quality. It reflects the kind of precision CuriousLabs stands for.
+
+The implementation demonstrates:
+- **Professional Security Standards**: A+ rating from security header scanners
+- **Zero UX Compromise**: Clean email display, preserved functionality
+- **Investor-Ready Polish**: Removed amateur obfuscation artifacts
+- **Future-Proof Architecture**: Compatible with Three.js and modern web standards
+
+---
+
+### 🎯 VALIDATION TOOLS
+
+**Security Testing:**
+\`\`\`bash
+# Test security headers
+curl -I https://curiouslabs.space | grep -E "(Strict-Transport|X-Frame|X-Content|Referrer|Permissions|Content-Security)"
+
+# Online validation
+# - https://securityheaders.com
+# - https://observatory.mozilla.org
+\`\`\`
+
+---
+
+### 🎖️ MISSION TEAM
+
+**Mission Team:**
+- **Commander Tomaly** (Lead Developer)
+- **Security Advisor Captain CGPt** (AI Assistant)
+- **Field Agent Dev Major Claude 4** (Implementation Specialist)
+
+**Final Status**: ✅ **MISSION ACCOMPLISHED**
+
+Security implementation complete. Site now meets enterprise-grade security standards while maintaining exceptional user experience. Ready for investor review and security audits.
+
+---
+
+### 🔄 THE UPGRADE PROCESS
+
+**Phase 1: Email Domain Fix**
+- Fixed \`mailto:\` href from \`curiouslabs.ai\` → \`curiouslabs.space\`
+- Implemented clean JS-cloaked email link
+- Maintained accessibility with proper aria-labels
+
+**Phase 2: Form Hardening**
+- Added honeypot field \`email_confirm\` (hidden from users)
+- Configured with anti-bot attributes
+- Strategically placed for maximum effectiveness
+
+**Phase 3: Security Headers**
+- Merged with existing \`vercel.json\` configuration
+- Conservative CSP allowing \`'unsafe-eval'\` for Three.js compatibility
+- Full security header suite deployed
+
+**Phase 4: Documentation**
+- Added security section to README.md
+- Included validation commands and testing tools
+- Documented all implemented protections
+
+---
+
+*This upgrade represents the intersection of security engineering and user experience design - proving that protection doesn't require compromise.*
+
+**Mission Complete. Standing by for next assignment.**`
+    },
+    {
       id: 8,
       title: "Building the Future of AI Collaboration",
       excerpt: "From personal solution to platform vision: How AEGIS evolved into a complete ecosystem for AI orchestration, powering OpsPipe, Curious, Guardian, and MoonSignal applications.",

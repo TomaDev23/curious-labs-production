@@ -160,6 +160,33 @@ VITE_ANALYTICS_ID=your_analytics_id
 
 ---
 
+## 🔐 Security
+
+**Security Headers Implemented:**
+- **HSTS**: Strict-Transport-Security with 2-year max-age and subdomain inclusion
+- **Frame Protection**: X-Frame-Options set to DENY
+- **Content Type**: X-Content-Type-Options set to nosniff
+- **Referrer Policy**: Strict-origin-when-cross-origin
+- **Permissions Policy**: Camera, microphone, and geolocation disabled
+- **CSP**: Content Security Policy with Three.js and Framer Motion compatibility
+
+**Email Protection:**
+- Email addresses obfuscated using bracket notation
+- Anti-bot honeypot field in contact forms
+- Domain consistency enforced (`curiouslabs.space`)
+
+**Validation Tools:**
+```bash
+# Test security headers
+curl -I https://curiouslabs.space | grep -E "(Strict-Transport|X-Frame|X-Content|Referrer|Permissions|Content-Security)"
+
+# Online validation
+# - https://securityheaders.com
+# - https://observatory.mozilla.org
+```
+
+---
+
 ## 🚀 Deployment
 
 **Production Deployment:**

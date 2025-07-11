@@ -52,6 +52,7 @@ const Transmissions = lazy(() => import('./pages/Transmissions.jsx'));
 const About = lazy(() => import('./pages/about.jsx'));
 const Contact = lazy(() => import('./pages/contact.jsx'));
 const Privacy = lazy(() => import('./pages/privacy.jsx'));
+const Legal = lazy(() => import('./pages/legal.jsx'));
 const Careers = lazy(() => import('./pages/careers.jsx'));
 const Documentation = lazy(() => import('./pages/docs.jsx'));
 const NotFound = lazy(() => import('./pages/404.jsx'));
@@ -313,6 +314,11 @@ const AppRoutes = () => (
       <Route path="/privacy" element={
         <Suspense fallback={<SimpleLoader />}>
           <Privacy />
+        </Suspense>
+      } />
+      <Route path="/legal" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <Legal />
         </Suspense>
       } />
       <Route path="/careers" element={

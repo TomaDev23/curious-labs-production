@@ -17,6 +17,7 @@ import FooterExperience from '../../components/home/v4/FooterExperience';
 import { IMAGES } from '../../utils/assets';
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
+import LegalLink from '../../components/LegalLink';
 
 // ✅ KEEP - MOONSIGNAL TRADING COMPONENT
 import {  motion  } from '../../FramerProvider';
@@ -1251,6 +1252,8 @@ export default function MoonSignal() {
       </div>
       
       <FooterExperience />
+      <ScrollToTop />
+      <LegalLink />
     </div>
   );
 } 

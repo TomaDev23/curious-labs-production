@@ -223,9 +223,13 @@ const ContactTerminalAtomic = () => {
                     <span className="text-lime-400 mr-2">$</span>
                     <span className="text-gray-400 mr-2">EMAIL:</span>
                     <a 
-                      href="mailto:hello@curiouslabs.ai" 
+                      href="#"
                       className="hover:text-lime-400 transition-colors"
-                      aria-label="Email us at hello@curiouslabs.space"
+                      aria-label="Email CuriousLabs"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = 'mailto:' + 'hello' + '@' + 'curiouslabs.space';
+                      }}
                     >
                       hello@curiouslabs.space
                     </a>
@@ -302,6 +306,15 @@ const ContactTerminalAtomic = () => {
                   placeholder="john@example.com"
                 />
               </div>
+              {/* Honeypot field - hidden from users, catches bots */}
+              <input 
+                type="email" 
+                name="email_confirm" 
+                style={{ display: 'none' }}
+                tabIndex="-1"
+                autoComplete="off"
+                aria-hidden="true"
+              />
               <div>
                 <label htmlFor="project" className="block text-sm text-gray-400 mb-1">$ project_type:</label>
                 <select

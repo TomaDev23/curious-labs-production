@@ -15,6 +15,7 @@ import FooterExperience from '../components/home/v4/FooterExperience';
 import BackgroundLayerAtomic from '../components/atomic/BackgroundLayerAtomic';
 import { IMAGES } from '../utils/assets';
 import ScrollToTop from '../components/ScrollToTop';
+import LegalLink from '../components/LegalLink';
 
 // ✅ KEEP - ABOUT PAGE COMPONENT
 import { motion } from '../FramerProvider';
@@ -403,6 +404,8 @@ export default function About() {
       </main>
       
       <FooterExperience />
+      <ScrollToTop />
+      <LegalLink />
     </div>
   );
 } 

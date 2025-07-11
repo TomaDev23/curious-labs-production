@@ -14,6 +14,7 @@ import MissionControlNavbar from '../components/navigation/MissionControlNavbar'
 import FooterExperience from '../components/home/v4/FooterExperience';
 import ScrollToTop from '../components/ScrollToTop';
 import BackgroundLayerAtomic from '../components/atomic/BackgroundLayerAtomic';
+import LegalLink from '../components/LegalLink';
 
 // ✅ KEEP - TOOLS PAGE COMPONENT
 import { motion, AnimatePresence } from '../FramerProvider';
@@ -282,6 +283,7 @@ export default function Tools() {
       
       <FooterExperience />
       <ScrollToTop />
+      <LegalLink />
     </div>
   );
 }

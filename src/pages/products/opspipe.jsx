@@ -349,8 +349,9 @@ export default function OpsPipe() {
           }
           `}
 
-          /* Advanced Text Effects - Performance Conditional */
-          ${!animationSettings.reducedMotion ? `
+          /* Advanced Text Effects - Complete Mobile Bypass */
+          ${!isMobile && !animationSettings.reducedMotion ? `
+          /* Desktop - Full text effects */
           .text-glow-blue {
             text-shadow: 
               0 0 20px rgba(59, 130, 246, 0.6),
@@ -392,25 +393,8 @@ export default function OpsPipe() {
               0 0 40px rgba(16, 185, 129, 0.3),
               0 0 60px rgba(16, 185, 129, 0.2);
           }
-          ` : `
-          /* Simplified text effects for low performance */
-          .text-glow-blue, .text-glow-cyan, .text-glow-orange, 
-          .text-glow-lime, .text-glow-purple, .text-glow-emerald {
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-          }
-          `}
-          
-          .text-shadow-soft {
-            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-          }
 
-          .text-shadow-technical {
-            text-shadow: 
-              0 2px 8px rgba(59, 130, 246, 0.3),
-              0 4px 16px rgba(0, 0, 0, 0.2);
-          }
-
-          /* Enhanced 3D text effects */
+          /* Enhanced 3D text effects - Desktop only */
           .text-3d-blue {
             text-shadow: 
               1px 1px 0 rgba(59, 130, 246, 0.8),
@@ -429,7 +413,7 @@ export default function OpsPipe() {
               5px 5px 10px rgba(0, 0, 0, 0.3);
           }
 
-          /* Advanced Gradient Text Effects */
+          /* Advanced Gradient Text Effects - Desktop only */
           .gradient-text-operational {
             background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 25%, #84cc16 50%, #fb923c 75%, #8b5cf6 100%);
             background-size: 400% 400%;
@@ -457,7 +441,7 @@ export default function OpsPipe() {
             animation: gradientShift 6s ease infinite;
           }
 
-          /* Sophisticated Animations */
+          /* Sophisticated Animations - Desktop only */
           .float-technical {
             animation: floatTechnical 6s ease-in-out infinite;
           }
@@ -477,6 +461,65 @@ export default function OpsPipe() {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+          }
+          ` : `
+          /* Mobile - Simplified effects with no expensive operations */
+          .text-glow-blue, .text-glow-cyan, .text-glow-orange, 
+          .text-glow-lime, .text-glow-purple, .text-glow-emerald {
+            text-shadow: none;
+          }
+
+          .text-3d-blue, .text-3d-orange {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+          }
+
+          /* Static gradient text - no animation */
+          .gradient-text-operational, .gradient-text-premium, .gradient-text-technical {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #84cc16 100%);
+            background-size: 100% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: none;
+          }
+
+          /* Disable animations */
+          .float-technical {
+            animation: none;
+          }
+          
+          .gradient-shift {
+            animation: none;
+          }
+          `}
+          
+          .text-shadow-soft {
+            text-shadow: ${isMobile ? '0 1px 2px rgba(0, 0, 0, 0.2)' : '0 4px 12px rgba(0, 0, 0, 0.3)'};
+          }
+
+          .text-shadow-technical {
+            text-shadow: ${isMobile ? '0 1px 2px rgba(0, 0, 0, 0.1)' : '0 2px 8px rgba(59, 130, 246, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2)'};
+          }
+
+          /* Backdrop-blur mobile optimization */
+          .backdrop-blur-2xl {
+            backdrop-filter: ${isMobile ? 'none' : 'blur(40px)'};
+            background: ${isMobile ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.4)'};
+          }
+
+          .backdrop-blur-xl {
+            backdrop-filter: ${isMobile ? 'none' : 'blur(24px)'};
+            background: ${isMobile ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.3)'};
+          }
+
+          .backdrop-blur-md {
+            backdrop-filter: ${isMobile ? 'none' : 'blur(12px)'};
+            background: ${isMobile ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.2)'};
+          }
+
+          .backdrop-blur-sm {
+            backdrop-filter: ${isMobile ? 'none' : 'blur(4px)'};
+            background: ${isMobile ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.1)'};
           }
 
           /* Enhanced Typography Hierarchy */
@@ -818,151 +861,158 @@ export default function OpsPipe() {
       {/* Mission Control Navbar */}
       <MissionControlNavbar />
       
-      {/* Enhanced Atmospheric System */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Primary operational gradient orbs with enhanced movement */}
-        <motion.div 
-          className="absolute top-1/4 left-1/6 w-96 h-96 bg-gradient-to-br from-blue-500/20 via-cyan-500/15 to-transparent rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3],
-            x: [0, 50, 0],
-            y: [0, -30, 0]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-bl from-orange-500/25 via-amber-500/20 to-transparent rounded-full blur-3xl"
-          animate={{ 
-            scale: [1.1, 0.9, 1.1],
-            opacity: [0.4, 0.7, 0.4],
-            x: [0, -40, 0],
-            y: [0, 40, 0]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-        <motion.div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-lime-500/10 via-emerald-500/5 to-transparent rounded-full blur-2xl"
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
+      {/* Enhanced Atmospheric System - Mobile Bypass */}
+      {(() => {
+        // Complete mobile bypass for atmospheric system
+        if (deviceCapabilities?.isMobile) return null;
+        
+        return (
+          <div className="fixed inset-0 pointer-events-none overflow-hidden">
+            {/* Primary operational gradient orbs with enhanced movement */}
+            <motion.div 
+              className="absolute top-1/4 left-1/6 w-96 h-96 bg-gradient-to-br from-blue-500/20 via-cyan-500/15 to-transparent rounded-full blur-3xl"
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.6, 0.3],
+                x: [0, 50, 0],
+                y: [0, -30, 0]
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div 
+              className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-bl from-orange-500/25 via-amber-500/20 to-transparent rounded-full blur-3xl"
+              animate={{ 
+                scale: [1.1, 0.9, 1.1],
+                opacity: [0.4, 0.7, 0.4],
+                x: [0, -40, 0],
+                y: [0, 40, 0]
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            />
+            <motion.div 
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-lime-500/10 via-emerald-500/5 to-transparent rounded-full blur-2xl"
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 180, 360]
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            />
 
-        {/* Enhanced secondary atmospheric layers */}
-        <motion.div 
-          className="absolute top-3/4 left-1/3 w-64 h-64 bg-gradient-to-tr from-purple-500/15 via-violet-500/10 to-transparent rounded-full blur-2xl"
-          animate={{ 
-            scale: [0.8, 1.3, 0.8],
-            opacity: [0.2, 0.5, 0.2],
-            x: [0, 30, 0],
-            y: [0, -50, 0]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-        />
-        <motion.div 
-          className="absolute top-1/6 right-1/3 w-72 h-72 bg-gradient-to-bl from-cyan-500/20 via-teal-500/15 to-transparent rounded-full blur-3xl"
-          animate={{ 
-            scale: [1.2, 0.7, 1.2],
-            opacity: [0.3, 0.6, 0.3],
-            x: [0, -60, 0],
-            y: [0, 20, 0]
-          }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
+            {/* Enhanced secondary atmospheric layers */}
+            <motion.div 
+              className="absolute top-3/4 left-1/3 w-64 h-64 bg-gradient-to-tr from-purple-500/15 via-violet-500/10 to-transparent rounded-full blur-2xl"
+              animate={{ 
+                scale: [0.8, 1.3, 0.8],
+                opacity: [0.2, 0.5, 0.2],
+                x: [0, 30, 0],
+                y: [0, -50, 0]
+              }}
+              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+            />
+            <motion.div 
+              className="absolute top-1/6 right-1/3 w-72 h-72 bg-gradient-to-bl from-cyan-500/20 via-teal-500/15 to-transparent rounded-full blur-3xl"
+              animate={{ 
+                scale: [1.2, 0.7, 1.2],
+                opacity: [0.3, 0.6, 0.3],
+                x: [0, -60, 0],
+                y: [0, 20, 0]
+              }}
+              transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
 
-        {/* Advanced particle system - operational icons */}
-        {Array.from({ length: animationSettings.particleCount }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-blue-500/20 text-lg"
-            style={{
-              left: `${10 + i * 7}%`,
-              top: `${15 + (i % 5) * 15}%`
-            }}
-            animate={{
-              y: [0, -100, 0],
-              opacity: [0, 1, 0],
-              scale: [0.3, 1.2, 0.3],
-              rotate: [0, 360, 0]
-            }}
-            transition={{
-              duration: 10 + Math.random() * 4,
-              repeat: Infinity,
-              delay: i * 1.2,
-              ease: "easeInOut"
-            }}
-          >
-            {['⚙️', '🔧', '📊', '⚡', '🔗', '💾', '🛡️', '🎯', '🚀', '📡', '⚗️', '🔬'][i]}
-          </motion.div>
-        ))}
+            {/* Advanced particle system - operational icons */}
+            {Array.from({ length: animationSettings.particleCount }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute text-blue-500/20 text-lg"
+                style={{
+                  left: `${10 + i * 7}%`,
+                  top: `${15 + (i % 5) * 15}%`
+                }}
+                animate={{
+                  y: [0, -100, 0],
+                  opacity: [0, 1, 0],
+                  scale: [0.3, 1.2, 0.3],
+                  rotate: [0, 360, 0]
+                }}
+                transition={{
+                  duration: 10 + Math.random() * 4,
+                  repeat: Infinity,
+                  delay: i * 1.2,
+                  ease: "easeInOut"
+                }}
+              >
+                {['⚙️', '🔧', '📊', '⚡', '🔗', '💾', '🛡️', '🎯', '🚀', '📡', '⚗️', '🔬'][i]}
+              </motion.div>
+            ))}
 
-        {/* Floating data streams */}
-        {Array.from({ length: animationSettings.dataStreamCount }).map((_, i) => (
-          <motion.div
-            key={`stream-${i}`}
-            className="absolute w-px h-20 bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent"
-            style={{
-              left: `${20 + i * 12}%`,
-              top: `${10 + i * 10}%`
-            }}
-            animate={{
-              y: [0, 200, 400],
-              opacity: [0, 0.8, 0],
-              scaleY: [0.5, 1, 0.5]
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              delay: i * 2,
-              ease: "linear"
-            }}
-          />
-        ))}
+            {/* Floating data streams */}
+            {Array.from({ length: animationSettings.dataStreamCount }).map((_, i) => (
+              <motion.div
+                key={`stream-${i}`}
+                className="absolute w-px h-20 bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent"
+                style={{
+                  left: `${20 + i * 12}%`,
+                  top: `${10 + i * 10}%`
+                }}
+                animate={{
+                  y: [0, 200, 400],
+                  opacity: [0, 0.8, 0],
+                  scaleY: [0.5, 1, 0.5]
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  delay: i * 2,
+                  ease: "linear"
+                }}
+              />
+            ))}
 
-        {/* Pulsing grid overlay */}
-        <motion.div 
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}
-          animate={{
-            opacity: [0.03, 0.08, 0.03]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+            {/* Pulsing grid overlay */}
+            <motion.div 
+              className="absolute inset-0 opacity-5"
+              style={{
+                backgroundImage: `
+                  linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+                `,
+                backgroundSize: '50px 50px'
+              }}
+              animate={{
+                opacity: [0.03, 0.08, 0.03]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
 
-        {/* Dynamic energy beams */}
-        {Array.from({ length: animationSettings.energyBeamCount }).map((_, i) => (
-          <motion.div
-            key={`beam-${i}`}
-            className="absolute w-full h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
-            style={{
-              top: `${30 + i * 20}%`,
-              transform: 'rotate(-15deg)'
-            }}
-            animate={{
-              x: ['-100%', '200%'],
-              opacity: [0, 1, 0]
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              delay: i * 3,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-      </div>
+            {/* Dynamic energy beams */}
+            {Array.from({ length: animationSettings.energyBeamCount }).map((_, i) => (
+              <motion.div
+                key={`beam-${i}`}
+                className="absolute w-full h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
+                style={{
+                  top: `${30 + i * 20}%`,
+                  transform: 'rotate(-15deg)'
+                }}
+                animate={{
+                  x: ['-100%', '200%'],
+                  opacity: [0, 1, 0]
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  delay: i * 3,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </div>
+        );
+      })()}
 
       <main className="relative z-20 pt-20 pb-16">
         {/* Enhanced Hero Section */}

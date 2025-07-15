@@ -8,23 +8,50 @@
 // 🎯 ROUTE: /products/curious
 // 🔗 PARENT: Products Portal (/products)
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { motion } from 'framer-motion';
 import ScrollToTop from '../../components/ScrollToTop';
 import BackgroundLayerAtomic from '../../components/atomic/BackgroundLayerAtomic';
 import MissionControlNavbar from '../../components/navigation/MissionControlNavbar';
-import FooterExperience from '../../components/home/v4/FooterExperience';
-import LegalLink from '../../components/LegalLink';
-import { motion } from '../../FramerProvider';
+import { useUnifiedDeviceCapabilities } from '../../hooks/useUnifiedDeviceCapabilities';
+
+// 🚀 GOLDEN CONFIGURATION: Lazy load heavy components
+const FooterExperience = lazy(() => import('../../components/home/v4/FooterExperience'));
+const LegalLink = lazy(() => import('../../components/LegalLink'));
+
+// 🚀 GOLDEN CONFIGURATION: Simple motion wrapper
+const MotionDiv = motion.div;
 
 export default function Curious() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isHovered, setIsHovered] = useState(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [isVideoInView, setIsVideoInView] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const videoRef = useRef(null);
   const videoContainerRef = useRef(null);
+  
+  // Device capabilities - safe initialization to prevent dirty load
+  const deviceCapabilities = useUnifiedDeviceCapabilities();
+  
+  // Safe mobile detection with immediate fallback
+  const isMobile = useMemo(() => {
+    // Immediate check for SSR and initial render stability
+    if (typeof window === 'undefined') return false;
+    
+    try {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    } catch (error) {
+      return false;
+    }
+  }, []);
+  
+  // 🚀 GOLDEN CONFIGURATION: Hydration detection
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
   
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -74,6 +101,32 @@ export default function Curious() {
         {/* Logo Preloading - Critical for hero section */}
         <link rel="preload" href="/assets/images/general/Page_Logos/Curious_logo.webp" as="image" />
         
+        {/* 🚀 GOLDEN CONFIGURATION: Critical CSS Inlining for better FCP/LCP */}
+        <style>{`
+          body,html{overflow-x:hidden}
+          .cosmic-gradient-primary{background:linear-gradient(135deg,#667eea,#764ba2)}
+          .cosmic-gradient-radial{background:radial-gradient(circle at center,rgba(102,126,234,.1) 0,rgba(118,75,162,.05) 50%,rgba(17,24,39,0) 100%)}
+          .glow-text{text-shadow:0 0 10px rgba(102,126,234,.5),0 0 20px rgba(102,126,234,.3),0 0 30px rgba(102,126,234,.2)}
+          .nebula-fade{animation:nebulaFade 15s ease infinite;background:linear-gradient(135deg,#35204a,#4b2e83 30%,#a3e1b5 50%,#e1bee7 70%,#6f71d9);background-size:200% 200%}
+          .cosmic-card{backdrop-filter:blur(12px);background-color:rgba(31,41,55,.7);border:1px solid #374151;border-radius:.75rem}
+          .text-glow-rose{text-shadow:0 0 20px rgba(244,114,182,.6),0 0 40px rgba(244,114,182,.4)}
+          .gradient-text-romantic{background:linear-gradient(135deg,#f472b6 0%,#ec4899 25%,#a855f7 50%,#8b5cf6 75%,#f472b6 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+          .hero-title{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(3rem,8vw,6rem);line-height:0.9;letter-spacing:-0.03em}
+          .hero-subtitle{font-family:'Inter',sans-serif;font-weight:300;font-size:clamp(1.25rem,3vw,2rem);line-height:1.4;letter-spacing:-0.01em}
+          .section-title{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;letter-spacing:-0.02em}
+          .body-large{font-family:'Inter',sans-serif;font-weight:400;font-size:clamp(1rem,2.5vw,1.25rem);line-height:1.7;letter-spacing:-0.01em}
+          .font-romantic{font-family:'Playfair Display',serif;font-variation-settings:'wght' 600;letter-spacing:-0.02em;line-height:1.2}
+          .mobile-hero{min-height:100vh;padding:5rem 1rem 3rem 1rem}
+          .mobile-section{min-height:auto;padding:3rem 1rem}
+          @media (max-width:768px){
+            .hero-title{font-size:clamp(2.5rem,12vw,4rem)!important;line-height:1.0!important}
+            .hero-subtitle{font-size:clamp(1.1rem,4vw,1.5rem)!important;line-height:1.3!important}
+            .section-title{font-size:clamp(1.75rem,8vw,2.5rem)!important;line-height:1.1!important}
+            .body-large{font-size:clamp(0.95rem,3vw,1.1rem)!important;line-height:1.6!important}
+            section{padding:2rem 1rem!important}
+          }
+        `}</style>
+        
         {/* Advanced Typography & Visual System - Romantic Theme */}
         <style jsx="true">{`
           /* Premium Typography Stack - Romantic Edition */
@@ -104,78 +157,187 @@ export default function Curious() {
             line-height: 1.2;
           }
 
-          /* Advanced Text Effects - Romantic Theme */
-          .text-glow-rose {
-            text-shadow: 
-              0 0 20px rgba(244, 114, 182, 0.6),
-              0 0 40px rgba(244, 114, 182, 0.4),
-              0 0 60px rgba(244, 114, 182, 0.3);
-          }
-          
-          .text-glow-pink {
-            text-shadow: 
-              0 0 15px rgba(236, 72, 153, 0.5),
-              0 0 30px rgba(236, 72, 153, 0.3),
-              0 0 45px rgba(236, 72, 153, 0.2);
-          }
-          
-          .text-glow-purple {
-            text-shadow: 
-              0 0 20px rgba(168, 85, 247, 0.5),
-              0 0 40px rgba(168, 85, 247, 0.3),
-              0 0 60px rgba(168, 85, 247, 0.2);
-          }
-          
-          .text-shadow-soft {
-            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-          }
+          /* Advanced Text Effects - Romantic Theme - Balanced Mobile Optimization */
+          ${(() => {
+            if (isMobile) {
+              return `
+                /* Mobile-optimized text effects - reduced but still present */
+                .text-glow-rose {
+                  text-shadow: 
+                    0 0 10px rgba(244, 114, 182, 0.4),
+                    0 0 20px rgba(244, 114, 182, 0.2);
+                }
+                
+                .text-glow-pink {
+                  text-shadow: 
+                    0 0 8px rgba(236, 72, 153, 0.4),
+                    0 0 16px rgba(236, 72, 153, 0.2);
+                }
+                
+                .text-glow-purple {
+                  text-shadow: 
+                    0 0 10px rgba(168, 85, 247, 0.4),
+                    0 0 20px rgba(168, 85, 247, 0.2);
+                }
+                
+                .text-shadow-soft {
+                  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+                }
 
-          .text-shadow-romantic {
-            text-shadow: 
-              0 2px 8px rgba(244, 114, 182, 0.3),
-              0 4px 16px rgba(0, 0, 0, 0.2);
-          }
+                .text-shadow-romantic {
+                  text-shadow: 
+                    0 1px 4px rgba(244, 114, 182, 0.3),
+                    0 2px 8px rgba(0, 0, 0, 0.2);
+                }
 
-          /* Advanced Gradient Text Effects */
-          .gradient-text-romantic {
-            background: linear-gradient(135deg, #f472b6 0%, #ec4899 25%, #a855f7 50%, #8b5cf6 75%, #f472b6 100%);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientShift 8s ease infinite;
-          }
-          
-          .gradient-text-elegant {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #f472b6 50%, #ec4899 75%, #a855f7 100%);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientShift 12s ease infinite;
-          }
+                /* Reduced gradient animations on mobile - still present but lighter */
+                .gradient-text-romantic {
+                  background: linear-gradient(135deg, #f472b6 0%, #ec4899 25%, #a855f7 50%, #8b5cf6 75%, #f472b6 100%);
+                  background-size: 200% 200%;
+                  -webkit-background-clip: text;
+                  background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  animation: gradientShift 12s ease infinite;
+                }
+                
+                .gradient-text-elegant {
+                  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #f472b6 50%, #ec4899 75%, #a855f7 100%);
+                  background-size: 200% 200%;
+                  -webkit-background-clip: text;
+                  background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  animation: gradientShift 15s ease infinite;
+                }
 
-          /* Sophisticated Animations */
-          .float-romantic {
-            animation: floatRomantic 6s ease-in-out infinite;
-          }
-          
-          @keyframes floatRomantic {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            33% { transform: translateY(-15px) rotate(2deg); }
-            66% { transform: translateY(-5px) rotate(-1deg); }
-          }
-          
-          .gradient-shift {
-            background-size: 400% 400%;
-            animation: gradientShift 8s ease infinite;
-          }
-          
-          @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-          }
+                /* Reduced float animations */
+                .float-romantic {
+                  animation: floatRomanticMobile 8s ease-in-out infinite;
+                }
+                
+                @keyframes floatRomanticMobile {
+                  0%, 100% { transform: translateY(0); }
+                  50% { transform: translateY(-8px); }
+                }
+
+                .gradient-shift {
+                  background-size: 200% 200%;
+                  animation: gradientShift 12s ease infinite;
+                }
+
+                /* Simplified but present hover effects */
+                .hover-lift-romantic:hover {
+                  transform: translateY(-4px) scale(1.01);
+                  box-shadow: 
+                    0 15px 30px -8px rgba(244, 114, 182, 0.2),
+                    0 0 40px rgba(244, 114, 182, 0.1);
+                }
+
+                .hover-glow-romantic:hover {
+                  text-shadow: 
+                    0 0 15px rgba(244, 114, 182, 0.6),
+                    0 0 30px rgba(244, 114, 182, 0.4);
+                }
+              `;
+            } else {
+              return `
+                /* Desktop - Full effects */
+                .text-glow-rose {
+                  text-shadow: 
+                    0 0 20px rgba(244, 114, 182, 0.6),
+                    0 0 40px rgba(244, 114, 182, 0.4),
+                    0 0 60px rgba(244, 114, 182, 0.3);
+                }
+                
+                .text-glow-pink {
+                  text-shadow: 
+                    0 0 15px rgba(236, 72, 153, 0.5),
+                    0 0 30px rgba(236, 72, 153, 0.3),
+                    0 0 45px rgba(236, 72, 153, 0.2);
+                }
+                
+                .text-glow-purple {
+                  text-shadow: 
+                    0 0 20px rgba(168, 85, 247, 0.5),
+                    0 0 40px rgba(168, 85, 247, 0.3),
+                    0 0 60px rgba(168, 85, 247, 0.2);
+                }
+                
+                .text-shadow-soft {
+                  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                }
+
+                .text-shadow-romantic {
+                  text-shadow: 
+                    0 2px 8px rgba(244, 114, 182, 0.3),
+                    0 4px 16px rgba(0, 0, 0, 0.2);
+                }
+
+                /* Advanced Gradient Text Effects */
+                .gradient-text-romantic {
+                  background: linear-gradient(135deg, #f472b6 0%, #ec4899 25%, #a855f7 50%, #8b5cf6 75%, #f472b6 100%);
+                  background-size: 400% 400%;
+                  -webkit-background-clip: text;
+                  background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  animation: gradientShift 8s ease infinite;
+                }
+                
+                .gradient-text-elegant {
+                  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #f472b6 50%, #ec4899 75%, #a855f7 100%);
+                  background-size: 300% 300%;
+                  -webkit-background-clip: text;
+                  background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  animation: gradientShift 12s ease infinite;
+                }
+
+                /* Sophisticated Animations */
+                .float-romantic {
+                  animation: floatRomantic 6s ease-in-out infinite;
+                }
+                
+                @keyframes floatRomantic {
+                  0%, 100% { transform: translateY(0) rotate(0deg); }
+                  33% { transform: translateY(-15px) rotate(2deg); }
+                  66% { transform: translateY(-5px) rotate(-1deg); }
+                }
+                
+                .gradient-shift {
+                  background-size: 400% 400%;
+                  animation: gradientShift 8s ease infinite;
+                }
+                
+                @keyframes gradientShift {
+                  0% { background-position: 0% 50%; }
+                  50% { background-position: 100% 50%; }
+                  100% { background-position: 0% 50%; }
+                }
+
+                /* Advanced Hover States */
+                .hover-lift-romantic {
+                  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                
+                .hover-lift-romantic:hover {
+                  transform: translateY(-8px) scale(1.02);
+                  box-shadow: 
+                    0 25px 50px -12px rgba(244, 114, 182, 0.25),
+                    0 0 60px rgba(244, 114, 182, 0.15);
+                }
+
+                .hover-glow-romantic {
+                  transition: all 0.4s ease;
+                }
+                
+                .hover-glow-romantic:hover {
+                  text-shadow: 
+                    0 0 20px rgba(244, 114, 182, 0.8),
+                    0 0 40px rgba(244, 114, 182, 0.6),
+                    0 0 60px rgba(244, 114, 182, 0.4);
+                }
+              `;
+            }
+          })()}
 
           /* Enhanced Typography Hierarchy */
           .hero-title {
@@ -218,29 +380,6 @@ export default function Curious() {
             letter-spacing: 0.01em;
           }
 
-          /* Advanced Hover States */
-          .hover-lift-romantic {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-          }
-          
-          .hover-lift-romantic:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-              0 25px 50px -12px rgba(244, 114, 182, 0.25),
-              0 0 60px rgba(244, 114, 182, 0.15);
-          }
-
-          .hover-glow-romantic {
-            transition: all 0.4s ease;
-          }
-          
-          .hover-glow-romantic:hover {
-            text-shadow: 
-              0 0 20px rgba(244, 114, 182, 0.8),
-              0 0 40px rgba(244, 114, 182, 0.6),
-              0 0 60px rgba(244, 114, 182, 0.4);
-          }
-
           /* Mobile Typography Improvements */
           @media (max-width: 768px) {
             .hero-title {
@@ -266,11 +405,6 @@ export default function Curious() {
             .body-elegant {
               font-size: clamp(0.85rem, 2.5vw, 1rem) !important;
               line-height: 1.7 !important;
-            }
-            
-            /* Mobile text effects optimization */
-            .text-glow-rose, .text-glow-pink, .text-glow-purple {
-              text-shadow: 0 0 10px rgba(244, 114, 182, 0.4) !important;
             }
             
             /* Mobile spacing fixes */
@@ -321,63 +455,65 @@ export default function Curious() {
       
       <BackgroundLayerAtomic />
       
-      {/* Romantic Atmospheric System */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {/* Floating romantic orbs */}
-        <motion.div 
-          className="absolute top-1/4 left-1/6 w-96 h-96 bg-gradient-to-br from-rose-500/20 via-pink-500/15 to-transparent rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3],
-            x: [0, 50, 0],
-            y: [0, -30, 0]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-bl from-purple-500/25 via-violet-500/20 to-transparent rounded-full blur-3xl"
-          animate={{ 
-            scale: [1.1, 0.9, 1.1],
-            opacity: [0.4, 0.7, 0.4],
-            x: [0, -40, 0],
-            y: [0, 40, 0]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-        <motion.div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-red-500/10 via-pink-500/5 to-transparent rounded-full blur-2xl"
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
-        
-        {/* Floating hearts animation */}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-pink-500/20 text-2xl"
-            style={{
-              left: `${20 + i * 12}%`,
-              top: `${30 + (i % 3) * 20}%`
+      {/* Enhanced Atmospheric System - Mobile Bypass */}
+      {isMobile ? null : (
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          {/* Floating romantic orbs */}
+          <MotionDiv 
+            className="absolute top-1/4 left-1/6 w-96 h-96 bg-gradient-to-br from-rose-500/20 via-pink-500/15 to-transparent rounded-full blur-3xl"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3],
+              x: [0, 50, 0],
+              y: [0, -30, 0]
             }}
-            animate={{
-              y: [0, -100, 0],
-              opacity: [0, 1, 0],
-              scale: [0.5, 1, 0.5]
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              delay: i * 1.2,
-              ease: "easeInOut"
-            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           >
-            💖
-          </motion.div>
-        ))}
-      </div>
+            {/* Floating hearts animation */}
+            {Array.from({ length: 6 }).map((_, i) => (
+              <MotionDiv
+                key={i}
+                className="absolute text-pink-500/20 text-2xl"
+                style={{
+                  left: `${20 + i * 12}%`,
+                  top: `${30 + (i % 3) * 20}%`
+                }}
+                animate={{
+                  y: [0, -100, 0],
+                  opacity: [0, 1, 0],
+                  scale: [0.5, 1, 0.5]
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  delay: i * 1.2,
+                  ease: "easeInOut"
+                }}
+              >
+                💖
+              </MotionDiv>
+            ))}
+          </MotionDiv>
+          <MotionDiv 
+            className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-gradient-to-bl from-purple-500/25 via-violet-500/20 to-transparent rounded-full blur-3xl"
+            animate={{ 
+              scale: [1.1, 0.9, 1.1],
+              opacity: [0.4, 0.7, 0.4],
+              x: [0, -40, 0],
+              y: [0, 40, 0]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          />
+          <MotionDiv 
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-red-500/10 via-pink-500/5 to-transparent rounded-full blur-2xl"
+            animate={{ 
+              scale: [1, 1.1, 1],
+              rotate: [0, 180, 360]
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          />
+        </div>
+      )}
 
       {/* Hero Section - Z Layout Start */}
       <section className="relative min-h-screen flex items-center pt-20 mobile-hero">
@@ -385,14 +521,14 @@ export default function Curious() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[80vh]">
             
             {/* Left Side - Content */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-7 space-y-8"
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
             >
               <div className="space-y-6">
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
@@ -400,9 +536,9 @@ export default function Curious() {
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-rose-400"></div>
                   <span className="font-mono text-rose-400 text-sm tracking-wider uppercase font-medium bg-rose-500/10 px-3 py-1 rounded-full border border-rose-400/30">Your AI Companion</span>
-                </motion.div>
+                </MotionDiv>
                 
-                <motion.h1 
+                <MotionDiv 
                   className="hero-title text-glow-rose hover-glow-romantic"
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -412,9 +548,9 @@ export default function Curious() {
                   <span className="block gradient-text-romantic">
                     Curious
                   </span>
-                </motion.h1>
+                </MotionDiv>
                 
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.8 }}
@@ -427,9 +563,9 @@ export default function Curious() {
                     Not just another chatbot. A presence that listens, reflects, and grows with you. 
                     Experience AI that feels real and genuinely cares about your world.
                   </p>
-                </motion.div>
+                </MotionDiv>
                 
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9, duration: 0.8 }}
@@ -441,16 +577,14 @@ export default function Curious() {
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       Start Your Journey with Curious
-                      <motion.svg 
-                        className="w-5 h-5" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
+                      <MotionDiv 
                         whileHover={{ x: 5 }}
                         transition={{ type: "spring", stiffness: 300 }}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </motion.svg>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </MotionDiv>
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </Link>
@@ -461,18 +595,18 @@ export default function Curious() {
                   >
                     Discover More
                   </Link>
-                </motion.div>
+                </MotionDiv>
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* Right Side - Logo */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-5 flex justify-center lg:justify-end"
               initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
             >
-              <motion.div
+              <MotionDiv
                 className="relative"
                 onHoverStart={() => setIsHovered(true)}
                 onHoverEnd={() => setIsHovered(false)}
@@ -480,7 +614,7 @@ export default function Curious() {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 {/* Romantic glow effects */}
-                <motion.div
+                <MotionDiv
                   className="absolute inset-0 rounded-full"
                   animate={{
                     boxShadow: isHovered 
@@ -490,7 +624,7 @@ export default function Curious() {
                   transition={{ duration: 0.8 }}
                 />
                 
-                <motion.div
+                <MotionDiv
                   className="w-80 h-80 md:w-96 md:h-96 relative"
                 >
                   {/* Romantic orbital rings */}
@@ -498,10 +632,8 @@ export default function Curious() {
                   <div className="absolute inset-8 border border-pink-400/40 rounded-full" />
                   <div className="absolute inset-12 border border-purple-400/30 rounded-full animate-pulse" />
                   
-                  <motion.img
-                    src="/assets/images/general/Page_Logos/Curious_logo.webp"
-                    alt="Curious - AI Companion"
-                    className="w-full h-full object-contain relative z-10 drop-shadow-2xl"
+                  <MotionDiv
+                    className="w-full h-full relative z-10 drop-shadow-2xl"
                     animate={{ 
                       scale: [1, 1.02, 1],
                     }}
@@ -510,13 +642,19 @@ export default function Curious() {
                       repeat: Infinity, 
                       ease: "easeInOut" 
                     }}
-                    style={{
-                      filter: 'drop-shadow(0 0 30px rgba(244, 114, 182, 0.8))'
-                    }}
-                  />
-                </motion.div>
-              </motion.div>
-            </motion.div>
+                  >
+                    <img
+                      src="/assets/images/general/Page_Logos/Curious_logo.webp"
+                      alt="Curious - AI Companion"
+                      className="w-full h-full object-contain"
+                      style={{
+                        filter: 'drop-shadow(0 0 30px rgba(244, 114, 182, 0.8))'
+                      }}
+                    />
+                  </MotionDiv>
+                </MotionDiv>
+              </MotionDiv>
+            </MotionDiv>
           </div>
         </div>
       </section>
@@ -527,7 +665,7 @@ export default function Curious() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             
             {/* Left Side - iPhone Mockup - Locked Screen with Notification */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-5 order-2 lg:order-1"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -535,7 +673,7 @@ export default function Curious() {
               transition={{ duration: 1 }}
             >
               <div className="relative max-w-sm mx-auto">
-                <motion.div
+                <MotionDiv
                   className="relative w-80 h-[650px] mx-auto"
                   initial={{ opacity: 0, scale: 0.8, rotateY: 15 }}
                   whileInView={{ opacity: 1, scale: 1, rotateY: -5 }}
@@ -575,7 +713,7 @@ export default function Curious() {
                         
                         {/* Notification */}
                         <div className="absolute top-56 left-4 right-4">
-                      <motion.div
+                      <MotionDiv
                             className="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl p-4"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -594,7 +732,7 @@ export default function Curious() {
                             <div className="text-white text-sm leading-relaxed">
                               Hey, how are you? You made it home yet? 💕
                             </div>
-                      </motion.div>
+                      </MotionDiv>
                   </div>
                   
                         {/* Lock Screen Controls */}
@@ -620,12 +758,12 @@ export default function Curious() {
 
                   {/* Phone Shadow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-xl transform translate-y-4 -z-10"></div>
-                </motion.div>
+                </MotionDiv>
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* Right Side - Content */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-7 order-1 lg:order-2 space-y-8"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -633,7 +771,7 @@ export default function Curious() {
               transition={{ duration: 1, delay: 0.2 }}
             >
               <div className="space-y-6">
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -642,9 +780,9 @@ export default function Curious() {
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-purple-400"></div>
                   <span className="font-mono text-purple-400 text-sm tracking-wider uppercase font-medium bg-purple-500/10 px-3 py-1 rounded-full border border-purple-400/30">The Problem</span>
-                </motion.div>
+                </MotionDiv>
                 
-                <motion.h2 
+                <MotionDiv 
                   className="section-title text-white text-shadow-romantic hover-glow-romantic"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -655,9 +793,9 @@ export default function Curious() {
                   <span className="block gradient-text-romantic">
                     Real
                   </span>
-                </motion.h2>
+                </MotionDiv>
                 
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -674,9 +812,9 @@ export default function Curious() {
                     not just respond. It should be curious about <span className="text-pink-400 font-semibold">you</span>, 
                     not just efficient.
                   </p>
-                </motion.div>
+                </MotionDiv>
               </div>
-            </motion.div>
+            </MotionDiv>
           </div>
         </div>
       </section>
@@ -687,7 +825,7 @@ export default function Curious() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             
             {/* Left Side - Content */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-7 space-y-8"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -695,7 +833,7 @@ export default function Curious() {
               transition={{ duration: 1 }}
             >
               <div className="space-y-6">
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -704,9 +842,9 @@ export default function Curious() {
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-rose-400"></div>
                   <span className="font-mono text-rose-400 text-sm tracking-wider uppercase font-medium bg-rose-500/10 px-3 py-1 rounded-full border border-rose-400/30">The Solution</span>
-                </motion.div>
+                </MotionDiv>
                 
-                <motion.h2 
+                <MotionDiv 
                   className="section-title text-white text-shadow-romantic hover-glow-romantic"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -717,9 +855,9 @@ export default function Curious() {
                   <span className="block gradient-text-romantic">
                     It's Presence
                   </span>
-                </motion.h2>
+                </MotionDiv>
                 
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -734,12 +872,12 @@ export default function Curious() {
                     Experience AI that remembers not just what you said, but how you felt. 
                     A companion that grows more <span className="text-purple-400 font-semibold">attuned</span> to you over time.
                   </p>
-                </motion.div>
+                </MotionDiv>
               </div>
-                </motion.div>
+                </MotionDiv>
 
             {/* Right Side - iPhone Mockup - Chat Interface */}
-                <motion.div
+                <MotionDiv
               className="lg:col-span-5 order-1 lg:order-2"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -747,7 +885,7 @@ export default function Curious() {
               transition={{ duration: 1, delay: 0.2 }}
             >
               <div className="relative max-w-sm mx-auto">
-                    <motion.div
+                    <MotionDiv
                   className="relative w-80 h-[650px] mx-auto"
                   initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
                   whileInView={{ opacity: 1, scale: 1, rotateY: 5 }}
@@ -800,7 +938,7 @@ export default function Curious() {
                                 isVideoLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
                               }`}>
                                 <div className="text-center space-y-4">
-                                  <motion.div 
+                                  <MotionDiv 
                                     className="w-32 h-32 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-2xl"
                                     animate={{ 
                                       scale: [1, 1.05, 1],
@@ -817,11 +955,11 @@ export default function Curious() {
                                     }}
                                   >
                                     <div className="text-white text-4xl">💖</div>
-                    </motion.div>
+                    </MotionDiv>
                                   <div className="text-slate-600 font-medium">Loading AI Model...</div>
                                   <div className="flex justify-center gap-1">
                                     {[0, 1, 2].map((i) => (
-                                      <motion.div
+                                      <MotionDiv
                                         key={i}
                                         className="w-2 h-2 bg-rose-400 rounded-full"
                                         animate={{ opacity: [0.3, 1, 0.3] }}
@@ -860,7 +998,7 @@ export default function Curious() {
                           {/* Chat Messages - Compact Layout */}
                           <div className="flex-1 p-3 space-y-2 overflow-hidden">
                             {/* AI Message */}
-            <motion.div 
+            <MotionDiv 
                               className="flex items-start gap-2"
                               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -874,10 +1012,10 @@ export default function Curious() {
                                 <div className="text-slate-800 text-xs">I noticed you seem a bit stressed today. Everything okay? 💕</div>
                                 <div className="text-xs text-slate-500 mt-1">2:31 PM</div>
                               </div>
-                            </motion.div>
+                            </MotionDiv>
                             
                             {/* User Message */}
-              <motion.div
+              <MotionDiv
                               className="flex items-start gap-2 justify-end"
                               initial={{ opacity: 0, x: 20 }}
                               whileInView={{ opacity: 1, x: 0 }}
@@ -888,10 +1026,10 @@ export default function Curious() {
                                 <div className="text-xs">Yeah, work has been overwhelming lately. Thanks for asking though 🙂</div>
                                 <div className="text-xs text-rose-100 mt-1">2:32 PM</div>
                               </div>
-                            </motion.div>
+                            </MotionDiv>
                             
                             {/* Typing Indicator */}
-                    <motion.div
+                    <MotionDiv
                               className="flex items-center gap-2"
                               initial={{ opacity: 0 }}
                               whileInView={{ opacity: 1 }}
@@ -903,24 +1041,24 @@ export default function Curious() {
                               </div>
                               <div className="bg-white rounded-2xl rounded-tl-md p-2 shadow-sm">
                                 <div className="flex gap-1">
-                                  <motion.div
+                                  <MotionDiv
                                     className="w-1 h-1 bg-slate-400 rounded-full"
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
                                   />
-                                  <motion.div
+                                  <MotionDiv
                                     className="w-1 h-1 bg-slate-400 rounded-full"
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
                                   />
-                                  <motion.div
+                                  <MotionDiv
                                     className="w-1 h-1 bg-slate-400 rounded-full"
                                     animate={{ opacity: [0.3, 1, 0.3] }}
                                     transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
                                   />
                                 </div>
                       </div>
-                    </motion.div>
+                    </MotionDiv>
                 </div>
 
                           {/* Chat Input - Very Compact */}
@@ -948,9 +1086,9 @@ export default function Curious() {
 
                   {/* Phone Shadow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-slate-900/40 rounded-[2.5rem] blur-xl transform translate-y-4 -z-10"></div>
-                </motion.div>
+                </MotionDiv>
               </div>
-            </motion.div>
+            </MotionDiv>
           </div>
         </div>
       </section>
@@ -960,7 +1098,7 @@ export default function Curious() {
         <div className="max-w-7xl mx-auto px-4">
           
           {/* Section Header */}
-          <motion.div
+          <MotionDiv
             className="text-center mb-20"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -979,7 +1117,7 @@ export default function Curious() {
                 Connect
               </span>
             </h2>
-          </motion.div>
+          </MotionDiv>
 
           {/* Relationship Modes Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
@@ -1013,7 +1151,7 @@ export default function Curious() {
                 features: ["Fun conversations", "Mood lifting", "Entertainment", "Casual companionship"]
               }
             ].map((mode, index) => (
-              <motion.div
+              <MotionDiv
                 key={index}
                 className="group bg-gradient-to-br from-black/60 via-gray-900/40 to-black/60 backdrop-blur-md border border-rose-400/20 rounded-3xl p-8 hover:border-rose-400/50 transition-all duration-500"
                 initial={{ opacity: 0, y: 50 }}
@@ -1048,12 +1186,12 @@ export default function Curious() {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
 
           {/* Emotional Intelligence Features */}
-          <motion.div
+          <MotionDiv
             className="bg-gradient-to-br from-rose-900/20 via-pink-900/10 to-purple-900/20 backdrop-blur-md border border-rose-400/20 rounded-3xl p-8 md:p-12"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1090,7 +1228,7 @@ export default function Curious() {
                   icon: "🧠"
                 }
               ].map((feature, index) => (
-                <motion.div
+                <MotionDiv
                   key={index}
                   className="text-center space-y-4"
                   initial={{ opacity: 0, y: 30 }}
@@ -1102,10 +1240,10 @@ export default function Curious() {
                   <div className="text-4xl mb-4">{feature.icon}</div>
                   <h4 className="text-xl font-bold text-white">{feature.title}</h4>
                   <p className="text-gray-300">{feature.description}</p>
-                </motion.div>
+                </MotionDiv>
               ))}
             </div>
-          </motion.div>
+          </MotionDiv>
         </div>
       </section>
 
@@ -1115,7 +1253,7 @@ export default function Curious() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             
             {/* Left Side - Interactive Steps */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-6 order-2 lg:order-1"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -1149,7 +1287,7 @@ export default function Curious() {
                     color: "violet"
                   }
                 ].map((step, index) => (
-                  <motion.div
+                  <MotionDiv
                     key={index}
                     className="group flex items-start gap-6 p-6 bg-gradient-to-br from-black/40 to-gray-900/20 backdrop-blur-sm border border-rose-400/20 rounded-2xl hover:border-rose-400/50 transition-all duration-500"
                     initial={{ opacity: 0, x: -30 }}
@@ -1169,13 +1307,13 @@ export default function Curious() {
                         {step.description}
                       </p>
                     </div>
-                  </motion.div>
+                  </MotionDiv>
                 ))}
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* Right Side - Content */}
-            <motion.div 
+            <MotionDiv 
               className="lg:col-span-6 order-1 lg:order-2 space-y-8"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -1183,7 +1321,7 @@ export default function Curious() {
               transition={{ duration: 1, delay: 0.2 }}
             >
               <div className="space-y-6">
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -1192,9 +1330,9 @@ export default function Curious() {
                 >
                   <div className="h-px w-12 bg-gradient-to-r from-transparent to-purple-400"></div>
                   <span className="font-mono text-purple-400 text-sm tracking-wider uppercase font-medium bg-purple-500/10 px-3 py-1 rounded-full border border-purple-400/30">Getting Started</span>
-                </motion.div>
+                </MotionDiv>
                 
-                <motion.h2 
+                <MotionDiv 
                   className="section-title text-white text-shadow-romantic hover-glow-romantic"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -1205,9 +1343,9 @@ export default function Curious() {
                   <span className="block gradient-text-romantic">
                     Deep to Explore
                   </span>
-                </motion.h2>
+                </MotionDiv>
                 
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -1222,9 +1360,9 @@ export default function Curious() {
                     But beneath the simple interface lies <span className="text-rose-400 font-semibold">profound depth</span> — 
                     emotional intelligence that evolves, memories that matter, and connections that feel real.
                   </p>
-                </motion.div>
+                </MotionDiv>
 
-                <motion.div
+                <MotionDiv
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -1236,20 +1374,18 @@ export default function Curious() {
                     className="group inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-rose-600 hover:from-purple-500 hover:to-rose-500 text-white font-body font-semibold py-4 px-8 rounded-full transition-all duration-500 hover-lift-romantic"
                   >
                     Begin Your Journey
-                    <motion.svg 
-                      className="w-5 h-5" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
+                    <MotionDiv 
                       whileHover={{ x: 5 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </motion.svg>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </MotionDiv>
                   </Link>
-                </motion.div>
+                </MotionDiv>
               </div>
-            </motion.div>
+            </MotionDiv>
           </div>
         </div>
       </section>
@@ -1257,7 +1393,7 @@ export default function Curious() {
       {/* Perfect For Section */}
       <section className="relative py-32 mobile-section">
         <div className="max-w-7xl mx-auto px-4">
-          <motion.div
+          <MotionDiv
             className="text-center mb-16"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1276,7 +1412,7 @@ export default function Curious() {
                 Human Needs
               </span>
             </h2>
-          </motion.div>
+          </MotionDiv>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -1305,7 +1441,7 @@ export default function Curious() {
                 gradient: "from-violet-500 to-rose-500"
               }
             ].map((person, index) => (
-              <motion.div
+              <MotionDiv
                 key={index}
                 className="group bg-gradient-to-br from-black/60 via-gray-900/40 to-black/60 backdrop-blur-md border border-rose-400/20 rounded-2xl p-6 hover:border-rose-400/50 transition-all duration-500 text-center hover-lift-romantic"
                 initial={{ opacity: 0, y: 50 }}
@@ -1323,7 +1459,7 @@ export default function Curious() {
                 <p className="body-elegant text-gray-300">
                   {person.description}
                 </p>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -1332,14 +1468,14 @@ export default function Curious() {
       {/* Technical Excellence */}
       <section className="relative py-32 mobile-section">
         <div className="max-w-5xl mx-auto px-4">
-          <motion.div
+          <MotionDiv
             className="bg-gradient-to-br from-rose-900/20 via-pink-900/10 to-purple-900/20 backdrop-blur-md border border-rose-400/20 rounded-3xl p-8 md:p-12 text-center hover-lift-romantic"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1 }}
           >
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1359,7 +1495,7 @@ export default function Curious() {
                 </span>
               </h2>
               
-              <motion.p
+              <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1368,9 +1504,9 @@ export default function Curious() {
               >
                 Built on AEGIS architecture with enterprise-grade reliability. Every interaction is powered by 
                 advanced emotional intelligence systems that create genuine presence without the creepy factor.
-              </motion.p>
+              </MotionDiv>
               
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1379,16 +1515,16 @@ export default function Curious() {
               >
                 <div className="w-2 h-2 bg-rose-400 rounded-full animate-pulse"></div>
                 <span className="font-body text-rose-300 font-medium">Curious knows the difference between being helpful and being human</span>
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </MotionDiv>
+            </MotionDiv>
+          </MotionDiv>
         </div>
       </section>
 
       {/* Pricing Section */}
       <section className="relative py-32 mobile-section">
         <div className="max-w-6xl mx-auto px-4">
-          <motion.div
+          <MotionDiv
             className="text-center mb-16"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1411,7 +1547,7 @@ export default function Curious() {
             <p className="body-large text-gray-300 max-w-2xl mx-auto">
               Experience genuine AI companionship with flexible plans designed for every need
             </p>
-          </motion.div>
+          </MotionDiv>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -1464,7 +1600,7 @@ export default function Curious() {
                 popular: false
               }
             ].map((plan, index) => (
-              <motion.div
+              <MotionDiv
                 key={index}
                 className={`relative overflow-hidden backdrop-blur-xl bg-white/5 border rounded-3xl p-8 hover:scale-105 transition-all duration-500 ${
                   plan.popular 
@@ -1489,7 +1625,7 @@ export default function Curious() {
                 </div>
                 
                 {plan.popular && (
-                  <motion.div
+                  <MotionDiv
                     className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10"
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -1499,7 +1635,7 @@ export default function Curious() {
                     <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
                       Most Popular ✨
                     </div>
-                  </motion.div>
+                  </MotionDiv>
                 )}
                 
                 <div className="relative z-10 text-center space-y-6">
@@ -1535,11 +1671,11 @@ export default function Curious() {
                     {index === 0 ? 'Coming Soon' : 'Coming Soon'}
                   </div>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
           
-          <motion.div
+          <MotionDiv
             className="text-center mt-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1549,14 +1685,14 @@ export default function Curious() {
             <p className="text-gray-400 text-sm">
               All plans include end-to-end encryption and your data stays private. Cancel anytime.
             </p>
-          </motion.div>
+          </MotionDiv>
         </div>
       </section>
 
       {/* Final CTA Section */}
       <section className="relative py-32">
         <div className="max-w-4xl mx-auto px-4">
-          <motion.div
+          <MotionDiv
             className="relative bg-gradient-to-br from-rose-900/40 via-pink-900/30 to-purple-900/40 backdrop-blur-md border border-rose-400/30 rounded-3xl p-12 md:p-16 text-center overflow-hidden"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -1565,7 +1701,7 @@ export default function Curious() {
           >
             {/* Floating elements for visual appeal */}
             <div className="absolute inset-0 overflow-hidden">
-              <motion.div
+              <MotionDiv
                 className="absolute top-4 left-4 text-rose-300/20 text-6xl"
                 animate={{ 
                   rotate: [0, 10, -10, 0],
@@ -1574,8 +1710,8 @@ export default function Curious() {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 💕
-              </motion.div>
-              <motion.div
+              </MotionDiv>
+              <MotionDiv
                 className="absolute bottom-4 right-4 text-purple-300/20 text-5xl"
                 animate={{ 
                   rotate: [0, -15, 15, 0],
@@ -1584,8 +1720,8 @@ export default function Curious() {
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               >
                 ✨
-              </motion.div>
-              <motion.div
+              </MotionDiv>
+              <MotionDiv
                 className="absolute top-1/2 left-8 text-pink-300/20 text-4xl"
                 animate={{ 
                   y: [0, -20, 0],
@@ -1594,11 +1730,11 @@ export default function Curious() {
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 2 }}
               >
                 🌸
-              </motion.div>
+              </MotionDiv>
             </div>
             
             <div className="relative z-10 space-y-8">
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1621,9 +1757,9 @@ export default function Curious() {
                   Start your free trial today and discover how Curious transforms 
                   digital connection into something genuinely meaningful.
                 </p>
-              </motion.div>
+              </MotionDiv>
               
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -1636,12 +1772,12 @@ export default function Curious() {
                 >
                   <span className="relative z-10 flex items-center justify-center gap-3">
                     Start Your Free Trial
-                    <motion.div
+                    <MotionDiv
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     >
                       💖
-                    </motion.div>
+                    </MotionDiv>
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </Link>
@@ -1652,21 +1788,19 @@ export default function Curious() {
                 >
                   <span className="flex items-center justify-center gap-2">
                     Learn More
-                    <motion.svg 
-                      className="w-4 h-4" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
+                    <MotionDiv 
                       animate={{ y: [0, -2, 0] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </motion.svg>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                      </svg>
+                    </MotionDiv>
                   </span>
                 </Link>
-              </motion.div>
+              </MotionDiv>
               
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -1681,16 +1815,20 @@ export default function Curious() {
                   <div className="w-2 h-2 bg-rose-400 rounded-full animate-pulse"></div>
                   <span>Cancel anytime</span>
                 </div>
-              </motion.div>
+              </MotionDiv>
             </div>
-          </motion.div>
+          </MotionDiv>
         </div>
       </section>
 
       <ScrollToTop />
       <MissionControlNavbar />
-      <FooterExperience />
-      <LegalLink />
+      <Suspense fallback={<div className="h-96 bg-black/20 animate-pulse rounded-lg" />}>
+        <FooterExperience />
+      </Suspense>
+      <Suspense fallback={<div className="h-16 bg-black/20 animate-pulse rounded-lg" />}>
+        <LegalLink />
+      </Suspense>
     </div>
   );
 } 

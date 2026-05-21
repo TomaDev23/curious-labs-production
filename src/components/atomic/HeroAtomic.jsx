@@ -31,6 +31,7 @@ const HeroEarth = lazy(() => import('../../3d/components/earth/HeroEarth'));
 
 import BackgroundLayerAtomic from './BackgroundLayerAtomic';
 import HeroStageManager from './hero/HeroStageManager';
+import HeroDisclosureNotice from './HeroDisclosureNotice';
 
 // Typewriter functionality - CLEAN IMPORTS
 import { useTypewriter } from './hero/hooks/useTypewriter';
@@ -210,6 +211,8 @@ const HeroAtomic = React.memo(() => {
     >
       {/* Mission Control Navbar - Now using standalone component */}
       <MissionControlNavbar />
+
+      <HeroDisclosureNotice />
 
       {/* HUD and Hero Stage Manager */}
       <HeroStageManager setSceneStep={setSceneStep} />

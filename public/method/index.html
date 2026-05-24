@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Orchestration Method — Conduct many agents, converge on truth</title>
+<style>
+  :root{
+    --bg0:#04050d; --bg1:#080b1c; --bg2:#0c1230;
+    --panel:rgba(16,21,48,0.55); --panel2:rgba(22,28,62,0.65);
+    --line:rgba(120,140,255,0.14); --line2:rgba(120,140,255,0.28);
+    --ink:#dbe1f5; --mut:#8b95bd; --dim:#5d6790;
+    --cyan:#4fd6ff; --violet:#a98bff; --magenta:#ff6bd6;
+    --gold:#ffd166; --green:#5ef2a0; --amber:#ffb454; --red:#ff7a7a;
+    --mono:ui-monospace,"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:var(--sans); color:var(--ink);
+    background:radial-gradient(1200px 800px at 75% -10%, #16204e 0%, transparent 55%),
+               radial-gradient(900px 700px at 10% 10%, #2a1247 0%, transparent 50%),
+               linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
+    background-attachment:fixed; line-height:1.6; overflow-x:hidden;
+  }
+  canvas#stars{position:fixed; inset:0; z-index:-1; display:block}
+  a{color:var(--cyan); text-decoration:none}
+  ::selection{background:rgba(169,139,255,.35)}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(14px);
+    background:linear-gradient(180deg, rgba(6,8,20,.92), rgba(6,8,20,.55));
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{max-width:1180px; margin:0 auto; padding:11px 22px; display:flex; align-items:center; gap:20px; flex-wrap:wrap}
+  nav .brand{font-weight:700; letter-spacing:.5px; font-size:14px; color:#fff; white-space:nowrap}
+  nav .brand b{color:var(--cyan)}
+  nav .links{display:flex; gap:4px; flex-wrap:wrap; margin-left:auto}
+  nav .links a{
+    font-size:12px; color:var(--mut); padding:5px 10px; border-radius:7px;
+    border:1px solid transparent; transition:.18s; white-space:nowrap;
+  }
+  nav .links a:hover{color:#fff; background:rgba(120,140,255,.1)}
+  nav .links a.on{color:#fff; background:rgba(79,214,255,.14); border-color:var(--line2)}
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
+  section{padding:74px 0 26px; scroll-margin-top:60px}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--cyan); margin:0 0 10px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:26px; height:1px; background:var(--cyan); display:inline-block; opacity:.7}
+  h1,h2,h3{line-height:1.15; margin:0}
+  h2{font-size:clamp(26px,3.4vw,40px); font-weight:740; letter-spacing:-.5px; color:#fff}
+  h3{font-size:19px; font-weight:680; color:#fff; margin-bottom:6px}
+  .lead{font-size:17px; color:var(--mut); max-width:780px; margin:16px 0 0}
+  p{margin:14px 0}
+  .muted{color:var(--mut)}
+  .small{font-size:13.5px}
+
+  /* ---------- HERO ---------- */
+  header.hero{position:relative; padding:96px 0 40px; text-align:center}
+  .hero .badge{
+    display:inline-flex; gap:8px; align-items:center; font-family:var(--mono); font-size:12px;
+    letter-spacing:2px; text-transform:uppercase; color:var(--violet);
+    border:1px solid var(--line2); border-radius:999px; padding:6px 16px; background:rgba(169,139,255,.07);
+  }
+  .hero h1{
+    font-size:clamp(38px,7vw,76px); font-weight:800; letter-spacing:-2px; margin:26px auto 0; max-width:15ch;
+    background:linear-gradient(120deg,#fff 10%,#9fd9ff 45%,#c9aaff 70%,#ff9be0 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero .sub{font-size:19px; color:var(--mut); max-width:700px; margin:22px auto 0}
+  .hero .sub b{color:var(--ink); font-weight:600}
+  .hero .shift{font-size:15px;color:var(--dim);max-width:680px;margin:14px auto 0;font-family:var(--mono)}
+  .hero .shift b{color:var(--cyan);font-weight:700}
+  .orbit-emblem{width:140px; height:140px; margin:0 auto 6px; position:relative}
+  .stat-row{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:38px}
+  .stat{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 20px; min-width:160px;
+  }
+  .stat .n{font-size:24px; font-weight:780; color:#fff; font-family:var(--mono)}
+  .stat .n.cy{color:var(--cyan)} .stat .n.mg{color:var(--magenta)} .stat .n.gd{color:var(--gold)} .stat .n.gr{color:var(--green)}
+  .stat .l{font-size:12px; color:var(--mut); letter-spacing:.4px; margin-top:5px}
+
+  /* ---------- PANELS / CARDS ---------- */
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:26px 28px; margin-top:22px}
+  .grid{display:grid; gap:18px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:880px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px 22px; position:relative;
+    transition:.25s; overflow:hidden;
+  }
+  .card:hover{border-color:var(--line2); transform:translateY(-2px)}
+  .card .ico{font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:1px;
+    display:inline-block; padding:3px 9px; border-radius:7px; margin-bottom:12px;
+    background:rgba(79,214,255,.1); color:var(--cyan); border:1px solid var(--line2)}
+  .card p{margin:8px 0 0; font-size:14.5px; color:var(--mut)}
+  .card.cy .ico{background:rgba(79,214,255,.1);color:var(--cyan)}
+  .card.mg .ico{background:rgba(255,107,214,.1);color:var(--magenta)}
+  .card.gd .ico{background:rgba(255,209,102,.1);color:var(--gold)}
+  .card.vi .ico{background:rgba(169,139,255,.1);color:var(--violet)}
+  .card.gr .ico{background:rgba(94,242,160,.1);color:var(--green)}
+
+  .kicker{font-family:var(--mono); font-size:12px; color:var(--dim); letter-spacing:1px}
+  .tag{font-family:var(--mono); font-size:11px; padding:2px 8px; border-radius:6px; border:1px solid var(--line2); color:var(--mut)}
+
+  /* ---------- THE SHIFT / VS ---------- */
+  .vs{display:grid; grid-template-columns:1fr 56px 1fr; gap:0; align-items:stretch; margin-top:22px}
+  @media(max-width:880px){.vs{grid-template-columns:1fr; gap:14px}}
+  .vs .col{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px}
+  .vs .col.before{border-color:rgba(255,122,122,.25)}
+  .vs .col.after{border-color:rgba(94,242,160,.28)}
+  .vs h3 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;vertical-align:middle}
+  .vs .arrow{display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:26px}
+  @media(max-width:880px){.vs .arrow{transform:rotate(90deg)}}
+  .vs ul{margin:12px 0 0;padding-left:18px;color:var(--mut);font-size:14.5px}
+  .vs li{margin:7px 0}
+
+  /* ---------- TWO LAWS ---------- */
+  .laws{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+  @media(max-width:880px){.laws{grid-template-columns:1fr}}
+  .law{background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:26px 28px;position:relative;overflow:hidden}
+  .law::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cyan)}
+  .law.two::before{background:var(--violet)}
+  .law .num{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--cyan)}
+  .law.two .num{color:var(--violet)}
+  .law h3{font-size:22px;margin:8px 0 6px}
+  .law p{font-size:15px;color:var(--mut);margin:10px 0 0}
+  .law p b{color:var(--ink)}
+  .law .epi{font-family:var(--mono);font-size:13px;color:var(--dim);margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+
+  /* ---------- FLOWCHART ---------- */
+  .flow{margin-top:26px;border:1px solid var(--line2);border-radius:20px;
+    background:linear-gradient(180deg,rgba(79,214,255,.04),rgba(169,139,255,.04));position:relative;padding:30px 26px 26px}
+  .flow .band-label{position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    font-family:var(--mono);font-size:12px;letter-spacing:3px;color:#04050d;font-weight:700;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));padding:5px 18px;border-radius:999px}
+  .flow .band-note{text-align:center;font-size:13px;color:var(--mut);margin:0 0 22px}
+  /* phase rail */
+  .rail{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .rphase{background:var(--panel2);border:1px solid var(--line2);border-radius:13px;padding:14px 22px;text-align:center;min-width:120px}
+  .rphase .pk{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:1px}
+  .rphase .pn{font-weight:780;color:#fff;font-size:17px;letter-spacing:1px;margin-top:3px}
+  .rphase.plan{border-color:rgba(79,214,255,.4)} .rphase.plan .pn{color:var(--cyan)}
+  .rphase.exec{border-color:rgba(255,209,102,.4)} .rphase.exec .pn{color:var(--gold)}
+  .rphase.ship{border-color:rgba(94,242,160,.45)} .rphase.ship .pn{color:var(--green)}
+  .rarrow{color:var(--cyan);font-size:22px;font-weight:700}
+  .gate{position:relative;width:118px;height:118px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;text-align:center}
+  .gate .dia{position:absolute;inset:14px;background:var(--panel2);border:1px solid var(--violet);transform:rotate(45deg);border-radius:10px}
+  .gate .gt{position:relative;font-size:11px;color:var(--ink);line-height:1.3;padding:0 6px;z-index:2}
+  .gate .gt b{color:var(--violet);font-family:var(--mono);font-size:13px;display:block;margin-bottom:2px}
+  .loopback{margin:18px 0 4px;text-align:center;font-family:var(--mono);font-size:12.5px;color:var(--amber);
+    border:1px dashed rgba(255,180,84,.4);border-radius:10px;padding:9px 14px;display:inline-block;
+    position:relative;left:50%;transform:translateX(-50%)}
+  .loopback b{color:var(--red)}
+  /* escalation ladder */
+  .ladder-h{text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--mut);margin:30px 0 4px;text-transform:uppercase}
+  .ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;align-items:stretch}
+  @media(max-width:880px){.ladder{grid-template-columns:1fr}}
+  .rung{border-radius:14px;padding:18px 20px;position:relative;border:1px solid var(--line)}
+  .rung .lvl{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:1px}
+  .rung .rt{font-weight:740;color:#fff;font-size:15.5px;margin:6px 0 4px}
+  .rung .rd{font-size:13px;color:var(--mut)}
+  .rung.l0{background:rgba(20,24,44,.4);border-color:rgba(120,140,255,.1);opacity:.62}
+  .rung.l0 .lvl{color:var(--dim)} .rung.l0 .rt{color:var(--mut)}
+  .rung.l0 .warn{font-family:var(--mono);font-size:11px;color:var(--red);margin-top:8px;display:block}
+  .rung.l1{background:rgba(79,214,255,.07);border-color:rgba(79,214,255,.32)}
+  .rung.l1 .lvl{color:var(--cyan)}
+  .rung.l2{background:rgba(255,107,214,.08);border-color:rgba(255,107,214,.36)}
+  .rung.l2 .lvl{color:var(--magenta)}
+  .rung .climb{position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--cyan);font-size:18px;font-weight:700;z-index:3}
+  @media(max-width:880px){.rung .climb{display:none}}
+  .ladder-cap{text-align:center;font-size:13.5px;color:var(--mut);margin-top:18px;max-width:760px;margin-left:auto;margin-right:auto}
+  .ladder-cap b{color:var(--ink)}
+
+  /* ---------- TAXONOMY TABLE ---------- */
+  .taxwrap{margin-top:22px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
+  .taxscroll{overflow-x:auto}
+  table.tax{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
+  table.tax th,table.tax td{text-align:left;padding:12px 16px;border-bottom:1px solid rgba(120,140,255,.08);vertical-align:top}
+  table.tax thead th{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--cyan);background:rgba(79,214,255,.06);position:sticky;top:0;border-bottom:1px solid var(--line2)}
+  table.tax tbody tr:hover{background:rgba(120,140,255,.05)}
+  table.tax .role{font-weight:700;color:#fff;white-space:nowrap}
+  table.tax .role .rk{display:block;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--dim);white-space:normal}
+  table.tax td.iso{color:var(--mut);font-style:italic}
+  table.tax td.iso.none{color:var(--dim);font-style:normal}
+  .tier{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap;display:inline-block}
+  .tier.opus{background:rgba(169,139,255,.14);color:var(--violet);border:1px solid rgba(169,139,255,.3)}
+  .tier.step{background:rgba(139,149,189,.12);color:var(--mut);border:1px solid var(--line2)}
+  .tier.mand{background:rgba(255,209,102,.14);color:var(--gold);border:1px solid rgba(255,209,102,.3)}
+  table.tax tr.sup td{border-top:1px solid var(--line2)}
+  table.tax tr.sup .role{color:var(--magenta)}
+  .taxnote{font-size:13px;color:var(--mut);padding:14px 18px;background:rgba(169,139,255,.05);border-top:1px solid var(--line)}
+  .taxnote b{color:var(--ink)}
+
+  /* ---------- DISPATCH ANATOMY ---------- */
+  .anat{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:22px;align-items:start}
+  @media(max-width:880px){.anat{grid-template-columns:1fr}}
+  .dispatch{font-family:var(--mono);font-size:12.5px;background:rgba(4,6,16,.7);border:1px solid var(--line2);
+    border-radius:13px;padding:18px 18px;color:var(--mut);overflow-x:auto;line-height:1.7}
+  .dispatch .h{color:var(--cyan);font-weight:700}
+  .dispatch .s{color:var(--violet)}
+  .dispatch .v{color:var(--gold)}
+  .dispatch .x{color:var(--red)}
+  .dispatch .c{color:var(--dim)}
+  .anat ul{margin:0;padding-left:18px}
+  .anat li{margin:9px 0;font-size:14.5px;color:var(--mut)}
+  .anat li b{color:var(--ink)}
+
+  /* ---------- CONVERGENCE METER ---------- */
+  .meter{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  @media(max-width:680px){.meter{grid-template-columns:1fr}}
+  .mbox{border-radius:13px;padding:18px;border:1px solid var(--line);background:var(--panel);text-align:center}
+  .mbox.cv{border-color:rgba(94,242,160,.35)} .mbox.pt{border-color:rgba(255,180,84,.35)} .mbox.dv{border-color:rgba(255,122,122,.3)}
+  .mbox .big{font-family:var(--mono);font-size:30px;font-weight:780}
+  .mbox.cv .big{color:var(--green)} .mbox.pt .big{color:var(--amber)} .mbox.dv .big{color:var(--red)}
+  .mbox .lb{font-weight:700;color:#fff;margin-top:4px}
+  .mbox .ds{font-size:12.5px;color:var(--mut);margin-top:4px}
+
+  /* ---------- LEDGER ---------- */
+  .ledger{font-family:var(--mono);font-size:13px;background:rgba(4,6,16,.72);border:1px solid var(--line2);
+    border-radius:13px;padding:6px 0;margin-top:8px;overflow:hidden}
+  .lrow{padding:11px 18px;border-bottom:1px solid rgba(120,140,255,.08);display:block}
+  .lrow:last-child{border-bottom:none}
+  .lid{color:var(--dim)}
+  .lau{font-weight:700}
+  .lau.sh{color:var(--magenta)} .lau.ex{color:var(--cyan)} .lau.sr{color:var(--violet)}
+  .lty{font-weight:700;padding:1px 7px;border-radius:5px;font-size:11px;margin:0 6px}
+  .lty.steer{background:rgba(255,209,102,.14);color:var(--gold)}
+  .lty.block{background:rgba(255,122,122,.16);color:var(--red)}
+  .lty.ack{background:rgba(94,242,160,.14);color:var(--green)}
+  .lty.defer{background:rgba(169,139,255,.14);color:var(--violet)}
+  .lty.obs{background:rgba(139,149,189,.14);color:var(--mut)}
+  .lty.esc{background:rgba(79,214,255,.14);color:var(--cyan)}
+  .lbody{color:var(--mut);margin-top:5px;line-height:1.5}
+  .lbody b{color:var(--ink)}
+  .marktypes{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .marktypes .mt{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border-radius:7px;border:1px solid var(--line2)}
+
+  /* ---------- LOOP DIAGRAM ---------- */
+  .loop-stage{display:flex;gap:14px;align-items:flex-start;margin-top:14px;background:var(--panel);
+    border:1px solid var(--line);border-radius:13px;padding:16px 18px}
+  .loop-stage .n{font-family:var(--mono);font-size:20px;font-weight:780;color:var(--cyan);min-width:48px}
+  .loop-stage h3{font-size:16px;margin-bottom:3px}
+  .loop-stage p{margin:0;font-size:14px;color:var(--mut)}
+  .loop-stage .gate-pill{font-family:var(--mono);font-size:11.5px;color:var(--green);margin-top:6px;display:inline-block;
+    border:1px solid rgba(94,242,160,.3);border-radius:6px;padding:2px 8px}
+  .loop-stage.star{border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.05)}
+  .loop-stage.star .n{color:var(--gold)}
+
+  /* ---------- CALLOUT ---------- */
+  .callout{border-left:3px solid var(--violet);background:rgba(169,139,255,.07);border-radius:0 12px 12px 0;
+    padding:16px 20px;margin-top:20px;color:var(--ink)}
+  .callout.cy{border-color:var(--cyan);background:rgba(79,214,255,.06)}
+  .callout.gr{border-color:var(--green);background:rgba(94,242,160,.06)}
+  .callout.am{border-color:var(--amber);background:rgba(255,180,84,.06)}
+  .callout .t{font-weight:700;color:#fff;display:block;margin-bottom:4px}
+  .callout p{margin:6px 0 0;font-size:14.5px;color:var(--mut)}
+
+  /* ---------- SIDEBAR (seven round) ---------- */
+  .sidebar{margin-top:20px;border:1px dashed var(--line2);border-radius:14px;padding:18px 20px;background:rgba(8,11,28,.5)}
+  .sidebar h3{font-size:15px;color:var(--cyan)}
+  .sidebar ol{margin:10px 0 0;padding-left:20px;color:var(--mut);font-size:13.5px}
+  .sidebar li{margin:5px 0}
+  .sidebar li b{color:var(--ink)}
+
+  /* ---------- GAUNTLET ---------- */
+  .gauntlet{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .gstep{flex:1 1 150px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;position:relative}
+  .gstep .gk{font-family:var(--mono);font-size:11px;color:var(--gold)}
+  .gstep .gt2{font-weight:700;color:#fff;font-size:14px;margin:4px 0 3px}
+  .gstep .gd{font-size:12.5px;color:var(--mut)}
+
+  /* ---------- CASE STUDY ---------- */
+  .case{margin-top:22px;border:1px solid var(--line2);border-radius:18px;padding:28px 30px;
+    background:linear-gradient(180deg,rgba(255,107,214,.05),rgba(79,214,255,.04));position:relative}
+  .case .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .case .pill{font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:4px 11px;border-radius:999px;
+    border:1px solid var(--line2);color:var(--mut)}
+  .case h3{font-size:20px}
+  .case p{font-size:15.5px;color:var(--ink);margin-top:12px;line-height:1.75}
+  .case p b{color:#fff}
+  .case .punch{font-weight:700;color:var(--magenta)}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:60px;border-top:1px solid var(--line);padding:34px 0 70px;text-align:center;color:var(--dim);font-size:13px}
+  footer .ess{max-width:800px;margin:0 auto 26px;color:var(--mut);font-size:15px;line-height:1.7;text-align:left;
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 28px}
+  footer .ess b{color:var(--ink)}
+  .reveal{opacity:0;transform:translateY(18px);transition:.7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">◇ <b>THE ORCHESTRATION METHOD</b></div>
+    <div class="links" id="navlinks">
+      <a href="#laws">Two Laws</a>
+      <a href="#flow">Flowchart</a>
+      <a href="#layers">Two Layers</a>
+      <a href="#taxonomy">Agent Types</a>
+      <a href="#dispatch">The Dispatch</a>
+      <a href="#convergence">Convergence</a>
+      <a href="#audit">Audit Stack</a>
+      <a href="#dual">Dual Orchestration</a>
+      <a href="#invariants">Invariants</a>
+      <a href="#build">When to Build</a>
+      <a href="#loop">The Clean Loop</a>
+      <a href="#case">One Example</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="orbit-emblem" aria-hidden="true">
+      <svg viewBox="0 0 140 140" width="140" height="140">
+        <defs>
+          <radialGradient id="core" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fff"/><stop offset="60%" stop-color="#ffd166"/><stop offset="100%" stop-color="#ff6bd6"/>
+          </radialGradient>
+        </defs>
+        <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(79,214,255,.35)" stroke-width="1"/>
+        <circle cx="70" cy="70" r="44" fill="none" stroke="rgba(169,139,255,.35)" stroke-width="1"/>
+        <circle cx="70" cy="70" r="30" fill="none" stroke="rgba(255,107,214,.3)" stroke-width="1"/>
+        <circle cx="70" cy="70" r="9" fill="url(#core)"/>
+        <circle cx="128" cy="70" r="4" fill="#4fd6ff"/>
+        <circle cx="70" cy="26" r="3.5" fill="#a98bff"/>
+        <circle cx="40" cy="70" r="3" fill="#ff6bd6"/>
+        <circle cx="70" cy="114" r="3" fill="#5ef2a0"/>
+      </svg>
+    </div>
+    <span class="badge">◆ A field manual for orchestrated AI work</span>
+    <h1>The Orchestration Method</h1>
+    <p class="sub"><b>Orchestrate, don't carry the load.</b> A single person directs a manager agent that conducts swarms of specialized sub-agents — to plan and build work too large for any one mind to hold — and converges on truth from many independent angles.</p>
+    <p class="shift">The shift: from <b>one agent grinding a task forward</b> and leaving gaps — to <b>one agent conducting many</b> and converging on what's true.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="n cy">2</div><div class="l">laws · orchestrate · converge-then-build</div></div>
+      <div class="stat"><div class="n mg">3</div><div class="l">rungs · solo → waves → dual</div></div>
+      <div class="stat"><div class="n gd">N</div><div class="l">independent angles before you ship</div></div>
+    </div>
+    <p class="byline" style="margin-top:22px;font-size:13.5px;color:var(--mut);letter-spacing:.2px">Created May 2026 by <b style="color:var(--ink)">Tom</b> <span style="color:var(--dim)">(TomaDev23)</span>, with <b style="color:var(--ink)">Claude (Opus 4.7)</b> as co-author · MIT License</p>
+  </div>
+</header>
+
+<!-- ============ THE TWO LAWS ============ -->
+<section id="laws">
+  <div class="wrap">
+    <p class="eyebrow reveal">The foundation</p>
+    <h2 class="reveal">Two laws hold the whole method up.</h2>
+    <p class="lead reveal">Everything that follows — the flowchart, the agent types, the audits — is machinery for obeying these two laws. Read nothing else and you still have the method.</p>
+
+    <div class="laws">
+      <div class="law one reveal">
+        <div class="num">LAW 1</div>
+        <h3>Orchestrate, don't carry the load.</h3>
+        <p>The manager agent spends its limited attention <b>orchestrating, aggregating, digesting, and monitoring</b> — never delivering the work directly. It composes briefings, fires sub-agents, folds their results, and watches for drift. The actual studying, deriving, and building happens in <b>fresh sub-agent contexts</b>, so the manager never fills up its own mind with raw work content.</p>
+        <p class="epi">"What cannot be held in mind cannot be reasoned over." Context is working capital — spend it conducting, not consuming.</p>
+      </div>
+      <div class="law two reveal">
+        <div class="num">LAW 2</div>
+        <h3>Plan to convergence before you execute.</h3>
+        <p>You never jump straight to building. You <b>plan until many independent angles agree</b> — multi-dimensional convergence — and only then do you execute. And here is the part people miss: <b>the same orchestrator mode governs both phases.</b> The execute phase runs the identical wave method as the plan phase — typed sub-agents, audits, convergence checks — not a sudden switch into "just code it now."</p>
+        <p class="epi">Plan and build are two stretches of one continuous discipline, not two different modes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE FLOWCHART (CENTERPIECE) ============ -->
+<section id="flow">
+  <div class="wrap">
+    <p class="eyebrow reveal">The centerpiece</p>
+    <h2 class="reveal">How the manager progresses — one mode, two phases, three rungs.</h2>
+    <p class="lead reveal">This single diagram is the method in motion. The outer band is the constant: the manager never leaves orchestrator mode. Inside it, work flows through a planning phase and an execution phase, each guarded by a gate. And at every point, the manager works at one of three levels of orchestration depth.</p>
+
+    <div class="flow reveal">
+      <div class="band-label">ORCHESTRATOR MODE — never exited</div>
+      <p class="band-note">The same mode wraps planning and execution. You don't drop out of it to "just build."</p>
+
+      <!-- phase rail -->
+      <div class="rail">
+        <div class="rphase plan"><div class="pk">PHASE 1</div><div class="pn">PLAN</div></div>
+        <span class="rarrow">→</span>
+        <div class="gate">
+          <div class="dia"></div>
+          <div class="gt"><b>◇ GATE</b>converged across<br/>N independent angles?</div>
+        </div>
+        <span class="rarrow">→</span>
+        <div class="rphase exec"><div class="pk">PHASE 2</div><div class="pn">EXECUTE</div></div>
+        <span class="rarrow">→</span>
+        <div class="gate">
+          <div class="dia"></div>
+          <div class="gt"><b>◇ GATE</b>verified /<br/>audited?</div>
+        </div>
+        <span class="rarrow">→</span>
+        <div class="rphase ship"><div class="pk">DONE</div><div class="pn">SHIP</div></div>
+      </div>
+
+      <div style="text-align:center">
+        <span class="loopback">⟲ failed gate loops back &mdash; <b>a question is a design mistake</b> → re-investigate the design</span>
+      </div>
+
+      <!-- escalation ladder -->
+      <div class="ladder-h">↑ the zoom-in: how the manager works inside BOTH phases — escalating orchestration depth ↑</div>
+      <div class="ladder">
+        <div class="rung l0 reveal">
+          <div class="lvl">L0 — anti-pattern</div>
+          <div class="rt">Solo agent carries the load</div>
+          <div class="rd">One agent does the work in its own context, runs forward, and stops. Looks fast.</div>
+          <span class="warn">⚠ leaves silent gaps &amp; potholes — nobody grades the homework</span>
+          <span class="climb">→</span>
+        </div>
+        <div class="rung l1 reveal">
+          <div class="lvl">L1 — the method</div>
+          <div class="rt">Manager orchestrates waves of typed sub-agents</div>
+          <div class="rd">Scouts, workers, mathematicians, auditors — fired in waves, each result folded and audited by a different agent.</div>
+          <span class="climb">→</span>
+        </div>
+        <div class="rung l2 reveal">
+          <div class="lvl">L2 — the ultimate form</div>
+          <div class="rt">Paired orchestration → a 3-agent family</div>
+          <div class="rd">An <b style="color:var(--cyan)">Executor</b> (the only one that edits &amp; commits) + a peer <b style="color:var(--magenta)">Shadow</b> (verifies live, can also carry load), coordinating through a shared <b style="color:var(--magenta)">Coordination Ledger</b> — backstopped by a <b style="color:var(--violet)">Senior</b> across context hand-offs.</div>
+        </div>
+      </div>
+      <p class="ladder-cap reveal">Same method, escalating power — you <b>climb the ladder as the surface grows.</b> This is <em>not</em> about splitting work into parallel lanes; it is about the progression of orchestration <b>depth</b>. A tiny task lives at L0-done-carefully; a campaign earns L2.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TWO LAYERS ============ -->
+<section id="layers">
+  <div class="wrap">
+    <p class="eyebrow reveal">The brake</p>
+    <h2 class="reveal">Two layers: a mindset that's always on, machinery that fires on cue.</h2>
+    <p class="lead reveal">The method has a built-in brake so it never over-engineers a simple request. The disposition runs everywhere; the heavy machinery only fires for genuinely deep work.</p>
+    <div class="grid g2 reveal">
+      <div class="panel">
+        <span class="tag" style="color:var(--cyan);border-color:var(--line2)">LAYER 1 · always on</span>
+        <h3 style="margin-top:12px">The orchestrator mindset</h3>
+        <p class="muted small">Address every task <b style="color:var(--ink)">as an orchestrator, not a worker.</b> Use search-and-sample to find what matters; read a targeted slice, not a whole file, when a slice will do. <b style="color:var(--ink)">Aggregate and digest</b> rather than consume raw content. This needs no sub-agents at all — it is just how careful work is done, even on the smallest task.</p>
+      </div>
+      <div class="panel">
+        <span class="tag" style="color:var(--violet);border-color:var(--line2)">LAYER 2 · triggered</span>
+        <h3 style="margin-top:12px">The wave machinery</h3>
+        <p class="muted small">The full chain — <b style="color:var(--ink)">study → audit → plan → audit-the-plan → digest → audit-the-digest → execute → test → audit → audit-the-audit → adversarial → independent secondary audit</b> — fires only on an explicit trigger or on confirmed deep-scope work (and then only after surfacing the wave plan for a go/no-go).</p>
+      </div>
+    </div>
+    <div class="callout reveal">
+      <span class="t">The boundary — depth scales to scope</span>
+      <p>Simple tasks stay simple. You do <b>not</b> spawn a swarm to answer "what does this function mean?" or to make a single one-line edit. A single read, a single reply, a small bounded fix — those run directly with the Layer-1 mindset and nothing more. The machinery is reserved for campaigns, plans, investigations, and multi-surface changes. <b>When in doubt, surface a two-line wave plan and ask before firing.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AGENT-TYPE TAXONOMY ============ -->
+<section id="taxonomy">
+  <div class="wrap">
+    <p class="eyebrow reveal">The cast</p>
+    <h2 class="reveal">The agent-type taxonomy — who does what, and the rules that keep them honest.</h2>
+    <p class="lead reveal">A swarm is only as good as its role discipline. Each sub-agent is <b>typed</b> at dispatch: it gets a narrow job, an isolation rule that keeps it from contaminating other roles, and a model tier. (Throughout, a <b>seat</b> just means one such typed sub-agent instance doing one job.) The isolation rules are the load-bearing part — they are what make the audits independent and the math trustworthy.</p>
+
+    <div class="taxwrap reveal">
+      <div class="taxscroll">
+        <table class="tax">
+          <thead>
+            <tr><th>Role</th><th>What it does</th><th>Isolation rule</th><th>Model tier</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="role">Scout / Explorer</td><td>Reads the substrate (code, docs, data) and returns structured findings — not opinions.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Worker</td><td>Produces a concrete deliverable: a plan, a design, a report.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Mathematician</td><td>Derives and verifies formulas; runs throwaway prototypes to test them.</td><td class="iso">Math <b>never</b> shares a seat with code — settle the math first, in isolation.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Code-builder</td><td>Turns a settled plan into working code.</td><td class="iso">Receives settled math as input; does <b>not</b> re-derive it.</td><td><span class="tier opus">Opus</span> <span class="tier step">step-down OK (non-critical)</span></td></tr>
+            <tr><td class="role">Aggregator</td><td>Folds many outputs into one coherent surface.</td><td class="iso">Folds but <b>never decides</b> — it collates, it does not rule.</td><td><span class="tier step">regular tier OK</span></td></tr>
+            <tr><td class="role">Codebase-validator</td><td>Pins each claim to an exact <code>file:line</code> in the real source.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Independent auditor</td><td>Verifies a deliverable it did <b>not</b> write.</td><td class="iso">An author can never audit their own work.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Adversarial auditor<span class="rk">/ plan-breaker</span></td><td>Actively attacks the converged plan, hunting for what prior audits missed.</td><td class="iso">A <b>different framing</b> than every prior audit.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Alternative-design architect</td><td>Proposes a rival design as a sanity check on the chosen one.</td><td class="iso">Reads only the <b>final plan</b>, never the history that produced it.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Advisor</td><td>Axis-sliced review — examines exactly one concern at a time.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Audit-of-audit</td><td>Verifies that the audit itself was complete and well-scoped.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Independent secondary<span class="rk">/ cross-model voice</span></td><td>A fresh auditor with a <b>different framing</b> — sometimes a different model or tool entirely.</td><td class="iso"><b>Mandatory</b> after any planning or code work.</td><td><span class="tier opus">Opus</span> <span class="tier mand">/ other engine</span></td></tr>
+            <tr><td class="role">Roving specialist</td><td>Time-travel (re-walk history), plan-break, and rules/memory inspection.</td><td class="iso">Fired <b>alongside</b> the waves — not as a terminal stage.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr class="sup"><td class="role">Executor <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Runs the build; the <b>only</b> instance that edits the tree &amp; commits.</td><td class="iso">One editor — clobber-safe, clean commit trail.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr class="sup"><td class="role">Shadow <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Verifies the Executor's premises against source, live; can also carry scope / settle / verify load.</td><td class="iso">Touches nothing but the ledger — unless a declared co-build partition.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr class="sup"><td class="role">Senior <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Outgoing manager turned light-touch backstop; carries full history, steps in on escalation / disagreement / silence / unaudited commit.</td><td class="iso">Defers to the active pair; periodic ~20-min cadence.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Visualizer / author</td><td>Builds the visual or written artifact (like this page).</td><td class="iso none">—</td><td><span class="tier step">regular tier OK</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="taxnote">
+        <b>Model policy:</b> math, investigation, and planning are <b>always</b> on the top model (Opus). Mechanical work — aggregation, rewriting, folding — <em>may</em> step down a tier but prefers Opus. Only genuinely non-critical execution defers to a lower tier.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE DISPATCH ============ -->
+<section id="dispatch">
+  <div class="wrap">
+    <p class="eyebrow reveal">The unit of autonomy</p>
+    <h2 class="reveal">The dispatch — a complete briefing a stranger could run cold.</h2>
+    <p class="lead reveal">Autonomy lives here. Every sub-agent starts with <em>no memory of the conversation</em>. The reason the loop can run for a long stretch without the operator stepping in between stages is that each dispatch is <b>self-contained</b>: mission, verbatim invariants, the prior stage's output, hard rules, what not to touch, and the exact shape of the answer. A fresh agent needs nothing else to do the job correctly.</p>
+
+    <div class="anat">
+      <div class="dispatch reveal">
+<span class="c"># ── DISPATCH · STAGE 3 · PLAN ──</span>
+<span class="h">§0 MISSION FRAMING</span>     <span class="c">why this seat exists</span>
+<span class="h">§1 TASK INVARIANT</span>      <span class="c">echoed VERBATIM —</span>
+   <span class="v">"do not widen a guard; fix the input"</span>
+   <span class="c">…overrides any template default</span>
+<span class="s">§2 PRIOR-STAGE OUTPUT</span>   <span class="c">the studied substrate,</span>
+   <span class="c">pinned to exact file:line citations</span>
+<span class="s">§3 HARD RULES</span>          <span class="c">the guardrails</span>
+<span class="x">§4 FILES NOT TO TOUCH</span>   <span class="c">explicit do-not list</span>
+<span class="s">§5 REQUIRED RETURN SHAPE</span>
+   <span class="c">exact filename + numbered sections,</span>
+   <span class="c">so the next stage consumes it cleanly</span>
+<span class="s">§6 SEAT TYPE + MODEL TIER</span>
+      </div>
+      <ul class="reveal">
+        <li><b>Mission framing.</b> One paragraph on why this seat exists and what "done" looks like.</li>
+        <li><b>The task invariant, verbatim.</b> The non-negotiable rules are quoted word-for-word and override every template default — so intent can't drift through paraphrase.</li>
+        <li><b>The prior stage's output.</b> The studied substrate handed forward, pinned to exact <code>file:line</code> citations — the agent never picks its own inputs.</li>
+        <li><b>Hard rules + a "files not to touch" list.</b> The guardrails that keep a cold agent inside its lane.</li>
+        <li><b>The required return shape.</b> An exact filename and numbered sections, so the next stage can consume the result mechanically — no human re-typing.</li>
+        <li><b>Typed seat + model tier.</b> Which role it plays and on which model.</li>
+      </ul>
+    </div>
+    <div class="callout cy reveal">
+      <span class="t">Why this buys autonomy</span>
+      <p>Because every dispatch is a full cold-start briefing and stages <b>close internally on convergence</b> (an auditor's accept, not the operator's sign-off), the manager can fire a stage and step away. The operator <b>sets the pace</b> — which work fires and how much at once — but does not drive each individual step.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MULTI-DIMENSIONAL CONVERGENCE ============ -->
+<section id="convergence">
+  <div class="wrap">
+    <p class="eyebrow reveal">The core idea</p>
+    <h2 class="reveal">Multi-dimensional convergence — many angles, one answer.</h2>
+    <p class="lead reveal">This is the engine's heart. For each question, <b>independent voices investigate separately and never read each other</b> — like asking witnesses to describe a scene in isolation. A fresh synthesis seat then measures how much they agree. <b>Agreement, not authority, is what greenlights the next stage.</b></p>
+
+    <h3 class="reveal" style="margin-top:28px">The convergence meter</h3>
+    <p class="lead reveal" style="margin-top:8px">A synthesis seat (never one of the voices) tags each finding and issues a verdict (the bands below are illustrative, not a fixed contract):</p>
+    <div class="meter reveal">
+      <div class="mbox cv"><div class="big">≥ 80%</div><div class="lb">CONVERGE</div><div class="ds">The voices land together — promote with confidence.</div></div>
+      <div class="mbox pt"><div class="big">50–80%</div><div class="lb">PARTIAL</div><div class="ds">Real-but-missed items exist — a closer seat re-checks against the actual source.</div></div>
+      <div class="mbox dv"><div class="big">&lt; 50%</div><div class="lb">DIVERGE</div><div class="ds">The question itself is suspect — escalate it as a design problem.</div></div>
+    </div>
+
+    <div class="callout reveal">
+      <span class="t">The human's scarce contribution is doubt</span>
+      <p>An AI converges <b>confidently but shallowly</b> — and it will not doubt its own premise. It answers the question as asked. The single most valuable thing the human brings is <b>doubt</b>: the willingness to ask whether the premise was even right. So the rule is firm — <b>never "lock and move on" on first agreement within a single line of audit.</b> First convergence is the start of scrutiny, not the end of it.</p>
+    </div>
+
+    <div class="callout am reveal">
+      <span class="t">An unresolvable question is a symptom, not a matter of taste</span>
+      <p>When an item won't resolve — when the agents reach a forced pick with no evidenced winner — that is treated as a <b>symptom of a design mistake</b>, not as a judgment call to bounce up to the operator. The response is to <b>re-investigate the design</b> until the question dissolves, rather than make the human guess. Only what is truly irreducible ever reaches the operator, and it arrives as an evidenced pick-sheet on grounded footing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUDIT SUPERSTRUCTURE ============ -->
+<section id="audit">
+  <div class="wrap">
+    <p class="eyebrow reveal">Defense in depth</p>
+    <h2 class="reveal">The audit superstructure — and the standing watch.</h2>
+    <p class="lead reveal">A single audit has a single blind spot. So high-stakes work is checked from several deliberately different angles, and a trio of auditors rides along <em>every</em> wave watching for erosion.</p>
+
+    <div class="grid g2 reveal">
+      <div class="panel">
+        <h3>The layered audit chain</h3>
+        <ul class="anat" style="display:block;margin-top:10px">
+          <li><b>Primary independent audit</b> — framing A; verifies the deliverable against the source. The author never audits their own work.</li>
+          <li><b>Adversarial audit</b> — framing B; hunts what the primary would <em>not</em> catch: cherry-picking, hidden assumptions, framing drift.</li>
+          <li><b>Audit-of-audit</b> — confirms the audit itself was complete and well-scoped.</li>
+          <li><b>Independent secondary</b> — <b style="color:var(--gold)">mandatory</b> after planning or code; fresh context, a <em>different</em> framing — sometimes a different model or engine entirely.</li>
+          <li><b>Roving checks</b> — time-travel, plan-break, and rules/memory probes, fired <em>alongside</em> the waves.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>The standing watch — re-run every wave</h3>
+        <p class="muted small">Three auditors are re-invoked on every single wave, doing nothing but protecting the truth from erosion. Folds are <b style="color:var(--ink)">additive</b> — they add without dropping.</p>
+        <div class="grid" style="gap:10px;margin-top:14px">
+          <div class="card gd" style="padding:14px 16px"><span class="ico">REFERENCE-ANCHOR</span><p>Checks each wave's output against the frozen reference set of locked premises.</p></div>
+          <div class="card mg" style="padding:14px 16px"><span class="ico">VOCABULARY-DRIFT</span><p>Catches a new name invented for an existing concept before it splits the work.</p></div>
+          <div class="card cy" style="padding:14px 16px"><span class="ico">NOTHING-LOST</span><p>Diffs against the previous version so no load-bearing item is silently dropped.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout gr reveal">
+      <span class="t">The executable-prototype gate</span>
+      <p>Before any real change, a <b>throwaway prototype</b> is built against a synthetic case. Its job is not to work — its job is to <b>force hidden specification ambiguities to surface mechanically.</b> Every "wait, which behavior did we mean here?" the prototype exposes is value extracted. <b>Finding zero ambiguities is itself a red flag</b> — it usually means the prototype wasn't probing hard enough, not that the spec was perfect.</p>
+    </div>
+
+    <div class="sidebar reveal">
+      <h3>Sidebar — the seven-round sliced audit</h3>
+      <p class="muted small" style="margin:8px 0 0">For the highest-stakes deliverables, a single audit becomes a seven-round pattern:</p>
+      <ol>
+        <li><b>Worker</b> produces the deliverable.</li>
+        <li><b>Layer-sliced auditors</b> each verify one horizontal layer.</li>
+        <li><b>Axis-sliced advisors</b> each review one vertical concern.</li>
+        <li><b>Aggregation</b> folds them — and <b>never collapses dissent</b> into false agreement.</li>
+        <li><b>Audit-the-audit</b> checks the aggregation was complete.</li>
+        <li><b>Additive fold</b> merges accepted findings without dropping anything.</li>
+        <li><b>Delivery-verify</b> confirms the final artifact matches the contract.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DUAL ORCHESTRATION ============ -->
+<section id="dual">
+  <div class="wrap">
+    <p class="eyebrow reveal">Layer 2.5 · the ultimate form</p>
+    <h2 class="reveal">Paired orchestration — cooperation under one shared ledger.</h2>
+    <p class="lead reveal">For the largest builds, two <b>peer</b> managers run at once — and the names carry the contract. The <b style="color:var(--cyan)">Executor</b> runs the campaign and is the <b>only</b> instance that edits the tree or commits. The <b style="color:var(--magenta)">Shadow</b> is not a sub-agent — it is a peer, running its own thread and its own waves, that reads the source fresh and challenges whether the Executor's <em>premises</em> are actually true, <b>while the work is still steerable</b> — and touches nothing but the ledger. The Shadow can even be a different model or engine, for a genuinely independent framing. They speak only through one append-only, author-tagged <b>Coordination Ledger</b>, and coordination flows <b>both ways</b> — this is cooperation, not surveillance.</p>
+
+    <div class="marktypes reveal">
+      <span class="mt" style="color:var(--mut)">OBSERVATION · no ack needed</span>
+      <span class="mt" style="color:var(--gold)">STEER · advisory, must respond</span>
+      <span class="mt" style="color:var(--red)">BLOCKING · halts that unit</span>
+      <span class="mt" style="color:var(--green)">ACK · acted on it</span>
+      <span class="mt" style="color:var(--violet)">DEFER · parked with reason</span>
+      <span class="mt" style="color:var(--cyan)">ESCALATE · to the operator</span>
+    </div>
+
+    <p class="lead reveal" style="margin-top:18px;font-size:15px">The contract is <b>advisory + mandatory-ack</b>: a mark is advisory, but <b>no peer may silently ignore one.</b> Every mark must be met with an <b>ACK-and-act</b>, a <b>DEFER-with-reason</b>, or an <b>ESCALATE</b>. Unresolved <b>BLOCKING</b> marks escalate straight to the operator. An illustrative exchange:</p>
+
+    <div class="ledger reveal">
+      <div class="lrow">
+        <span class="lid">#L-014</span> <span class="lty obs">OBSERVATION</span> <span class="lau sh">[SHADOW]</span>
+        <div class="lbody">Re-walked the spec from source. The normalization divisor in §4 is described two different ways across the plan and the design doc — flagging for awareness before it hardens.</div>
+      </div>
+      <div class="lrow">
+        <span class="lid">#L-015</span> <span class="lty steer">STEER</span> <span class="lau sh">[SHADOW]</span>
+        <div class="lbody"><b>TIME-CRITICAL.</b> The dispatch pins a fixed divisor, but the architecture says full-scale should be measured empirically per stratum. A fixed value sits below the real scale — the factor would pin to its neutral value and <b>silently re-create the exact flaw this work exists to remove.</b> Don't lock the fixed divisor.</div>
+      </div>
+      <div class="lrow">
+        <span class="lid">#L-016</span> <span class="lty ack">ACK</span> <span class="lau ex">[EXEC]</span>
+        <div class="lbody">Your catch <b>converges with my own seat's independent verdict</b> — triangulation across two voices. <b>RESOLUTION ADOPTED:</b> empirical per-stratum scale. The fixed divisor is dead.</div>
+      </div>
+      <div class="lrow">
+        <span class="lid">#L-021</span> <span class="lty defer">DEFER</span> <span class="lau ex">[EXEC]</span>
+        <div class="lbody">Logging-format nit acknowledged but parked — out of scope for this unit; filed for the cleanup pass with a tracking note. Reason recorded so it isn't lost.</div>
+      </div>
+      <div class="lrow">
+        <span class="lid">#L-027</span> <span class="lty block">BLOCKING</span> <span class="lau sh">[SHADOW]</span>
+        <div class="lbody">Two source modules disagree on the contract this unit depends on. Cannot verify either reading is safe. <b>Halting this unit</b> — needs an operator call on which contract is canonical.</div>
+      </div>
+      <div class="lrow">
+        <span class="lid">#L-028</span> <span class="lty esc">ESCALATE</span> <span class="lau ex">[EXEC]</span>
+        <div class="lbody">Confirmed — the disagreement is real and I can't resolve it from source. <b>Escalating #L-027 to the operator</b> with both readings laid out and the safer default recommended.</div>
+      </div>
+    </div>
+
+    <div class="grid g2 reveal" style="margin-top:22px">
+      <div class="panel">
+        <span class="tag" style="color:var(--violet);border-color:var(--line2)">THE 3-AGENT FAMILY · the Senior backstop</span>
+        <h3 style="margin-top:12px">When context thins, the role outlives the instance</h3>
+        <p class="muted small">A manager's context window is finite. When it runs low, it hands its <b style="color:var(--ink)">active</b> load to a fresh same-role successor — cold-started from a handover doc plus the ledger — and the outgoing instance becomes the <b style="color:var(--violet)">Senior</b>: a light-touch backstop that carries the full history at near-zero ongoing cost. The Senior <b>defers to the active pair</b> and steps in only on a trigger — an <b>escalation</b>, a <b>peer disagreement</b>, an active agent <b>gone quiet</b>, or an <b>unaudited commit</b> — on a periodic (~20-min) cadence. Roles persist across instances, so the run becomes a three-agent family: <b style="color:var(--cyan)">Executor</b> + active <b style="color:var(--magenta)">Shadow</b> + <b style="color:var(--violet)">Senior</b>.</p>
+      </div>
+      <div class="panel">
+        <span class="tag" style="color:var(--gold);border-color:var(--line2)">DYNAMIC LOAD-SHARING · still exploring</span>
+        <h3 style="margin-top:12px">The Shadow can carry real load — safely</h3>
+        <p class="muted small">The Shadow need not <em>only</em> audit. The collision-safe default splits work by <b>phase</b>: the <b style="color:var(--magenta)">Shadow</b> owns <b style="color:var(--ink)">scope · settle · verify</b> (next-chapter file-disjointness maps, math-seam settling, spec drafting, deep verification, decision-package prep); the <b style="color:var(--cyan)">Executor</b> owns <b style="color:var(--ink)">build · commit</b>. If the Shadow also <em>edits</em> the tree — true co-build — that relaxes the one-editor rule, and is allowed only with <b>all four</b> guards: a declared disjoint file-partition, a single committer, operator confirmation, and an independent verifier of anything the Shadow authored.</p>
+      </div>
+    </div>
+
+    <p class="lead reveal" style="margin-top:18px;font-size:15px">The Senior speaks in the same ledger, in the same marks — here, a periodic sweep catches a commit that slipped through unaudited:</p>
+    <div class="ledger reveal">
+      <div class="lrow">
+        <span class="lid">#L-033</span> <span class="lty steer">STEER</span> <span class="lau sr">[SENIOR]</span>
+        <div class="lbody">Periodic sweep. The commit at #L-031 landed with no audit mark against it, and the Shadow has been quiet for two cycles. <b>Hold further commits</b> until the Shadow confirms it verified #L-031 — or the operator clears it.</div>
+      </div>
+      <div class="lrow">
+        <span class="lid">#L-034</span> <span class="lty ack">ACK</span> <span class="lau ex">[EXEC]</span>
+        <div class="lbody">Acknowledged — holding the line. Shadow, please confirm #L-031 against source.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INVARIANTS ============ -->
+<section id="invariants">
+  <div class="wrap">
+    <p class="eyebrow reveal">Why it holds</p>
+    <h2 class="reveal">The load-bearing invariants.</h2>
+    <p class="lead reveal">Cooperation between agents is only safe because a few rules never bend. These are what let two or three peer instances move fast on one codebase without clobbering each other — or shipping a bug a single confident pass called &ldquo;sound.&rdquo;</p>
+    <div class="grid g2 reveal">
+      <div class="card cy" style="padding:16px 18px"><span class="ico">ONE EDITOR · NON-COLLISION</span><p>Exactly one instance edits the tree and commits. That single rule buys clobber-safety and a clean, linear commit trail — you always know which voice authored what.</p></div>
+      <div class="card mg" style="padding:16px 18px"><span class="ico">THE SECOND FRAMING IS THE VALUE</span><p>An independent framing catches what one framing — or the author — cannot. In one real run a cross-file key-mismatch sailed past the per-file read, but the holistic secondary audit, corroborated by the shadow, caught it before it shipped.</p></div>
+      <div class="card gd" style="padding:16px 18px"><span class="ico">BUILD BEHIND GATES</span><p>Work is built <b>uncommitted and reversible</b>, gated on a secondary audit plus the operator's sign-off. Nothing is saved until two independent sets of eyes and the operator agree — so a missed bug never ships.</p></div>
+      <div class="card cy" style="padding:16px 18px"><span class="ico">FILE-DISJOINT PARALLEL · ONE TREE</span><p>Parallel work units are partitioned by file in the one main tree, each committed independently — so any held or gated unit stays reversible. No worktrees, no invented isolation.</p></div>
+      <div class="card mg" style="padding:16px 18px"><span class="ico">OPERATOR-RESERVED DECISIONS</span><p>Choices that belong to the operator surface <b>with evidence, at their point of evidence.</b> Agents prepare and <em>float</em> them — they never self-sign the operator's doubt-gates.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHEN TO BUILD ============ -->
+<section id="build">
+  <div class="wrap">
+    <p class="eyebrow reveal">The discipline that matters most</p>
+    <h2 class="reveal">When are you allowed to build?</h2>
+    <p class="lead reveal">The single most important judgment in the whole method: a plan is not build-ready because it is <em>written</em>. It is build-ready because it has <b>survived independent attempts to break it.</b> You build only after the converged plan clears the full gauntlet.</p>
+    <div class="gauntlet reveal">
+      <div class="gstep"><div class="gk">GATE 1</div><div class="gt2">Independent audit</div><div class="gd">A different agent verifies the plan against source.</div></div>
+      <div class="gstep"><div class="gk">GATE 2</div><div class="gt2">Adversarial attack</div><div class="gd">A new framing actively tries to break it.</div></div>
+      <div class="gstep"><div class="gk">GATE 3</div><div class="gt2">Differently-framed secondary</div><div class="gd">Mandatory — a fresh voice, often a different model/engine.</div></div>
+      <div class="gstep"><div class="gk">GATE 4</div><div class="gt2">Roving checks</div><div class="gd">Time-travel, plan-break, rules/memory probes.</div></div>
+      <div class="gstep"><div class="gk">GATE 5</div><div class="gt2">Nothing-lost pass</div><div class="gd">Confirm no load-bearing item was dropped.</div></div>
+      <div class="gstep"><div class="gk">GATE 6</div><div class="gt2">Prototype-backed</div><div class="gd">Ideally a throwaway prototype has surfaced the spec ambiguities.</div></div>
+    </div>
+    <div class="callout reveal">
+      <span class="t">Real autonomy vs. the illusion of progress</span>
+      <p>A single confident forward-pass <b>covers distance</b> — it produces output fast and feels like progress. But it leaves <b>gaps and potholes</b> nobody graded. Real autonomy is the opposite: slower to start, because the plan must survive being attacked from many sides first — but what ships has been seen from every angle that matters. The cost of the gauntlet is paid once, up front; the cost of a silent gap is paid forever, downstream.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE CLEAN LOOP ============ -->
+<section id="loop">
+  <div class="wrap">
+    <p class="eyebrow reveal">The reusable shape</p>
+    <h2 class="reveal">The clean loop — portable to any deep work.</h2>
+    <p class="lead reveal">Strip away every domain-specific detail and this is the shape that remains. Each stage <b>closes on convergence</b> and feeds the next; the operator appears mainly at the gate marked ★.</p>
+
+    <div class="loop-stage reveal"><div class="n">0</div><div><h3>Study</h3><p>Independent voices read the substrate and return structured findings — never opinions.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Audit-of-study</h3><p>A different agent verifies the findings are grounded and complete.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">1</div><div><h3>Plan</h3><p>Author the change against the studied substrate.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Audit-of-plan</h3><p>A different agent audits the plan; the independent secondary is mandatory.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">2</div><div><h3>Digest</h3><p>Fold many outputs into one surface — additively, dropping nothing.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Audit-of-digest</h3><p>Confirm the fold preserved every load-bearing item.</p></div></div>
+    <div class="loop-stage star reveal"><div class="n">★</div><div><h3>Converge</h3><p>A fresh seat measures agreement: CONVERGE / PARTIAL / DIVERGE. Disagreement routes to a closer or a redesign — and only the truly irreducible residue reaches the operator.</p><span class="gate-pill" style="color:var(--gold);border-color:rgba(255,209,102,.3)">human appears here — and essentially only here</span></div></div>
+    <div class="loop-stage reveal"><div class="n">3</div><div><h3>Execute</h3><p>Build — under the identical orchestrator mode as the plan phase.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Test &amp; audit-of-execution</h3><p>Verify the build, then audit the verification.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">4</div><div><h3>Audit-of-audit → adversarial → independent secondary</h3><p>Confirm the audit was complete, attack from a new angle, then bring a differently-framed outside voice.</p></div></div>
+    <div class="loop-stage reveal"><div class="n">5</div><div><h3>Fold &amp; hand off</h3><p>Merge everything additively and pass a clean baton — so the next session loses nothing.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ ONE REAL EXAMPLE ============ -->
+<section id="case">
+  <div class="wrap">
+    <p class="eyebrow reveal">A single case study</p>
+    <h2 class="reveal">One real catch — why the method earns its cost.</h2>
+    <div class="case reveal">
+      <div class="tagrow">
+        <span class="pill" style="color:var(--magenta)">SHADOW · PEER</span>
+        <span class="pill" style="color:var(--cyan)">PREMISE CHECKED AGAINST SOURCE</span>
+        <span class="pill" style="color:var(--violet)">CROSS-MODEL CORROBORATION</span>
+      </div>
+      <h3>The buried default that two independent voices caught.</h3>
+      <p>In a real planning campaign, a main orchestrator run had marked a flagship decision <b>"settled — no operator choice needed."</b> A second, peer <b>shadow manager</b> — running live alongside it and checking the claim against the actual source code — found that signing off would have <b>silently locked in a choice the operator never knowingly made</b>: a quietly-dropped fallback meant one specific formula would become permanent by default. A single confident forward-pass ships exactly that, invisibly. What caught it was structure: an independent voice checking premises against source while the work was still steerable.</p>
+      <p>Then a third voice — a different model entirely — reviewing the same question a day later, landed on the very same hidden flaw. <span class="punch">Two independent voices converging on one buried defect is a conviction no single pass can manufacture.</span> That is the moment the method earns its cost.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="ess">
+      <p style="margin-top:0"><b>In one breath:</b> One person runs deep work as a swarm of AI agents instead of doing it alone. The manager agent never carries the work in its own head — it <b>orchestrates</b>: it splits the problem into pieces, sends typed sub-agents (scouts, workers, mathematicians, auditors) to study and build each piece in isolation, then folds their results and measures how much independent angles agree. <b>Agreement — not the manager's say-so — is what lets the work advance.</b></p>
+      <p>Crucially, the same mode governs planning and building. You don't drop out of orchestration to "just code it"; the execution phase runs the identical wave method as the planning phase, with the same audits and convergence checks. Every deliverable is verified by a <b>different</b> agent, attacked adversarially, re-checked by a differently-framed secondary (sometimes a different model or engine), and — for the largest builds — watched live by a peer <b>shadow manager</b> through a shared, append-only ledger where the main manager must answer every challenge rather than silently ignore it.</p>
+      <p style="margin-bottom:0">The discipline scales to the work: a one-line question stays a one-line answer; a campaign earns the full machinery and a paired run. And the gate is firm — you build only after the plan has survived independent attempts to break it, because a confident forward-pass merely covers distance while leaving silent gaps, whereas convergence across many angles is a conviction no single pass can manufacture. <b>That is the method.</b></p>
+    </div>
+    <div class="colophon" style="margin-top:26px;padding-top:18px;border-top:1px solid var(--line2);font-size:13.5px;color:var(--mut);line-height:1.7">
+      <div style="font-family:var(--mono);letter-spacing:.5px;color:var(--ink)">◇ MAESTRO · The Orchestration Method</div>
+      <div style="margin-top:6px">An educational artifact on conducting AI agents toward converged truth. Created <b style="color:var(--ink)">May 2026</b> by <b style="color:var(--ink)">Tom</b> <span style="color:var(--dim)">(TomaDev23)</span>, with <b style="color:var(--ink)">Claude (Opus 4.7)</b> as co-author.</div>
+      <div style="margin-top:6px;color:var(--dim)">Released under the MIT License · github.com/TomaDev23/Maestro</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- starfield ---------- */
+(function(){
+  const c=document.getElementById('stars'),x=c.getContext('2d');
+  let w,h,stars,dpr;
+  function rs(){dpr=Math.min(window.devicePixelRatio||1,2);w=c.width=innerWidth*dpr;h=c.height=innerHeight*dpr;
+    const n=Math.floor((innerWidth*innerHeight)/9000);
+    stars=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,r:(Math.random()*1.3+.2)*dpr,
+      a:Math.random(),s:Math.random()*0.018+0.003,vx:(Math.random()-.5)*0.04*dpr,
+      col:Math.random()<.15?'rgba(169,139,255,':Math.random()<.3?'rgba(79,214,255,':'rgba(255,255,255,'}));}
+  function draw(){x.clearRect(0,0,w,h);
+    for(const s of stars){s.a+=s.s;const al=0.35+Math.abs(Math.sin(s.a))*0.55;
+      s.x+=s.vx; if(s.x<0)s.x=w; if(s.x>w)s.x=0;
+      x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fillStyle=s.col+al+')';x.fill();}
+    requestAnimationFrame(draw);}
+  rs();draw();addEventListener('resize',rs);
+})();
+
+/* ---------- reveal on scroll ---------- */
+(function(){
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+})();
+
+/* ---------- active nav ---------- */
+(function(){
+  const links=[...document.querySelectorAll('#navlinks a')];
+  const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){
+    links.forEach(l=>l.classList.remove('on'));const a=map.get(e.target.id);if(a)a.classList.add('on');}});},
+    {rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
+})();
+</script>
+</body>
+</html>

@@ -102,6 +102,7 @@
   .maestro-toc .links a:hover{color:#fff; background:rgba(120,140,255,.1)}
   .maestro-toc .links a.on{color:#fff; background:rgba(79,214,255,.14); border-color:var(--line2)}
 
+
   /* ---------- LAYOUT ---------- */
   .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
   section{padding:74px 0 26px; scroll-margin-top:118px}
@@ -872,43 +873,199 @@
     <p class="lead reveal">This is the engine's heart. For each question, <b>independent voices investigate separately and never read each other</b> — like asking witnesses to describe a scene in isolation. A fresh synthesis seat then measures how much they agree. <b>Agreement, not authority, is what greenlights the next stage.</b></p>
 
     <div class="fchart reveal">
-      <p class="fc-title">Flowchart · the convergence loop — many voices in, the verdict folded back</p>
-      <p class="fc-cap">A <b>mix of voices</b> — independent investigators plus an adversarial auditor and a plan-breaker — study the same question in isolation. The synthesis seat grades how much they agree, then the converged verdict flows <b>back to the manager</b>, who folds it into the digest documents, the coordination ledger, and the other instances.</p>
-      <svg viewBox="0 0 980 230" role="img" aria-label="A mix of voices — voice A, voice B, an adversarial audit, and a plan-breaker — flow into a synthesis seat that grades them; the converged answer goes back to the manager, who folds it into the digest documents, the coordination ledger, and the other instances">
+      <p class="fc-title">Flowchart · a full session run — how the work actually progresses, round after round</p>
+      <p class="fc-cap">Read <b>top → bottom</b> as the session unfolds. Each <b>column</b> is a persistent actor (you · the manager · the waves it fires · the shadow peer · the running records); each <b>band</b> is a round. <b style="color:var(--cyan)">Cyan/violet</b> = forward flow, <b style="color:var(--green)">green</b> = advance on agreement, <b style="color:var(--amber)">amber (left gutter)</b> = loop back for another round, <b style="color:var(--magenta)">magenta</b> = the shadow exchange. This sits one zoom <em>above</em> “Inside a Wave” — each wave here is a single beat.</p>
+      <svg viewBox="0 0 940 1480" role="img" aria-label="A full multi-round session as a vertical timeline with swimlanes, ending in the build. Round 1: a mix of voices investigates, SYNTH grades, the manager folds the verdict into the records. Round 2: the manager loops back on the digest, fires a wave of different agent types that file documents, then aggregate, audit-of-audit, and prune to a fresh digest. A successor manager takes over and the outgoing one becomes a Senior backstop. Round 3: the successor fires a sanity-check wave and an adversarial audit into a second convergence check; a problem surfaces, loops back to the manager, which pings the Shadow through the ledger and gets an answer, then either loops another round or, on agreement, promotes to build.">
         <defs>
-          <linearGradient id="criver" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset=".5" stop-color="#a98bff"/><stop offset="1" stop-color="#5ef2a0"/></linearGradient>
-          <marker id="cv-a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#9fd9ff"/></marker>
-          <marker id="cv-m" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a98bff"/></marker>
+          <linearGradient id="fs-rv" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset=".5" stop-color="#a98bff"/><stop offset="1" stop-color="#5ef2a0"/></linearGradient>
+          <linearGradient id="fs-tab" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset="1" stop-color="#a98bff"/></linearGradient>
+          <marker id="fs-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+          <marker id="fs-v" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a98bff"/></marker>
+          <marker id="fs-m" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff6bd6"/></marker>
+          <marker id="fs-a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffb454"/></marker>
+          <marker id="fs-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
+          <marker id="fs-r" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff7a7a"/></marker>
         </defs>
-        <!-- the mix of voices -->
-        <text x="150" y="46" text-anchor="end" class="fc-sub" fill="#4fd6ff">voice A</text>
-        <text x="150" y="92" text-anchor="end" class="fc-sub" fill="#a98bff">voice B</text>
-        <text x="150" y="150" text-anchor="end" class="fc-sub" fill="#ff6bd6">adversarial audit</text>
-        <text x="150" y="196" text-anchor="end" class="fc-sub" fill="#ffb454">plan-breaker</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M158 42 C320 42 360 112 398 116"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M158 88 C320 88 380 116 398 118"/>
-        <path class="fl fmarch" stroke="#ff6bd6" d="M158 146 C320 146 380 124 398 122"/>
-        <path class="fl fmarch" stroke="#ffb454" d="M158 192 C320 192 360 130 398 124"/>
-        <!-- synthesis seat -->
-        <circle class="fpulse" cx="430" cy="120" r="32" fill="rgba(22,28,62,.7)" stroke="#fff" stroke-width="1.1"/>
-        <text x="430" y="116" text-anchor="middle" class="fc-lbl">SYNTH</text>
-        <text x="430" y="132" text-anchor="middle" class="fc-sub">grades</text>
-        <!-- converged answer back to the manager -->
-        <path class="fl fmarch" stroke="url(#criver)" stroke-width="9" d="M464 120 H600" marker-end="url(#cv-a)"/>
-        <text x="545" y="108" text-anchor="middle" class="fc-sub" fill="#9fd9ff">converged answer →</text>
-        <rect x="602" y="96" width="128" height="48" rx="13" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
-        <text x="666" y="125" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">MANAGER</text>
-        <!-- manager folds + records the verdict -->
-        <text x="883" y="40" text-anchor="middle" class="fc-sub" fill="#8b95bd">manager folds + records into:</text>
-        <rect x="800" y="52" width="166" height="38" rx="10" fill="rgba(79,214,255,.05)" stroke="rgba(120,140,255,.32)"/>
-        <text x="883" y="75" text-anchor="middle" class="fc-sub" fill="#9fd9ff">DIGEST DOCUMENTS</text>
-        <rect x="800" y="102" width="166" height="38" rx="10" fill="rgba(255,209,102,.06)" stroke="rgba(255,209,102,.35)"/>
-        <text x="883" y="125" text-anchor="middle" class="fc-sub" fill="#ffd166">COORDINATION LEDGER</text>
-        <rect x="800" y="152" width="166" height="38" rx="10" fill="rgba(169,139,255,.06)" stroke="rgba(169,139,255,.35)"/>
-        <text x="883" y="175" text-anchor="middle" class="fc-sub" fill="#c9aaff">OTHER INSTANCES</text>
-        <path class="fl fmarch" stroke="#a98bff" d="M730 112 C762 100 770 73 798 73" marker-end="url(#cv-m)"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M730 121 H798" marker-end="url(#cv-m)"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M730 130 C762 142 770 171 798 171" marker-end="url(#cv-m)"/>
+
+        <!-- ===== LANE CHASSIS ===== -->
+        <rect x="16" y="58" width="38" height="1418" rx="8" fill="rgba(255,180,84,.025)" stroke="rgba(255,180,84,.16)" stroke-dasharray="2 5"/>
+        <text x="35" y="50" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px">⟲ LOOP</text>
+        <rect x="62" y="58" width="122" height="1418" rx="10" fill="rgba(255,209,102,.02)" stroke="rgba(255,209,102,.14)" stroke-dasharray="3 6"/>
+        <text x="123" y="48" text-anchor="middle" class="fc-lbl" fill="#ffd166" style="font-size:11px">OPERATOR</text>
+        <rect x="196" y="58" width="164" height="1418" rx="10" fill="rgba(79,214,255,.03)" stroke="rgba(79,214,255,.16)" stroke-dasharray="3 6"/>
+        <text x="278" y="48" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">MANAGER</text>
+        <line x1="278" y1="66" x2="278" y2="1474" stroke="rgba(79,214,255,.09)" stroke-dasharray="1 7"/>
+        <rect x="372" y="58" width="256" height="1418" rx="10" fill="rgba(169,139,255,.03)" stroke="rgba(169,139,255,.16)" stroke-dasharray="3 6"/>
+        <text x="500" y="48" text-anchor="middle" class="fc-lbl" fill="#a98bff" style="font-size:11px">SUB-AGENTS · WAVES</text>
+        <rect x="640" y="58" width="132" height="1418" rx="10" fill="rgba(255,107,214,.03)" stroke="rgba(255,107,214,.16)" stroke-dasharray="3 6"/>
+        <text x="706" y="48" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
+        <line x1="706" y1="66" x2="706" y2="1474" stroke="rgba(255,107,214,.09)" stroke-dasharray="1 7"/>
+        <rect x="784" y="58" width="132" height="1418" rx="10" fill="rgba(120,140,255,.04)" stroke="rgba(120,140,255,.18)" stroke-dasharray="3 6"/>
+        <text x="850" y="48" text-anchor="middle" class="fc-lbl" fill="#c9aaff" style="font-size:11px">RECORDS</text>
+
+        <!-- ===== ROUND DIVIDERS + TABS ===== -->
+        <line x1="62" y1="360" x2="916" y2="360" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+        <line x1="62" y1="700" x2="916" y2="700" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+        <line x1="62" y1="1010" x2="916" y2="1010" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+        <rect x="66" y="66" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="83" y="79" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R1</text>
+        <rect x="66" y="366" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="83" y="379" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R2</text>
+        <rect x="66" y="706" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="83" y="719" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R3</text>
+
+        <!-- ============ R1 — CONVERGE (the opening) ============ -->
+        <text x="466" y="100" text-anchor="end" class="fc-sub" fill="#4fd6ff">voice A</text>
+        <text x="466" y="124" text-anchor="end" class="fc-sub" fill="#a98bff">voice B</text>
+        <text x="466" y="150" text-anchor="end" class="fc-sub" fill="#ff6bd6">adversarial audit</text>
+        <text x="466" y="176" text-anchor="end" class="fc-sub" fill="#ffb454">plan-breaker</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M472 96 C502 96 508 132 524 136"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M472 120 C502 120 512 136 524 138"/>
+        <path class="fl fmarch" stroke="#ff6bd6" d="M472 146 C502 146 512 142 524 140"/>
+        <path class="fl fmarch" stroke="#ffb454" d="M472 172 C502 172 508 146 524 142"/>
+        <circle class="fpulse" cx="552" cy="139" r="26" fill="rgba(22,28,62,.7)" stroke="#fff" stroke-width="1.1"/>
+        <text x="552" y="136" text-anchor="middle" class="fc-lbl" style="font-size:12px">SYNTH</text>
+        <text x="552" y="150" text-anchor="middle" class="fc-sub">grades</text>
+        <rect x="206" y="116" width="146" height="46" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="279" y="135" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">MANAGER</text>
+        <text x="279" y="151" text-anchor="middle" class="fc-sub">folds + records</text>
+        <path class="fl fmarch" stroke="url(#fs-rv)" stroke-width="7" d="M526 139 H356" marker-end="url(#fs-c)"/>
+        <text x="440" y="155" text-anchor="middle" class="fc-sub" fill="#9fd9ff">◂ converged answer</text>
+        <rect x="788" y="226" width="124" height="30" rx="9" fill="rgba(79,214,255,.05)" stroke="rgba(120,140,255,.32)"/><text x="850" y="246" text-anchor="middle" class="fc-sub" fill="#9fd9ff">DIGEST DOCS</text>
+        <rect x="788" y="262" width="124" height="30" rx="9" fill="rgba(255,209,102,.06)" stroke="rgba(255,209,102,.35)"/><text x="850" y="282" text-anchor="middle" class="fc-sub" fill="#ffd166">COORD LEDGER</text>
+        <rect x="788" y="298" width="124" height="30" rx="9" fill="rgba(169,139,255,.06)" stroke="rgba(169,139,255,.35)"/><text x="850" y="318" text-anchor="middle" class="fc-sub" fill="#c9aaff">OTHER INSTANCES</text>
+        <text x="560" y="200" text-anchor="middle" class="fc-sub" fill="#8b95bd">folds + records into ▸</text>
+        <path class="fl fmarch" stroke="#a98bff" d="M300 162 C520 210 660 241 786 241" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M300 162 C520 230 660 277 786 277" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M300 162 C520 250 660 313 786 313" marker-end="url(#fs-v)"/>
+
+        <!-- R1 -> R2 re-entry: build on the digest -->
+        <path class="fl fmarch" stroke="#ffd166" stroke-dasharray="6 4" d="M788 241 C600 300 430 330 356 386" marker-end="url(#fs-c)"/>
+        <text x="470" y="338" text-anchor="middle" class="fc-sub" fill="#ffd166">↻ back to the manager —</text>
+        <text x="470" y="352" text-anchor="middle" class="fc-sub" fill="#ffd166">build on the digest, never the raw pile</text>
+
+        <!-- ============ R2 — BACK DOWN FOR MORE ============ -->
+        <rect x="206" y="372" width="146" height="44" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="279" y="390" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">MANAGER</text>
+        <text x="279" y="406" text-anchor="middle" class="fc-sub" fill="#9fd9ff">R2 · new wave</text>
+        <text x="500" y="376" text-anchor="middle" class="fc-sub" fill="#a98bff">② more documents — different agent types</text>
+        <rect x="382" y="384" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="400" text-anchor="middle" class="fc-sub" fill="#c9aaff">SCOUT · substrate findings</text>
+        <rect x="382" y="412" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="428" text-anchor="middle" class="fc-sub" fill="#c9aaff">VALIDATOR · file:line sheet</text>
+        <rect x="382" y="440" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="456" text-anchor="middle" class="fc-sub" fill="#c9aaff">MATHEMATICIAN · settled-math note</text>
+        <rect x="382" y="468" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="484" text-anchor="middle" class="fc-sub" fill="#c9aaff">INDEP. AUDITOR · audit report</text>
+        <rect x="382" y="496" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="512" text-anchor="middle" class="fc-sub" fill="#c9aaff">ALT-DESIGN · rival memo</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M352 390 C366 390 372 396 380 396" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M352 398 C366 398 372 452 380 452" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M352 406 C366 406 372 508 380 508" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M626 420 C700 420 716 437 786 437" marker-end="url(#fs-v)"/>
+        <rect x="788" y="422" width="124" height="30" rx="9" fill="rgba(120,140,255,.05)" stroke="rgba(120,140,255,.3)"/><text x="850" y="442" text-anchor="middle" class="fc-sub" fill="#9fd9ff">+ MORE DOCS</text>
+        <rect x="404" y="536" width="220" height="30" rx="9" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="514" y="555" text-anchor="middle" class="fc-sub" fill="#c9aaff">AGGREGATE · folds, never decides</text>
+        <rect x="404" y="574" width="196" height="30" rx="9" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="502" y="593" text-anchor="middle" class="fc-sub" fill="#ff9be0">AUDIT-OF-AUDIT</text>
+        <rect x="404" y="612" width="220" height="34" rx="9" fill="rgba(94,242,160,.06)" stroke="#5ef2a0"/><text x="514" y="633" text-anchor="middle" class="fc-sub" fill="#5ef2a0">PRUNE → DIGEST · cook the round down</text>
+        <text x="502" y="666" text-anchor="middle" class="fc-sub" fill="#ffd166">⛉ a nothing-lost guard rides the fold</text>
+        <path class="fl fmarch" stroke="#a98bff" d="M502 520 V534" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M502 566 V572" marker-end="url(#fs-m)"/>
+        <path class="fl fmarch" stroke="#5ef2a0" d="M502 604 V610" marker-end="url(#fs-g)"/>
+
+        <!-- ===== SUCCESSOR HANDOFF (R2 -> R3 boundary) ===== -->
+        <circle class="fpulse" cx="278" cy="676" r="10" fill="rgba(169,139,255,.2)" stroke="#a98bff"/>
+        <text x="278" y="652" text-anchor="middle" class="fc-sub" fill="#c9aaff">handoff</text>
+        <path class="fl fmarch" stroke="#a98bff" d="M404 636 C344 660 304 668 290 674" marker-end="url(#fs-v)"/>
+        <text x="372" y="628" text-anchor="middle" class="fc-sub" fill="#8b95bd">digest + ledger ▸</text>
+        <rect x="66" y="656" width="118" height="40" rx="10" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
+        <text x="125" y="674" text-anchor="middle" class="fc-lbl" fill="#a98bff" style="font-size:11px">SENIOR</text>
+        <text x="125" y="688" text-anchor="middle" class="fc-sub">backstop · history</text>
+        <path class="fl fmarch" stroke="#a98bff" d="M268 676 H186" marker-end="url(#fs-v)"/>
+        <text x="226" y="668" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">outgoing ⇒ Senior</text>
+
+        <!-- ============ R3 — SUCCESSOR HARDENS IT ============ -->
+        <rect x="206" y="716" width="146" height="48" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="279" y="735" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">SUCCESSOR MGR</text>
+        <text x="279" y="750" text-anchor="middle" class="fc-sub">cold-start: digest + ledger</text>
+        <path class="fl fmarch" stroke="#a98bff" d="M278 686 V714" marker-end="url(#fs-c)"/>
+        <text x="500" y="716" text-anchor="middle" class="fc-sub" fill="#a98bff">③ a fresh sanity pass + an attack</text>
+        <rect x="382" y="724" width="156" height="30" rx="9" fill="rgba(94,242,160,.05)" stroke="#5ef2a0"/><text x="460" y="743" text-anchor="middle" class="fc-sub" fill="#5ef2a0">SANITY-CHECK WAVE</text>
+        <rect x="382" y="760" width="156" height="30" rx="9" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="460" y="779" text-anchor="middle" class="fc-sub" fill="#ff9be0">ADVERSARIAL AUDIT</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M352 732 C366 732 372 739 380 739" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M352 746 C366 746 372 775 380 775" marker-end="url(#fs-v)"/>
+        <g transform="translate(584,756)"><rect class="fpulse" x="-24" y="-24" width="48" height="48" rx="8" transform="rotate(45)" fill="rgba(22,28,62,.75)" stroke="#a98bff"/></g>
+        <text x="584" y="753" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ re-</text>
+        <text x="584" y="766" text-anchor="middle" class="fc-sub" fill="#c9aaff">converge</text>
+        <path class="fl fmarch" stroke="#5ef2a0" d="M538 739 C552 742 556 748 560 752" marker-end="url(#fs-g)"/>
+        <path class="fl fmarch" stroke="#ff6bd6" d="M538 775 C552 772 556 766 560 762" marker-end="url(#fs-m)"/>
+        <rect x="450" y="836" width="172" height="38" rx="10" fill="rgba(255,122,122,.08)" stroke="#ff7a7a"/>
+        <text x="536" y="854" text-anchor="middle" class="fc-lbl" fill="#ff7a7a" style="font-size:11px">PROBLEM surfaces</text>
+        <text x="536" y="868" text-anchor="middle" class="fc-sub" fill="#ff7a7a">trips · PARTIAL / DIVERGE</text>
+        <path class="fl fmarch" stroke="#ff7a7a" d="M584 780 V834" marker-end="url(#fs-r)"/>
+
+        <!-- shadow exchange on a dedicated clear row -->
+        <rect x="206" y="906" width="146" height="44" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="279" y="924" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">MANAGER</text>
+        <text x="279" y="939" text-anchor="middle" class="fc-sub">handles it</text>
+        <rect x="646" y="906" width="120" height="44" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
+        <text x="706" y="924" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
+        <text x="706" y="939" text-anchor="middle" class="fc-sub">re-reads source</text>
+        <path class="fl fmarch" stroke="#ff7a7a" d="M500 874 C420 890 360 900 352 916" marker-end="url(#fs-c)"/>
+        <text x="400" y="894" text-anchor="middle" class="fc-sub" fill="#ff7a7a" style="font-size:9px">↻ back to manager</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M352 920 H644" marker-end="url(#fs-c)"/>
+        <text x="498" y="912" text-anchor="middle" class="fc-sub" fill="#4fd6ff">ping · STEER (via ledger) →</text>
+        <path class="fl fmarch" stroke="#ff6bd6" d="M644 938 H354" marker-end="url(#fs-m)"/>
+        <text x="498" y="950" text-anchor="middle" class="fc-sub" fill="#ff9be0">◂ ACK (via ledger) · shadow answers</text>
+
+        <!-- two exits from the resolved manager: loop another round, or converge -->
+        <path class="fl fmarch" stroke="#ffb454" d="M206 930 C110 930 35 922 35 860 V760 C35 730 130 724 204 730" marker-end="url(#fs-a)"/>
+        <text x="35" y="700" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px">⟲ loop</text>
+        <text x="120" y="978" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ not converged yet → another round</text>
+
+        <!-- ============ CONVERGED GATE → into the build ============ -->
+        <rect x="430" y="1028" width="222" height="46" rx="12" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
+        <text x="541" y="1049" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:12px">CONVERGED ✓</text>
+        <text x="541" y="1064" text-anchor="middle" class="fc-sub" fill="#5ef2a0">survived the gauntlet → into the build</text>
+        <path class="fl fmarch" stroke="#5ef2a0" d="M352 944 C430 990 470 1010 478 1026" marker-end="url(#fs-g)"/>
+        <text x="392" y="1002" text-anchor="middle" class="fc-sub" fill="#5ef2a0">on agreement ▶</text>
+        <rect x="66" y="1028" width="118" height="46" rx="10" fill="rgba(255,209,102,.06)" stroke="#ffd166" stroke-dasharray="3 3"/>
+        <text x="125" y="1049" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">★ YOU sign</text>
+        <text x="125" y="1064" text-anchor="middle" class="fc-sub" fill="#ffd166">promote · only here</text>
+        <path class="fl fmarch" stroke="#ffd166" d="M430 1051 H186" marker-end="url(#fs-a)"/>
+
+        <!-- ============ THE BUILD — a Layer-2.5 paired run ============ -->
+        <line x1="62" y1="1092" x2="916" y2="1092" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+        <rect x="66" y="1098" width="52" height="18" rx="6" fill="url(#fs-tab)"/><text x="92" y="1111" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:10px;fill:#04050d">BUILD</text>
+        <text x="510" y="1110" text-anchor="middle" class="fc-sub" fill="#5ef2a0">THE BUILD · a Layer-2.5 paired run — Executor builds, Shadow verifies live through the ledger</text>
+
+        <!-- EXECUTOR + the per-PU build cycle -->
+        <rect x="206" y="1158" width="146" height="58" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="279" y="1180" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">EXECUTOR</text>
+        <text x="279" y="1195" text-anchor="middle" class="fc-sub">sole committer</text>
+        <text x="279" y="1208" text-anchor="middle" class="fc-sub">commits per PU, serial</text>
+        <text x="504" y="1138" text-anchor="middle" class="fc-sub" fill="#a98bff">per PU — on file-disjoint lanes, committed one at a time</text>
+        <rect x="382" y="1146" width="244" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="1163" text-anchor="middle" class="fc-sub" fill="#c9aaff">① ground · new math → prototype FIRST</text>
+        <rect x="382" y="1176" width="244" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="1193" text-anchor="middle" class="fc-sub" fill="#c9aaff">② build the PU</text>
+        <rect x="382" y="1206" width="244" height="26" rx="7" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="504" y="1223" text-anchor="middle" class="fc-sub" fill="#ff9be0">③ mandatory 2nd audit · author ≠ auditor</text>
+        <rect x="382" y="1236" width="244" height="26" rx="7" fill="rgba(255,180,84,.06)" stroke="#ffb454"/><text x="504" y="1253" text-anchor="middle" class="fc-sub" fill="#ffb454">④ acceptance + negative-control</text>
+        <rect x="382" y="1266" width="244" height="26" rx="7" fill="rgba(94,242,160,.07)" stroke="#5ef2a0"/><text x="504" y="1283" text-anchor="middle" class="fc-sub" fill="#5ef2a0">⑤ COMMIT one PU · by explicit path</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M352 1172 C366 1172 372 1159 380 1159" marker-end="url(#fs-v)"/>
+        <path class="fl fmarch" stroke="#5ef2a0" d="M626 1279 C700 1279 716 1277 786 1277" marker-end="url(#fs-g)"/>
+        <rect x="788" y="1262" width="124" height="30" rx="9" fill="rgba(94,242,160,.05)" stroke="rgba(94,242,160,.32)"/><text x="850" y="1282" text-anchor="middle" class="fc-sub" fill="#5ef2a0">COMMITS · clean trail</text>
+        <!-- SHADOW verifies live, write-isolated -->
+        <rect x="646" y="1170" width="120" height="62" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
+        <text x="706" y="1189" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
+        <text x="706" y="1203" text-anchor="middle" class="fc-sub">verifies premises</text>
+        <text x="706" y="1216" text-anchor="middle" class="fc-sub">vs source · LIVE</text>
+        <text x="706" y="1229" text-anchor="middle" class="fc-sub" fill="#8b95bd">write-isolated</text>
+        <path class="fl fmarch" stroke="#ff6bd6" d="M644 1219 H628" marker-end="url(#fs-m)"/>
+        <text x="690" y="1250" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">STEER / BLOCKING</text>
+        <!-- SENIOR + OVERSEER backstops (operator side) -->
+        <rect x="66" y="1158" width="118" height="34" rx="9" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="125" y="1179" text-anchor="middle" class="fc-sub" fill="#a98bff">SENIOR · ~20m sweep</text>
+        <rect x="66" y="1198" width="118" height="34" rx="9" fill="rgba(169,139,255,.05)" stroke="rgba(169,139,255,.3)"/><text x="125" y="1219" text-anchor="middle" class="fc-sub" fill="#c9aaff">OVERSEER · reads the diff</text>
+        <!-- the authentic ledger cadence -->
+        <text x="500" y="1318" text-anchor="middle" class="fc-sub" fill="#8b95bd">the ledger cadence · manager-to-manager, append-only &amp; immutable:</text>
+        <text x="500" y="1336" text-anchor="middle" class="fc-sub" fill="#9fd9ff">STEER → ACK + act → OBSERVATION: done&nbsp;&nbsp;·&nbsp;&nbsp;BLOCKING → ACK or ESCALATE → operator&nbsp;&nbsp;·&nbsp;&nbsp;silence = breach</text>
+        <text x="500" y="1354" text-anchor="middle" class="fc-sub" fill="#5d6790">↻ even the ledger is pruned — it grows, freezes, a V2 continues the same arc</text>
+        <!-- single final push -> ship -->
+        <path class="fl fmarch" stroke="#5ef2a0" d="M504 1292 C504 1346 492 1378 480 1398" marker-end="url(#fs-g)"/>
+        <text x="392" y="1346" text-anchor="middle" class="fc-sub" fill="#5ef2a0">…all PUs land ▶</text>
+        <rect x="430" y="1402" width="222" height="46" rx="12" fill="rgba(94,242,160,.1)" stroke="#5ef2a0"/>
+        <text x="541" y="1423" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:12px">SINGLE FINAL PUSH → SHIP</text>
+        <text x="541" y="1438" text-anchor="middle" class="fc-sub" fill="#5ef2a0">one complete, audited state</text>
+        <text x="500" y="1470" text-anchor="middle" class="fc-sub" fill="#5d6790">⟳ …and the loop repeats — each round on fresh agreement — until it converges and survives</text>
       </svg>
     </div>
 

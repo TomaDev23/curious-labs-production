@@ -28,26 +28,87 @@
   a{color:var(--cyan); text-decoration:none}
   ::selection{background:rgba(169,139,255,.35)}
 
-  /* ---------- NAV ---------- */
-  nav{
-    position:sticky; top:0; z-index:50; backdrop-filter:blur(14px);
+  /* ---------- CURIOUSLABS SHELL ---------- */
+  .site-shell{
+    position:sticky; top:0; z-index:80;
+    background:linear-gradient(180deg, rgba(2,4,14,.96), rgba(4,7,20,.88));
+    border-bottom:1px solid rgba(132,204,22,.22);
+    box-shadow:0 20px 55px rgba(0,0,0,.35);
+    backdrop-filter:blur(18px);
+  }
+  .site-shell__inner{
+    max-width:1180px; margin:0 auto; padding:12px 22px;
+    display:flex; align-items:center; justify-content:space-between; gap:18px;
+  }
+  .site-shell__brand{display:flex; align-items:center; gap:10px; color:#fff}
+  .site-shell__brand img{height:28px; width:auto; filter:drop-shadow(0 0 8px rgba(132,204,22,.35))}
+  .site-shell__brand strong{display:block; font-size:15px; letter-spacing:.3px; color:#b9ff57}
+  .site-shell__brand small{
+    display:block; margin-top:-2px; font-family:var(--mono); font-size:10px;
+    letter-spacing:1.6px; text-transform:uppercase; color:rgba(255,255,255,.58)
+  }
+  .site-shell__links{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+  .site-shell__links a{
+    color:rgba(255,255,255,.76); font-size:12px; font-family:var(--mono);
+    letter-spacing:.4px; padding:7px 10px; border-radius:8px;
+    border:1px solid transparent; transition:.18s;
+  }
+  .site-shell__links a:hover{color:#fff; background:rgba(132,204,22,.1); border-color:rgba(132,204,22,.22)}
+  .site-shell__links a.primary{
+    color:#08100b; background:#b9ff57; border-color:rgba(185,255,87,.7); font-weight:700;
+    box-shadow:0 0 22px rgba(132,204,22,.18)
+  }
+  .site-shell__links a.primary:hover{background:#d5ff84; color:#08100b}
+  .site-footer{
+    margin-top:0; padding:54px 0 30px;
+    background:linear-gradient(180deg, rgba(6,8,20,.88), rgba(3,4,12,.98));
+    border-top:1px solid rgba(132,204,22,.18); color:rgba(255,255,255,.78);
+  }
+  .site-footer__grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:28px}
+  .site-footer h3{font-size:14px; margin:0 0 12px; color:#fff; letter-spacing:.2px}
+  .site-footer p{margin:0; color:rgba(255,255,255,.56); font-size:14px; line-height:1.7}
+  .site-footer a{display:block; color:rgba(255,255,255,.56); font-size:14px; margin:8px 0}
+  .site-footer a:hover{color:#b9ff57}
+  .site-footer__brand{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+  .site-footer__brand img{height:34px; width:auto}
+  .site-footer__brand strong{color:#b9ff57}
+  .site-footer__bottom{
+    margin-top:34px; padding-top:20px; border-top:1px solid rgba(255,255,255,.08);
+    text-align:center; color:rgba(255,255,255,.42); font-size:13px
+  }
+  @media(max-width:760px){
+    .site-shell__inner{align-items:flex-start; flex-direction:column}
+    .site-shell__links{justify-content:flex-start}
+    .site-shell__links a{padding:6px 8px; font-size:11px}
+    .site-shell{position:relative}
+    .maestro-toc{top:0}
+    .site-footer__grid{grid-template-columns:1fr}
+  }
+
+  /* ---------- PAGE NAV ---------- */
+  .maestro-toc{
+    position:sticky; top:53px; z-index:50; backdrop-filter:blur(14px);
     background:linear-gradient(180deg, rgba(6,8,20,.92), rgba(6,8,20,.55));
     border-bottom:1px solid var(--line);
   }
-  nav .wrap{max-width:1180px; margin:0 auto; padding:11px 22px; display:flex; align-items:center; gap:20px; flex-wrap:wrap}
-  nav .brand{font-weight:700; letter-spacing:.5px; font-size:14px; color:#fff; white-space:nowrap}
-  nav .brand b{color:var(--cyan)}
-  nav .links{display:flex; gap:4px; flex-wrap:wrap; margin-left:auto}
-  nav .links a{
+  .maestro-toc .wrap{max-width:1180px; margin:0 auto; padding:11px 22px; display:flex; align-items:center; gap:20px; flex-wrap:wrap}
+  .maestro-toc .brand{font-weight:700; letter-spacing:.5px; font-size:14px; color:#fff; white-space:nowrap}
+  .maestro-toc .brand b{color:var(--cyan)}
+  .maestro-toc .links{display:flex; gap:4px; flex-wrap:wrap; margin-left:auto}
+  .maestro-toc .links a{
     font-size:12px; color:var(--mut); padding:5px 10px; border-radius:7px;
     border:1px solid transparent; transition:.18s; white-space:nowrap;
   }
-  nav .links a:hover{color:#fff; background:rgba(120,140,255,.1)}
-  nav .links a.on{color:#fff; background:rgba(79,214,255,.14); border-color:var(--line2)}
+  .maestro-toc .links a:hover{color:#fff; background:rgba(120,140,255,.1)}
+  .maestro-toc .links a.on{color:#fff; background:rgba(79,214,255,.14); border-color:var(--line2)}
 
   /* ---------- LAYOUT ---------- */
   .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
-  section{padding:74px 0 26px; scroll-margin-top:60px}
+  section{padding:74px 0 26px; scroll-margin-top:118px}
+  @media(max-width:760px){
+    .maestro-toc{top:0}
+    section{scroll-margin-top:60px}
+  }
   .eyebrow{
     font-family:var(--mono); font-size:12px; letter-spacing:3px; text-transform:uppercase;
     color:var(--cyan); margin:0 0 10px; display:flex; align-items:center; gap:10px;
@@ -289,10 +350,10 @@
   .case .punch{font-weight:700;color:var(--magenta)}
 
   /* ---------- FOOTER ---------- */
-  footer{margin-top:60px;border-top:1px solid var(--line);padding:34px 0 70px;text-align:center;color:var(--dim);font-size:13px}
-  footer .ess{max-width:800px;margin:0 auto 26px;color:var(--mut);font-size:15px;line-height:1.7;text-align:left;
+  .maestro-summary{margin-top:60px;border-top:1px solid var(--line);padding:34px 0 70px;text-align:center;color:var(--dim);font-size:13px}
+  .maestro-summary .ess{max-width:800px;margin:0 auto 26px;color:var(--mut);font-size:15px;line-height:1.7;text-align:left;
     background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 28px}
-  footer .ess b{color:var(--ink)}
+  .maestro-summary .ess b{color:var(--ink)}
   .reveal{opacity:0;transform:translateY(18px);transition:.7s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
 </style>
@@ -300,7 +361,26 @@
 <body>
 <canvas id="stars"></canvas>
 
-<nav>
+<header class="site-shell" aria-label="CuriousLabs site navigation">
+  <div class="site-shell__inner">
+    <a class="site-shell__brand" href="/" aria-label="Back to CuriousLabs home">
+      <img src="/images/logo.svg" alt="" />
+      <span>
+        <strong>CuriousLabs</strong>
+        <small>Mission Control</small>
+      </span>
+    </a>
+    <nav class="site-shell__links" aria-label="Website navigation">
+      <a class="primary" href="/">Back to Website</a>
+      <a href="/products">Products</a>
+      <a href="/tools">Tools</a>
+      <a href="/docs">Docs</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<nav class="maestro-toc" aria-label="Maestro page sections">
   <div class="wrap">
     <div class="brand">◇ <b>THE ORCHESTRATION METHOD</b></div>
     <div class="links" id="navlinks">
@@ -768,7 +848,7 @@
   </div>
 </section>
 
-<footer>
+<footer class="maestro-summary">
   <div class="wrap">
     <div class="ess">
       <p style="margin-top:0"><b>In one breath:</b> One person runs deep work as a swarm of AI agents instead of doing it alone. The manager agent never carries the work in its own head — it <b>orchestrates</b>: it splits the problem into pieces, sends typed sub-agents (scouts, workers, mathematicians, auditors) to study and build each piece in isolation, then folds their results and measures how much independent angles agree. <b>Agreement — not the manager's say-so — is what lets the work advance.</b></p>
@@ -780,6 +860,41 @@
       <div style="margin-top:6px">An educational artifact on conducting AI agents toward converged truth. Created <b style="color:var(--ink)">May 2026</b> by <b style="color:var(--ink)">Tom</b> <span style="color:var(--dim)">(TomaDev23)</span>, with <b style="color:var(--ink)">Claude (Opus 4.7)</b> as co-author.</div>
       <div style="margin-top:6px;color:var(--dim)">Released under the MIT License · github.com/TomaDev23/Maestro</div>
     </div>
+  </div>
+</footer>
+
+<footer class="site-footer" aria-label="CuriousLabs footer">
+  <div class="wrap">
+    <div class="site-footer__grid">
+      <div>
+        <div class="site-footer__brand">
+          <img src="/images/logo.svg" alt="" />
+          <strong>CuriousLabs</strong>
+        </div>
+        <p>Building intelligent systems, automation tools, and research artifacts for practical AI work.</p>
+      </div>
+      <div>
+        <h3>Navigate</h3>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/tools">Tools</a>
+        <a href="/docs">Docs</a>
+      </div>
+      <div>
+        <h3>Products</h3>
+        <a href="/products/aegis">Aegis</a>
+        <a href="/products/opspipe">OpsPipe</a>
+        <a href="/products/moonsignal">MoonSignal</a>
+        <a href="/products/guardian">Guardian</a>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <a href="/about">About</a>
+        <a href="/contact">Get in Touch</a>
+        <a href="mailto:hello@curiouslabs.space">hello@curiouslabs.space</a>
+      </div>
+    </div>
+    <div class="site-footer__bottom">© 2026 CuriousLabs. All rights reserved.</div>
   </div>
 </footer>
 

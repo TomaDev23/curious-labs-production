@@ -304,6 +304,16 @@
   .marktypes{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
   .marktypes .mt{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border-radius:7px;border:1px solid var(--line2)}
 
+  /* ---------- MANAGER-FLOW MATRIX ---------- */
+  .mflow{font-family:var(--mono);font-size:12.5px;line-height:1.55;background:rgba(4,6,16,.72);border:1px solid var(--line2);border-radius:13px;padding:20px 20px 16px;margin-top:18px;overflow-x:auto;color:var(--mut)}
+  .mflow pre{margin:0;white-space:pre;color:var(--mut)}
+  .mflow .ex{color:var(--cyan);font-weight:700} .mflow .sh{color:var(--magenta);font-weight:700}
+  .mflow .sr{color:var(--violet);font-weight:700} .mflow .lg{color:var(--gold);font-weight:700}
+  .mflow .c{color:var(--dim)} .mflow .ed{color:var(--green)} .mflow .b{color:var(--ink)}
+  .mflow-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-family:var(--mono);font-size:11.5px}
+  .darrow{display:flex;align-items:center;color:var(--cyan);font-size:20px;font-weight:700}
+  @media(max-width:880px){.darrow{transform:rotate(90deg)}}
+
   /* ---------- LOOP DIAGRAM ---------- */
   .loop-stage{display:flex;gap:14px;align-items:flex-start;margin-top:14px;background:var(--panel);
     border:1px solid var(--line);border-radius:13px;padding:16px 18px}
@@ -338,6 +348,20 @@
   .gstep .gt2{font-weight:700;color:#fff;font-size:14px;margin:4px 0 3px}
   .gstep .gd{font-size:12.5px;color:var(--mut)}
 
+  /* ---------- PROCESSING / CONTEXT-PRUNING LOOP ---------- */
+  .dloop{margin-top:20px;border:1px solid var(--line2);border-radius:16px;padding:22px 20px;background:linear-gradient(180deg,rgba(79,214,255,.04),rgba(94,242,160,.04))}
+  .dloop-rail{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;justify-content:center}
+  .dstep{flex:1 1 150px;min-width:140px;background:rgba(20,24,44,.5);border:1px solid var(--line2);border-radius:12px;padding:13px 15px}
+  .dstep .dk{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:var(--dim);text-transform:uppercase}
+  .dstep .dt{font-weight:700;color:#fff;font-size:14px;margin-top:4px}
+  .dstep .dd{font-size:12px;color:var(--mut);margin-top:3px}
+  .dstep.shrink{border-color:rgba(94,242,160,.4)} .dstep.shrink .dt{color:var(--green)}
+  .dwidth{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:1px}
+  .dguards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  @media(max-width:680px){.dguards{grid-template-columns:1fr}}
+  .dguard{font-size:12.5px;color:var(--mut);border-left:3px solid var(--gold);background:rgba(255,209,102,.06);border-radius:0 10px 10px 0;padding:11px 14px}
+  .dguard b{color:var(--ink)} .dguard .gh{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:1px}
+
   /* ---------- CASE STUDY ---------- */
   .case{margin-top:22px;border:1px solid var(--line2);border-radius:18px;padding:28px 30px;
     background:linear-gradient(180deg,rgba(255,107,214,.05),rgba(79,214,255,.04));position:relative}
@@ -356,6 +380,38 @@
   .maestro-summary .ess b{color:var(--ink)}
   .reveal{opacity:0;transform:translateY(18px);transition:.7s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
+
+  /* ---------- HOW TO RUN IT · the human's playbook ---------- */
+  .playbook{display:grid;gap:12px;margin-top:22px}
+  .pbstep{display:grid;grid-template-columns:108px 1fr;gap:18px;align-items:center;background:var(--panel);
+    border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+  .pbstep.star{border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.05)}
+  .pbchat{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.5px;text-align:center;line-height:1.3;
+    border-radius:11px;padding:13px 8px;border:1px solid var(--line2);color:var(--cyan);background:rgba(79,214,255,.08)}
+  .pbstep.s2 .pbchat{color:var(--magenta);background:rgba(255,107,214,.08);border-color:rgba(255,107,214,.3)}
+  .pbstep.s3 .pbchat{color:var(--violet);background:rgba(169,139,255,.08);border-color:rgba(169,139,255,.3)}
+  .pbstep.star .pbchat{color:var(--gold);background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.35)}
+  .pbchat .pbk{display:block;font-size:9px;color:var(--dim);letter-spacing:1.5px;margin-bottom:4px}
+  .pbstep h3{font-size:15.5px;margin:0 0 3px}
+  .pbstep p{margin:0;font-size:13.5px;color:var(--mut)}
+  .pbstep p b{color:var(--ink)}
+  .pbstep .when{font-family:var(--mono);font-size:11px;color:var(--amber);display:block;margin-bottom:5px;letter-spacing:.5px}
+  @media(max-width:620px){.pbstep{grid-template-columns:1fr;gap:10px}}
+
+  /* ---------- FLOWCHART (svg) ---------- */
+  .fchart{margin-top:22px;border:1px solid var(--line2);border-radius:18px;padding:22px 20px 16px;
+    background:linear-gradient(180deg,rgba(79,214,255,.04),rgba(169,139,255,.04));position:relative}
+  .fchart svg{width:100%;height:auto;display:block;margin-top:8px}
+  .fc-title{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin:0}
+  .fc-cap{font-size:13px;color:var(--mut);margin:5px 0 0;max-width:820px}
+  .fl{fill:none;stroke-width:2.2;stroke-linecap:round}
+  .fmarch{stroke-dasharray:8 7;animation:fmarch 1.1s linear infinite}
+  @keyframes fmarch{to{stroke-dashoffset:-30}}
+  .fpulse{animation:fpulse 2.4s ease-in-out infinite}
+  @keyframes fpulse{0%,100%{opacity:.5}50%{opacity:1}}
+  @media(prefers-reduced-motion:reduce){.fmarch,.fpulse{animation:none}}
+  .fc-lbl{font-family:var(--mono);font-weight:700;font-size:13px;fill:#fff}
+  .fc-sub{font-family:var(--mono);font-size:10.5px;fill:var(--mut)}
 </style>
 </head>
 <body>
@@ -384,17 +440,22 @@
   <div class="wrap">
     <div class="brand">◇ <b>THE ORCHESTRATION METHOD</b></div>
     <div class="links" id="navlinks">
+      <a href="#author">Author's Note</a>
       <a href="#laws">Two Laws</a>
-      <a href="#flow">Flowchart</a>
       <a href="#layers">Two Layers</a>
+      <a href="#run">How to Run It</a>
+      <a href="#wave">Inside a Wave</a>
+      <a href="#flow">Flowchart</a>
       <a href="#taxonomy">Agent Types</a>
       <a href="#dispatch">The Dispatch</a>
       <a href="#convergence">Convergence</a>
       <a href="#audit">Audit Stack</a>
+      <a href="#build">When to Build</a>
       <a href="#dual">Dual Orchestration</a>
       <a href="#invariants">Invariants</a>
-      <a href="#build">When to Build</a>
       <a href="#loop">The Clean Loop</a>
+      <a href="#processing">Processing</a>
+      <a href="#board">Campaign Board</a>
       <a href="#case">One Example</a>
     </div>
   </div>
@@ -420,18 +481,37 @@
         <circle cx="70" cy="114" r="3" fill="#5ef2a0"/>
       </svg>
     </div>
-    <span class="badge">◆ A field manual for orchestrated AI work</span>
+    <span class="badge">◆ The companion explainer to the orchestrator-mode skill</span>
     <h1>The Orchestration Method</h1>
     <p class="sub"><b>Orchestrate, don't carry the load.</b> A single person directs a manager agent that conducts swarms of specialized sub-agents — to plan and build work too large for any one mind to hold — and converges on truth from many independent angles.</p>
     <p class="shift">The shift: from <b>one agent grinding a task forward</b> and leaving gaps — to <b>one agent conducting many</b> and converging on what's true.</p>
+    <p class="shift" style="color:var(--cyan)">Want to run it? The <b>orchestrator-mode</b> Claude skill activates this method directly — this page explains what it's doing and why it pays off.</p>
     <div class="stat-row">
-      <div class="stat"><div class="n cy">2</div><div class="l">laws · orchestrate · converge-then-build</div></div>
-      <div class="stat"><div class="n mg">3</div><div class="l">rungs · solo → waves → dual</div></div>
-      <div class="stat"><div class="n gd">N</div><div class="l">independent angles before you ship</div></div>
+      <div class="stat"><div class="n cy">1</div><div class="l">operator · conducts the whole swarm</div></div>
+      <div class="stat"><div class="n mg">~1,000</div><div class="l">files edited across the build</div></div>
+      <div class="stat"><div class="n gd">~250K</div><div class="l">lines written &amp; revised</div></div>
+      <div class="stat"><div class="n gr">0</div><div class="l">incidents slip through — caught &amp; steered in flight, not hunted later</div></div>
     </div>
     <p class="byline" style="margin-top:22px;font-size:13.5px;color:var(--mut);letter-spacing:.2px">Created May 2026 by <b style="color:var(--ink)">Tom</b> <span style="color:var(--dim)">(TomaDev23)</span>, with <b style="color:var(--ink)">Claude (Opus 4.7)</b> as co-author · MIT License</p>
   </div>
 </header>
+
+<!-- ============ WORD FROM THE AUTHOR ============ -->
+<section id="author">
+  <div class="wrap">
+    <p class="eyebrow reveal" style="color:var(--gold)">Word from the author</p>
+    <h2 class="reveal">Word from the Author</h2>
+    <div class="reveal" style="max-width:880px;border:1px solid rgba(255,209,102,.28);border-radius:16px;padding:22px 26px 24px;background:linear-gradient(180deg,rgba(255,209,102,.05),rgba(255,209,102,.012));color:var(--ink);line-height:1.8;font-size:15.5px">
+      <span class="tag" style="color:var(--gold);border-color:rgba(255,209,102,.4)">&#9997; Human-written &mdash; not AI-generated</span>
+      <p style="margin-top:16px">Welcome. I am pleased to share my latest progress and discoveries in the field of autonomy for AI agents in complex code projects. This document, created by an AI agent, has been carefully crafted by a human after developing a method over hundreds of hours of work using the latest AI tools over the past year.</p>
+      <p>Working quickly and covering a broad surface without a robust method may appear feasible and easy, but in reality it creates numerous gaps and leads to drift due to agents freely interpreting and filling knowledge gaps with fabricated information, which eventually causes deviation from the original intent. Sometimes these issues are hidden and difficult to detect, but they compound rapidly as multiple agents negotiate, work on the same files, and move without coordination. Even when agents are confined to separate, isolated work trees, the ongoing negotiation over developing files and the need for complex merges and compromises remains unresolved because agents may pull and push in different directions.</p>
+      <p>Furthermore, this system places most of the burden on the human operator to maintain the thread for the agents and to initiate doubt, checks, and audits. The operator must remember the full scope and continuously steer the various agents working on different aspects in the right direction. This creates additional workload and high context load, resulting in a slow process in which the operator must sit at the machine, wait for the agent to complete its task, and then provide further guidance. Even when a plan is considered to exist, it does not guarantee coverage of all relevant aspects. This returns to the known limitation of agents to generate knowledge pockets independently. Only a plan developed with an understanding of current technological limitations and strategies to address them can be trusted and built autonomously over an extended period, reducing the need for major fixes or refactoring upon delivery.</p>
+      <p>The presented method aims to resolve both planning and execution, achieving autonomy as an outcome of effective planning, and leverages current technologies without requiring complex setups, automation, MCPs, or additional tools.</p>
+      <p>This document is intended for human readers to comprehend the nuances of the method. It also exists as a skill that can be immediately applied to your project (<a href="https://github.com/TomaDev23/Maestro" style="color:var(--cyan);text-decoration:none">github.com/TomaDev23/Maestro</a>); however, without adopting the mental model underlying this skill, its benefits will be limited compared to fully understanding the concepts presented herein.</p>
+      <p style="margin-bottom:0;text-align:right;color:var(--mut);font-style:italic">&mdash; Tom <span style="color:var(--dim)">(TomaDev23)</span></p>
+    </div>
+  </div>
+</section>
 
 <!-- ============ THE TWO LAWS ============ -->
 <section id="laws">
@@ -453,67 +533,6 @@
         <p>You never jump straight to building. You <b>plan until many independent angles agree</b> — multi-dimensional convergence — and only then do you execute. And here is the part people miss: <b>the same orchestrator mode governs both phases.</b> The execute phase runs the identical wave method as the plan phase — typed sub-agents, audits, convergence checks — not a sudden switch into "just code it now."</p>
         <p class="epi">Plan and build are two stretches of one continuous discipline, not two different modes.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ THE FLOWCHART (CENTERPIECE) ============ -->
-<section id="flow">
-  <div class="wrap">
-    <p class="eyebrow reveal">The centerpiece</p>
-    <h2 class="reveal">How the manager progresses — one mode, two phases, three rungs.</h2>
-    <p class="lead reveal">This single diagram is the method in motion. The outer band is the constant: the manager never leaves orchestrator mode. Inside it, work flows through a planning phase and an execution phase, each guarded by a gate. And at every point, the manager works at one of three levels of orchestration depth.</p>
-
-    <div class="flow reveal">
-      <div class="band-label">ORCHESTRATOR MODE — never exited</div>
-      <p class="band-note">The same mode wraps planning and execution. You don't drop out of it to "just build."</p>
-
-      <!-- phase rail -->
-      <div class="rail">
-        <div class="rphase plan"><div class="pk">PHASE 1</div><div class="pn">PLAN</div></div>
-        <span class="rarrow">→</span>
-        <div class="gate">
-          <div class="dia"></div>
-          <div class="gt"><b>◇ GATE</b>converged across<br/>N independent angles?</div>
-        </div>
-        <span class="rarrow">→</span>
-        <div class="rphase exec"><div class="pk">PHASE 2</div><div class="pn">EXECUTE</div></div>
-        <span class="rarrow">→</span>
-        <div class="gate">
-          <div class="dia"></div>
-          <div class="gt"><b>◇ GATE</b>verified /<br/>audited?</div>
-        </div>
-        <span class="rarrow">→</span>
-        <div class="rphase ship"><div class="pk">DONE</div><div class="pn">SHIP</div></div>
-      </div>
-
-      <div style="text-align:center">
-        <span class="loopback">⟲ failed gate loops back &mdash; <b>a question is a design mistake</b> → re-investigate the design</span>
-      </div>
-
-      <!-- escalation ladder -->
-      <div class="ladder-h">↑ the zoom-in: how the manager works inside BOTH phases — escalating orchestration depth ↑</div>
-      <div class="ladder">
-        <div class="rung l0 reveal">
-          <div class="lvl">L0 — anti-pattern</div>
-          <div class="rt">Solo agent carries the load</div>
-          <div class="rd">One agent does the work in its own context, runs forward, and stops. Looks fast.</div>
-          <span class="warn">⚠ leaves silent gaps &amp; potholes — nobody grades the homework</span>
-          <span class="climb">→</span>
-        </div>
-        <div class="rung l1 reveal">
-          <div class="lvl">L1 — the method</div>
-          <div class="rt">Manager orchestrates waves of typed sub-agents</div>
-          <div class="rd">Scouts, workers, mathematicians, auditors — fired in waves, each result folded and audited by a different agent.</div>
-          <span class="climb">→</span>
-        </div>
-        <div class="rung l2 reveal">
-          <div class="lvl">L2 — the ultimate form</div>
-          <div class="rt">Paired orchestration → a 3-agent family</div>
-          <div class="rd">An <b style="color:var(--cyan)">Executor</b> (the only one that edits &amp; commits) + a peer <b style="color:var(--magenta)">Shadow</b> (verifies live, can also carry load), coordinating through a shared <b style="color:var(--magenta)">Coordination Ledger</b> — backstopped by a <b style="color:var(--violet)">Senior</b> across context hand-offs.</div>
-        </div>
-      </div>
-      <p class="ladder-cap reveal">Same method, escalating power — you <b>climb the ladder as the surface grows.</b> This is <em>not</em> about splitting work into parallel lanes; it is about the progression of orchestration <b>depth</b>. A tiny task lives at L0-done-carefully; a campaign earns L2.</p>
     </div>
   </div>
 </section>
@@ -543,6 +562,228 @@
   </div>
 </section>
 
+<!-- ============ HOW TO RUN IT ============ -->
+<section id="run">
+  <div class="wrap">
+    <p class="eyebrow reveal">How to use it</p>
+    <h2 class="reveal">Running it yourself — which chat to start, and when.</h2>
+    <p class="lead reveal">The whole method lives in chats you open. Most of it runs inside one <b>manager</b> chat; the biggest builds add a second. Here is exactly what <b>you</b> — the human — do, and at what moment.</p>
+
+    <div class="playbook reveal">
+      <div class="pbstep s1">
+        <div class="pbchat"><span class="pbk">START</span>CHAT&nbsp;1<br>MANAGER</div>
+        <div><span class="when">▸ AT THE START — always</span>
+          <h3>Open a chat and trigger orchestrator mode, then hand it the task.</h3>
+          <p>This agent becomes your <b>manager</b> — it plans, runs the waves, has each result audited, and converges. You set the pace and answer the gates; you do <b>not</b> drive each step.</p></div>
+      </div>
+      <div class="pbstep s2">
+        <div class="pbchat"><span class="pbk">+ OPEN</span>CHAT&nbsp;2<br>SHADOW</div>
+        <div><span class="when">▸ ONLY FOR CAMPAIGN-CLASS WORK — a big build or plan</span>
+          <h3>Open a second chat as a peer shadow, and create a shared ledger file.</h3>
+          <p>Point both chats at that ledger. <b>You</b> launch this — a manager can't spawn its own peer. The shadow re-reads the source and challenges the manager's <b>premises live</b>, while the work is still steerable.</p></div>
+      </div>
+      <div class="pbstep s3">
+        <div class="pbchat"><span class="pbk">+ OPEN</span>NEW&nbsp;CHAT<br>SUCCESSOR</div>
+        <div><span class="when">▸ WHEN A MANAGER'S CONTEXT WINDOW FILLS UP</span>
+          <h3>Start a fresh chat as the successor — cold-started from the handover doc + the ledger.</h3>
+          <p>The outgoing chat becomes the <b>Senior</b> backstop: it carries the full history at near-zero cost and steps in only on a trigger — an escalation, a peer disagreement, an agent gone silent, or an unaudited commit. <b>The role outlives the instance.</b></p></div>
+      </div>
+      <div class="pbstep star">
+        <div class="pbchat"><span class="pbk">★ YOU</span>SIGN<br>OFF</div>
+        <div><span class="when">▸ ONLY AT THE GATES</span>
+          <h3>You appear at the convergence gate and the few irreducible decisions.</h3>
+          <p>The loop closes its own stages on an auditor's accept and runs itself between checkpoints. Your scarce, decisive contribution is <b>doubt</b> — and the handful of genuine judgment calls, surfaced to you with evidence.</p></div>
+      </div>
+    </div>
+
+    <div class="fchart reveal">
+      <p class="fc-title">Flowchart A · how work flows out from the manager</p>
+      <p class="fc-cap">The gold tabs are <b>your</b> chat actions; the track below is the manager's run. The boxes marked “waves ⟳” each run the cycle shown in <a href="#wave">Inside a Wave</a>.</p>
+      <svg viewBox="0 0 960 250" role="img" aria-label="You open a manager chat; the manager runs plan waves to a converge gate you sign, then build waves to a verify gate, then ship; campaign-class work adds a shadow chat you open, and a full context starts a successor chat">
+        <defs>
+          <marker id="fa-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+          <marker id="fa-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
+          <marker id="fa-d" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffd166"/></marker>
+        </defs>
+        <!-- human-action tabs -->
+        <rect x="150" y="14" width="150" height="40" rx="9" fill="rgba(255,209,102,.08)" stroke="#ffd166" stroke-dasharray="3 3"/>
+        <text x="225" y="31" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">① YOU open Chat 1</text>
+        <text x="225" y="46" text-anchor="middle" class="fc-sub" fill="#ffd166">the Manager</text>
+        <path class="fl fmarch" stroke="#ffd166" d="M225 54 V96" marker-end="url(#fa-d)"/>
+        <rect x="470" y="14" width="210" height="40" rx="9" fill="rgba(255,107,214,.08)" stroke="#ff6bd6" stroke-dasharray="3 3"/>
+        <text x="575" y="31" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-weight:700">② campaign-class? YOU open Chat 2</text>
+        <text x="575" y="46" text-anchor="middle" class="fc-sub" fill="#ff9be0">the Shadow + a shared ledger</text>
+        <path class="fl fmarch" stroke="#ff6bd6" d="M575 54 V100" marker-end="url(#fa-d)"/>
+        <!-- main track (y~122) -->
+        <rect x="20" y="98" width="78" height="50" rx="12" fill="rgba(255,209,102,.06)" stroke="#ffd166"/>
+        <text x="59" y="128" text-anchor="middle" class="fc-lbl" fill="#ffd166">YOU</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M98 123 H146" marker-end="url(#fa-c)"/>
+        <rect x="150" y="92" width="126" height="62" rx="13" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="213" y="118" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">MANAGER</text>
+        <text x="213" y="135" text-anchor="middle" class="fc-sub">orchestrator mode</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M276 123 H324" marker-end="url(#fa-c)"/>
+        <rect x="326" y="98" width="116" height="50" rx="12" fill="rgba(79,214,255,.05)" stroke="#4fd6ff"/>
+        <text x="384" y="120" text-anchor="middle" class="fc-lbl" fill="#9fd9ff" style="font-size:12px">PLAN</text>
+        <text x="384" y="137" text-anchor="middle" class="fc-sub">runs waves ⟳</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M442 123 H478" marker-end="url(#fa-c)"/>
+        <g transform="translate(512,123)"><rect class="fpulse" x="-25" y="-25" width="50" height="50" rx="8" transform="rotate(45)" fill="rgba(22,28,62,.75)" stroke="#a98bff"/></g>
+        <text x="512" y="120" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇converged?</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M546 123 H584" marker-end="url(#fa-c)"/>
+        <rect x="586" y="98" width="116" height="50" rx="12" fill="rgba(255,209,102,.05)" stroke="#ffd166"/>
+        <text x="644" y="120" text-anchor="middle" class="fc-lbl" fill="#ffd166" style="font-size:12px">BUILD</text>
+        <text x="644" y="137" text-anchor="middle" class="fc-sub">runs waves ⟳</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M702 123 H738" marker-end="url(#fa-c)"/>
+        <g transform="translate(772,123)"><rect class="fpulse" x="-25" y="-25" width="50" height="50" rx="8" transform="rotate(45)" fill="rgba(22,28,62,.75)" stroke="#a98bff"/></g>
+        <text x="772" y="127" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇verified?</text>
+        <path class="fl fmarch" stroke="#5ef2a0" d="M806 123 H844" marker-end="url(#fa-g)"/>
+        <rect x="846" y="98" width="88" height="50" rx="12" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
+        <text x="890" y="128" text-anchor="middle" class="fc-lbl" fill="#5ef2a0">SHIP</text>
+        <!-- sign-off marker under converge gate -->
+        <text x="512" y="172" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">★ you sign off</text>
+        <path class="fl" stroke="#ffd166" stroke-dasharray="2 3" d="M512 158 V164"/>
+        <!-- successor note -->
+        <text x="480" y="214" text-anchor="middle" class="fc-sub" fill="#a98bff">③ context fills up → YOU open a fresh chat (the Successor); the outgoing one becomes the Senior backstop.</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSIDE A WAVE ============ -->
+<section id="wave">
+  <div class="wrap">
+    <p class="eyebrow reveal">Zoom in</p>
+    <h2 class="reveal">Inside the manager's seat — what one wave looks like.</h2>
+    <p class="lead reveal">Every “waves ⟳” box above is this same repeating cycle. The manager never does the work in its own context — it <b>dispatches typed sub-agents into fresh contexts</b>, folds what they return, has a <b>different</b> agent check it, and advances only when the answers agree.</p>
+
+    <div class="fchart reveal">
+      <p class="fc-title">Flowchart B · one wave, inside the manager's seat</p>
+      <p class="fc-cap">A wave is dispatch → parallel sub-agents → fold → an independent audit → a convergence gate that either advances or loops back for another wave.</p>
+      <svg viewBox="0 0 980 330" role="img" aria-label="The manager writes dispatches, fires parallel sub-agents in their own fresh contexts, folds the returns, a different agent audits, then a converge gate either advances to the next stage or loops back for another wave">
+        <defs>
+          <marker id="fb-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+          <marker id="fb-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
+          <marker id="fb-a" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffb454"/></marker>
+        </defs>
+        <!-- MANAGER seat -->
+        <rect x="22" y="108" width="124" height="92" rx="13" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="84" y="140" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">MANAGER</text>
+        <text x="84" y="158" text-anchor="middle" class="fc-sub">the seat —</text>
+        <text x="84" y="172" text-anchor="middle" class="fc-sub">stays lean,</text>
+        <text x="84" y="186" text-anchor="middle" class="fc-sub">conducts only</text>
+        <!-- 1 dispatch -->
+        <path class="fl fmarch" stroke="#4fd6ff" d="M146 130 C190 130 196 116 224 110" marker-end="url(#fb-c)"/>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M146 154 H224" marker-end="url(#fb-c)"/>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M146 178 C190 178 196 192 224 198" marker-end="url(#fb-c)"/>
+        <text x="186" y="98" text-anchor="middle" class="fc-sub" fill="#9fd9ff" style="font-weight:700">① typed dispatches</text>
+        <!-- sub-agents (parallel, fresh contexts) -->
+        <rect x="226" y="90" width="168" height="40" rx="10" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
+        <text x="310" y="115" text-anchor="middle" class="fc-sub" fill="#c9aaff" style="font-weight:700;font-size:11.5px">SCOUT · reads source</text>
+        <rect x="226" y="134" width="168" height="40" rx="10" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
+        <text x="310" y="159" text-anchor="middle" class="fc-sub" fill="#c9aaff" style="font-weight:700;font-size:11.5px">WORKER · builds</text>
+        <rect x="226" y="178" width="168" height="40" rx="10" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
+        <text x="310" y="203" text-anchor="middle" class="fc-sub" fill="#c9aaff" style="font-weight:700;font-size:11.5px">MATHEMATICIAN · …</text>
+        <text x="310" y="238" text-anchor="middle" class="fc-sub" fill="#a98bff">fire in PARALLEL — each in its OWN fresh context</text>
+        <!-- 2 return + fold -->
+        <path class="fl fmarch" stroke="#4fd6ff" d="M394 110 C432 110 438 144 460 150" marker-end="url(#fb-c)"/>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M394 154 H460" marker-end="url(#fb-c)"/>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M394 198 C432 198 438 162 460 156" marker-end="url(#fb-c)"/>
+        <text x="430" y="98" text-anchor="middle" class="fc-sub" fill="#9fd9ff" style="font-weight:700">② return digests</text>
+        <rect x="462" y="130" width="96" height="48" rx="11" fill="rgba(79,214,255,.05)" stroke="#4fd6ff"/>
+        <text x="510" y="150" text-anchor="middle" class="fc-lbl" style="font-size:12px">FOLD</text>
+        <text x="510" y="166" text-anchor="middle" class="fc-sub">manager aggregates</text>
+        <!-- 3 audit -->
+        <path class="fl fmarch" stroke="#4fd6ff" d="M558 154 H600" marker-end="url(#fb-c)"/>
+        <text x="579" y="144" text-anchor="middle" class="fc-sub" fill="#9fd9ff" style="font-weight:700">③</text>
+        <rect x="602" y="130" width="132" height="48" rx="11" fill="rgba(255,107,214,.07)" stroke="#ff6bd6"/>
+        <text x="668" y="150" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:12px">AUDIT</text>
+        <text x="668" y="166" text-anchor="middle" class="fc-sub">a DIFFERENT agent</text>
+        <!-- 4 converge gate -->
+        <path class="fl fmarch" stroke="#4fd6ff" d="M734 154 H784" marker-end="url(#fb-c)"/>
+        <text x="759" y="144" text-anchor="middle" class="fc-sub" fill="#9fd9ff" style="font-weight:700">④</text>
+        <g transform="translate(836,154)"><rect class="fpulse" x="-30" y="-30" width="60" height="60" rx="9" transform="rotate(45)" fill="rgba(22,28,62,.75)" stroke="#a98bff"/></g>
+        <text x="836" y="150" text-anchor="middle" class="fc-sub" fill="#c9aaff" style="font-weight:700">◇ converged?</text>
+        <!-- CONVERGE exit -->
+        <path class="fl fmarch" stroke="#5ef2a0" d="M878 138 C906 128 916 120 936 116" marker-end="url(#fb-g)"/>
+        <text x="916" y="104" text-anchor="middle" class="fc-sub" fill="#5ef2a0" style="font-weight:700">CONVERGE</text>
+        <text x="916" y="150" text-anchor="middle" class="fc-sub" fill="#5ef2a0">▶ advance to</text>
+        <text x="916" y="164" text-anchor="middle" class="fc-sub" fill="#5ef2a0">next wave / stage</text>
+        <!-- loop-back (PARTIAL / DIVERGE) -->
+        <path class="fl fmarch" stroke="#ffb454" d="M836 184 C836 280 84 290 84 202" marker-end="url(#fb-a)"/>
+        <text x="470" y="306" text-anchor="middle" class="fc-sub" fill="#ffb454">PARTIAL → a closer re-checks vs source&nbsp;&nbsp;·&nbsp;&nbsp;DIVERGE → redesign the question&nbsp;&nbsp;—&nbsp;&nbsp;loop back, run another wave</text>
+      </svg>
+    </div>
+    <p class="lead reveal" style="margin-top:10px">The manager stays lean on purpose: it conducts, aggregates, and monitors — it never fills its own context with raw work, so it can run wave after wave without losing the thread.</p>
+  </div>
+</section>
+
+<!-- ============ THE FLOWCHART (CENTERPIECE) ============ -->
+<section id="flow">
+  <div class="wrap">
+    <p class="eyebrow reveal">The centerpiece</p>
+    <h2 class="reveal">How the manager progresses — one mode, two phases, three rungs.</h2>
+    <p class="lead reveal">This single diagram is the method in motion. The outer band is the constant: the manager never leaves orchestrator mode. Inside it, work flows through a planning phase and an execution phase, each guarded by a gate. And at every point, the manager works at one of three levels of orchestration depth.</p>
+
+    <div class="flow reveal">
+      <div class="band-label">ORCHESTRATOR MODE — never exited</div>
+      <p class="band-note">The same mode wraps planning and execution. You don't drop out of it to "just build."</p>
+
+      <!-- phase rail (SVG) -->
+      <svg viewBox="0 0 900 200" role="img" aria-label="Plan flows to a converged gate to execute to a verified gate to ship, all wrapped in orchestrator mode, with a failed-gate loopback" style="width:100%;height:auto;display:block;margin:10px 0 2px">
+        <defs>
+          <linearGradient id="fbandg" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset="1" stop-color="#a98bff"/></linearGradient>
+          <marker id="fl-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+          <marker id="fl-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
+          <marker id="fl-a" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffb454"/></marker>
+        </defs>
+        <rect x="8" y="22" width="884" height="92" rx="16" fill="none" stroke="url(#fbandg)" stroke-width="1.4" stroke-dasharray="4 6"/>
+        <rect x="44" y="48" width="150" height="56" rx="13" fill="rgba(79,214,255,.06)" stroke="#4fd6ff"/>
+        <text x="119" y="72" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">PLAN</text>
+        <text x="119" y="90" text-anchor="middle" class="fc-sub">phase 1</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M194 76 H262" marker-end="url(#fl-c)"/>
+        <g transform="translate(300,76)"><rect class="fpulse" x="-27" y="-27" width="54" height="54" rx="9" transform="rotate(45)" fill="rgba(22,28,62,.78)" stroke="#a98bff"/></g>
+        <text x="300" y="72" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ converged?</text>
+        <text x="300" y="86" text-anchor="middle" class="fc-sub">N angles</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M338 76 H406" marker-end="url(#fl-c)"/>
+        <rect x="408" y="48" width="160" height="56" rx="13" fill="rgba(255,209,102,.05)" stroke="#ffd166"/>
+        <text x="488" y="72" text-anchor="middle" class="fc-lbl" fill="#ffd166">EXECUTE</text>
+        <text x="488" y="90" text-anchor="middle" class="fc-sub">phase 2 · same mode</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M568 76 H636" marker-end="url(#fl-c)"/>
+        <g transform="translate(674,76)"><rect class="fpulse" x="-27" y="-27" width="54" height="54" rx="9" transform="rotate(45)" fill="rgba(22,28,62,.78)" stroke="#a98bff"/></g>
+        <text x="674" y="76" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ verified?</text>
+        <path class="fl fmarch" stroke="#5ef2a0" d="M712 76 H780" marker-end="url(#fl-g)"/>
+        <rect x="782" y="48" width="100" height="56" rx="13" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
+        <text x="832" y="80" text-anchor="middle" class="fc-lbl" fill="#5ef2a0">SHIP</text>
+        <path class="fl fmarch" stroke="#ffb454" d="M300 103 C300 168 488 168 488 106" marker-end="url(#fl-a)"/>
+        <text x="394" y="190" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ a failed gate loops back — a question is a design mistake → see Convergence</text>
+      </svg>
+
+      <!-- escalation ladder -->
+      <div class="ladder-h">↑ the zoom-in: how the manager works inside BOTH phases — escalating orchestration depth ↑</div>
+      <div class="ladder">
+        <div class="rung l0 reveal">
+          <div class="lvl">L0 — anti-pattern</div>
+          <div class="rt">Solo agent carries the load</div>
+          <div class="rd">One agent does the work in its own context, runs forward, and stops. Looks fast.</div>
+          <span class="warn">⚠ leaves silent gaps &amp; potholes — nobody grades the homework</span>
+          <span class="climb">→</span>
+        </div>
+        <div class="rung l1 reveal">
+          <div class="lvl">L1 — the method</div>
+          <div class="rt">Manager orchestrates waves of typed sub-agents</div>
+          <div class="rd">Scouts, workers, mathematicians, auditors — fired in waves, each result folded and audited by a different agent.</div>
+          <span class="climb">→</span>
+        </div>
+        <div class="rung l2 reveal">
+          <div class="lvl">L2 — the ultimate form</div>
+          <div class="rt">Paired orchestration → a 3-agent family</div>
+          <div class="rd">An <b style="color:var(--cyan)">Executor</b> (the only one that edits &amp; commits) + a peer <b style="color:var(--magenta)">Shadow</b> (verifies live, can also carry load), coordinating through a shared <b style="color:var(--magenta)">Coordination Ledger</b> — backstopped by a <b style="color:var(--violet)">Senior</b> across context hand-offs.</div>
+        </div>
+      </div>
+      <p class="ladder-cap reveal">Same method, escalating power — you <b>climb the ladder as the surface grows.</b> This is <em>not</em> about splitting work into parallel lanes; it is about the progression of orchestration <b>depth</b>. A tiny task lives at L0-done-carefully; a campaign earns L2.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ AGENT-TYPE TAXONOMY ============ -->
 <section id="taxonomy">
   <div class="wrap">
@@ -557,28 +798,28 @@
             <tr><th>Role</th><th>What it does</th><th>Isolation rule</th><th>Model tier</th></tr>
           </thead>
           <tbody>
-            <tr><td class="role">Scout / Explorer</td><td>Reads the substrate (code, docs, data) and returns structured findings — not opinions.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Worker</td><td>Produces a concrete deliverable: a plan, a design, a report.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Mathematician</td><td>Derives and verifies formulas; runs throwaway prototypes to test them.</td><td class="iso">Math <b>never</b> shares a seat with code — settle the math first, in isolation.</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Code-builder</td><td>Turns a settled plan into working code.</td><td class="iso">Receives settled math as input; does <b>not</b> re-derive it.</td><td><span class="tier opus">Opus</span> <span class="tier step">step-down OK (non-critical)</span></td></tr>
+            <tr><td class="role">Scout / Explorer</td><td>Reads the substrate (code, docs, data) and returns structured findings — not opinions.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Worker</td><td>Produces a concrete deliverable: a plan, a design, a report.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Mathematician</td><td>Derives and verifies formulas; runs throwaway prototypes to test them.</td><td class="iso">Math <b>never</b> shares a seat with code — settle the math first, in isolation.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Code-builder</td><td>Turns a settled plan into working code.</td><td class="iso">Receives settled math as input; does <b>not</b> re-derive it.</td><td><span class="tier opus">Flagship</span> <span class="tier step">step-down OK (non-critical)</span></td></tr>
             <tr><td class="role">Aggregator</td><td>Folds many outputs into one coherent surface.</td><td class="iso">Folds but <b>never decides</b> — it collates, it does not rule.</td><td><span class="tier step">regular tier OK</span></td></tr>
-            <tr><td class="role">Codebase-validator</td><td>Pins each claim to an exact <code>file:line</code> in the real source.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Independent auditor</td><td>Verifies a deliverable it did <b>not</b> write.</td><td class="iso">An author can never audit their own work.</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Adversarial auditor<span class="rk">/ plan-breaker</span></td><td>Actively attacks the converged plan, hunting for what prior audits missed.</td><td class="iso">A <b>different framing</b> than every prior audit.</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Alternative-design architect</td><td>Proposes a rival design as a sanity check on the chosen one.</td><td class="iso">Reads only the <b>final plan</b>, never the history that produced it.</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Advisor</td><td>Axis-sliced review — examines exactly one concern at a time.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Audit-of-audit</td><td>Verifies that the audit itself was complete and well-scoped.</td><td class="iso none">—</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr><td class="role">Independent secondary<span class="rk">/ cross-model voice</span></td><td>A fresh auditor with a <b>different framing</b> — sometimes a different model or tool entirely.</td><td class="iso"><b>Mandatory</b> after any planning or code work.</td><td><span class="tier opus">Opus</span> <span class="tier mand">/ other engine</span></td></tr>
-            <tr><td class="role">Roving specialist</td><td>Time-travel (re-walk history), plan-break, and rules/memory inspection.</td><td class="iso">Fired <b>alongside</b> the waves — not as a terminal stage.</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr class="sup"><td class="role">Executor <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Runs the build; the <b>only</b> instance that edits the tree &amp; commits.</td><td class="iso">One editor — clobber-safe, clean commit trail.</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr class="sup"><td class="role">Shadow <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Verifies the Executor's premises against source, live; can also carry scope / settle / verify load.</td><td class="iso">Touches nothing but the ledger — unless a declared co-build partition.</td><td><span class="tier opus">Opus</span></td></tr>
-            <tr class="sup"><td class="role">Senior <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Outgoing manager turned light-touch backstop; carries full history, steps in on escalation / disagreement / silence / unaudited commit.</td><td class="iso">Defers to the active pair; periodic ~20-min cadence.</td><td><span class="tier opus">Opus</span></td></tr>
+            <tr><td class="role">Codebase-validator</td><td>Pins each claim to an exact <code>file:line</code> in the real source.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Independent auditor</td><td>Verifies a deliverable it did <b>not</b> write.</td><td class="iso">An author can never audit their own work.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Adversarial auditor<span class="rk">/ plan-breaker</span></td><td>Actively attacks the converged plan, hunting for what prior audits missed.</td><td class="iso">A <b>different framing</b> than every prior audit.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Alternative-design architect</td><td>Proposes a rival design as a sanity check on the chosen one.</td><td class="iso">Reads only the <b>final plan</b>, never the history that produced it.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Advisor</td><td>Axis-sliced review — examines exactly one concern at a time.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Audit-of-audit</td><td>Verifies that the audit itself was complete and well-scoped.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Independent secondary<span class="rk">/ cross-model voice</span></td><td>A fresh auditor with a <b>different framing</b> — sometimes a different model or tool entirely.</td><td class="iso"><b>Mandatory</b> after any planning or code work.</td><td><span class="tier opus">Flagship</span> <span class="tier mand">/ other engine</span></td></tr>
+            <tr><td class="role">Roving specialist</td><td>Time-travel (re-walk history), plan-break, and rules/memory inspection.</td><td class="iso">Fired <b>alongside</b> the waves — not as a terminal stage.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr class="sup"><td class="role">Executor <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Runs the build; the <b>only</b> instance that edits the tree &amp; commits.</td><td class="iso">One editor — clobber-safe, clean commit trail.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr class="sup"><td class="role">Shadow <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Verifies the Executor's premises against source, live; can also carry scope / settle / verify load.</td><td class="iso">Touches nothing but the ledger — unless a declared co-build partition.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr class="sup"><td class="role">Senior <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Outgoing manager turned light-touch backstop; carries full history, steps in on escalation / disagreement / silence / unaudited commit.</td><td class="iso">Defers to the active pair; periodic ~20-min cadence.</td><td><span class="tier opus">Flagship</span></td></tr>
             <tr><td class="role">Visualizer / author</td><td>Builds the visual or written artifact (like this page).</td><td class="iso none">—</td><td><span class="tier step">regular tier OK</span></td></tr>
           </tbody>
         </table>
       </div>
       <div class="taxnote">
-        <b>Model policy:</b> math, investigation, and planning are <b>always</b> on the top model (Opus). Mechanical work — aggregation, rewriting, folding — <em>may</em> step down a tier but prefers Opus. Only genuinely non-critical execution defers to a lower tier.
+        <b>Model policy:</b> math, investigation, and planning are <b>always</b> on a <b>Flagship</b> model — use the <b>latest Anthropic or OpenAI flagship models for best results.</b> Mechanical work — aggregation, rewriting, folding — <em>may</em> step down a tier but prefers Flagship. Only genuinely non-critical execution defers to a lower tier.
       </div>
     </div>
   </div>
@@ -630,12 +871,58 @@
     <h2 class="reveal">Multi-dimensional convergence — many angles, one answer.</h2>
     <p class="lead reveal">This is the engine's heart. For each question, <b>independent voices investigate separately and never read each other</b> — like asking witnesses to describe a scene in isolation. A fresh synthesis seat then measures how much they agree. <b>Agreement, not authority, is what greenlights the next stage.</b></p>
 
+    <div class="fchart reveal">
+      <p class="fc-title">Flowchart · the convergence loop — many voices in, the verdict folded back</p>
+      <p class="fc-cap">A <b>mix of voices</b> — independent investigators plus an adversarial auditor and a plan-breaker — study the same question in isolation. The synthesis seat grades how much they agree, then the converged verdict flows <b>back to the manager</b>, who folds it into the digest documents, the coordination ledger, and the other instances.</p>
+      <svg viewBox="0 0 980 230" role="img" aria-label="A mix of voices — voice A, voice B, an adversarial audit, and a plan-breaker — flow into a synthesis seat that grades them; the converged answer goes back to the manager, who folds it into the digest documents, the coordination ledger, and the other instances">
+        <defs>
+          <linearGradient id="criver" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset=".5" stop-color="#a98bff"/><stop offset="1" stop-color="#5ef2a0"/></linearGradient>
+          <marker id="cv-a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#9fd9ff"/></marker>
+          <marker id="cv-m" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a98bff"/></marker>
+        </defs>
+        <!-- the mix of voices -->
+        <text x="150" y="46" text-anchor="end" class="fc-sub" fill="#4fd6ff">voice A</text>
+        <text x="150" y="92" text-anchor="end" class="fc-sub" fill="#a98bff">voice B</text>
+        <text x="150" y="150" text-anchor="end" class="fc-sub" fill="#ff6bd6">adversarial audit</text>
+        <text x="150" y="196" text-anchor="end" class="fc-sub" fill="#ffb454">plan-breaker</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M158 42 C320 42 360 112 398 116"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M158 88 C320 88 380 116 398 118"/>
+        <path class="fl fmarch" stroke="#ff6bd6" d="M158 146 C320 146 380 124 398 122"/>
+        <path class="fl fmarch" stroke="#ffb454" d="M158 192 C320 192 360 130 398 124"/>
+        <!-- synthesis seat -->
+        <circle class="fpulse" cx="430" cy="120" r="32" fill="rgba(22,28,62,.7)" stroke="#fff" stroke-width="1.1"/>
+        <text x="430" y="116" text-anchor="middle" class="fc-lbl">SYNTH</text>
+        <text x="430" y="132" text-anchor="middle" class="fc-sub">grades</text>
+        <!-- converged answer back to the manager -->
+        <path class="fl fmarch" stroke="url(#criver)" stroke-width="9" d="M464 120 H600" marker-end="url(#cv-a)"/>
+        <text x="545" y="108" text-anchor="middle" class="fc-sub" fill="#9fd9ff">converged answer →</text>
+        <rect x="602" y="96" width="128" height="48" rx="13" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+        <text x="666" y="125" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">MANAGER</text>
+        <!-- manager folds + records the verdict -->
+        <text x="883" y="40" text-anchor="middle" class="fc-sub" fill="#8b95bd">manager folds + records into:</text>
+        <rect x="800" y="52" width="166" height="38" rx="10" fill="rgba(79,214,255,.05)" stroke="rgba(120,140,255,.32)"/>
+        <text x="883" y="75" text-anchor="middle" class="fc-sub" fill="#9fd9ff">DIGEST DOCUMENTS</text>
+        <rect x="800" y="102" width="166" height="38" rx="10" fill="rgba(255,209,102,.06)" stroke="rgba(255,209,102,.35)"/>
+        <text x="883" y="125" text-anchor="middle" class="fc-sub" fill="#ffd166">COORDINATION LEDGER</text>
+        <rect x="800" y="152" width="166" height="38" rx="10" fill="rgba(169,139,255,.06)" stroke="rgba(169,139,255,.35)"/>
+        <text x="883" y="175" text-anchor="middle" class="fc-sub" fill="#c9aaff">OTHER INSTANCES</text>
+        <path class="fl fmarch" stroke="#a98bff" d="M730 112 C762 100 770 73 798 73" marker-end="url(#cv-m)"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M730 121 H798" marker-end="url(#cv-m)"/>
+        <path class="fl fmarch" stroke="#a98bff" d="M730 130 C762 142 770 171 798 171" marker-end="url(#cv-m)"/>
+      </svg>
+    </div>
+
     <h3 class="reveal" style="margin-top:28px">The convergence meter</h3>
     <p class="lead reveal" style="margin-top:8px">A synthesis seat (never one of the voices) tags each finding and issues a verdict (the bands below are illustrative, not a fixed contract):</p>
     <div class="meter reveal">
       <div class="mbox cv"><div class="big">≥ 80%</div><div class="lb">CONVERGE</div><div class="ds">The voices land together — promote with confidence.</div></div>
       <div class="mbox pt"><div class="big">50–80%</div><div class="lb">PARTIAL</div><div class="ds">Real-but-missed items exist — a closer seat re-checks against the actual source.</div></div>
       <div class="mbox dv"><div class="big">&lt; 50%</div><div class="lb">DIVERGE</div><div class="ds">The question itself is suspect — escalate it as a design problem.</div></div>
+    </div>
+    <div class="reveal" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;font-family:var(--mono);font-size:11.5px">
+      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(94,242,160,.3);color:var(--green)">CONVERGE → promote ▶ next stage</span>
+      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(255,209,102,.3);color:var(--gold)">PARTIAL → a closer seat re-checks ⟲ vs source</span>
+      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(255,122,122,.3);color:var(--red)">DIVERGE → escalate as a design problem ⟲</span>
     </div>
 
     <div class="callout reveal">
@@ -700,12 +987,100 @@
   </div>
 </section>
 
+<!-- ============ WHEN TO BUILD ============ -->
+<section id="build">
+  <div class="wrap">
+    <p class="eyebrow reveal">The discipline that matters most</p>
+    <h2 class="reveal">When are you allowed to build?</h2>
+    <p class="lead reveal">The single most important judgment in the whole method: a plan is build-ready <b>not because it is written, but because it has survived independent attempts to break it.</b> So the question "may I build yet?" is really "has the converged plan cleared the gauntlet?" The gates below are not taught fresh here — they are simply the <a href="#audit">Audit Superstructure</a> run as a checklist, in order, against the plan.</p>
+    <div class="gauntlet reveal">
+      <div class="gstep"><div class="gk">GATE 1</div><div class="gt2">Independent audit</div><div class="gd">A different agent verifies the plan against source.</div></div>
+      <span class="darrow" aria-hidden="true">→</span>
+      <div class="gstep"><div class="gk">GATE 2</div><div class="gt2">Adversarial attack</div><div class="gd">A new framing actively tries to break it.</div></div>
+      <span class="darrow" aria-hidden="true">→</span>
+      <div class="gstep"><div class="gk">GATE 3</div><div class="gt2">Differently-framed secondary</div><div class="gd">Mandatory — a fresh voice, often a different model/engine.</div></div>
+      <span class="darrow" aria-hidden="true">→</span>
+      <div class="gstep"><div class="gk">GATE 4</div><div class="gt2">Roving checks</div><div class="gd">Time-travel, plan-break, rules/memory probes.</div></div>
+      <span class="darrow" aria-hidden="true">→</span>
+      <div class="gstep"><div class="gk">GATE 5</div><div class="gt2">Nothing-lost pass</div><div class="gd">Confirm no load-bearing item was dropped.</div></div>
+      <span class="darrow" aria-hidden="true">→</span>
+      <div class="gstep"><div class="gk">GATE 6</div><div class="gt2">Prototype-backed</div><div class="gd">Ideally a throwaway prototype has surfaced the spec ambiguities.</div></div>
+    </div>
+    <div class="callout reveal">
+      <span class="t">Real autonomy vs. the illusion of progress</span>
+      <p>A single confident forward-pass <b>covers distance</b> — it produces output fast and feels like progress. But it leaves <b>gaps and potholes</b> nobody graded. Real autonomy is the opposite: slower to start, because the plan must survive being attacked from many sides first — but what ships has been seen from every angle that matters. The cost of the gauntlet is paid once, up front; the cost of a silent gap is paid forever, downstream.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ DUAL ORCHESTRATION ============ -->
 <section id="dual">
   <div class="wrap">
     <p class="eyebrow reveal">Layer 2.5 · the ultimate form</p>
     <h2 class="reveal">Paired orchestration — cooperation under one shared ledger.</h2>
-    <p class="lead reveal">For the largest builds, two <b>peer</b> managers run at once — and the names carry the contract. The <b style="color:var(--cyan)">Executor</b> runs the campaign and is the <b>only</b> instance that edits the tree or commits. The <b style="color:var(--magenta)">Shadow</b> is not a sub-agent — it is a peer, running its own thread and its own waves, that reads the source fresh and challenges whether the Executor's <em>premises</em> are actually true, <b>while the work is still steerable</b> — and touches nothing but the ledger. The Shadow can even be a different model or engine, for a genuinely independent framing. They speak only through one append-only, author-tagged <b>Coordination Ledger</b>, and coordination flows <b>both ways</b> — this is cooperation, not surveillance.</p>
+    <p class="lead reveal">For the largest builds, two <b>peer</b> managers run at once — and the names carry the contract. The <b style="color:var(--cyan)">Executor</b> runs the campaign and is the <b>only</b> instance that edits the tree or commits. The <b style="color:var(--magenta)">Shadow</b> is not a sub-agent — it is a peer, running its own thread and its own waves, that reads the source fresh and challenges whether the Executor's <em>premises</em> are actually true, <b>while the work is still steerable</b>, and touches nothing but the ledger. The Shadow can even be a different model or engine, for a genuinely independent framing. They speak only through one append-only, author-tagged <b>Coordination Ledger</b>, and coordination flows <b>both ways</b> — this is cooperation, not surveillance.</p>
+
+    <div class="fchart reveal">
+      <p class="fc-title">Flowchart · the paired-orchestration loop</p>
+      <p class="fc-cap">Two peer managers coordinate through one append-only ledger; a Senior backstop watches via periodic sweeps; and when a context fills, the role hands off to a fresh successor.</p>
+      <svg viewBox="0 0 940 380" role="img" aria-label="Executor and Shadow coordinate both ways through a central coordination ledger; a Senior backstop watches via periodic sweeps; when the Executor's context thins it hands off to a fresh Executor and the outgoing one becomes the Senior">
+        <defs>
+          <marker id="du-d" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffd166"/></marker>
+          <marker id="du-v" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a98bff"/></marker>
+          <marker id="du-c" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+        </defs>
+        <!-- EXECUTOR -->
+        <rect x="40" y="56" width="244" height="86" rx="14" fill="rgba(79,214,255,.06)" stroke="#4fd6ff"/>
+        <text x="162" y="84" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">EXECUTOR</text>
+        <text x="162" y="102" text-anchor="middle" class="fc-sub">builds · the ONLY editor + committer</text>
+        <text x="162" y="120" text-anchor="middle" class="fc-sub" fill="#5ef2a0">edits tree · git commit</text>
+        <!-- SHADOW -->
+        <rect x="656" y="56" width="244" height="86" rx="14" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
+        <text x="778" y="84" text-anchor="middle" class="fc-lbl" fill="#ff9be0">SHADOW</text>
+        <text x="778" y="102" text-anchor="middle" class="fc-sub">verifies premises vs source, LIVE</text>
+        <text x="778" y="120" text-anchor="middle" class="fc-sub">touches nothing but the ledger</text>
+        <!-- LEDGER -->
+        <rect x="378" y="62" width="184" height="74" rx="12" fill="rgba(255,209,102,.07)" stroke="#ffd166"/>
+        <text x="470" y="48" text-anchor="middle" class="fc-sub" fill="#8b95bd">coordinate — both ways</text>
+        <text x="470" y="88" text-anchor="middle" class="fc-lbl" fill="#ffd166" style="font-size:11.5px">COORDINATION LEDGER</text>
+        <text x="470" y="106" text-anchor="middle" class="fc-sub">append-only · author-tagged</text>
+        <text x="470" y="122" text-anchor="middle" class="fc-sub">the shared spine</text>
+        <!-- exec <-> ledger -->
+        <path class="fl fmarch" stroke="#ffd166" d="M284 92 H376" marker-end="url(#du-d)"/>
+        <path class="fl fmarch" stroke="#ffd166" d="M376 112 H286" marker-end="url(#du-d)"/>
+        <text x="330" y="80" text-anchor="middle" class="fc-sub" fill="#8b95bd">writes + ACKs</text>
+        <!-- shadow <-> ledger -->
+        <path class="fl fmarch" stroke="#ffd166" d="M656 92 H564" marker-end="url(#du-d)"/>
+        <path class="fl fmarch" stroke="#ffd166" d="M564 112 H654" marker-end="url(#du-d)"/>
+        <text x="610" y="80" text-anchor="middle" class="fc-sub" fill="#8b95bd">OBSERVE / STEER / BLOCK</text>
+        <!-- SENIOR -->
+        <rect x="378" y="214" width="184" height="78" rx="12" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
+        <text x="470" y="240" text-anchor="middle" class="fc-lbl" fill="#a98bff">SENIOR · backstop</text>
+        <text x="470" y="258" text-anchor="middle" class="fc-sub">carries full history · near-zero cost</text>
+        <text x="470" y="274" text-anchor="middle" class="fc-sub">periodic sweep ~20m</text>
+        <path class="fl fmarch" stroke="#a98bff" d="M470 136 V212" marker-end="url(#du-v)"/>
+        <text x="600" y="242" class="fc-sub" fill="#8b95bd">steps in ON TRIGGER:</text>
+        <text x="600" y="258" class="fc-sub" fill="#8b95bd">escalation · disagreement</text>
+        <text x="600" y="274" class="fc-sub" fill="#8b95bd">silence · unaudited commit</text>
+        <!-- successor handoff -->
+        <line x1="40" y1="322" x2="900" y2="322" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 4"/>
+        <text x="40" y="318" class="fc-sub" fill="#5d6790">SUCCESSOR HANDOFF — the role outlives the instance</text>
+        <rect x="40" y="334" width="176" height="34" rx="9" fill="rgba(79,214,255,.05)" stroke="rgba(79,214,255,.4)"/>
+        <text x="128" y="355" text-anchor="middle" class="fc-sub" fill="#9fd9ff">EXEC · context full</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M216 351 H280" marker-end="url(#du-c)"/>
+        <text x="248" y="345" text-anchor="middle" class="fc-sub" fill="#8b95bd">hand over</text>
+        <rect x="282" y="334" width="160" height="34" rx="9" fill="rgba(79,214,255,.05)" stroke="rgba(79,214,255,.4)"/>
+        <text x="362" y="355" text-anchor="middle" class="fc-sub" fill="#9fd9ff">FRESH EXEC</text>
+        <text x="470" y="355" class="fc-sub" fill="#a98bff">…and the outgoing instance ⇒ becomes SENIOR</text>
+      </svg>
+    </div>
+    <div class="mflow-legend reveal">
+      <span style="color:var(--cyan)"><b>EXECUTOR</b> builds·commits</span>
+      <span style="color:var(--magenta)"><b>SHADOW</b> verifies premises live</span>
+      <span style="color:var(--violet)"><b>SENIOR</b> backstop</span>
+      <span style="color:var(--gold)"><b>LEDGER</b> the shared spine</span>
+      <span style="color:var(--dim)">→ hand-to · ◀▶ coordinate · ↓ watch</span>
+    </div>
 
     <div class="marktypes reveal">
       <span class="mt" style="color:var(--mut)">OBSERVATION · no ack needed</span>
@@ -788,27 +1163,6 @@
   </div>
 </section>
 
-<!-- ============ WHEN TO BUILD ============ -->
-<section id="build">
-  <div class="wrap">
-    <p class="eyebrow reveal">The discipline that matters most</p>
-    <h2 class="reveal">When are you allowed to build?</h2>
-    <p class="lead reveal">The single most important judgment in the whole method: a plan is not build-ready because it is <em>written</em>. It is build-ready because it has <b>survived independent attempts to break it.</b> You build only after the converged plan clears the full gauntlet.</p>
-    <div class="gauntlet reveal">
-      <div class="gstep"><div class="gk">GATE 1</div><div class="gt2">Independent audit</div><div class="gd">A different agent verifies the plan against source.</div></div>
-      <div class="gstep"><div class="gk">GATE 2</div><div class="gt2">Adversarial attack</div><div class="gd">A new framing actively tries to break it.</div></div>
-      <div class="gstep"><div class="gk">GATE 3</div><div class="gt2">Differently-framed secondary</div><div class="gd">Mandatory — a fresh voice, often a different model/engine.</div></div>
-      <div class="gstep"><div class="gk">GATE 4</div><div class="gt2">Roving checks</div><div class="gd">Time-travel, plan-break, rules/memory probes.</div></div>
-      <div class="gstep"><div class="gk">GATE 5</div><div class="gt2">Nothing-lost pass</div><div class="gd">Confirm no load-bearing item was dropped.</div></div>
-      <div class="gstep"><div class="gk">GATE 6</div><div class="gt2">Prototype-backed</div><div class="gd">Ideally a throwaway prototype has surfaced the spec ambiguities.</div></div>
-    </div>
-    <div class="callout reveal">
-      <span class="t">Real autonomy vs. the illusion of progress</span>
-      <p>A single confident forward-pass <b>covers distance</b> — it produces output fast and feels like progress. But it leaves <b>gaps and potholes</b> nobody graded. Real autonomy is the opposite: slower to start, because the plan must survive being attacked from many sides first — but what ships has been seen from every angle that matters. The cost of the gauntlet is paid once, up front; the cost of a silent gap is paid forever, downstream.</p>
-    </div>
-  </div>
-</section>
-
 <!-- ============ THE CLEAN LOOP ============ -->
 <section id="loop">
   <div class="wrap">
@@ -827,6 +1181,114 @@
     <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Test &amp; audit-of-execution</h3><p>Verify the build, then audit the verification.</p></div></div>
     <div class="loop-stage reveal"><div class="n">4</div><div><h3>Audit-of-audit → adversarial → independent secondary</h3><p>Confirm the audit was complete, attack from a new angle, then bring a differently-framed outside voice.</p></div></div>
     <div class="loop-stage reveal"><div class="n">5</div><div><h3>Fold &amp; hand off</h3><p>Merge everything additively and pass a clean baton — so the next session loses nothing.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ PROCESSING ============ -->
+<section id="processing">
+  <div class="wrap">
+    <p class="eyebrow reveal">The discipline that keeps the loop clean</p>
+    <h2 class="reveal">Processing — simmer the round down, then build on the digest.</h2>
+    <p class="lead reveal">Planning is not one pass — it is iterative rounds, and every round generates a flood of raw context: documents read, code surfaces touched, findings from many seats. Left untended that pile grows, and each new round inherits the noise of every round before it.</p>
+    <p class="lead reveal" style="margin-top:14px">At the close of a round you don't just save what you gathered — you <b style="color:var(--ink)">cook it down</b>: aggregate the outputs, reduce and concentrate, <b style="color:var(--ink)">simmer</b> it like a stock, then audit, test, try to break it, and run an adversarial pass. What survives — the <b style="color:var(--ink)">aggregated, digested document set</b> — becomes the base the next round stands on.</p>
+
+    <div class="dloop reveal">
+      <p style="text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--mut);margin:0 0 16px;text-transform:uppercase">One planning round — each round's surface SHRINKS to its digest</p>
+      <svg viewBox="0 0 900 200" role="img" aria-label="A wide gather narrows through simmer and attack into a tight digest, which loops back as the next round's input" style="width:100%;height:auto;display:block;margin:6px 0 4px">
+        <defs>
+          <linearGradient id="pfun" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset="1" stop-color="#5ef2a0"/></linearGradient>
+          <marker id="pf-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+        </defs>
+        <path d="M44 26 L648 86 L648 126 L44 186 Z" fill="rgba(79,214,255,.06)" stroke="url(#pfun)" stroke-width="1.4"/>
+        <g text-anchor="middle">
+          <text x="146" y="102" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">GATHER</text><text x="146" y="120" class="fc-sub">▓▓▓▓▓▓▓▓ wide</text>
+          <text x="320" y="102" class="fc-lbl" fill="#a98bff" style="font-size:12px">SIMMER</text><text x="320" y="120" class="fc-sub">▓▓▓▓▓ — aggregate</text>
+          <text x="490" y="102" class="fc-lbl" fill="#ffb454" style="font-size:12px">ATTACK</text><text x="490" y="120" class="fc-sub">▓▓▓ — audit · break</text>
+        </g>
+        <rect class="fpulse" x="662" y="76" width="104" height="60" rx="12" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
+        <text x="714" y="100" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:12px">DIGEST</text>
+        <text x="714" y="117" text-anchor="middle" class="fc-sub">▓ tight residue</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M714 136 C714 196 340 196 340 186" marker-end="url(#pf-c)"/>
+        <text x="430" y="182" text-anchor="middle" class="fc-sub" fill="#4fd6ff">⟳ the digest is the INPUT to round N+1 — never the raw pile again</text>
+      </svg>
+      <div class="dguards">
+        <div class="dguard"><span class="gh">GUARD-RAIL · DON'T RE-READ</span><br/>Later rounds read the <b>digest</b>, not the earlier rounds — re-reading raw history only when a roving specialist is <b>time-travelling</b> a specific claim.</div>
+        <div class="dguard"><span class="gh">GUARD-RAIL · NOTHING-LOST</span><br/>A diff seat verifies the aggregation <b>dropped nothing load-bearing</b> before the round closes — shrinkage is allowed, loss is not.</div>
+      </div>
+    </div>
+
+    <p class="lead reveal" style="margin-top:18px"><b style="color:var(--ink)">The default for the next round is firm: work only from the latest digest — never re-read the original sprawl.</b> The raw materials aren't deleted; they're just no longer the working surface. An agent reaches back only for a deliberate <b style="color:var(--ink)">time-travel task</b> (re-checking a specific point of history), never as a routine "let me re-read everything to be sure."</p>
+    <p class="lead reveal" style="margin-top:14px">Three habits govern it: <b style="color:var(--ink)">prune context as you go; always work from the latest digested-and-combined surface, not the original pile; and on every aggregation, run sub-agents whose only job is to verify nothing load-bearing was lost.</b> That last is the safety net — the same <b style="color:var(--ink)">nothing-lost</b> auditor from the standing watch — and it is exactly what makes pruning this aggressive safe.</p>
+    <p class="lead reveal" style="margin-top:14px"><b style="color:var(--ink)">Context is finite working capital — the digest is the signal, the pile is the noise.</b> This is universal to any planning campaign deep enough to take more than one round.</p>
+
+    <div class="callout cy reveal">
+      <span class="t">Cook each round down to its essence</span>
+      <p><em>"The digest is the signal; the pile is the noise. Cook each round down to its essence, build the next round on that — and trust the nothing-lost watch to prove you dropped nothing that mattered."</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE CAMPAIGN BOARD ============ -->
+<section id="board">
+  <div class="wrap">
+    <p class="eyebrow reveal">Visibility for the operator</p>
+    <h2 class="reveal">Keep a campaign board &mdash; your window into the work.</h2>
+    <p class="lead reveal">As a campaign grows, the agents develop their own shorthand &mdash; ledger marks, dispatch IDs, wave numbers, decision codes. That chatter keeps the <em>agents</em> coordinated, but to a human trying to catch up it is noise. You need one place that answers, at a glance: what are we doing, what are the rules, and where are we?</p>
+    <p class="lead reveal">So for every campaign, stand up a lightweight HTML front-end &mdash; or even a single static HTML board &mdash; that holds, at minimum: the <b>rules</b>, the <b>framing</b>, the <b>intent</b>, and a <b>matrix of tasks showing their flow and aggregate progress</b>. Lean on <b>gamified indicators</b> &mdash; progress bars, status chips, counts &mdash; so the state reads in seconds, not paragraphs.</p>
+    <style>
+      .cb{margin-top:20px;border:1px solid var(--line2);border-radius:16px;background:rgba(10,13,26,.6);padding:18px}
+      .cb-top{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+      @media(max-width:680px){.cb-top{grid-template-columns:1fr}}
+      .cb-card{border:1px solid var(--line2);border-radius:10px;padding:11px 13px;background:rgba(20,24,44,.5)}
+      .cb-card .k{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+      .cb-card .v{color:var(--mut);font-size:12.5px;margin-top:5px;line-height:1.5}
+      .cb-prog{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
+      .cb-bar{flex:1;height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;border:1px solid var(--line2)}
+      .cb-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--green))}
+      .cb-chips{display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;margin-bottom:12px}
+      .cb-chip{padding:3px 9px;border-radius:999px;border:1px solid var(--line2)}
+      .cb-mtx{width:100%;border-collapse:collapse;font-size:12.5px}
+      .cb-mtx th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);padding:6px 8px;border-bottom:1px solid var(--line2)}
+      .cb-mtx td{padding:7px 8px;border-bottom:1px solid rgba(120,140,255,.07);color:var(--mut)}
+      .cb-st{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:999px}
+      .cb-tb{height:7px;width:80px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;display:inline-block;vertical-align:middle}
+      .cb-tb i{display:block;height:100%}
+    </style>
+    <div class="cb reveal" role="img" aria-label="Illustrative campaign board">
+      <div class="cb-top">
+        <div class="cb-card"><div class="k">Rules</div><div class="v">One editor &middot; build behind gates &middot; nothing-lost on every fold &middot; no fallbacks</div></div>
+        <div class="cb-card"><div class="k">Framing</div><div class="v">Replace the ad-hoc auth layer with a typed, opt-in module &mdash; strangler-fig, no big-bang.</div></div>
+        <div class="cb-card"><div class="k">Intent</div><div class="v">Ship a verified plan the team can build autonomously, with minimal rework on delivery.</div></div>
+      </div>
+      <div class="cb-prog">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--mut)">CAMPAIGN&nbsp;PROGRESS</span>
+        <span class="cb-bar"><i style="width:62%"></i></span>
+        <b style="color:var(--green)">62%</b>
+      </div>
+      <div class="cb-chips">
+        <span class="cb-chip" style="color:var(--green);border-color:rgba(94,242,160,.35)">&#10003; 8 done</span>
+        <span class="cb-chip" style="color:var(--cyan);border-color:rgba(79,214,255,.35)">&#9680; 3 in-flight</span>
+        <span class="cb-chip" style="color:var(--gold);border-color:rgba(255,209,102,.35)">&#8214; 2 awaiting decision</span>
+        <span class="cb-chip" style="color:var(--red);border-color:rgba(255,122,122,.35)">&#9940; 1 blocked</span>
+        <span class="cb-chip" style="color:var(--dim)">&hellip; 4 queued</span>
+      </div>
+      <table class="cb-mtx">
+        <thead><tr><th>Task</th><th>Depends on</th><th>Status</th><th>Progress</th></tr></thead>
+        <tbody>
+          <tr><td>W1 &middot; Surface map</td><td>&mdash;</td><td><span class="cb-st" style="background:rgba(94,242,160,.14);color:var(--green)">DONE</span></td><td><span class="cb-tb"><i style="width:100%;background:var(--green)"></i></span></td></tr>
+          <tr><td>W2 &middot; Audit of map</td><td>W1</td><td><span class="cb-st" style="background:rgba(94,242,160,.14);color:var(--green)">DONE</span></td><td><span class="cb-tb"><i style="width:100%;background:var(--green)"></i></span></td></tr>
+          <tr><td>W3 &middot; Math lane</td><td>W2</td><td><span class="cb-st" style="background:rgba(79,214,255,.14);color:var(--cyan)">IN-FLIGHT</span></td><td><span class="cb-tb"><i style="width:70%;background:var(--cyan)"></i></span></td></tr>
+          <tr><td>W4 &middot; Code lane</td><td>W2</td><td><span class="cb-st" style="background:rgba(79,214,255,.14);color:var(--cyan)">IN-FLIGHT</span></td><td><span class="cb-tb"><i style="width:45%;background:var(--cyan)"></i></span></td></tr>
+          <tr><td>W5 &middot; Connect + audit</td><td>W3 &middot; W4</td><td><span class="cb-st" style="background:rgba(255,209,102,.14);color:var(--gold)">AWAITING</span></td><td><span class="cb-tb"><i style="width:12%;background:var(--gold)"></i></span></td></tr>
+          <tr><td>W6 &middot; Scorer fix</td><td>W5</td><td><span class="cb-st" style="background:rgba(255,122,122,.14);color:var(--red)">BLOCKED</span></td><td><span class="cb-tb"><i style="width:0%"></i></span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-family:var(--mono);font-size:10.5px;color:var(--dim);margin:12px 0 0;text-align:center">&uarr; illustrative &mdash; a board-keeper seat refreshes this from the ledger as work lands</p>
+    </div>
+    <div class="callout reveal">
+      <span class="t">The board is the human-facing counterpart to the ledger</span>
+      <p>The Coordination Ledger keeps the <b>agents</b> in sync; the board keeps <b>you</b> in sync. And it is not an afterthought &mdash; orchestrator mode asks the manager to coordinate a dedicated <b>board-keeper</b> seat that refreshes the board as work lands, so the picture is always current without you parsing raw agent chatter. As the surface grows and the inter-agent jargon thickens, this is what keeps the operator oriented instead of drowning in it.</p>
+    </div>
   </div>
 </section>
 
@@ -853,7 +1315,7 @@
     <div class="ess">
       <p style="margin-top:0"><b>In one breath:</b> One person runs deep work as a swarm of AI agents instead of doing it alone. The manager agent never carries the work in its own head — it <b>orchestrates</b>: it splits the problem into pieces, sends typed sub-agents (scouts, workers, mathematicians, auditors) to study and build each piece in isolation, then folds their results and measures how much independent angles agree. <b>Agreement — not the manager's say-so — is what lets the work advance.</b></p>
       <p>Crucially, the same mode governs planning and building. You don't drop out of orchestration to "just code it"; the execution phase runs the identical wave method as the planning phase, with the same audits and convergence checks. Every deliverable is verified by a <b>different</b> agent, attacked adversarially, re-checked by a differently-framed secondary (sometimes a different model or engine), and — for the largest builds — watched live by a peer <b>shadow manager</b> through a shared, append-only ledger where the main manager must answer every challenge rather than silently ignore it.</p>
-      <p style="margin-bottom:0">The discipline scales to the work: a one-line question stays a one-line answer; a campaign earns the full machinery and a paired run. And the gate is firm — you build only after the plan has survived independent attempts to break it, because a confident forward-pass merely covers distance while leaving silent gaps, whereas convergence across many angles is a conviction no single pass can manufacture. <b>That is the method.</b></p>
+      <p style="margin-bottom:0">The discipline scales to the work: a one-line question stays a one-line answer; a campaign earns the full machinery and a paired run. And the gate is firm — you build only after the plan has survived independent attempts to break it, because a confident forward-pass merely covers distance while leaving silent gaps, whereas convergence across many angles is a conviction no single pass can manufacture. <b>That is the method.</b> To actually run it, invoke the <b>orchestrator-mode</b> skill — this page is its companion explainer.</p>
     </div>
     <div class="colophon" style="margin-top:26px;padding-top:18px;border-top:1px solid var(--line2);font-size:13.5px;color:var(--mut);line-height:1.7">
       <div style="font-family:var(--mono);letter-spacing:.5px;color:var(--ink)">◇ MAESTRO · The Orchestration Method</div>
@@ -894,7 +1356,7 @@
         <a href="mailto:hello@curiouslabs.space">hello@curiouslabs.space</a>
       </div>
     </div>
-    <div class="site-footer__bottom">© 2026 CuriousLabs. All rights reserved.</div>
+    <div class="site-footer__bottom">? 2026 CuriousLabs. All rights reserved.</div>
   </div>
 </footer>
 

@@ -88,7 +88,6 @@
   .maestro-toc .links a.on{color:#fff; background:rgba(79,214,255,.14); border-color:var(--line2)}
   .toc-toggle{display:none}
 
-
   /* ---------- LAYOUT ---------- */
   .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
   section{padding:74px 0 26px; scroll-margin-top:118px}
@@ -413,10 +412,10 @@
   .case .punch{font-weight:700;color:var(--magenta)}
 
   /* ---------- FOOTER ---------- */
-  .maestro-summary{margin-top:60px;border-top:1px solid var(--line);padding:34px 0 70px;text-align:center;color:var(--dim);font-size:13px}
-  .maestro-summary .ess{max-width:800px;margin:0 auto 26px;color:var(--mut);font-size:15px;line-height:1.7;text-align:left;
+  footer{margin-top:60px;border-top:1px solid var(--line);padding:34px 0 70px;text-align:center;color:var(--dim);font-size:13px}
+  footer .ess{max-width:800px;margin:0 auto 26px;color:var(--mut);font-size:15px;line-height:1.7;text-align:left;
     background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 28px}
-  .maestro-summary .ess b{color:var(--ink)}
+  footer .ess b{color:var(--ink)}
   .reveal{opacity:0;transform:translateY(18px);transition:.7s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
 
@@ -451,6 +450,169 @@
   @media(prefers-reduced-motion:reduce){.fmarch,.fpulse{animation:none}}
   .fc-lbl{font-family:var(--mono);font-weight:700;font-size:13px;fill:#fff}
   .fc-sub{font-family:var(--mono);font-size:10.5px;fill:var(--mut)}
+
+  /* ===== LIVE-RUN TERMINAL MODULE (folded) ===== */
+
+  /* ---------- LIVE-RUN TERMINAL (lt-*) ---------- */
+  .lt-wrap{margin-top:10px}
+  .lt-grid{
+    display:grid; gap:14px;
+    grid-template-columns:1.18fr 1fr;
+    grid-template-areas:"big top" "big bot";
+    position:relative;
+  }
+  .lt-grid .lt-pane--lg{grid-area:big}
+  .lt-grid .lt-pane--shadow{grid-area:top}
+  .lt-grid .lt-pane--senior{grid-area:bot}
+  @media(max-width:720px){
+    .lt-grid{grid-template-columns:1fr; grid-template-areas:"big" "top" "bot"}
+  }
+
+  /* center seam — the "one shared ledger" cue between the columns */
+  .lt-seam{
+    position:absolute; top:8px; bottom:8px; left:calc(54.2% - 1px); width:2px;
+    background:linear-gradient(180deg,transparent,rgba(255,209,102,.55),rgba(255,209,102,.18),transparent);
+    pointer-events:none; z-index:2;
+  }
+  .lt-seam-lbl{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    font-family:var(--mono); font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--gold); background:rgba(4,6,16,.92); border:1px solid rgba(255,209,102,.4);
+    border-radius:999px; padding:3px 9px; white-space:nowrap; z-index:3;
+    box-shadow:0 0 14px rgba(255,209,102,.18);
+  }
+  @media(max-width:720px){ .lt-seam{display:none} .lt-seam-lbl{display:none} }
+
+  /* a pane = one chat window */
+  .lt-pane{
+    display:flex; flex-direction:column; min-width:0;
+    background:rgba(4,6,16,.78); border:1px solid var(--line2); border-radius:13px;
+    overflow:hidden; box-shadow:0 6px 22px rgba(0,0,0,.28);
+  }
+  .lt-pane--exec  {border-color:rgba(79,214,255,.42);  box-shadow:0 0 0 1px rgba(79,214,255,.06),0 6px 24px rgba(0,0,0,.3)}
+  .lt-pane--shadow{border-color:rgba(255,107,214,.42); box-shadow:0 0 0 1px rgba(255,107,214,.06),0 6px 24px rgba(0,0,0,.3)}
+  .lt-pane--senior{border-color:rgba(169,139,255,.42); box-shadow:0 0 0 1px rgba(169,139,255,.06),0 6px 24px rgba(0,0,0,.3)}
+
+  /* top chrome bar */
+  .lt-chrome{
+    display:flex; align-items:center; gap:9px; padding:9px 12px;
+    border-bottom:1px solid var(--line); background:rgba(8,11,28,.6);
+  }
+  .lt-diamond{width:8px; height:8px; transform:rotate(45deg); border-radius:1.5px; flex:0 0 auto}
+  .lt-pane--exec   .lt-diamond{background:var(--cyan);   box-shadow:0 0 8px rgba(79,214,255,.7)}
+  .lt-pane--shadow .lt-diamond{background:var(--magenta); box-shadow:0 0 8px rgba(255,107,214,.7)}
+  .lt-pane--senior .lt-diamond{background:var(--violet);  box-shadow:0 0 8px rgba(169,139,255,.7)}
+  .lt-seat{font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.3px; white-space:nowrap}
+  .lt-pane--exec   .lt-seat{color:var(--cyan)}
+  .lt-pane--shadow .lt-seat{color:var(--magenta)}
+  .lt-pane--senior .lt-seat{color:var(--violet)}
+  .lt-seat .lt-role{color:var(--dim); font-weight:600}
+  .lt-wc{margin-left:auto; display:flex; gap:6px; flex:0 0 auto}
+  .lt-wc-dot{width:8px; height:8px; border-radius:50%; background:rgba(120,140,255,.22)}
+
+  /* per-pane time·token meter (varies per seat = different load) */
+  .lt-meter{
+    display:flex; align-items:center; gap:7px; padding:6px 12px;
+    font-family:var(--mono); font-size:10.5px; color:var(--dim); letter-spacing:.3px;
+    border-bottom:1px solid var(--line); background:rgba(6,8,20,.4);
+  }
+  .lt-meter .lt-dot{width:5px; height:5px; border-radius:50%; background:var(--green); flex:0 0 auto;
+    box-shadow:0 0 6px rgba(94,242,160,.8)}
+  .lt-meter .lt-tok{margin-left:auto; color:var(--mut)}
+
+  /* transcript body */
+  .lt-body{
+    flex:1 1 auto; padding:12px 13px; font-family:var(--mono); font-size:11.8px; line-height:1.55;
+    color:var(--mut); display:flex; flex-direction:column; gap:9px; min-height:0;
+  }
+  .lt-pane--lg .lt-body{font-size:12.3px; gap:11px}
+  .lt-aff{color:var(--dim); font-size:10.8px; letter-spacing:.2px}
+  .lt-aff::before{content:"\2316  "; opacity:.7}     /* faint position-marker glyph */
+  .lt-line{margin:0}
+  .lt-line b, .lt-em{color:var(--ink); font-weight:700}
+  .lt-line .lt-acc{font-weight:700}
+  .lt-pane--exec   .lt-line .lt-acc{color:var(--cyan)}
+  .lt-pane--shadow .lt-line .lt-acc{color:var(--magenta)}
+  .lt-pane--senior .lt-line .lt-acc{color:var(--violet)}
+
+  /* shared-ledger mark chip — same gold identity in EVERY pane */
+  .lt-ref{
+    font-family:var(--mono); font-weight:700; font-size:10.5px; color:var(--gold);
+    background:rgba(255,209,102,.12); border:1px solid rgba(255,209,102,.3);
+    border-radius:5px; padding:0 5px; white-space:nowrap;
+  }
+
+  /* tool-call rows */
+  .lt-tool{
+    font-family:var(--mono); font-size:11px; color:var(--mut);
+    background:rgba(120,140,255,.06); border:1px solid var(--line);
+    border-radius:8px; padding:6px 10px; display:flex; align-items:center; gap:8px;
+  }
+  .lt-tool .lt-tk{color:var(--dim); font-weight:600}
+  .lt-tool .lt-tf{color:var(--ink); font-weight:700}
+  .lt-tool .lt-tg{margin-left:auto; color:var(--dim)}
+  .lt-tool--active{
+    border-color:rgba(94,242,160,.4); background:rgba(94,242,160,.07); color:var(--ink);
+  }
+  .lt-tool--active .lt-tk{color:var(--green)}
+  .lt-tool--active .lt-pulse{
+    width:6px; height:6px; border-radius:50%; background:var(--green); flex:0 0 auto;
+    box-shadow:0 0 8px rgba(94,242,160,.9); animation:lt-pulse 2s ease-in-out infinite;
+  }
+  @keyframes lt-pulse{0%,100%{opacity:.45}50%{opacity:1}}
+
+  /* typing caret on the live seat */
+  .lt-caret{
+    display:inline-block; width:7px; height:1.1em; vertical-align:-2px; margin-left:1px;
+    background:currentColor; animation:lt-blink 1.05s step-end infinite;
+  }
+  @keyframes lt-blink{50%{opacity:0}}
+
+  /* highlighted operator-instruction block (the quoted operator message) */
+  .lt-op{
+    border-left:3px solid var(--gold); background:rgba(255,209,102,.10);
+    border-radius:0 9px 9px 0; padding:8px 11px; color:var(--ink); font-size:11.4px; line-height:1.5;
+    box-shadow:inset 0 0 0 1px rgba(255,209,102,.06);
+  }
+  .lt-op .lt-opk{
+    display:block; font-family:var(--mono); font-size:9px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--gold); margin-bottom:4px;
+  }
+  .lt-op em{color:#fff; font-style:normal; font-weight:700}
+
+  /* bottom footer (branch chip + input + footnote) */
+  .lt-foot{border-top:1px solid var(--line); background:rgba(6,8,20,.55); padding:8px 11px 9px;
+    display:flex; flex-direction:column; gap:7px}
+  .lt-branchrow{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10.5px; flex-wrap:wrap}
+  .lt-branch{color:var(--ink); background:rgba(120,140,255,.1); border:1px solid var(--line2);
+    border-radius:6px; padding:1px 8px; font-weight:700; display:inline-flex; align-items:center; gap:5px}
+  .lt-branch svg{width:9px; height:9px; opacity:.8}
+  .lt-diff .lt-add{color:var(--green); font-weight:700}
+  .lt-diff .lt-del{color:var(--red); font-weight:700}
+  .lt-pr{margin-left:auto; color:var(--dim); border:1px solid var(--line); border-radius:6px;
+    padding:1px 8px; opacity:.85}
+  .lt-input{font-family:var(--mono); font-size:11px; color:var(--dim);
+    border:1px solid var(--line); border-radius:8px; padding:6px 10px; background:rgba(4,6,16,.5)}
+  .lt-input .lt-slash{color:var(--mut)}
+  .lt-fnote{font-family:var(--mono); font-size:9.5px; color:var(--dim); letter-spacing:.2px}
+  .lt-fnote b{color:var(--mut); font-weight:600}
+
+  /* reader-facing explainer caption */
+  .lt-explain{
+    margin-top:16px; font-size:13.5px; color:var(--mut); line-height:1.65; max-width:820px;
+    border-left:3px solid var(--gold); padding-left:14px;
+  }
+  .lt-explain b{color:var(--ink)}
+  .lt-explain .lt-x-ex{color:var(--cyan); font-weight:700}
+  .lt-explain .lt-x-sh{color:var(--magenta); font-weight:700}
+  .lt-explain .lt-x-sr{color:var(--violet); font-weight:700}
+  .lt-explain .lt-x-lg{color:var(--gold); font-weight:700}
+
+  @media(prefers-reduced-motion:reduce){
+    .lt-caret, .lt-tool--active .lt-pulse{animation:none}
+    .lt-caret{opacity:.7}
+  }
+
 </style>
 </head>
 <body>
@@ -473,7 +635,7 @@
 
 <nav class="maestro-toc" aria-label="Maestro page sections">
   <div class="wrap">
-    <div class="brand">◇ <b>THE ORCHESTRATION METHOD</b></div>
+    <div class="brand">? <b>THE ORCHESTRATION METHOD</b></div>
     <button class="toc-toggle" id="tocToggle" type="button" aria-expanded="false" aria-controls="navlinks">
       <span class="toc-toggle__copy">
         <span class="toc-toggle__k">Section</span>
@@ -484,22 +646,23 @@
     </button>
     <div class="links" id="navlinks">
       <a href="#author">Author's Note</a>
-      <a href="#laws">Two Laws</a>
-      <a href="#layers">Two Layers</a>
-      <a href="#run">How to Run It</a>
-      <a href="#wave">Inside a Wave</a>
-      <a href="#flow">Flowchart</a>
-      <a href="#taxonomy">Agent Types</a>
-      <a href="#dispatch">The Dispatch</a>
-      <a href="#convergence">Convergence</a>
-      <a href="#audit">Audit Stack</a>
-      <a href="#build">When to Build</a>
-      <a href="#dual">Dual Orchestration</a>
-      <a href="#invariants">Invariants</a>
-      <a href="#loop">The Clean Loop</a>
-      <a href="#processing">Processing</a>
-      <a href="#board">Campaign Board</a>
-      <a href="#case">One Example</a>
+            <a href="#laws">Two Laws</a>
+            <a href="#layers">Two Layers</a>
+            <a href="#run">How to Run It</a>
+            <a href="#flow">The Map</a>
+            <a href="#convergence">Convergence</a>
+            <a href="#wave">Inside a Wave</a>
+            <a href="#taxonomy">Agent Types</a>
+            <a href="#dispatch">The Dispatch</a>
+            <a href="#audit">Audit Stack</a>
+            <a href="#build">When to Build</a>
+            <a href="#dual">Dual Orchestration</a>
+            <a href="#terminal">Live Run</a>
+            <a href="#invariants">Invariants</a>
+            <a href="#loop">The Clean Loop</a>
+            <a href="#processing">Processing</a>
+            <a href="#board">Campaign Board</a>
+            <a href="#case">One Example</a>
     </div>
   </div>
 </nav>
@@ -694,6 +857,516 @@
   </div>
 </section>
 
+<!-- ============ THE FLOWCHART (CENTERPIECE) ============ -->
+<section id="flow">
+  <div class="wrap">
+    <p class="eyebrow reveal">Orientation · the map</p>
+    <h2 class="reveal">How the manager progresses — one mode, two phases, three rungs.</h2>
+    <p class="lead reveal">Start with the shape of the whole thing — the map every run follows. The outer band is the constant: the manager never leaves orchestrator mode. Inside it, work flows through a planning phase and an execution phase, each guarded by a gate; and at every point the manager works at one of three levels of orchestration depth. The next section traces this same shape as one concrete, full session.</p>
+
+    <div class="flow reveal">
+      <div class="band-label">ORCHESTRATOR MODE — never exited</div>
+      <p class="band-note">The same mode wraps planning and execution. You don't drop out of it to "just build."</p>
+
+      <!-- phase rail (SVG) -->
+      <svg viewBox="0 0 900 200" role="img" aria-label="Plan flows to a converged gate to execute to a verified gate to ship, all wrapped in orchestrator mode, with a failed-gate loopback" style="width:100%;height:auto;display:block;margin:10px 0 2px">
+        <defs>
+          <linearGradient id="fbandg" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset="1" stop-color="#a98bff"/></linearGradient>
+          <marker id="fl-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+          <marker id="fl-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
+          <marker id="fl-a" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffb454"/></marker>
+        </defs>
+        <rect x="8" y="22" width="884" height="92" rx="16" fill="none" stroke="url(#fbandg)" stroke-width="1.4" stroke-dasharray="4 6"/>
+        <rect x="44" y="48" width="150" height="56" rx="13" fill="rgba(79,214,255,.06)" stroke="#4fd6ff"/>
+        <text x="119" y="72" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">PLAN</text>
+        <text x="119" y="90" text-anchor="middle" class="fc-sub">phase 1</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M194 76 H262" marker-end="url(#fl-c)"/>
+        <g transform="translate(300,76)"><rect class="fpulse" x="-27" y="-27" width="54" height="54" rx="9" transform="rotate(45)" fill="rgba(22,28,62,.78)" stroke="#a98bff"/></g>
+        <text x="300" y="72" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ converged?</text>
+        <text x="300" y="86" text-anchor="middle" class="fc-sub">N angles</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M338 76 H406" marker-end="url(#fl-c)"/>
+        <rect x="408" y="48" width="160" height="56" rx="13" fill="rgba(255,209,102,.05)" stroke="#ffd166"/>
+        <text x="488" y="72" text-anchor="middle" class="fc-lbl" fill="#ffd166">EXECUTE</text>
+        <text x="488" y="90" text-anchor="middle" class="fc-sub">phase 2 · same mode</text>
+        <path class="fl fmarch" stroke="#4fd6ff" d="M568 76 H636" marker-end="url(#fl-c)"/>
+        <g transform="translate(674,76)"><rect class="fpulse" x="-27" y="-27" width="54" height="54" rx="9" transform="rotate(45)" fill="rgba(22,28,62,.78)" stroke="#a98bff"/></g>
+        <text x="674" y="76" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ verified?</text>
+        <path class="fl fmarch" stroke="#5ef2a0" d="M712 76 H780" marker-end="url(#fl-g)"/>
+        <rect x="782" y="48" width="100" height="56" rx="13" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
+        <text x="832" y="80" text-anchor="middle" class="fc-lbl" fill="#5ef2a0">SHIP</text>
+        <path class="fl fmarch" stroke="#ffb454" d="M300 103 C300 168 488 168 488 106" marker-end="url(#fl-a)"/>
+        <text x="394" y="190" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ a failed gate loops back — a question is a design mistake → see Convergence</text>
+      </svg>
+
+      <!-- escalation ladder -->
+      <div class="ladder-h">↑ the zoom-in: how the manager works inside BOTH phases — escalating orchestration depth ↑</div>
+      <div class="ladder">
+        <div class="rung l0 reveal">
+          <div class="lvl">L0 — anti-pattern</div>
+          <div class="rt">Solo agent carries the load</div>
+          <div class="rd">One agent does the work in its own context, runs forward, and stops. Looks fast.</div>
+          <span class="warn">⚠ leaves silent gaps &amp; potholes — nobody grades the homework</span>
+          <span class="climb">→</span>
+        </div>
+        <div class="rung l1 reveal">
+          <div class="lvl">L1 — the method</div>
+          <div class="rt">Manager orchestrates waves of typed sub-agents</div>
+          <div class="rd">Scouts, workers, mathematicians, auditors — fired in waves, each result folded and audited by a different agent.</div>
+          <span class="climb">→</span>
+        </div>
+        <div class="rung l2 reveal">
+          <div class="lvl">L2 — the ultimate form</div>
+          <div class="rt">Paired orchestration → a 3-agent family</div>
+          <div class="rd">An <b style="color:var(--cyan)">Executor</b> (the only one that edits &amp; commits) + a peer <b style="color:var(--magenta)">Shadow</b> (verifies live, can also carry load), coordinating through a shared <b style="color:var(--magenta)">Coordination Ledger</b> — backstopped by a <b style="color:var(--violet)">Senior</b> across context hand-offs.</div>
+        </div>
+      </div>
+      <p class="ladder-cap reveal">Same method, escalating power — you <b>climb the ladder as the surface grows.</b> This is <em>not</em> about splitting work into parallel lanes; it is about the progression of orchestration <b>depth</b>. A tiny task lives at L0-done-carefully; a campaign earns L2.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MULTI-DIMENSIONAL CONVERGENCE ============ -->
+<section id="convergence">
+  <div class="wrap">
+    <p class="eyebrow reveal">The core idea</p>
+    <h2 class="reveal">Multi-dimensional convergence — many angles, one answer.</h2>
+    <p class="lead reveal">This is the engine's heart. For each question, <b>independent voices investigate separately and never read each other</b> — like asking witnesses to describe a scene in isolation. A fresh synthesis seat then measures how much they agree. <b>Agreement, not authority, is what greenlights the next stage.</b></p>
+
+    <div class="fchart reveal">
+      <p class="fc-title">Flowchart · a full session run — how the work actually progresses, round after round</p>
+      <p class="fc-cap">Read <b>top → bottom</b> through four phases — <b style="color:var(--cyan)">PLAN → CONVERGE → ACCEPT → EXECUTE</b> (labelled down the left rail). Each <b>column</b> is a persistent actor (you · the manager · the waves it fires · the shadow peer that audits its premises · the running records); the same cast cooperates in <em>every</em> phase. <b style="color:var(--cyan)">Cyan/violet</b> = forward flow, <b style="color:var(--green)">green</b> = advance on agreement, <b style="color:var(--amber)">amber (left gutter)</b> = loop back for another round, <b style="color:var(--magenta)">magenta</b> = the shadow exchange. It's one flow, not a ceremony: planning rounds iterate until they settle, you sign, then the build runs the same way. Zoom into any single beat next, in <em>Inside a Wave</em>.</p>
+      <svg viewBox="0 0 1020 3120" role="img" aria-label="A full multi-round session as a vertical timeline with swimlanes, read top to bottom in four phases: PLAN, CONVERGE, ACCEPT, EXECUTE. PLAN round 1: a mix of voices investigates, SYNTH grades, the manager folds the verdict into the records. PLAN round 2: the manager loops back on the digest, fires a wave of different agent types that file documents and iterates the wave passes one through N until it settles, then aggregates, audit-of-audit, and prunes to a fresh digest. A successor manager takes over and the outgoing one becomes a Senior backstop. CONVERGE round 3: the successor fires a sanity-check wave and an adversarial audit into a second convergence check; a problem surfaces, loops back to the manager, which pings the Shadow through the ledger and gets an answer, then either loops another round or, on agreement, reaches a CONVERGED gate. ACCEPT: the operator signs to promote. EXECUTE, now shown with the same depth and looping progression as a planning round: the manager spine becomes the Executor and opens the build; a build wave fans out builders on file-disjoint lanes with collision hubs serialized one at a time; for each process-unit a cycle runs with depth — ground the unit, do isolated math and a throwaway prototype first when there is new math, build it, run a mandatory independent second audit where the author is never the auditor, then an acceptance and negative-control check; the Shadow thread runs live the whole time, setting a clearance bar that holds each unit until it verifies the premises at source, the Executor acknowledges, the Shadow audits the premises and clears it, while blocking premises halt that unit and a Senior periodic sweep and an Overseer reading the diff back it up; then the Executor commits one unit by explicit path with the push held, the Shadow does a post-commit source verify to close that unit's thread, and the records lane logs the commit and ledger marks; an amber loop sends it back for the next build wave, process-unit after process-unit, until all units land, ending in a single final push to ship, after which the loop repeats for the next chapter. The same operator, manager, workers and shadow cast appears in every phase.">
+  <defs>
+    <linearGradient id="fs-rv" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset=".5" stop-color="#a98bff"/><stop offset="1" stop-color="#5ef2a0"/></linearGradient>
+    <linearGradient id="fs-tab" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset="1" stop-color="#a98bff"/></linearGradient>
+    <marker id="fs-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
+    <marker id="fs-v" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a98bff"/></marker>
+    <marker id="fs-m" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff6bd6"/></marker>
+    <marker id="fs-a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffb454"/></marker>
+    <marker id="fs-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
+    <marker id="fs-r" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff7a7a"/></marker>
+  </defs>
+
+  <!-- ============================================================ -->
+  <!-- ===== LANE CHASSIS (x-grid) ================================ -->
+  <!-- ============================================================ -->
+  <rect x="16" y="70" width="42" height="2890" rx="8" fill="rgba(255,180,84,.025)" stroke="rgba(255,180,84,.16)" stroke-dasharray="2 5"/>
+  <text x="37" y="62" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px">⟲ LOOP</text>
+
+  <rect x="66" y="70" width="130" height="2890" rx="10" fill="rgba(255,209,102,.02)" stroke="rgba(255,209,102,.14)" stroke-dasharray="3 6"/>
+  <text x="131" y="60" text-anchor="middle" class="fc-lbl" fill="#ffd166" style="font-size:11px">OPERATOR</text>
+
+  <rect x="206" y="70" width="172" height="2890" rx="10" fill="rgba(79,214,255,.03)" stroke="rgba(79,214,255,.16)" stroke-dasharray="3 6"/>
+  <text x="292" y="60" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">MANAGER</text>
+  <line x1="292" y1="78" x2="292" y2="2956" stroke="rgba(79,214,255,.09)" stroke-dasharray="1 7"/>
+
+  <rect x="386" y="70" width="278" height="2890" rx="10" fill="rgba(169,139,255,.03)" stroke="rgba(169,139,255,.16)" stroke-dasharray="3 6"/>
+  <text x="525" y="60" text-anchor="middle" class="fc-lbl" fill="#a98bff" style="font-size:11px">SUB-AGENTS · WAVES</text>
+
+  <rect x="672" y="70" width="140" height="2890" rx="10" fill="rgba(255,107,214,.03)" stroke="rgba(255,107,214,.16)" stroke-dasharray="3 6"/>
+  <text x="742" y="60" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
+  <line x1="742" y1="78" x2="742" y2="2956" stroke="rgba(255,107,214,.09)" stroke-dasharray="1 7"/>
+
+  <rect x="820" y="70" width="152" height="2890" rx="10" fill="rgba(120,140,255,.04)" stroke="rgba(120,140,255,.18)" stroke-dasharray="3 6"/>
+  <text x="896" y="60" text-anchor="middle" class="fc-lbl" fill="#c9aaff" style="font-size:11px">RECORDS</text>
+
+  <!-- ============================================================ -->
+  <!-- ===== BAND DIVIDERS + ROUND TABS + PHASE RAIL ============== -->
+  <!-- ============================================================ -->
+  <line x1="66" y1="470"  x2="972" y2="470"  stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+  <line x1="66" y1="980"  x2="972" y2="980"  stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+  <line x1="66" y1="1130" x2="972" y2="1130" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+  <line x1="66" y1="1640" x2="972" y2="1640" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+  <line x1="66" y1="1772" x2="972" y2="1772" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
+
+  <!-- round tabs (left of OPERATOR lane, inside its top-left) -->
+  <rect x="70" y="78" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="87" y="91" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R1</text>
+  <rect x="70" y="494" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="87" y="507" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R2</text>
+  <rect x="70" y="1146" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="87" y="1159" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R3</text>
+
+  <!-- PHASE RAIL — vertical band tags down the far-left edge (rotated). The one
+       continuous read: PLAN → CONVERGE → ACCEPT → EXECUTE. -->
+  <text x="11" y="525" text-anchor="middle" transform="rotate(-90 11 525)" style="font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:3px;fill:#4fd6ff;opacity:.85">P L A N</text>
+  <text x="11" y="1385" text-anchor="middle" transform="rotate(-90 11 1385)" style="font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:3px;fill:#a98bff;opacity:.85">C O N V E R G E</text>
+  <text x="11" y="1716" text-anchor="middle" transform="rotate(-90 11 1716)" style="font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:3px;fill:#ffd166;opacity:.9">A C C E P T</text>
+  <text x="11" y="2326" text-anchor="middle" transform="rotate(-90 11 2326)" style="font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:3px;fill:#5ef2a0;opacity:.9">E X E C U T E</text>
+
+  <!-- ============================================================ -->
+  <!-- ============ PLAN · R1 — the opening converge =============== -->
+  <!-- ============================================================ -->
+  <!-- operator steer ① -->
+  <rect x="72" y="120" width="118" height="46" rx="10" fill="rgba(255,209,102,.06)" stroke="#ffd166" stroke-dasharray="3 3"/>
+  <text x="131" y="140" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">★ YOU open</text>
+  <text x="131" y="155" text-anchor="middle" class="fc-sub" fill="#ffd166">Chat 1 · frame the task</text>
+  <path class="fl fmarch" stroke="#ffd166" d="M190 143 H204" marker-end="url(#fs-a)"/>
+
+  <!-- MANAGER box -->
+  <rect x="216" y="120" width="152" height="50" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+  <text x="292" y="141" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">MANAGER</text>
+  <text x="292" y="157" text-anchor="middle" class="fc-sub">folds + records</text>
+
+  <!-- the wave-1 voices (right-anchored, well clear of SYNTH) -->
+  <text x="436" y="118" text-anchor="end" class="fc-sub" fill="#4fd6ff">voice A</text>
+  <text x="436" y="146" text-anchor="end" class="fc-sub" fill="#a98bff">voice B</text>
+  <text x="436" y="174" text-anchor="end" class="fc-sub" fill="#ff6bd6">adversarial audit</text>
+  <text x="436" y="202" text-anchor="end" class="fc-sub" fill="#ffb454">plan-breaker</text>
+  <path class="fl fmarch" stroke="#4fd6ff" d="M446 114 C486 114 496 150 512 156"/>
+  <path class="fl fmarch" stroke="#a98bff" d="M446 142 C486 142 500 156 512 158"/>
+  <path class="fl fmarch" stroke="#ff6bd6" d="M446 170 C486 170 500 164 512 160"/>
+  <path class="fl fmarch" stroke="#ffb454" d="M446 198 C486 198 496 168 512 162"/>
+
+  <!-- SYNTH -->
+  <circle class="fpulse" cx="552" cy="159" r="28" fill="rgba(22,28,62,.7)" stroke="#fff" stroke-width="1.1"/>
+  <text x="552" y="156" text-anchor="middle" class="fc-lbl" style="font-size:12px">SYNTH</text>
+  <text x="552" y="170" text-anchor="middle" class="fc-sub">grades</text>
+
+  <!-- converged answer back to manager -->
+  <path class="fl fmarch" stroke="url(#fs-rv)" stroke-width="7" d="M524 159 H378" marker-end="url(#fs-c)"/>
+  <text x="450" y="190" text-anchor="middle" class="fc-sub" fill="#9fd9ff">◂ converged answer</text>
+
+  <!-- records column (R1) -->
+  <rect x="824" y="262" width="144" height="32" rx="9" fill="rgba(79,214,255,.05)" stroke="rgba(120,140,255,.32)"/><text x="896" y="283" text-anchor="middle" class="fc-sub" fill="#9fd9ff">DIGEST DOCS</text>
+  <rect x="824" y="304" width="144" height="32" rx="9" fill="rgba(255,209,102,.06)" stroke="rgba(255,209,102,.35)"/><text x="896" y="325" text-anchor="middle" class="fc-sub" fill="#ffd166">COORD LEDGER</text>
+  <rect x="824" y="346" width="144" height="32" rx="9" fill="rgba(169,139,255,.06)" stroke="rgba(169,139,255,.35)"/><text x="896" y="367" text-anchor="middle" class="fc-sub" fill="#c9aaff">OTHER INSTANCES</text>
+  <text x="610" y="244" text-anchor="middle" class="fc-sub" fill="#8b95bd">folds + records into ▸</text>
+  <path class="fl fmarch" stroke="#a98bff" d="M320 170 C540 250 700 277 822 278" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#a98bff" d="M320 170 C540 280 700 319 822 320" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#a98bff" d="M320 170 C540 310 700 361 822 362" marker-end="url(#fs-v)"/>
+
+  <!-- SHADOW · watching from round one -->
+  <rect x="676" y="118" width="132" height="42" rx="10" fill="rgba(255,107,214,.05)" stroke="rgba(255,107,214,.4)"/>
+  <text x="742" y="136" text-anchor="middle" class="fc-sub" fill="#ff9be0">SHADOW · watching</text>
+  <text x="742" y="150" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">from round one</text>
+  <path class="fl fmarch" stroke="#ff6bd6" stroke-dasharray="5 4" d="M778 160 C806 200 822 248 838 256" marker-end="url(#fs-m)"/>
+  <text x="806" y="220" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">logs ▸</text>
+
+  <!-- R1 -> R2 re-entry: build on the digest (gold dashed, routed through manager gap) -->
+  <path class="fl fmarch" stroke="#ffd166" stroke-dasharray="6 4" d="M824 278 C640 360 440 410 378 500" marker-end="url(#fs-c)"/>
+  <text x="486" y="430" text-anchor="middle" class="fc-sub" fill="#ffd166">↻ back to the manager —</text>
+  <text x="486" y="446" text-anchor="middle" class="fc-sub" fill="#ffd166">build on the digest, never the raw pile</text>
+
+  <!-- ============================================================ -->
+  <!-- ============ PLAN · R2 — back down for more ================= -->
+  <!-- ============================================================ -->
+  <rect x="216" y="500" width="152" height="50" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+  <text x="292" y="521" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">MANAGER</text>
+  <text x="292" y="537" text-anchor="middle" class="fc-sub" fill="#9fd9ff">R2 · new wave</text>
+
+  <text x="525" y="500" text-anchor="middle" class="fc-sub" fill="#a98bff">② more documents — different agent types</text>
+
+  <!-- typed wave stack -->
+  <rect x="396" y="512" width="256" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="529" text-anchor="middle" class="fc-sub" fill="#c9aaff">SCOUT · substrate findings</text>
+  <rect x="396" y="544" width="256" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="561" text-anchor="middle" class="fc-sub" fill="#c9aaff">VALIDATOR · file:line sheet</text>
+  <rect x="396" y="576" width="256" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="593" text-anchor="middle" class="fc-sub" fill="#c9aaff">MATHEMATICIAN · settled-math note</text>
+  <rect x="396" y="608" width="256" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="625" text-anchor="middle" class="fc-sub" fill="#c9aaff">INDEP. AUDITOR · audit report</text>
+  <rect x="396" y="640" width="256" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="657" text-anchor="middle" class="fc-sub" fill="#c9aaff">ALT-DESIGN · rival memo</text>
+
+  <!-- manager fires the wave -->
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 521 C380 521 386 525 394 525" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 528 C380 528 386 589 394 589" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 535 C380 535 386 653 394 653" marker-end="url(#fs-v)"/>
+
+  <!-- wave files docs to records -->
+  <path class="fl fmarch" stroke="#a98bff" d="M654 551 C720 551 760 567 822 567" marker-end="url(#fs-v)"/>
+  <rect x="824" y="552" width="144" height="32" rx="9" fill="rgba(120,140,255,.05)" stroke="rgba(120,140,255,.3)"/><text x="896" y="573" text-anchor="middle" class="fc-sub" fill="#9fd9ff">+ MORE DOCS</text>
+
+  <!-- SHADOW · premise checks the wave live (right of the wave stack) -->
+  <rect x="676" y="606" width="132" height="44" rx="10" fill="rgba(255,107,214,.05)" stroke="rgba(255,107,214,.4)"/>
+  <text x="742" y="624" text-anchor="middle" class="fc-sub" fill="#ff9be0">SHADOW · premise</text>
+  <text x="742" y="638" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">checks the wave live</text>
+  <path class="fl fmarch" stroke="#ff6bd6" d="M674 627 H656" marker-end="url(#fs-m)"/>
+  <text x="666" y="600" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">STEER</text>
+
+  <!-- ===== WITHIN-WAVE ITERATION — the headline loop, given real room ===== -->
+  <!-- A big, unmistakable amber loop that bows far out into the LOOP gutter:
+       it leaves the wave-stack bottom-left, sweeps down-left into the gutter,
+       runs UP the gutter, and re-enters the manager. Labels sit in the clear
+       gutter band, not on any node. -->
+  <path class="fl fmarch" stroke="#ffb454" stroke-width="2.6"
+        d="M396 700 C300 718 60 720 40 660 V592 C40 540 150 540 214 538"
+        marker-end="url(#fs-a)"/>
+  <text x="124" y="708" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ the wave iterates —</text>
+  <text x="124" y="724" text-anchor="middle" class="fc-sub" fill="#ffb454">passes 1…N until it settles</text>
+  <text x="37" y="624" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px" transform="rotate(-90 37 624)">⟲ re-investigate</text>
+
+  <!-- fold-down: aggregate -> audit-of-audit -> prune->digest -->
+  <rect x="416" y="744" width="220" height="32" rx="9" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="526" y="765" text-anchor="middle" class="fc-sub" fill="#c9aaff">AGGREGATE · folds, never decides</text>
+  <rect x="416" y="794" width="196" height="32" rx="9" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="514" y="815" text-anchor="middle" class="fc-sub" fill="#ff9be0">AUDIT-OF-AUDIT</text>
+  <rect x="416" y="844" width="220" height="34" rx="9" fill="rgba(94,242,160,.06)" stroke="#5ef2a0"/><text x="526" y="866" text-anchor="middle" class="fc-sub" fill="#5ef2a0">PRUNE → DIGEST · cook the round down</text>
+  <text x="526" y="902" text-anchor="middle" class="fc-sub" fill="#ffd166">⛉ a nothing-lost guard rides the fold</text>
+  <path class="fl fmarch" stroke="#a98bff" d="M526 666 V742" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#a98bff" d="M514 776 V792" marker-end="url(#fs-m)"/>
+  <path class="fl fmarch" stroke="#5ef2a0" d="M526 826 V842" marker-end="url(#fs-g)"/>
+
+  <!-- ============================================================ -->
+  <!-- ===== HANDOFF — outgoing becomes Senior, you open successor = -->
+  <!-- ============================================================ -->
+  <!-- operator steer ② -->
+  <rect x="72" y="1020" width="118" height="48" rx="10" fill="rgba(255,209,102,.06)" stroke="#ffd166" stroke-dasharray="3 3"/>
+  <text x="131" y="1040" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">★ YOU open</text>
+  <text x="131" y="1055" text-anchor="middle" class="fc-sub" fill="#ffd166">a fresh chat · successor</text>
+  <path class="fl fmarch" stroke="#ffd166" d="M190 1044 H204" marker-end="url(#fs-a)"/>
+
+  <!-- SENIOR backstop card (operator-side rail) -->
+  <rect x="216" y="1018" width="120" height="44" rx="10" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
+  <text x="276" y="1038" text-anchor="middle" class="fc-lbl" fill="#a98bff" style="font-size:11px">SENIOR</text>
+  <text x="276" y="1053" text-anchor="middle" class="fc-sub">backstop · history</text>
+
+  <!-- handoff pulse on the spine -->
+  <circle class="fpulse" cx="292" cy="1100" r="11" fill="rgba(169,139,255,.2)" stroke="#a98bff"/>
+  <text x="360" y="1090" text-anchor="middle" class="fc-sub" fill="#c9aaff">handoff</text>
+
+  <!-- digest+ledger feeds the handoff -->
+  <path class="fl fmarch" stroke="#a98bff" d="M416 866 C360 940 320 1040 304 1094" marker-end="url(#fs-v)"/>
+  <text x="392" y="958" text-anchor="middle" class="fc-sub" fill="#8b95bd">digest + ledger ▸</text>
+
+  <!-- outgoing => Senior -->
+  <path class="fl fmarch" stroke="#a98bff" d="M282 1090 C272 1078 286 1066 292 1062" marker-end="url(#fs-v)"/>
+  <text x="276" y="1078" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">outgoing ⇒ Senior</text>
+
+  <!-- ============================================================ -->
+  <!-- ============ CONVERGE · R3 — successor hardens it =========== -->
+  <!-- ============================================================ -->
+  <rect x="216" y="1150" width="152" height="52" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+  <text x="292" y="1171" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">SUCCESSOR MGR</text>
+  <text x="292" y="1187" text-anchor="middle" class="fc-sub">cold-start: digest + ledger</text>
+  <path class="fl fmarch" stroke="#a98bff" d="M292 1111 V1148" marker-end="url(#fs-c)"/>
+
+  <text x="525" y="1150" text-anchor="middle" class="fc-sub" fill="#a98bff">③ a fresh sanity pass + an attack</text>
+  <rect x="396" y="1162" width="170" height="32" rx="9" fill="rgba(94,242,160,.05)" stroke="#5ef2a0"/><text x="481" y="1183" text-anchor="middle" class="fc-sub" fill="#5ef2a0">SANITY-CHECK WAVE</text>
+  <rect x="396" y="1202" width="170" height="32" rx="9" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="481" y="1223" text-anchor="middle" class="fc-sub" fill="#ff9be0">ADVERSARIAL AUDIT</text>
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 1172 C382 1172 388 1178 394 1178" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 1186 C382 1186 388 1218 394 1218" marker-end="url(#fs-v)"/>
+
+  <!-- re-converge diamond (merged the two-line micro-label to one) -->
+  <g transform="translate(622,1198)"><rect class="fpulse" x="-26" y="-26" width="52" height="52" rx="8" transform="rotate(45)" fill="rgba(22,28,62,.75)" stroke="#a98bff"/></g>
+  <text x="622" y="1202" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ re-converge</text>
+  <path class="fl fmarch" stroke="#5ef2a0" d="M566 1178 C586 1182 592 1188 596 1192" marker-end="url(#fs-g)"/>
+  <path class="fl fmarch" stroke="#ff6bd6" d="M566 1218 C586 1214 592 1208 596 1204" marker-end="url(#fs-m)"/>
+
+  <!-- PROBLEM surfaces -->
+  <rect x="486" y="1300" width="184" height="42" rx="10" fill="rgba(255,122,122,.08)" stroke="#ff7a7a"/>
+  <text x="578" y="1320" text-anchor="middle" class="fc-lbl" fill="#ff7a7a" style="font-size:11px">PROBLEM surfaces</text>
+  <text x="578" y="1335" text-anchor="middle" class="fc-sub" fill="#ff7a7a">trips · PARTIAL / DIVERGE</text>
+  <path class="fl fmarch" stroke="#ff7a7a" d="M622 1224 V1298" marker-end="url(#fs-r)"/>
+
+  <!-- manager <-> shadow ledger exchange (dedicated clear row) -->
+  <rect x="216" y="1408" width="152" height="48" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+  <text x="292" y="1428" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">MANAGER</text>
+  <text x="292" y="1443" text-anchor="middle" class="fc-sub">handles it</text>
+  <rect x="676" y="1408" width="132" height="48" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
+  <text x="742" y="1428" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
+  <text x="742" y="1443" text-anchor="middle" class="fc-sub">re-reads source</text>
+
+  <!-- problem -> back to manager -->
+  <path class="fl fmarch" stroke="#ff7a7a" d="M540 1342 C440 1370 380 1396 368 1418" marker-end="url(#fs-c)"/>
+  <text x="430" y="1376" text-anchor="middle" class="fc-sub" fill="#ff7a7a" style="font-size:9px">↻ back to manager</text>
+  <!-- ping STEER -> shadow -->
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 1424 H674" marker-end="url(#fs-c)"/>
+  <text x="521" y="1416" text-anchor="middle" class="fc-sub" fill="#4fd6ff">ping · STEER (via ledger) →</text>
+  <!-- ACK <- shadow -->
+  <path class="fl fmarch" stroke="#ff6bd6" d="M674 1444 H370" marker-end="url(#fs-m)"/>
+  <text x="521" y="1456" text-anchor="middle" class="fc-sub" fill="#ff9be0">◂ ACK (via ledger) · shadow answers</text>
+
+  <!-- loop-back exit: not converged → another round (big amber bow into gutter) -->
+  <path class="fl fmarch" stroke="#ffb454" stroke-width="2.6"
+        d="M216 1448 C120 1448 40 1438 40 1340 V1230 C40 1180 150 1176 214 1180"
+        marker-end="url(#fs-a)"/>
+  <text x="37" y="1300" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px" transform="rotate(-90 37 1300)">⟲ loop</text>
+  <text x="128" y="1496" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ not converged yet → another round</text>
+
+  <!-- ============================================================ -->
+  <!-- ============ ACCEPT — converged gate + operator sign ======== -->
+  <!-- ============================================================ -->
+  <rect x="470" y="1666" width="226" height="50" rx="12" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
+  <text x="583" y="1688" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:12px">CONVERGED ✓</text>
+  <text x="583" y="1704" text-anchor="middle" class="fc-sub" fill="#5ef2a0">survived the gauntlet → into the build</text>
+  <!-- on-agreement promote from the resolved manager -->
+  <path class="fl fmarch" stroke="#5ef2a0" d="M368 1450 C470 1540 520 1620 528 1664" marker-end="url(#fs-g)"/>
+  <text x="438" y="1576" text-anchor="middle" class="fc-sub" fill="#5ef2a0">on agreement ▶</text>
+
+  <!-- ★ operator sign (only here) -->
+  <rect x="72" y="1666" width="120" height="50" rx="10" fill="rgba(255,209,102,.06)" stroke="#ffd166" stroke-dasharray="3 3"/>
+  <text x="132" y="1688" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">★ YOU sign</text>
+  <text x="132" y="1703" text-anchor="middle" class="fc-sub" fill="#ffd166">promote · only here</text>
+  <path class="fl fmarch" stroke="#ffd166" d="M470 1691 H196" marker-end="url(#fs-a)"/>
+
+  <!-- ============================================================ -->
+  <!-- ============ EXECUTE — DEEPENED Layer-2.5 paired build ====== -->
+  <!--   A looping, multi-step build cycle that rhymes with a PLAN round:    -->
+  <!--   ① entry · ② build wave fans out · ③ per-PU cycle has depth ·        -->
+  <!--   ④ shadow clearance-bar thread runs LIVE · ⑤ commit + records ·      -->
+  <!--   ⑥ amber LOOP back for the next PU · ⑦ all PUs land → final push.    -->
+  <!-- ============================================================ -->
+  <rect x="70" y="1782" width="56" height="18" rx="6" fill="url(#fs-tab)"/><text x="98" y="1795" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:10px;fill:#04050d">BUILD</text>
+  <text x="540" y="1796" text-anchor="middle" class="fc-sub" fill="#5ef2a0">THE BUILD · a Layer-2.5 paired run — the SAME cast, now building: Executor builds, Shadow verifies live</text>
+
+  <!-- ===== ① ENTRY — the manager spine becomes the EXECUTOR (build mode) ===== -->
+  <rect x="216" y="1824" width="152" height="60" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
+  <text x="292" y="1845" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">EXECUTOR</text>
+  <text x="292" y="1860" text-anchor="middle" class="fc-sub">the manager spine, now</text>
+  <text x="292" y="1873" text-anchor="middle" class="fc-sub">in build mode · sole committer</text>
+  <!-- continue down the spine from the operator sign / gate region -->
+  <path class="fl fmarch" stroke="#5ef2a0" d="M292 1718 V1822" marker-end="url(#fs-g)"/>
+  <text x="292" y="1762" text-anchor="middle" class="fc-sub" fill="#5ef2a0" style="font-size:9px">① signed → opens the build ▾</text>
+
+  <!-- ===== ② BUILD WAVE fans out — builders on file-disjoint lanes ===== -->
+  <text x="525" y="1908" text-anchor="middle" class="fc-sub" fill="#a98bff">② a BUILD WAVE fans out — builders on file-disjoint lanes</text>
+  <rect x="396" y="1920" width="256" height="28" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="1938" text-anchor="middle" class="fc-sub" fill="#c9aaff">MATH / PROTOTYPE-FIRST seat</text>
+  <rect x="396" y="1954" width="256" height="28" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="1972" text-anchor="middle" class="fc-sub" fill="#c9aaff">FEATURE / PRODUCER builder</text>
+  <rect x="396" y="1988" width="256" height="28" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="2006" text-anchor="middle" class="fc-sub" fill="#c9aaff">SCOPE / BOUNDARY seat</text>
+  <!-- executor fires the build wave (three fan-out paths) -->
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 1850 C384 1850 388 1934 394 1934" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 1858 C384 1858 388 1968 394 1968" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#4fd6ff" d="M368 1866 C384 1866 388 2002 394 2002" marker-end="url(#fs-v)"/>
+  <!-- collision-hub serialize note (between the wave stack and the SHADOW lane, clear corridor) -->
+  <rect x="676" y="1958" width="132" height="44" rx="10" fill="rgba(255,180,84,.06)" stroke="#ffb454"/>
+  <text x="742" y="1976" text-anchor="middle" class="fc-sub" fill="#ffb454">collision hub</text>
+  <text x="742" y="1990" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">shared file → SERIALIZED</text>
+  <path class="fl fmarch" stroke="#ffb454" d="M654 1980 H674" marker-end="url(#fs-a)"/>
+  <text x="664" y="1948" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px">one at a time</text>
+
+  <!-- ===== ③ the per-PU cycle has DEPTH (analog of the wave iterating 1..N) ===== -->
+  <text x="525" y="2052" text-anchor="middle" class="fc-sub" fill="#9fd9ff">③ the per-PU cycle (each process-unit runs the full depth)</text>
+  <rect x="396" y="2064" width="256" height="28" rx="7" fill="rgba(79,214,255,.05)" stroke="#4fd6ff"/><text x="524" y="2082" text-anchor="middle" class="fc-sub" fill="#9fd9ff">ⓐ ground the PU</text>
+  <rect x="396" y="2098" width="256" height="28" rx="7" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="524" y="2116" text-anchor="middle" class="fc-sub" fill="#c9aaff">ⓑ isolated math + throwaway PROTOTYPE FIRST</text>
+  <rect x="396" y="2132" width="256" height="28" rx="7" fill="rgba(79,214,255,.05)" stroke="#4fd6ff"/><text x="524" y="2150" text-anchor="middle" class="fc-sub" fill="#9fd9ff">ⓒ build the PU</text>
+  <rect x="396" y="2166" width="256" height="28" rx="7" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="524" y="2184" text-anchor="middle" class="fc-sub" fill="#ff9be0">ⓓ mandatory 2nd audit · author ≠ auditor</text>
+  <rect x="396" y="2200" width="256" height="28" rx="7" fill="rgba(255,180,84,.06)" stroke="#ffb454"/><text x="524" y="2218" text-anchor="middle" class="fc-sub" fill="#ffb454">ⓔ acceptance + a negative-control check</text>
+  <!-- the mini-sequence step arrows down the centre of the wave lane -->
+  <path class="fl fmarch" stroke="#a98bff" d="M524 2092 V2096" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#a98bff" d="M524 2126 V2130" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#ff6bd6" d="M524 2160 V2164" marker-end="url(#fs-m)"/>
+  <path class="fl fmarch" stroke="#ffb454" d="M524 2194 V2198" marker-end="url(#fs-a)"/>
+  <!-- wave entry into the per-PU cycle -->
+  <path class="fl fmarch" stroke="#a98bff" d="M524 2016 V2062" marker-end="url(#fs-v)"/>
+
+  <!-- ===== ④ the SHADOW thread runs LIVE through the whole build ===== -->
+  <!-- SHADOW box (write-isolated, magenta) — the clearance-bar exchange parallels
+       the planning-phase manager<->shadow ledger thread. -->
+  <rect x="676" y="2096" width="132" height="72" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
+  <text x="742" y="2116" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
+  <text x="742" y="2130" text-anchor="middle" class="fc-sub">LIVE through the build</text>
+  <text x="742" y="2143" text-anchor="middle" class="fc-sub">premise-audit AT SOURCE</text>
+  <text x="742" y="2156" text-anchor="middle" class="fc-sub" fill="#8b95bd">non-builder · write-isolated</text>
+
+  <!-- CLEARANCE BAR · the shadow holds the PU until premises verify (steer → ack → cleared) -->
+  <!-- STEER: HOLD this PU (shadow ▸ executor) -->
+  <path class="fl fmarch" stroke="#ff6bd6" d="M674 2118 H656" marker-end="url(#fs-m)"/>
+  <text x="624" y="2104" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">CLEARANCE BAR ▸</text>
+  <text x="624" y="2116" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">HOLD until premises</text>
+  <text x="624" y="2127" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">verify at source</text>
+  <!-- the premises being checked, in the clear gutter right of the shadow lane -->
+  <text x="890" y="2104" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">parity unchanged ·</text>
+  <text x="890" y="2116" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">wired at BOTH entry points ·</text>
+  <text x="890" y="2128" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">re-run the regression harness</text>
+  <path class="fl fmarch" stroke="#ff6bd6" stroke-dasharray="4 3" d="M810 2120 H818" marker-end="url(#fs-m)"/>
+  <!-- ACK: executor states premises (executor ▸ shadow) -->
+  <path class="fl fmarch" stroke="#4fd6ff" d="M656 2148 H674" marker-end="url(#fs-c)"/>
+  <text x="630" y="2160" text-anchor="middle" class="fc-sub" fill="#4fd6ff" style="font-size:9px">◂ ACK — premises stated</text>
+  <!-- CLEARED: shadow clears the PU (down the shadow lane to the commit row) -->
+  <path class="fl fmarch" stroke="#5ef2a0" d="M742 2168 V2236 C742 2272 700 2292 660 2300" marker-end="url(#fs-g)"/>
+  <text x="742" y="2196" text-anchor="middle" class="fc-sub" fill="#5ef2a0" style="font-size:9px">CLEARED ▸</text>
+  <!-- BLOCKING: a premise fails → halts this PU (red, into the gutter loop) -->
+  <rect x="676" y="2236" width="132" height="40" rx="10" fill="rgba(255,122,122,.08)" stroke="#ff7a7a"/>
+  <text x="742" y="2253" text-anchor="middle" class="fc-sub" fill="#ff7a7a" style="font-size:9px">BLOCKING ✕ premise fails</text>
+  <text x="742" y="2266" text-anchor="middle" class="fc-sub" fill="#ff7a7a" style="font-size:9px">→ ACK / ESCALATE · halts PU</text>
+  <path class="fl fmarch" stroke="#ff7a7a" d="M742 2196 V2234" marker-end="url(#fs-r)"/>
+
+  <!-- ===== standing backstops — SENIOR sweep + OVERSEER reads the diff (operator-side rail) ===== -->
+  <rect x="72" y="2096" width="118" height="50" rx="10" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
+  <text x="131" y="2114" text-anchor="middle" class="fc-sub" fill="#a98bff">SENIOR · periodic sweep</text>
+  <text x="131" y="2128" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">run clean · bar honored</text>
+  <text x="131" y="2140" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">· carry on</text>
+  <rect x="72" y="2156" width="118" height="38" rx="10" fill="rgba(169,139,255,.05)" stroke="rgba(169,139,255,.3)"/>
+  <text x="131" y="2174" text-anchor="middle" class="fc-sub" fill="#c9aaff">OVERSEER</text>
+  <text x="131" y="2187" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">reads the diff directly</text>
+  <!-- backstops watch the per-PU cycle (dashed, advisory) -->
+  <path class="fl fmarch" stroke="#a98bff" stroke-dasharray="4 4" d="M190 2120 C300 2120 360 2128 394 2132" marker-end="url(#fs-v)"/>
+  <path class="fl fmarch" stroke="#c9aaff" stroke-dasharray="4 4" d="M190 2175 C300 2178 360 2182 394 2186" marker-end="url(#fs-v)"/>
+
+  <!-- operator steer ③ — unresolved BLOCKING escalates to you -->
+  <rect x="72" y="2236" width="118" height="42" rx="10" fill="rgba(255,209,102,.06)" stroke="#ffd166" stroke-dasharray="3 3"/>
+  <text x="131" y="2255" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">★ ESCALATE → YOU</text>
+  <text x="131" y="2269" text-anchor="middle" class="fc-sub" fill="#ffd166">only unresolved BLOCKING</text>
+  <path class="fl fmarch" stroke="#ff7a7a" stroke-dasharray="5 4" d="M674 2256 C420 2256 280 2256 192 2256" marker-end="url(#fs-r)"/>
+  <text x="430" y="2246" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">unresolved BLOCKING rises to the operator ↑</text>
+
+  <!-- ===== ⑤ COMMIT one PU (push HELD) + post-commit verify + RECORDS ===== -->
+  <rect x="216" y="2300" width="152" height="58" rx="12" fill="rgba(94,242,160,.07)" stroke="#5ef2a0"/>
+  <text x="292" y="2320" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:11px">⑤ COMMIT one PU</text>
+  <text x="292" y="2334" text-anchor="middle" class="fc-sub" fill="#5ef2a0">by explicit path</text>
+  <text x="292" y="2347" text-anchor="middle" class="fc-sub" fill="#ffb454">push HELD</text>
+  <!-- cleared PU flows down the spine into the commit -->
+  <path class="fl fmarch" stroke="#5ef2a0" d="M524 2228 C440 2272 360 2290 370 2316" marker-end="url(#fs-g)"/>
+  <text x="452" y="2266" text-anchor="middle" class="fc-sub" fill="#5ef2a0" style="font-size:9px">cleared PU ▸ commit</text>
+
+  <!-- shadow post-commit source-verify → this PU's thread closed -->
+  <path class="fl fmarch" stroke="#ff6bd6" stroke-dasharray="5 4" d="M660 2320 C500 2320 420 2326 370 2330" marker-end="url(#fs-m)"/>
+  <text x="540" y="2310" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">◂ post-commit source-verify · thread CLOSED</text>
+
+  <!-- RECORDS: commit + ledger marks (the running trail) -->
+  <rect x="824" y="2300" width="144" height="30" rx="9" fill="rgba(94,242,160,.05)" stroke="rgba(94,242,160,.32)"/><text x="896" y="2320" text-anchor="middle" class="fc-sub" fill="#5ef2a0">COMMITS · clean trail</text>
+  <rect x="824" y="2336" width="144" height="30" rx="9" fill="rgba(255,209,102,.06)" stroke="rgba(255,209,102,.35)"/><text x="896" y="2356" text-anchor="middle" class="fc-sub" fill="#ffd166">LEDGER MARKS · the trail</text>
+  <path class="fl fmarch" stroke="#5ef2a0" d="M368 2326 C600 2326 740 2318 822 2316" marker-end="url(#fs-g)"/>
+  <path class="fl fmarch" stroke="#ffd166" d="M368 2340 C600 2348 740 2351 822 2351" marker-end="url(#fs-c)"/>
+
+  <!-- ===== ⑥ THE LOOP — more PUs → the next build wave (amber gutter bow) ===== -->
+  <!-- Mirrors the PLAN within-wave loop exactly: leaves the commit row, sweeps
+       far left into the LOOP gutter, runs UP the gutter the full height of the
+       build band, and re-enters the BUILD WAVE fan-out at the top. -->
+  <path class="fl fmarch" stroke="#ffb454" stroke-width="2.6"
+        d="M216 2330 C120 2330 40 2320 40 2200 V2010 C40 1936 150 1932 214 1934"
+        marker-end="url(#fs-a)"/>
+  <text x="126" y="2386" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ more PUs → fire the next build wave</text>
+  <text x="126" y="2402" text-anchor="middle" class="fc-sub" fill="#ffb454">PU after PU — until ALL PUs land</text>
+  <text x="37" y="2120" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px" transform="rotate(-90 37 2120)">⟲ next PU</text>
+
+  <!-- ===== ⑦ EXIT — all PUs land → SINGLE FINAL PUSH → SHIP ===== -->
+  <line x1="66" y1="2452" x2="972" y2="2452" stroke="rgba(94,242,160,.18)" stroke-dasharray="3 6"/>
+  <!-- all PUs land, from the commit/records region down the spine, elbow-left to SHIP -->
+  <path class="fl fmarch" stroke="#5ef2a0" stroke-width="2.2" d="M292 2358 V2560 C292 2600 250 2628 224 2636" marker-end="url(#fs-g)"/>
+  <text x="300" y="2510" text-anchor="middle" class="fc-sub" fill="#5ef2a0">all PUs land ▶</text>
+  <text x="300" y="2526" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">the loop has drained the whole list</text>
+  <rect x="112" y="2638" width="224" height="52" rx="12" fill="rgba(94,242,160,.1)" stroke="#5ef2a0"/>
+  <text x="224" y="2661" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:12px">SINGLE FINAL PUSH → SHIP</text>
+  <text x="224" y="2678" text-anchor="middle" class="fc-sub" fill="#5ef2a0">one complete, audited state</text>
+
+  <!-- the ledger cadence caption (the running protocol of the whole paired build) -->
+  <text x="620" y="2562" text-anchor="middle" class="fc-sub" fill="#8b95bd">the ledger cadence · manager-to-manager, append-only &amp; immutable:</text>
+  <text x="620" y="2578" text-anchor="middle" class="fc-sub" fill="#9fd9ff">STEER → ACK + act → OBSERVATION: done&nbsp;&nbsp;·&nbsp;&nbsp;BLOCKING → ACK or ESCALATE → operator&nbsp;&nbsp;·&nbsp;&nbsp;silence = breach</text>
+  <text x="620" y="2594" text-anchor="middle" class="fc-sub" fill="#5d6790">↻ even the ledger is pruned — it grows, freezes, a V2 continues the same arc</text>
+
+  <!-- the loop closes: each chapter on fresh agreement until it converges and survives -->
+  <text x="540" y="2724" text-anchor="middle" class="fc-sub" fill="#5d6790">⟳ …and the loop repeats — next chapter, on fresh agreement — until it converges and survives</text>
+</svg>
+    </div>
+
+    <h3 class="reveal" style="margin-top:28px">The convergence meter</h3>
+    <p class="lead reveal" style="margin-top:8px">A synthesis seat (never one of the voices) tags each finding and issues a verdict (the bands below are illustrative, not a fixed contract):</p>
+    <div class="meter reveal">
+      <div class="mbox cv"><div class="big">≥ 80%</div><div class="lb">CONVERGE</div><div class="ds">The voices land together — promote with confidence.</div></div>
+      <div class="mbox pt"><div class="big">50–80%</div><div class="lb">PARTIAL</div><div class="ds">Real-but-missed items exist — a closer seat re-checks against the actual source.</div></div>
+      <div class="mbox dv"><div class="big">&lt; 50%</div><div class="lb">DIVERGE</div><div class="ds">The question itself is suspect — escalate it as a design problem.</div></div>
+    </div>
+    <div class="reveal" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;font-family:var(--mono);font-size:11.5px">
+      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(94,242,160,.3);color:var(--green)">CONVERGE → promote ▶ next stage</span>
+      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(255,209,102,.3);color:var(--gold)">PARTIAL → a closer seat re-checks ⟲ vs source</span>
+      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(255,122,122,.3);color:var(--red)">DIVERGE → escalate as a design problem ⟲</span>
+    </div>
+
+    <div class="callout reveal">
+      <span class="t">The human's scarce contribution is doubt</span>
+      <p>An AI converges <b>confidently but shallowly</b> — and it will not doubt its own premise. It answers the question as asked. The single most valuable thing the human brings is <b>doubt</b>: the willingness to ask whether the premise was even right. So the rule is firm — <b>never "lock and move on" on first agreement within a single line of audit.</b> First convergence is the start of scrutiny, not the end of it.</p>
+    </div>
+
+    <div class="callout am reveal">
+      <span class="t">An unresolvable question is a symptom, not a matter of taste</span>
+      <p>When an item won't resolve — when the agents reach a forced pick with no evidenced winner — that is treated as a <b>symptom of a design mistake</b>, not as a judgment call to bounce up to the operator. The response is to <b>re-investigate the design</b> until the question dissolves, rather than make the human guess. Only what is truly irreducible ever reaches the operator, and it arrives as an evidenced pick-sheet on grounded footing.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ INSIDE A WAVE ============ -->
 <section id="wave">
   <div class="wrap">
@@ -759,74 +1432,6 @@
       </svg>
     </div>
     <p class="lead reveal" style="margin-top:10px">The manager stays lean on purpose: it conducts, aggregates, and monitors — it never fills its own context with raw work, so it can run wave after wave without losing the thread.</p>
-  </div>
-</section>
-
-<!-- ============ THE FLOWCHART (CENTERPIECE) ============ -->
-<section id="flow">
-  <div class="wrap">
-    <p class="eyebrow reveal">The centerpiece</p>
-    <h2 class="reveal">How the manager progresses — one mode, two phases, three rungs.</h2>
-    <p class="lead reveal">This single diagram is the method in motion. The outer band is the constant: the manager never leaves orchestrator mode. Inside it, work flows through a planning phase and an execution phase, each guarded by a gate. And at every point, the manager works at one of three levels of orchestration depth.</p>
-
-    <div class="flow reveal">
-      <div class="band-label">ORCHESTRATOR MODE — never exited</div>
-      <p class="band-note">The same mode wraps planning and execution. You don't drop out of it to "just build."</p>
-
-      <!-- phase rail (SVG) -->
-      <svg viewBox="0 0 900 200" role="img" aria-label="Plan flows to a converged gate to execute to a verified gate to ship, all wrapped in orchestrator mode, with a failed-gate loopback" style="width:100%;height:auto;display:block;margin:10px 0 2px">
-        <defs>
-          <linearGradient id="fbandg" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset="1" stop-color="#a98bff"/></linearGradient>
-          <marker id="fl-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
-          <marker id="fl-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
-          <marker id="fl-a" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffb454"/></marker>
-        </defs>
-        <rect x="8" y="22" width="884" height="92" rx="16" fill="none" stroke="url(#fbandg)" stroke-width="1.4" stroke-dasharray="4 6"/>
-        <rect x="44" y="48" width="150" height="56" rx="13" fill="rgba(79,214,255,.06)" stroke="#4fd6ff"/>
-        <text x="119" y="72" text-anchor="middle" class="fc-lbl" fill="#4fd6ff">PLAN</text>
-        <text x="119" y="90" text-anchor="middle" class="fc-sub">phase 1</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M194 76 H262" marker-end="url(#fl-c)"/>
-        <g transform="translate(300,76)"><rect class="fpulse" x="-27" y="-27" width="54" height="54" rx="9" transform="rotate(45)" fill="rgba(22,28,62,.78)" stroke="#a98bff"/></g>
-        <text x="300" y="72" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ converged?</text>
-        <text x="300" y="86" text-anchor="middle" class="fc-sub">N angles</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M338 76 H406" marker-end="url(#fl-c)"/>
-        <rect x="408" y="48" width="160" height="56" rx="13" fill="rgba(255,209,102,.05)" stroke="#ffd166"/>
-        <text x="488" y="72" text-anchor="middle" class="fc-lbl" fill="#ffd166">EXECUTE</text>
-        <text x="488" y="90" text-anchor="middle" class="fc-sub">phase 2 · same mode</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M568 76 H636" marker-end="url(#fl-c)"/>
-        <g transform="translate(674,76)"><rect class="fpulse" x="-27" y="-27" width="54" height="54" rx="9" transform="rotate(45)" fill="rgba(22,28,62,.78)" stroke="#a98bff"/></g>
-        <text x="674" y="76" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ verified?</text>
-        <path class="fl fmarch" stroke="#5ef2a0" d="M712 76 H780" marker-end="url(#fl-g)"/>
-        <rect x="782" y="48" width="100" height="56" rx="13" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
-        <text x="832" y="80" text-anchor="middle" class="fc-lbl" fill="#5ef2a0">SHIP</text>
-        <path class="fl fmarch" stroke="#ffb454" d="M300 103 C300 168 488 168 488 106" marker-end="url(#fl-a)"/>
-        <text x="394" y="190" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ a failed gate loops back — a question is a design mistake → see Convergence</text>
-      </svg>
-
-      <!-- escalation ladder -->
-      <div class="ladder-h">↑ the zoom-in: how the manager works inside BOTH phases — escalating orchestration depth ↑</div>
-      <div class="ladder">
-        <div class="rung l0 reveal">
-          <div class="lvl">L0 — anti-pattern</div>
-          <div class="rt">Solo agent carries the load</div>
-          <div class="rd">One agent does the work in its own context, runs forward, and stops. Looks fast.</div>
-          <span class="warn">⚠ leaves silent gaps &amp; potholes — nobody grades the homework</span>
-          <span class="climb">→</span>
-        </div>
-        <div class="rung l1 reveal">
-          <div class="lvl">L1 — the method</div>
-          <div class="rt">Manager orchestrates waves of typed sub-agents</div>
-          <div class="rd">Scouts, workers, mathematicians, auditors — fired in waves, each result folded and audited by a different agent.</div>
-          <span class="climb">→</span>
-        </div>
-        <div class="rung l2 reveal">
-          <div class="lvl">L2 — the ultimate form</div>
-          <div class="rt">Paired orchestration → a 3-agent family</div>
-          <div class="rd">An <b style="color:var(--cyan)">Executor</b> (the only one that edits &amp; commits) + a peer <b style="color:var(--magenta)">Shadow</b> (verifies live, can also carry load), coordinating through a shared <b style="color:var(--magenta)">Coordination Ledger</b> — backstopped by a <b style="color:var(--violet)">Senior</b> across context hand-offs.</div>
-        </div>
-      </div>
-      <p class="ladder-cap reveal">Same method, escalating power — you <b>climb the ladder as the surface grows.</b> This is <em>not</em> about splitting work into parallel lanes; it is about the progression of orchestration <b>depth</b>. A tiny task lives at L0-done-carefully; a campaign earns L2.</p>
-    </div>
   </div>
 </section>
 
@@ -906,235 +1511,6 @@
     <div class="callout cy reveal">
       <span class="t">Why this buys autonomy</span>
       <p>Because every dispatch is a full cold-start briefing and stages <b>close internally on convergence</b> (an auditor's accept, not the operator's sign-off), the manager can fire a stage and step away. The operator <b>sets the pace</b> — which work fires and how much at once — but does not drive each individual step.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MULTI-DIMENSIONAL CONVERGENCE ============ -->
-<section id="convergence">
-  <div class="wrap">
-    <p class="eyebrow reveal">The core idea</p>
-    <h2 class="reveal">Multi-dimensional convergence — many angles, one answer.</h2>
-    <p class="lead reveal">This is the engine's heart. For each question, <b>independent voices investigate separately and never read each other</b> — like asking witnesses to describe a scene in isolation. A fresh synthesis seat then measures how much they agree. <b>Agreement, not authority, is what greenlights the next stage.</b></p>
-
-    <div class="fchart reveal">
-      <p class="fc-title">Flowchart · a full session run — how the work actually progresses, round after round</p>
-      <p class="fc-cap">Read <b>top → bottom</b> as the session unfolds. Each <b>column</b> is a persistent actor (you · the manager · the waves it fires · the shadow peer · the running records); each <b>band</b> is a round. <b style="color:var(--cyan)">Cyan/violet</b> = forward flow, <b style="color:var(--green)">green</b> = advance on agreement, <b style="color:var(--amber)">amber (left gutter)</b> = loop back for another round, <b style="color:var(--magenta)">magenta</b> = the shadow exchange. This sits one zoom <em>above</em> “Inside a Wave” — each wave here is a single beat.</p>
-      <svg viewBox="0 0 940 1480" role="img" aria-label="A full multi-round session as a vertical timeline with swimlanes, ending in the build. Round 1: a mix of voices investigates, SYNTH grades, the manager folds the verdict into the records. Round 2: the manager loops back on the digest, fires a wave of different agent types that file documents, then aggregate, audit-of-audit, and prune to a fresh digest. A successor manager takes over and the outgoing one becomes a Senior backstop. Round 3: the successor fires a sanity-check wave and an adversarial audit into a second convergence check; a problem surfaces, loops back to the manager, which pings the Shadow through the ledger and gets an answer, then either loops another round or, on agreement, promotes to build.">
-        <defs>
-          <linearGradient id="fs-rv" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset=".5" stop-color="#a98bff"/><stop offset="1" stop-color="#5ef2a0"/></linearGradient>
-          <linearGradient id="fs-tab" x1="0" x2="1"><stop offset="0" stop-color="#4fd6ff"/><stop offset="1" stop-color="#a98bff"/></linearGradient>
-          <marker id="fs-c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4fd6ff"/></marker>
-          <marker id="fs-v" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a98bff"/></marker>
-          <marker id="fs-m" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff6bd6"/></marker>
-          <marker id="fs-a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ffb454"/></marker>
-          <marker id="fs-g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5ef2a0"/></marker>
-          <marker id="fs-r" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff7a7a"/></marker>
-        </defs>
-
-        <!-- ===== LANE CHASSIS ===== -->
-        <rect x="16" y="58" width="38" height="1418" rx="8" fill="rgba(255,180,84,.025)" stroke="rgba(255,180,84,.16)" stroke-dasharray="2 5"/>
-        <text x="35" y="50" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px">⟲ LOOP</text>
-        <rect x="62" y="58" width="122" height="1418" rx="10" fill="rgba(255,209,102,.02)" stroke="rgba(255,209,102,.14)" stroke-dasharray="3 6"/>
-        <text x="123" y="48" text-anchor="middle" class="fc-lbl" fill="#ffd166" style="font-size:11px">OPERATOR</text>
-        <rect x="196" y="58" width="164" height="1418" rx="10" fill="rgba(79,214,255,.03)" stroke="rgba(79,214,255,.16)" stroke-dasharray="3 6"/>
-        <text x="278" y="48" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">MANAGER</text>
-        <line x1="278" y1="66" x2="278" y2="1474" stroke="rgba(79,214,255,.09)" stroke-dasharray="1 7"/>
-        <rect x="372" y="58" width="256" height="1418" rx="10" fill="rgba(169,139,255,.03)" stroke="rgba(169,139,255,.16)" stroke-dasharray="3 6"/>
-        <text x="500" y="48" text-anchor="middle" class="fc-lbl" fill="#a98bff" style="font-size:11px">SUB-AGENTS · WAVES</text>
-        <rect x="640" y="58" width="132" height="1418" rx="10" fill="rgba(255,107,214,.03)" stroke="rgba(255,107,214,.16)" stroke-dasharray="3 6"/>
-        <text x="706" y="48" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
-        <line x1="706" y1="66" x2="706" y2="1474" stroke="rgba(255,107,214,.09)" stroke-dasharray="1 7"/>
-        <rect x="784" y="58" width="132" height="1418" rx="10" fill="rgba(120,140,255,.04)" stroke="rgba(120,140,255,.18)" stroke-dasharray="3 6"/>
-        <text x="850" y="48" text-anchor="middle" class="fc-lbl" fill="#c9aaff" style="font-size:11px">RECORDS</text>
-
-        <!-- ===== ROUND DIVIDERS + TABS ===== -->
-        <line x1="62" y1="360" x2="916" y2="360" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
-        <line x1="62" y1="700" x2="916" y2="700" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
-        <line x1="62" y1="1010" x2="916" y2="1010" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
-        <rect x="66" y="66" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="83" y="79" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R1</text>
-        <rect x="66" y="366" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="83" y="379" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R2</text>
-        <rect x="66" y="706" width="34" height="18" rx="6" fill="url(#fs-tab)"/><text x="83" y="719" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:11px;fill:#04050d">R3</text>
-
-        <!-- ============ R1 — CONVERGE (the opening) ============ -->
-        <text x="466" y="100" text-anchor="end" class="fc-sub" fill="#4fd6ff">voice A</text>
-        <text x="466" y="124" text-anchor="end" class="fc-sub" fill="#a98bff">voice B</text>
-        <text x="466" y="150" text-anchor="end" class="fc-sub" fill="#ff6bd6">adversarial audit</text>
-        <text x="466" y="176" text-anchor="end" class="fc-sub" fill="#ffb454">plan-breaker</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M472 96 C502 96 508 132 524 136"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M472 120 C502 120 512 136 524 138"/>
-        <path class="fl fmarch" stroke="#ff6bd6" d="M472 146 C502 146 512 142 524 140"/>
-        <path class="fl fmarch" stroke="#ffb454" d="M472 172 C502 172 508 146 524 142"/>
-        <circle class="fpulse" cx="552" cy="139" r="26" fill="rgba(22,28,62,.7)" stroke="#fff" stroke-width="1.1"/>
-        <text x="552" y="136" text-anchor="middle" class="fc-lbl" style="font-size:12px">SYNTH</text>
-        <text x="552" y="150" text-anchor="middle" class="fc-sub">grades</text>
-        <rect x="206" y="116" width="146" height="46" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
-        <text x="279" y="135" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">MANAGER</text>
-        <text x="279" y="151" text-anchor="middle" class="fc-sub">folds + records</text>
-        <path class="fl fmarch" stroke="url(#fs-rv)" stroke-width="7" d="M526 139 H356" marker-end="url(#fs-c)"/>
-        <text x="440" y="155" text-anchor="middle" class="fc-sub" fill="#9fd9ff">◂ converged answer</text>
-        <rect x="788" y="226" width="124" height="30" rx="9" fill="rgba(79,214,255,.05)" stroke="rgba(120,140,255,.32)"/><text x="850" y="246" text-anchor="middle" class="fc-sub" fill="#9fd9ff">DIGEST DOCS</text>
-        <rect x="788" y="262" width="124" height="30" rx="9" fill="rgba(255,209,102,.06)" stroke="rgba(255,209,102,.35)"/><text x="850" y="282" text-anchor="middle" class="fc-sub" fill="#ffd166">COORD LEDGER</text>
-        <rect x="788" y="298" width="124" height="30" rx="9" fill="rgba(169,139,255,.06)" stroke="rgba(169,139,255,.35)"/><text x="850" y="318" text-anchor="middle" class="fc-sub" fill="#c9aaff">OTHER INSTANCES</text>
-        <text x="560" y="200" text-anchor="middle" class="fc-sub" fill="#8b95bd">folds + records into ▸</text>
-        <path class="fl fmarch" stroke="#a98bff" d="M300 162 C520 210 660 241 786 241" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M300 162 C520 230 660 277 786 277" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M300 162 C520 250 660 313 786 313" marker-end="url(#fs-v)"/>
-
-        <!-- R1 -> R2 re-entry: build on the digest -->
-        <path class="fl fmarch" stroke="#ffd166" stroke-dasharray="6 4" d="M788 241 C600 300 430 330 356 386" marker-end="url(#fs-c)"/>
-        <text x="470" y="338" text-anchor="middle" class="fc-sub" fill="#ffd166">↻ back to the manager —</text>
-        <text x="470" y="352" text-anchor="middle" class="fc-sub" fill="#ffd166">build on the digest, never the raw pile</text>
-
-        <!-- ============ R2 — BACK DOWN FOR MORE ============ -->
-        <rect x="206" y="372" width="146" height="44" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
-        <text x="279" y="390" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">MANAGER</text>
-        <text x="279" y="406" text-anchor="middle" class="fc-sub" fill="#9fd9ff">R2 · new wave</text>
-        <text x="500" y="376" text-anchor="middle" class="fc-sub" fill="#a98bff">② more documents — different agent types</text>
-        <rect x="382" y="384" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="400" text-anchor="middle" class="fc-sub" fill="#c9aaff">SCOUT · substrate findings</text>
-        <rect x="382" y="412" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="428" text-anchor="middle" class="fc-sub" fill="#c9aaff">VALIDATOR · file:line sheet</text>
-        <rect x="382" y="440" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="456" text-anchor="middle" class="fc-sub" fill="#c9aaff">MATHEMATICIAN · settled-math note</text>
-        <rect x="382" y="468" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="484" text-anchor="middle" class="fc-sub" fill="#c9aaff">INDEP. AUDITOR · audit report</text>
-        <rect x="382" y="496" width="244" height="24" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="512" text-anchor="middle" class="fc-sub" fill="#c9aaff">ALT-DESIGN · rival memo</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M352 390 C366 390 372 396 380 396" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M352 398 C366 398 372 452 380 452" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M352 406 C366 406 372 508 380 508" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M626 420 C700 420 716 437 786 437" marker-end="url(#fs-v)"/>
-        <rect x="788" y="422" width="124" height="30" rx="9" fill="rgba(120,140,255,.05)" stroke="rgba(120,140,255,.3)"/><text x="850" y="442" text-anchor="middle" class="fc-sub" fill="#9fd9ff">+ MORE DOCS</text>
-        <rect x="404" y="536" width="220" height="30" rx="9" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="514" y="555" text-anchor="middle" class="fc-sub" fill="#c9aaff">AGGREGATE · folds, never decides</text>
-        <rect x="404" y="574" width="196" height="30" rx="9" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="502" y="593" text-anchor="middle" class="fc-sub" fill="#ff9be0">AUDIT-OF-AUDIT</text>
-        <rect x="404" y="612" width="220" height="34" rx="9" fill="rgba(94,242,160,.06)" stroke="#5ef2a0"/><text x="514" y="633" text-anchor="middle" class="fc-sub" fill="#5ef2a0">PRUNE → DIGEST · cook the round down</text>
-        <text x="502" y="666" text-anchor="middle" class="fc-sub" fill="#ffd166">⛉ a nothing-lost guard rides the fold</text>
-        <path class="fl fmarch" stroke="#a98bff" d="M502 520 V534" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#a98bff" d="M502 566 V572" marker-end="url(#fs-m)"/>
-        <path class="fl fmarch" stroke="#5ef2a0" d="M502 604 V610" marker-end="url(#fs-g)"/>
-
-        <!-- ===== SUCCESSOR HANDOFF (R2 -> R3 boundary) ===== -->
-        <circle class="fpulse" cx="278" cy="676" r="10" fill="rgba(169,139,255,.2)" stroke="#a98bff"/>
-        <text x="278" y="652" text-anchor="middle" class="fc-sub" fill="#c9aaff">handoff</text>
-        <path class="fl fmarch" stroke="#a98bff" d="M404 636 C344 660 304 668 290 674" marker-end="url(#fs-v)"/>
-        <text x="372" y="628" text-anchor="middle" class="fc-sub" fill="#8b95bd">digest + ledger ▸</text>
-        <rect x="66" y="656" width="118" height="40" rx="10" fill="rgba(169,139,255,.06)" stroke="#a98bff"/>
-        <text x="125" y="674" text-anchor="middle" class="fc-lbl" fill="#a98bff" style="font-size:11px">SENIOR</text>
-        <text x="125" y="688" text-anchor="middle" class="fc-sub">backstop · history</text>
-        <path class="fl fmarch" stroke="#a98bff" d="M268 676 H186" marker-end="url(#fs-v)"/>
-        <text x="226" y="668" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">outgoing ⇒ Senior</text>
-
-        <!-- ============ R3 — SUCCESSOR HARDENS IT ============ -->
-        <rect x="206" y="716" width="146" height="48" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
-        <text x="279" y="735" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">SUCCESSOR MGR</text>
-        <text x="279" y="750" text-anchor="middle" class="fc-sub">cold-start: digest + ledger</text>
-        <path class="fl fmarch" stroke="#a98bff" d="M278 686 V714" marker-end="url(#fs-c)"/>
-        <text x="500" y="716" text-anchor="middle" class="fc-sub" fill="#a98bff">③ a fresh sanity pass + an attack</text>
-        <rect x="382" y="724" width="156" height="30" rx="9" fill="rgba(94,242,160,.05)" stroke="#5ef2a0"/><text x="460" y="743" text-anchor="middle" class="fc-sub" fill="#5ef2a0">SANITY-CHECK WAVE</text>
-        <rect x="382" y="760" width="156" height="30" rx="9" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="460" y="779" text-anchor="middle" class="fc-sub" fill="#ff9be0">ADVERSARIAL AUDIT</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M352 732 C366 732 372 739 380 739" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M352 746 C366 746 372 775 380 775" marker-end="url(#fs-v)"/>
-        <g transform="translate(584,756)"><rect class="fpulse" x="-24" y="-24" width="48" height="48" rx="8" transform="rotate(45)" fill="rgba(22,28,62,.75)" stroke="#a98bff"/></g>
-        <text x="584" y="753" text-anchor="middle" class="fc-sub" fill="#c9aaff">◇ re-</text>
-        <text x="584" y="766" text-anchor="middle" class="fc-sub" fill="#c9aaff">converge</text>
-        <path class="fl fmarch" stroke="#5ef2a0" d="M538 739 C552 742 556 748 560 752" marker-end="url(#fs-g)"/>
-        <path class="fl fmarch" stroke="#ff6bd6" d="M538 775 C552 772 556 766 560 762" marker-end="url(#fs-m)"/>
-        <rect x="450" y="836" width="172" height="38" rx="10" fill="rgba(255,122,122,.08)" stroke="#ff7a7a"/>
-        <text x="536" y="854" text-anchor="middle" class="fc-lbl" fill="#ff7a7a" style="font-size:11px">PROBLEM surfaces</text>
-        <text x="536" y="868" text-anchor="middle" class="fc-sub" fill="#ff7a7a">trips · PARTIAL / DIVERGE</text>
-        <path class="fl fmarch" stroke="#ff7a7a" d="M584 780 V834" marker-end="url(#fs-r)"/>
-
-        <!-- shadow exchange on a dedicated clear row -->
-        <rect x="206" y="906" width="146" height="44" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
-        <text x="279" y="924" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:11px">MANAGER</text>
-        <text x="279" y="939" text-anchor="middle" class="fc-sub">handles it</text>
-        <rect x="646" y="906" width="120" height="44" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
-        <text x="706" y="924" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
-        <text x="706" y="939" text-anchor="middle" class="fc-sub">re-reads source</text>
-        <path class="fl fmarch" stroke="#ff7a7a" d="M500 874 C420 890 360 900 352 916" marker-end="url(#fs-c)"/>
-        <text x="400" y="894" text-anchor="middle" class="fc-sub" fill="#ff7a7a" style="font-size:9px">↻ back to manager</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M352 920 H644" marker-end="url(#fs-c)"/>
-        <text x="498" y="912" text-anchor="middle" class="fc-sub" fill="#4fd6ff">ping · STEER (via ledger) →</text>
-        <path class="fl fmarch" stroke="#ff6bd6" d="M644 938 H354" marker-end="url(#fs-m)"/>
-        <text x="498" y="950" text-anchor="middle" class="fc-sub" fill="#ff9be0">◂ ACK (via ledger) · shadow answers</text>
-
-        <!-- two exits from the resolved manager: loop another round, or converge -->
-        <path class="fl fmarch" stroke="#ffb454" d="M206 930 C110 930 35 922 35 860 V760 C35 730 130 724 204 730" marker-end="url(#fs-a)"/>
-        <text x="35" y="700" text-anchor="middle" class="fc-sub" fill="#ffb454" style="font-size:9px">⟲ loop</text>
-        <text x="120" y="978" text-anchor="middle" class="fc-sub" fill="#ffb454">⟲ not converged yet → another round</text>
-
-        <!-- ============ CONVERGED GATE → into the build ============ -->
-        <rect x="430" y="1028" width="222" height="46" rx="12" fill="rgba(94,242,160,.08)" stroke="#5ef2a0"/>
-        <text x="541" y="1049" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:12px">CONVERGED ✓</text>
-        <text x="541" y="1064" text-anchor="middle" class="fc-sub" fill="#5ef2a0">survived the gauntlet → into the build</text>
-        <path class="fl fmarch" stroke="#5ef2a0" d="M352 944 C430 990 470 1010 478 1026" marker-end="url(#fs-g)"/>
-        <text x="392" y="1002" text-anchor="middle" class="fc-sub" fill="#5ef2a0">on agreement ▶</text>
-        <rect x="66" y="1028" width="118" height="46" rx="10" fill="rgba(255,209,102,.06)" stroke="#ffd166" stroke-dasharray="3 3"/>
-        <text x="125" y="1049" text-anchor="middle" class="fc-sub" fill="#ffd166" style="font-weight:700">★ YOU sign</text>
-        <text x="125" y="1064" text-anchor="middle" class="fc-sub" fill="#ffd166">promote · only here</text>
-        <path class="fl fmarch" stroke="#ffd166" d="M430 1051 H186" marker-end="url(#fs-a)"/>
-
-        <!-- ============ THE BUILD — a Layer-2.5 paired run ============ -->
-        <line x1="62" y1="1092" x2="916" y2="1092" stroke="rgba(120,140,255,.2)" stroke-dasharray="3 6"/>
-        <rect x="66" y="1098" width="52" height="18" rx="6" fill="url(#fs-tab)"/><text x="92" y="1111" text-anchor="middle" style="font-family:var(--mono);font-weight:700;font-size:10px;fill:#04050d">BUILD</text>
-        <text x="510" y="1110" text-anchor="middle" class="fc-sub" fill="#5ef2a0">THE BUILD · a Layer-2.5 paired run — Executor builds, Shadow verifies live through the ledger</text>
-
-        <!-- EXECUTOR + the per-PU build cycle -->
-        <rect x="206" y="1158" width="146" height="58" rx="12" fill="rgba(79,214,255,.07)" stroke="#4fd6ff"/>
-        <text x="279" y="1180" text-anchor="middle" class="fc-lbl" fill="#4fd6ff" style="font-size:12px">EXECUTOR</text>
-        <text x="279" y="1195" text-anchor="middle" class="fc-sub">sole committer</text>
-        <text x="279" y="1208" text-anchor="middle" class="fc-sub">commits per PU, serial</text>
-        <text x="504" y="1138" text-anchor="middle" class="fc-sub" fill="#a98bff">per PU — on file-disjoint lanes, committed one at a time</text>
-        <rect x="382" y="1146" width="244" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="1163" text-anchor="middle" class="fc-sub" fill="#c9aaff">① ground · new math → prototype FIRST</text>
-        <rect x="382" y="1176" width="244" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="504" y="1193" text-anchor="middle" class="fc-sub" fill="#c9aaff">② build the PU</text>
-        <rect x="382" y="1206" width="244" height="26" rx="7" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="504" y="1223" text-anchor="middle" class="fc-sub" fill="#ff9be0">③ mandatory 2nd audit · author ≠ auditor</text>
-        <rect x="382" y="1236" width="244" height="26" rx="7" fill="rgba(255,180,84,.06)" stroke="#ffb454"/><text x="504" y="1253" text-anchor="middle" class="fc-sub" fill="#ffb454">④ acceptance + negative-control</text>
-        <rect x="382" y="1266" width="244" height="26" rx="7" fill="rgba(94,242,160,.07)" stroke="#5ef2a0"/><text x="504" y="1283" text-anchor="middle" class="fc-sub" fill="#5ef2a0">⑤ COMMIT one PU · by explicit path</text>
-        <path class="fl fmarch" stroke="#4fd6ff" d="M352 1172 C366 1172 372 1159 380 1159" marker-end="url(#fs-v)"/>
-        <path class="fl fmarch" stroke="#5ef2a0" d="M626 1279 C700 1279 716 1277 786 1277" marker-end="url(#fs-g)"/>
-        <rect x="788" y="1262" width="124" height="30" rx="9" fill="rgba(94,242,160,.05)" stroke="rgba(94,242,160,.32)"/><text x="850" y="1282" text-anchor="middle" class="fc-sub" fill="#5ef2a0">COMMITS · clean trail</text>
-        <!-- SHADOW verifies live, write-isolated -->
-        <rect x="646" y="1170" width="120" height="62" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
-        <text x="706" y="1189" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
-        <text x="706" y="1203" text-anchor="middle" class="fc-sub">verifies premises</text>
-        <text x="706" y="1216" text-anchor="middle" class="fc-sub">vs source · LIVE</text>
-        <text x="706" y="1229" text-anchor="middle" class="fc-sub" fill="#8b95bd">write-isolated</text>
-        <path class="fl fmarch" stroke="#ff6bd6" d="M644 1219 H628" marker-end="url(#fs-m)"/>
-        <text x="690" y="1250" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">STEER / BLOCKING</text>
-        <!-- SENIOR + OVERSEER backstops (operator side) -->
-        <rect x="66" y="1158" width="118" height="34" rx="9" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="125" y="1179" text-anchor="middle" class="fc-sub" fill="#a98bff">SENIOR · ~20m sweep</text>
-        <rect x="66" y="1198" width="118" height="34" rx="9" fill="rgba(169,139,255,.05)" stroke="rgba(169,139,255,.3)"/><text x="125" y="1219" text-anchor="middle" class="fc-sub" fill="#c9aaff">OVERSEER · reads the diff</text>
-        <!-- the authentic ledger cadence -->
-        <text x="500" y="1318" text-anchor="middle" class="fc-sub" fill="#8b95bd">the ledger cadence · manager-to-manager, append-only &amp; immutable:</text>
-        <text x="500" y="1336" text-anchor="middle" class="fc-sub" fill="#9fd9ff">STEER → ACK + act → OBSERVATION: done&nbsp;&nbsp;·&nbsp;&nbsp;BLOCKING → ACK or ESCALATE → operator&nbsp;&nbsp;·&nbsp;&nbsp;silence = breach</text>
-        <text x="500" y="1354" text-anchor="middle" class="fc-sub" fill="#5d6790">↻ even the ledger is pruned — it grows, freezes, a V2 continues the same arc</text>
-        <!-- single final push -> ship -->
-        <path class="fl fmarch" stroke="#5ef2a0" d="M504 1292 C504 1346 492 1378 480 1398" marker-end="url(#fs-g)"/>
-        <text x="392" y="1346" text-anchor="middle" class="fc-sub" fill="#5ef2a0">…all PUs land ▶</text>
-        <rect x="430" y="1402" width="222" height="46" rx="12" fill="rgba(94,242,160,.1)" stroke="#5ef2a0"/>
-        <text x="541" y="1423" text-anchor="middle" class="fc-lbl" fill="#5ef2a0" style="font-size:12px">SINGLE FINAL PUSH → SHIP</text>
-        <text x="541" y="1438" text-anchor="middle" class="fc-sub" fill="#5ef2a0">one complete, audited state</text>
-        <text x="500" y="1470" text-anchor="middle" class="fc-sub" fill="#5d6790">⟳ …and the loop repeats — each round on fresh agreement — until it converges and survives</text>
-      </svg>
-    </div>
-
-    <h3 class="reveal" style="margin-top:28px">The convergence meter</h3>
-    <p class="lead reveal" style="margin-top:8px">A synthesis seat (never one of the voices) tags each finding and issues a verdict (the bands below are illustrative, not a fixed contract):</p>
-    <div class="meter reveal">
-      <div class="mbox cv"><div class="big">≥ 80%</div><div class="lb">CONVERGE</div><div class="ds">The voices land together — promote with confidence.</div></div>
-      <div class="mbox pt"><div class="big">50–80%</div><div class="lb">PARTIAL</div><div class="ds">Real-but-missed items exist — a closer seat re-checks against the actual source.</div></div>
-      <div class="mbox dv"><div class="big">&lt; 50%</div><div class="lb">DIVERGE</div><div class="ds">The question itself is suspect — escalate it as a design problem.</div></div>
-    </div>
-    <div class="reveal" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;font-family:var(--mono);font-size:11.5px">
-      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(94,242,160,.3);color:var(--green)">CONVERGE → promote ▶ next stage</span>
-      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(255,209,102,.3);color:var(--gold)">PARTIAL → a closer seat re-checks ⟲ vs source</span>
-      <span style="padding:5px 12px;border-radius:8px;border:1px solid rgba(255,122,122,.3);color:var(--red)">DIVERGE → escalate as a design problem ⟲</span>
-    </div>
-
-    <div class="callout reveal">
-      <span class="t">The human's scarce contribution is doubt</span>
-      <p>An AI converges <b>confidently but shallowly</b> — and it will not doubt its own premise. It answers the question as asked. The single most valuable thing the human brings is <b>doubt</b>: the willingness to ask whether the premise was even right. So the rule is firm — <b>never "lock and move on" on first agreement within a single line of audit.</b> First convergence is the start of scrutiny, not the end of it.</p>
-    </div>
-
-    <div class="callout am reveal">
-      <span class="t">An unresolvable question is a symptom, not a matter of taste</span>
-      <p>When an item won't resolve — when the agents reach a forced pick with no evidenced winner — that is treated as a <b>symptom of a design mistake</b>, not as a judgment call to bounce up to the operator. The response is to <b>re-investigate the design</b> until the question dissolves, rather than make the human guess. Only what is truly irreducible ever reaches the operator, and it arrives as an evidenced pick-sheet on grounded footing.</p>
     </div>
   </div>
 </section>
@@ -1349,6 +1725,120 @@
   </div>
 </section>
 
+<!-- ============ LIVE RUN — THREE SEATS, ONE LEDGER ============ -->
+<section id="terminal">
+  <div class="wrap">
+    <p class="eyebrow reveal">Live run</p>
+    <h2 class="reveal">What it looks like when it's running.</h2>
+    <p class="lead reveal">Not a diagram — the real thing. Three Claude-Code windows open side by side, each a different <b>seat</b> in the same campaign, each mid-action on the <b style="color:var(--gold)">one append-only ledger</b> they all share. Watch the load spread: the panes are wildly different sizes.</p>
+
+    <div class="fchart reveal">
+      <p class="fc-title">Live · three seats, one ledger</p>
+      <p class="fc-cap">A snapshot mid-chapter: the Executor posts a handshake and fires a read-only wave, the active Shadow reads the cited source to audit its premises, and the Senior backstop checks in on its sweep cadence — all three writing the same <span style="color:var(--gold)">Coordination&nbsp;Ledger</span>.</p>
+
+      <div class="lt-wrap">
+        <div class="lt-grid">
+          <span class="lt-seam" aria-hidden="true"></span>
+          <span class="lt-seam-lbl" aria-hidden="true">&#8596; one shared ledger</span>
+
+          <!-- ================= PANE 1 · LARGE · EXECUTOR (cyan) ================= -->
+          <div class="lt-pane lt-pane--lg lt-pane--exec">
+            <div class="lt-chrome">
+              <span class="lt-diamond" aria-hidden="true"></span>
+              <span class="lt-seat">manager 7.6 <span class="lt-role">&middot; execution</span></span>
+              <span class="lt-wc" aria-hidden="true"><i class="lt-wc-dot"></i><i class="lt-wc-dot"></i></span>
+            </div>
+            <div class="lt-meter">
+              <i class="lt-dot" aria-hidden="true"></i> 11m 40s
+              <span class="lt-tok">357.1k tokens</span>
+            </div>
+            <div class="lt-body">
+              <p class="lt-aff">Read a file, used a tool</p>
+              <p class="lt-line"><span class="lt-ref">#L-210</span> posted &mdash; the executor&#8596;shadow <b>handshake is live</b>. I've stated my read of the tree, the chapter's attack plan, and the <b>four premises</b> I want the incoming shadow to audit.</p>
+              <p class="lt-line"><span class="lt-acc">Now:</span> registering the grounding seats on the board, then firing the <b>Wave-1 read-only scouts</b> in parallel &mdash; a parity scout + an isolated design seat (the prescribed first action) + two file-disjoint grounding seats. Builders wait until the design settles and the shadow can premise-audit <b>P1/P2</b>.<span class="lt-caret" aria-hidden="true"></span></p>
+              <div class="lt-tool lt-tool--active">
+                <i class="lt-pulse" aria-hidden="true"></i>
+                <span class="lt-tk">Editing</span> <span class="lt-tf">SCRATCH_BOARD.md</span> <span class="lt-tg">&#9656;</span>
+              </div>
+            </div>
+            <div class="lt-foot">
+              <div class="lt-branchrow">
+                <span class="lt-branch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><circle cx="18" cy="8" r="2.6"/><path d="M6 8.6v6.8M6 15.4q0-7 11-7.4"/></svg>main</span>
+                <span class="lt-diff"><span class="lt-add">+4,204</span> <span class="lt-del">&minus;42</span></span>
+                <span class="lt-pr">Create PR</span>
+              </div>
+              <div class="lt-input"><span class="lt-slash">Type / for commands</span></div>
+              <div class="lt-fnote">Bypass permissions &middot; <b>Opus 4.7 (1M)</b> &middot; Extra high</div>
+            </div>
+          </div>
+
+          <!-- ================= PANE 2 · TOP-RIGHT · SHADOW (magenta) ================= -->
+          <div class="lt-pane lt-pane--shadow">
+            <div class="lt-chrome">
+              <span class="lt-diamond" aria-hidden="true"></span>
+              <span class="lt-seat">manager 7.6.1 <span class="lt-role">&middot; shadow</span></span>
+              <span class="lt-wc" aria-hidden="true"><i class="lt-wc-dot"></i><i class="lt-wc-dot"></i></span>
+            </div>
+            <div class="lt-meter">
+              <i class="lt-dot" aria-hidden="true"></i> 4m 13s
+              <span class="lt-tok">2.1k tokens</span>
+            </div>
+            <div class="lt-body">
+              <div class="lt-tool">
+                <span class="lt-tk">Read</span> <span class="lt-tf">COORDINATION_LEDGER.md</span> <span class="lt-tg">&#9656;</span>
+              </div>
+              <p class="lt-line">The executor (<span class="lt-ref">#L-210</span>) is online and has fed me <b>four premises</b> to audit. As shadow I <span class="lt-acc">verify premises against source</span> &mdash; not on the executor's word &mdash; reading the cited files now.</p>
+              <p class="lt-line">Confirmed the git state independently: <b>in sync</b>, baseline intact, no dangling BLOCKING. Drafting an <b>OBSERVATION</b> + one <b>STEER</b> on premise <b>P3</b>.<span class="lt-caret" aria-hidden="true"></span></p>
+            </div>
+            <div class="lt-foot">
+              <div class="lt-branchrow">
+                <span class="lt-branch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><circle cx="18" cy="8" r="2.6"/><path d="M6 8.6v6.8M6 15.4q0-7 11-7.4"/></svg>main</span>
+                <span class="lt-diff"><span class="lt-add">+4,204</span> <span class="lt-del">&minus;42</span></span>
+                <span class="lt-pr">Create PR</span>
+              </div>
+              <div class="lt-input"><span class="lt-slash">Type / for commands</span></div>
+              <div class="lt-fnote">Bypass permissions &middot; <b>Opus 4.7 (1M)</b> &middot; Extra high</div>
+            </div>
+          </div>
+
+          <!-- ================= PANE 3 · BOTTOM-RIGHT · SENIOR (violet) ================= -->
+          <div class="lt-pane lt-pane--senior">
+            <div class="lt-chrome">
+              <span class="lt-diamond" aria-hidden="true"></span>
+              <span class="lt-seat">manager 7.4.2 <span class="lt-role">&middot; senior</span></span>
+              <span class="lt-wc" aria-hidden="true"><i class="lt-wc-dot"></i><i class="lt-wc-dot"></i></span>
+            </div>
+            <div class="lt-meter">
+              <i class="lt-dot" aria-hidden="true"></i> 1m 53s
+              <span class="lt-tok">317 tokens</span>
+            </div>
+            <div class="lt-body">
+              <div class="lt-op">
+                <span class="lt-opk">&#9679; operator</span>
+                Continue as <em>senior</em> on a ~10&ndash;15 min cadence &mdash; your context is high but you're valuable for continuity. Check in now, say you're available, and sweep every 10 min until the chapter closes.
+              </div>
+              <p class="lt-line"><span class="lt-acc">Acknowledged</span> &mdash; available as <b>senior backstop</b>. I'll sweep the ledger tail every ~10 min and source-verify on demand until the chapter closes.</p>
+              <p class="lt-line"><span class="lt-tk" style="color:var(--dim)">Reading</span> <span class="lt-ref">COORDINATION_LEDGER.md</span> &#9656; &mdash; two new marks since my last sweep (<span class="lt-ref">#L-209</span>, <span class="lt-ref">#L-210</span>), both consistent with the sealed state. Posting an <b>OBSERVATION</b> that the handshake is clean.<span class="lt-caret" aria-hidden="true"></span></p>
+            </div>
+            <div class="lt-foot">
+              <div class="lt-branchrow">
+                <span class="lt-branch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><circle cx="18" cy="8" r="2.6"/><path d="M6 8.6v6.8M6 15.4q0-7 11-7.4"/></svg>main</span>
+                <span class="lt-diff"><span class="lt-add">+4,204</span> <span class="lt-del">&minus;42</span></span>
+                <span class="lt-pr">Create PR</span>
+              </div>
+              <div class="lt-input"><span class="lt-slash">Type / for commands</span></div>
+              <div class="lt-fnote">Bypass permissions &middot; <b>Opus 4.7 (1M)</b> &middot; Extra high</div>
+            </div>
+          </div>
+
+        </div><!-- /.lt-grid -->
+      </div><!-- /.lt-wrap -->
+
+      <p class="lt-explain reveal">Three chat windows = <b>three seats</b> in one run: one <span class="lt-x-ex">Executor</span> (the only window that edits or commits the tree) and two shadow-side peers &mdash; an active <span class="lt-x-sh">Shadow</span> auditing premises against source, and a light-touch <span class="lt-x-sr">Senior</span> backstop sweeping on a cadence. None of them edits another's context; they coordinate <b>only</b> through the same append-only <span class="lt-x-lg">Coordination Ledger</span> &mdash; note <span class="lt-ref">#L-209</span>/<span class="lt-ref">#L-210</span> surfacing in more than one window. The token meters tell the real story: <b>357k</b> vs <b>2.1k</b> vs <b>317</b> &mdash; the work is spread, not stacked on one context.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ INVARIANTS ============ -->
 <section id="invariants">
   <div class="wrap">
@@ -1512,7 +2002,7 @@
   </div>
 </section>
 
-<footer class="maestro-summary">
+<footer>
   <div class="wrap">
     <div class="ess">
       <p style="margin-top:0"><b>In one breath:</b> One person runs deep work as a swarm of AI agents instead of doing it alone. The manager agent never carries the work in its own head — it <b>orchestrates</b>: it splits the problem into pieces, sends typed sub-agents (scouts, workers, mathematicians, auditors) to study and build each piece in isolation, then folds their results and measures how much independent angles agree. <b>Agreement — not the manager's say-so — is what lets the work advance.</b></p>

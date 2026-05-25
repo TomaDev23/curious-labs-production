@@ -2,6 +2,11 @@
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
     "installCommand": "npm install",
+    "redirects": [
+      { "source": "/Maestro", "destination": "/maestro", "permanent": false },
+      { "source": "/Maestro/", "destination": "/maestro", "permanent": false },
+      { "source": "/Maestro/index.html", "destination": "/maestro", "permanent": false }
+    ],
     "rewrites": [
       { "source": "/maestro", "destination": "/maestro/index.html" },
       { "source": "/maestro/", "destination": "/maestro/index.html" },

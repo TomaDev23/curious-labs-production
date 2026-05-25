@@ -5,6 +5,8 @@
     "rewrites": [
       { "source": "/maestro", "destination": "/maestro/index.html" },
       { "source": "/maestro/", "destination": "/maestro/index.html" },
+      { "source": "/Maestro", "destination": "/maestro/index.html" },
+      { "source": "/Maestro/", "destination": "/maestro/index.html" },
       { "source": "/(.*)", "destination": "/" }
     ],
     "cleanUrls": true,

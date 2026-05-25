@@ -3,6 +3,8 @@
     "outputDirectory": "dist",
     "installCommand": "npm install",
     "rewrites": [
+      { "source": "/maestro", "destination": "/maestro/index.html" },
+      { "source": "/maestro/", "destination": "/maestro/index.html" },
       { "source": "/(.*)", "destination": "/" }
     ],
     "cleanUrls": true,

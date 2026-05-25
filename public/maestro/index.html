@@ -353,13 +353,16 @@
   @media(max-width:880px){.darrow{transform:rotate(90deg)}}
 
   /* ---------- LOOP DIAGRAM ---------- */
-  .loop-stage{display:flex;gap:14px;align-items:flex-start;margin-top:14px;background:var(--panel);
-    border:1px solid var(--line);border-radius:13px;padding:16px 18px}
-  .loop-stage .n{font-family:var(--mono);font-size:20px;font-weight:780;color:var(--cyan);min-width:48px}
-  .loop-stage h3{font-size:16px;margin-bottom:3px}
-  .loop-stage p{margin:0;font-size:14px;color:var(--mut)}
-  .loop-stage .gate-pill{font-family:var(--mono);font-size:11.5px;color:var(--green);margin-top:6px;display:inline-block;
-    border:1px solid rgba(94,242,160,.3);border-radius:6px;padding:2px 8px}
+  .loop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;align-items:start}
+  @media(max-width:560px){.loop-grid{grid-template-columns:1fr}}
+  .loop-stage{display:flex;gap:10px;align-items:flex-start;background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:0;min-width:0}
+  .loop-stage>div{min-width:0}
+  .loop-stage .n{font-family:var(--mono);font-size:13.5px;font-weight:780;color:var(--cyan);min-width:20px;line-height:1.4}
+  .loop-stage h3{font-size:13px;margin:0 0 1px;line-height:1.25}
+  .loop-stage p{margin:0;font-size:12px;color:var(--mut);line-height:1.42}
+  .loop-stage .gate-pill{font-family:var(--mono);font-size:10px;color:var(--green);margin-top:5px;display:inline-block;
+    border:1px solid rgba(94,242,160,.3);border-radius:6px;padding:2px 7px;line-height:1.3}
   .loop-stage.star{border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.05)}
   .loop-stage.star .n{color:var(--gold)}
 
@@ -857,7 +860,7 @@
   </div>
 </section>
 
-<!-- ============ THE FLOWCHART (CENTERPIECE) ============ -->
+<!-- ============ THE MAP / ORIENTATION ============ -->
 <section id="flow">
   <div class="wrap">
     <p class="eyebrow reveal">Orientation · the map</p>
@@ -1229,7 +1232,7 @@
   <!-- ===== ③ the per-PU cycle has DEPTH (analog of the wave iterating 1..N) ===== -->
   <text x="525" y="2052" text-anchor="middle" class="fc-sub" fill="#9fd9ff">③ the per-PU cycle (each process-unit runs the full depth)</text>
   <rect x="396" y="2064" width="256" height="28" rx="7" fill="rgba(79,214,255,.05)" stroke="#4fd6ff"/><text x="524" y="2082" text-anchor="middle" class="fc-sub" fill="#9fd9ff">ⓐ ground the PU</text>
-  <rect x="396" y="2098" width="256" height="28" rx="7" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="524" y="2116" text-anchor="middle" class="fc-sub" fill="#c9aaff">ⓑ isolated math + throwaway PROTOTYPE FIRST</text>
+  <rect x="396" y="2098" width="256" height="28" rx="7" fill="rgba(169,139,255,.06)" stroke="#a98bff"/><text x="524" y="2116" text-anchor="middle" class="fc-sub" fill="#c9aaff">ⓑ isolated math + prototype FIRST</text>
   <rect x="396" y="2132" width="256" height="28" rx="7" fill="rgba(79,214,255,.05)" stroke="#4fd6ff"/><text x="524" y="2150" text-anchor="middle" class="fc-sub" fill="#9fd9ff">ⓒ build the PU</text>
   <rect x="396" y="2166" width="256" height="28" rx="7" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/><text x="524" y="2184" text-anchor="middle" class="fc-sub" fill="#ff9be0">ⓓ mandatory 2nd audit · author ≠ auditor</text>
   <rect x="396" y="2200" width="256" height="28" rx="7" fill="rgba(255,180,84,.06)" stroke="#ffb454"/><text x="524" y="2218" text-anchor="middle" class="fc-sub" fill="#ffb454">ⓔ acceptance + a negative-control check</text>
@@ -1244,29 +1247,33 @@
   <!-- ===== ④ the SHADOW thread runs LIVE through the whole build ===== -->
   <!-- SHADOW box (write-isolated, magenta) — the clearance-bar exchange parallels
        the planning-phase manager<->shadow ledger thread. -->
-  <rect x="676" y="2096" width="132" height="72" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
-  <text x="742" y="2116" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
-  <text x="742" y="2130" text-anchor="middle" class="fc-sub">LIVE through the build</text>
-  <text x="742" y="2143" text-anchor="middle" class="fc-sub">premise-audit AT SOURCE</text>
-  <text x="742" y="2156" text-anchor="middle" class="fc-sub" fill="#8b95bd">non-builder · write-isolated</text>
+  <rect x="676" y="2110" width="132" height="72" rx="12" fill="rgba(255,107,214,.06)" stroke="#ff6bd6"/>
+  <text x="742" y="2130" text-anchor="middle" class="fc-lbl" fill="#ff9be0" style="font-size:11px">SHADOW</text>
+  <text x="742" y="2145" text-anchor="middle" class="fc-sub">LIVE through the build</text>
+  <text x="742" y="2158" text-anchor="middle" class="fc-sub">premise-audit AT SOURCE</text>
+  <text x="742" y="2171" text-anchor="middle" class="fc-sub" fill="#8b95bd">write-isolated</text>
 
   <!-- CLEARANCE BAR · the shadow holds the PU until premises verify (steer → ack → cleared) -->
-  <!-- STEER: HOLD this PU (shadow ▸ executor) -->
-  <path class="fl fmarch" stroke="#ff6bd6" d="M674 2118 H656" marker-end="url(#fs-m)"/>
-  <text x="624" y="2104" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">CLEARANCE BAR ▸</text>
-  <text x="624" y="2116" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">HOLD until premises</text>
-  <text x="624" y="2127" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">verify at source</text>
+  <!-- the HOLD instruction now sits in its own clear row ABOVE the SHADOW box (center 742),
+       fully clear of the per-PU lane (which ends at x652) so it no longer overruns the ⓑ row -->
+  <text x="742" y="2074" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">CLEARANCE BAR ▸</text>
+  <text x="742" y="2085" text-anchor="middle" class="fc-sub" fill="#ff9be0" style="font-size:9px">HOLD until premises</text>
+  <text x="742" y="2096" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">verify at source</text>
+  <!-- STEER: HOLD this PU (shadow ▸ executor) — short hop from the box into the lane gap -->
+  <path class="fl fmarch" stroke="#ff6bd6" d="M676 2122 H656" marker-end="url(#fs-m)"/>
   <!-- the premises being checked, in the clear gutter right of the shadow lane -->
   <text x="890" y="2104" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">parity unchanged ·</text>
   <text x="890" y="2116" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">wired at BOTH entry points ·</text>
   <text x="890" y="2128" text-anchor="middle" class="fc-sub" fill="#8b95bd" style="font-size:9px">re-run the regression harness</text>
   <path class="fl fmarch" stroke="#ff6bd6" stroke-dasharray="4 3" d="M810 2120 H818" marker-end="url(#fs-m)"/>
-  <!-- ACK: executor states premises (executor ▸ shadow) -->
-  <path class="fl fmarch" stroke="#4fd6ff" d="M656 2148 H674" marker-end="url(#fs-c)"/>
-  <text x="630" y="2160" text-anchor="middle" class="fc-sub" fill="#4fd6ff" style="font-size:9px">◂ ACK — premises stated</text>
-  <!-- CLEARED: shadow clears the PU (down the shadow lane to the commit row) -->
-  <path class="fl fmarch" stroke="#5ef2a0" d="M742 2168 V2236 C742 2272 700 2292 660 2300" marker-end="url(#fs-g)"/>
-  <text x="742" y="2196" text-anchor="middle" class="fc-sub" fill="#5ef2a0" style="font-size:9px">CLEARED ▸</text>
+  <!-- ACK: executor states premises (executor ▸ shadow) — short hop into the box bottom-left;
+       label moved BELOW the box (center 748) so it no longer clips the SHADOW box / sublabel -->
+  <path class="fl fmarch" stroke="#4fd6ff" d="M656 2168 H676" marker-end="url(#fs-c)"/>
+  <text x="748" y="2198" text-anchor="middle" class="fc-sub" fill="#4fd6ff" style="font-size:9px">◂ ACK — premises stated</text>
+  <!-- CLEARED: shadow clears the PU (down the shadow lane to the commit row); the arrow now
+       bows down the LEFT edge of the lane so it clears the ACK + CLEARED labels and the BLOCKING box -->
+  <path class="fl fmarch" stroke="#5ef2a0" d="M742 2182 C742 2196 671 2202 671 2236 C671 2270 668 2290 660 2300" marker-end="url(#fs-g)"/>
+  <text x="680" y="2222" text-anchor="middle" class="fc-sub" fill="#5ef2a0" style="font-size:9px">CLEARED ▸</text>
   <!-- BLOCKING: a premise fails → halts this PU (red, into the gutter loop) -->
   <rect x="676" y="2236" width="132" height="40" rx="10" fill="rgba(255,122,122,.08)" stroke="#ff7a7a"/>
   <text x="742" y="2253" text-anchor="middle" class="fc-sub" fill="#ff7a7a" style="font-size:9px">BLOCKING ✕ premise fails</text>
@@ -1665,7 +1672,7 @@
       <span class="mt" style="color:var(--gold)">STEER · advisory, must respond</span>
       <span class="mt" style="color:var(--red)">BLOCKING · halts that unit</span>
       <span class="mt" style="color:var(--green)">ACK · acted on it</span>
-      <span class="mt" style="color:var(--violet)">DEFER · parked with reason</span>
+      <span class="mt" style="color:var(--violet)">DEFER · park a STEER, with reason</span>
       <span class="mt" style="color:var(--cyan)">ESCALATE · to the operator</span>
     </div>
 
@@ -1862,17 +1869,19 @@
     <h2 class="reveal">The clean loop — portable to any deep work.</h2>
     <p class="lead reveal">Strip away every domain-specific detail and this is the shape that remains. Each stage <b>closes on convergence</b> and feeds the next; the operator appears mainly at the gate marked ★.</p>
 
-    <div class="loop-stage reveal"><div class="n">0</div><div><h3>Study</h3><p>Independent voices read the substrate and return structured findings — never opinions.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Audit-of-study</h3><p>A different agent verifies the findings are grounded and complete.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">1</div><div><h3>Plan</h3><p>Author the change against the studied substrate.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Audit-of-plan</h3><p>A different agent audits the plan; the independent secondary is mandatory.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">2</div><div><h3>Digest</h3><p>Fold many outputs into one surface — additively, dropping nothing.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Audit-of-digest</h3><p>Confirm the fold preserved every load-bearing item.</p></div></div>
-    <div class="loop-stage star reveal"><div class="n">★</div><div><h3>Converge</h3><p>A fresh seat measures agreement: CONVERGE / PARTIAL / DIVERGE. Disagreement routes to a closer or a redesign — and only the truly irreducible residue reaches the operator.</p><span class="gate-pill" style="color:var(--gold);border-color:rgba(255,209,102,.3)">human appears here — and essentially only here</span></div></div>
-    <div class="loop-stage reveal"><div class="n">3</div><div><h3>Execute</h3><p>Build — under the identical orchestrator mode as the plan phase.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">↳</div><div><h3>Test &amp; audit-of-execution</h3><p>Verify the build, then audit the verification.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">4</div><div><h3>Audit-of-audit → adversarial → independent secondary</h3><p>Confirm the audit was complete, attack from a new angle, then bring a differently-framed outside voice.</p></div></div>
-    <div class="loop-stage reveal"><div class="n">5</div><div><h3>Fold &amp; hand off</h3><p>Merge everything additively and pass a clean baton — so the next session loses nothing.</p></div></div>
+    <div class="loop-grid reveal">
+    <div class="loop-stage"><div class="n">0</div><div><h3>Study</h3><p>Independent voices read the substrate and return structured findings — never opinions.</p></div></div>
+    <div class="loop-stage"><div class="n">↳</div><div><h3>Audit-of-study</h3><p>A different agent verifies the findings are grounded and complete.</p></div></div>
+    <div class="loop-stage"><div class="n">1</div><div><h3>Plan</h3><p>Author the change against the studied substrate.</p></div></div>
+    <div class="loop-stage"><div class="n">↳</div><div><h3>Audit-of-plan</h3><p>A different agent audits the plan; the independent secondary is mandatory.</p></div></div>
+    <div class="loop-stage"><div class="n">2</div><div><h3>Digest</h3><p>Fold many outputs into one surface — additively, dropping nothing.</p></div></div>
+    <div class="loop-stage"><div class="n">↳</div><div><h3>Audit-of-digest</h3><p>Confirm the fold preserved every load-bearing item.</p></div></div>
+    <div class="loop-stage star"><div class="n">★</div><div><h3>Converge</h3><p>A fresh seat measures agreement: CONVERGE / PARTIAL / DIVERGE. Disagreement routes to a closer or a redesign — and only the truly irreducible residue reaches the operator.</p><span class="gate-pill" style="color:var(--gold);border-color:rgba(255,209,102,.3)">human appears here — and essentially only here</span></div></div>
+    <div class="loop-stage"><div class="n">3</div><div><h3>Execute</h3><p>Build — under the identical orchestrator mode as the plan phase.</p></div></div>
+    <div class="loop-stage"><div class="n">↳</div><div><h3>Test &amp; audit-of-execution</h3><p>Verify the build, then audit the verification.</p></div></div>
+    <div class="loop-stage"><div class="n">4</div><div><h3>Audit-of-audit → adversarial → independent secondary</h3><p>Confirm the audit was complete, attack from a new angle, then bring a differently-framed outside voice.</p></div></div>
+    <div class="loop-stage"><div class="n">5</div><div><h3>Fold &amp; hand off</h3><p>Merge everything additively and pass a clean baton — so the next session loses nothing.</p></div></div>
+    </div>
   </div>
 </section>
 

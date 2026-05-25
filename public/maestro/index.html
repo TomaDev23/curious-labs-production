@@ -174,6 +174,17 @@
   .stat .n{font-size:24px; font-weight:780; color:#fff; font-family:var(--mono)}
   .stat .n.cy{color:var(--cyan)} .stat .n.mg{color:var(--magenta)} .stat .n.gd{color:var(--gold)} .stat .n.gr{color:var(--green)}
   .stat .l{font-size:12px; color:var(--mut); letter-spacing:.4px; margin-top:5px}
+  .skill-cta{margin-top:22px; display:flex; justify-content:center}
+  .skill-cta.end{margin-top:22px}
+  .skill-cta a{
+    display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:42px;
+    padding:10px 18px; border-radius:10px; border:1px solid rgba(79,214,255,.38);
+    background:linear-gradient(180deg,rgba(79,214,255,.16),rgba(169,139,255,.08));
+    color:#fff; font-family:var(--mono); font-size:12px; letter-spacing:.8px; text-transform:uppercase;
+    box-shadow:0 18px 40px rgba(0,0,0,.22); transition:.18s;
+  }
+  .skill-cta a:hover{transform:translateY(-1px); border-color:rgba(79,214,255,.65); background:rgba(79,214,255,.18)}
+  .skill-cta a span{color:var(--cyan)}
 
   /* ---------- PANELS / CARDS ---------- */
   .panel{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:26px 28px; margin-top:22px}
@@ -523,6 +534,9 @@
       <div class="stat"><div class="n mg">~1,000</div><div class="l">files edited across the build</div></div>
       <div class="stat"><div class="n gd">~250K</div><div class="l">lines written &amp; revised</div></div>
       <div class="stat"><div class="n gr">0</div><div class="l">incidents slip through — caught &amp; steered in flight, not hunted later</div></div>
+    </div>
+    <div class="skill-cta">
+      <a href="https://github.com/TomaDev23/Maestro" target="_blank" rel="noopener">Get the skill here <span>GitHub</span></a>
     </div>
     <p class="byline" style="margin-top:22px;font-size:13.5px;color:var(--mut);letter-spacing:.2px">Created May 2026 by <b style="color:var(--ink)">Tom</b> <span style="color:var(--dim)">(TomaDev23)</span>, with <b style="color:var(--ink)">Claude (Opus 4.7)</b> as co-author · MIT License</p>
   </div>
@@ -1505,10 +1519,13 @@
       <p>Crucially, the same mode governs planning and building. You don't drop out of orchestration to "just code it"; the execution phase runs the identical wave method as the planning phase, with the same audits and convergence checks. Every deliverable is verified by a <b>different</b> agent, attacked adversarially, re-checked by a differently-framed secondary (sometimes a different model or engine), and — for the largest builds — watched live by a peer <b>shadow manager</b> through a shared, append-only ledger where the main manager must answer every challenge rather than silently ignore it.</p>
       <p style="margin-bottom:0">The discipline scales to the work: a one-line question stays a one-line answer; a campaign earns the full machinery and a paired run. And the gate is firm — you build only after the plan has survived independent attempts to break it, because a confident forward-pass merely covers distance while leaving silent gaps, whereas convergence across many angles is a conviction no single pass can manufacture. <b>That is the method.</b> To actually run it, invoke the <b>orchestrator-mode</b> skill — this page is its companion explainer.</p>
     </div>
+    <div class="skill-cta end">
+      <a href="https://github.com/TomaDev23/Maestro" target="_blank" rel="noopener">Get the skill here <span>GitHub</span></a>
+    </div>
     <div class="colophon" style="margin-top:26px;padding-top:18px;border-top:1px solid var(--line2);font-size:13.5px;color:var(--mut);line-height:1.7">
       <div style="font-family:var(--mono);letter-spacing:.5px;color:var(--ink)">◇ MAESTRO · The Orchestration Method</div>
       <div style="margin-top:6px">An educational artifact on conducting AI agents toward converged truth. Created <b style="color:var(--ink)">May 2026</b> by <b style="color:var(--ink)">Tom</b> <span style="color:var(--dim)">(TomaDev23)</span>, with <b style="color:var(--ink)">Claude (Opus 4.7)</b> as co-author.</div>
-      <div style="margin-top:6px;color:var(--dim)">Released under the MIT License · github.com/TomaDev23/Maestro</div>
+      <div style="margin-top:6px;color:var(--dim)">Released under the MIT License.</div>
     </div>
   </div>
 </footer>

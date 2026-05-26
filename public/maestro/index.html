@@ -365,6 +365,17 @@
     border:1px solid rgba(94,242,160,.3);border-radius:6px;padding:2px 7px;line-height:1.3}
   .loop-stage.star{border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.05)}
   .loop-stage.star .n{color:var(--gold)}
+  /* ---------- collapsible Word-from-the-Author ---------- */
+  details.author-collapse{max-width:880px;border:1px solid rgba(255,209,102,.28);border-radius:16px;background:linear-gradient(180deg,rgba(255,209,102,.05),rgba(255,209,102,.012));overflow:hidden}
+  details.author-collapse>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:11px;padding:15px 24px;color:var(--gold);font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.3px}
+  details.author-collapse>summary::-webkit-details-marker{display:none}
+  details.author-collapse>summary:hover{background:rgba(255,209,102,.05)}
+  details.author-collapse>summary .ac-caret{display:inline-block;transition:transform .2s;color:var(--gold);font-size:11px}
+  details.author-collapse[open]>summary .ac-caret{transform:rotate(90deg)}
+  details.author-collapse>summary .ac-hint{margin-left:auto;color:var(--mut);font-weight:400;font-size:11.5px;font-family:var(--sans)}
+  details.author-collapse[open]>summary .ac-hint{opacity:0}
+  details.author-collapse .author-body{padding:4px 26px 24px;color:var(--ink);line-height:1.8;font-size:15.5px}
+  details.author-collapse .author-body p:first-of-type{margin-top:14px}
 
   /* ---------- CALLOUT ---------- */
   .callout{border-left:3px solid var(--violet);background:rgba(169,139,255,.07);border-radius:0 12px 12px 0;
@@ -616,6 +627,21 @@
     .lt-caret{opacity:.7}
   }
 
+
+  /* ===== CHAPTERS INDEX (folded) ===== */
+
+  /* ---------- CHAPTERS INDEX (ix-*) ---------- */
+  .ix-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+  @media(max-width:600px){.ix-grid{grid-template-columns:1fr}}
+  .ix-card{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 14px;text-decoration:none;color:inherit;transition:border-color .15s,background .15s}
+  .ix-card:hover{border-color:rgba(79,214,255,.45);background:rgba(79,214,255,.05)}
+  .ix-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cyan);min-width:20px;line-height:1.5;flex:0 0 auto}
+  .ix-card h3{font-size:13.5px;margin:0 0 2px;color:var(--ink);line-height:1.3}
+  .ix-card p{margin:0;font-size:12px;color:var(--mut);line-height:1.45}
+  .ix-card .ix-arrow{margin-left:8px;color:var(--dim);align-self:center;font-size:14px;flex:0 0 auto}
+  .ix-readtime{margin-top:18px;font-family:var(--mono);font-size:12.5px;color:var(--mut);text-align:center;border-top:1px solid var(--line);padding-top:14px}
+  .ix-readtime b{color:var(--ink)}
+
 </style>
 </head>
 <body>
@@ -649,6 +675,8 @@
     </button>
     <div class="links" id="navlinks">
       <a href="#author">Author's Note</a>
+            <a href="#chapters">Chapters</a>
+            <a href="#tldr">TL;DR</a>
             <a href="#laws">Two Laws</a>
             <a href="#layers">Two Layers</a>
             <a href="#run">How to Run It</a>
@@ -713,7 +741,9 @@
   <div class="wrap">
     <p class="eyebrow reveal" style="color:var(--gold)">Word from the author</p>
     <h2 class="reveal">Word from the Author</h2>
-    <div class="reveal" style="max-width:880px;border:1px solid rgba(255,209,102,.28);border-radius:16px;padding:22px 26px 24px;background:linear-gradient(180deg,rgba(255,209,102,.05),rgba(255,209,102,.012));color:var(--ink);line-height:1.8;font-size:15.5px">
+    <details class="author-collapse reveal">
+      <summary><span class="ac-caret">&#9656;</span> <span>&#9997; Read once</span> <span class="ac-hint">a personal note from the author &middot; human-written</span></summary>
+      <div class="author-body">
       <span class="tag" style="color:var(--gold);border-color:rgba(255,209,102,.4)">&#9997; Human-written &mdash; not AI-generated</span>
       <p style="margin-top:16px">Welcome. I am pleased to share my latest progress and discoveries in the field of autonomy for AI agents in complex code projects. This document, created by an AI agent, has been carefully crafted by a human after developing a method over hundreds of hours of work using the latest AI tools over the past year.</p>
       <p>Working quickly and covering a broad surface without a robust method may appear feasible and easy, but in reality it creates numerous gaps and leads to drift due to agents freely interpreting and filling knowledge gaps with fabricated information, which eventually causes deviation from the original intent. Sometimes these issues are hidden and difficult to detect, but they compound rapidly as multiple agents negotiate, work on the same files, and move without coordination. Even when agents are confined to separate, isolated work trees, the ongoing negotiation over developing files and the need for complex merges and compromises remains unresolved because agents may pull and push in different directions.</p>
@@ -721,7 +751,58 @@
       <p>The presented method aims to resolve both planning and execution, achieving autonomy as an outcome of effective planning, and leverages current technologies without requiring complex setups, automation, MCPs, or additional tools.</p>
       <p>This document is intended for human readers to comprehend the nuances of the method. It also exists as a skill that can be immediately applied to your project (<a href="https://github.com/TomaDev23/Maestro" style="color:var(--cyan);text-decoration:none">github.com/TomaDev23/Maestro</a>); however, without adopting the mental model underlying this skill, its benefits will be limited compared to fully understanding the concepts presented herein.</p>
       <p style="margin-bottom:0;text-align:right;color:var(--mut);font-style:italic">&mdash; Tom <span style="color:var(--dim)">(TomaDev23)</span></p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ CHAPTERS INDEX ============ -->
+<section id="chapters">
+  <div class="wrap">
+    <p class="eyebrow reveal" style="color:var(--cyan)">The index · what's inside</p>
+    <h2 class="reveal">What's inside — and what each chapter gives you.</h2>
+    <p class="lead reveal">What's inside — each chapter and exactly what you walk away with. Read straight through, or jump to the part you need.</p>
+    <div class="ix-grid reveal">
+      <a class="ix-card" href="#laws"><span class="ix-num">1</span><span><h3>The Two Laws</h3><p>Get the entire method in two rules — orchestrate instead of carrying the load, and plan to convergence before you build.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#layers"><span class="ix-num">2</span><span><h3>The Built-In Brake</h3><p>Why the method never over-engineers a simple ask — a mindset that's always on, heavy machinery that fires only on deep work.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#run"><span class="ix-num">3</span><span><h3>Run It Yourself</h3><p>A concrete playbook: which chat to open, when to add a second, and the few moments you actually need to show up.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#flow"><span class="ix-num">4</span><span><h3>The Map of a Run</h3><p>See the whole shape on one screen — one mode, two phases, three depths — so the detailed chapters never lose you.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#convergence"><span class="ix-num">5</span><span><h3>Many Angles, One Answer</h3><p>The centerpiece: a full session as one flowchart, where independent voices and agreement-not-authority drive the work to truth.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#wave"><span class="ix-num">6</span><span><h3>Inside One Wave</h3><p>Zoom into the repeating beat — dispatch, parallel agents, fold, independent audit, gate — and see why the manager stays lean.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#taxonomy"><span class="ix-num">7</span><span><h3>The Cast and Its Rules</h3><p>The full roster of agent types, with the isolation rules and tier choices that keep audits honest and breadth affordable.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#dispatch"><span class="ix-num">8</span><span><h3>The Cold-Start Briefing</h3><p>The self-contained brief that lets a memoryless agent run a job correctly — the unit that buys long stretches of autonomy.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#audit"><span class="ix-num">9</span><span><h3>Defense in Depth</h3><p>The stacked, differently-framed audits plus the standing watch that guard every wave against silent erosion.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#build"><span class="ix-num">10</span><span><h3>When You May Build</h3><p>The most important judgment in the method — a plan is ready only once it has survived real attempts to break it.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#dual"><span class="ix-num">11</span><span><h3>Two Managers, One Ledger</h3><p>The ultimate form: a peer Shadow audits the Executor's premises live through a shared ledger where no challenge is silently ignored.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#terminal"><span class="ix-num">12</span><span><h3>See It Running</h3><p>Three live chat windows side by side — watch the load spread wildly across seats and the shared ledger surface in more than one.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#invariants"><span class="ix-num">13</span><span><h3>Why It Holds</h3><p>The handful of never-bend rules that let many agents move fast on one codebase without clobbering each other or shipping a bug.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#loop"><span class="ix-num">14</span><span><h3>The Portable Loop</h3><p>Strip away the domain and keep the reusable skeleton — a stage-by-stage shape you can apply to any deep work.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#processing"><span class="ix-num">15</span><span><h3>Cook Each Round Down</h3><p>The discipline that keeps long campaigns clean — simmer each round to a tight digest and build the next on that, never the raw pile.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#board"><span class="ix-num">16</span><span><h3>Your Window In</h3><p>Stand up a glanceable campaign board so you stay oriented on rules, intent, and progress instead of drowning in agent chatter.</p></span><span class="ix-arrow">&#8594;</span></a>
+      <a class="ix-card" href="#case"><span class="ix-num">17</span><span><h3>The Catch That Pays</h3><p>One real save — two independent voices caught a buried default a single confident pass would have shipped invisibly.</p></span><span class="ix-arrow">&#8594;</span></a>
     </div>
+    <p class="ix-readtime reveal"><b>~1–1.5 minutes a chapter</b> · about 20 minutes end to end — or jump straight to what you need.</p>
+  </div>
+</section>
+
+<!-- ============ TL;DR ============ -->
+<section id="tldr">
+  <div class="wrap">
+    <p class="eyebrow reveal" style="color:var(--cyan)">TL;DR &middot; the 60-second version</p>
+    <h2 class="reveal">Short on time? The whole method, in a minute.</h2>
+    <p class="lead reveal">If this is the <b>shortest read</b> you have time for: take in the framing below, then jump to the flowchart to see exactly how a run flows top to bottom. That much is enough to start operating the method.</p>
+    <div class="reveal" style="max-width:880px;border:1px solid rgba(79,214,255,.28);border-radius:16px;padding:22px 26px 24px;background:linear-gradient(180deg,rgba(79,214,255,.05),rgba(79,214,255,.012));color:var(--ink);line-height:1.8;font-size:15.5px">
+      <p>One human conducts a <b>manager</b> agent that runs the work as waves of many <b>typed</b> sub-agents — scouts that read the source, builders, a mathematician, auditors, and more — each handed a narrow job, an isolation rule that keeps its role uncontaminated, and a model tier. The human sets the pace and answers the gates; the manager plans, dispatches, folds, and steers, but never carries the work in its own context. The pivotal idea is that you don't switch modes to build: the <b>same orchestrator mode governs both planning and execution</b>. You plan until many independent angles agree, then build under the identical discipline — typed waves, audits, convergence checks — never a sudden drop into "just code it now."</p>
+
+      <p>The engine's heart is <b>convergence</b>. For each question, independent voices investigate separately and never read each other, like witnesses describing a scene in isolation. A fresh synthesis seat then measures how much they <b>agree</b> — and agreement, not authority, is what promotes the work to the next stage. Disagreement loops back for another round; nothing advances on one voice's say-so. What makes this trustworthy is the discipline around it: <b>author never audits their own work</b>; a mandatory, differently-framed independent second opinion clears anything before it ships; the manager stays lean, conducting and digesting rather than filling its context with raw output; and each round is cooked down to a tight digest that the next round builds on, never the raw pile. For the largest work, two peer managers run at once — an <b>Executor</b> that builds and is the only one allowed to commit, and a Shadow that audits its premises against source live, the two coordinating through one shared, append-only ledger where every challenge must be answered, never silently ignored.</p>
+
+      <p>The cost lever is deliberate: run many <b>lighter-tier</b> seats for bounded breadth — scouts, per-unit audits, validators — and reserve the <b>Flagship</b> model for the one seat that arbitrates conflicting evidence to a verdict. The result is decisive at a fraction of the context and cost of an all-Flagship swarm. And that is why it pays off. A single confident forward-pass covers distance fast but leaves silent gaps nobody graded; this method converts that one fallible pass into many independent ones that converge on truth, with audits and adversarial passes catching what any single pass misses. It scales to deep, multi-round campaigns no single context could ever hold — and it spends the human's scarce attention exactly where it matters: on framing, on the sign-off gate, and on the handful of truly irreducible decisions, rather than on grinding through everything by hand.</p>
+      <div style="margin-top:20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <a href="#convergence" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--cyan);text-decoration:none;border:1px solid rgba(79,214,255,.4);border-radius:9px;padding:9px 16px;background:rgba(79,214,255,.08)">See the flowchart &#8594;</a>
+        <span style="color:var(--mut);font-size:13px">the whole run, on one page</span>
+      </div>
+    </div>
+    <p class="lead reveal" style="margin-top:18px;font-size:14.5px;color:var(--mut)">This TL;DR covers the <b style="color:var(--ink)">framing</b> &mdash; enough to begin. But the method rewards understanding: <b style="color:var(--ink)">for the best results we do recommend reading the full document</b> and internalizing the mental model behind it &mdash; that is what turns the method from a checklist into an instinct.</p>
   </div>
 </section>
 
@@ -933,7 +1014,7 @@
   <div class="wrap">
     <p class="eyebrow reveal">The core idea</p>
     <h2 class="reveal">Multi-dimensional convergence — many angles, one answer.</h2>
-    <p class="lead reveal">This is the engine's heart. For each question, <b>independent voices investigate separately and never read each other</b> — like asking witnesses to describe a scene in isolation. A fresh synthesis seat then measures how much they agree. <b>Agreement, not authority, is what greenlights the next stage.</b></p>
+    <p class="lead reveal">This is the engine's heart. For each question, <b>independent voices investigate separately and never read each other</b> — like asking witnesses to describe a scene in isolation. Many of these voices run on a <b>lighter tier</b>, so you can afford a lot of them. A <b>fresh synthesis seat — the Flagship arbiter</b> — then reasons their agreement and disagreement to a verdict. <b>Agreement, not authority, is what greenlights the next stage.</b></p>
 
     <div class="fchart reveal">
       <p class="fc-title">Flowchart · a full session run — how the work actually progresses, round after round</p>
@@ -1022,6 +1103,7 @@
   <circle class="fpulse" cx="552" cy="159" r="28" fill="rgba(22,28,62,.7)" stroke="#fff" stroke-width="1.1"/>
   <text x="552" y="156" text-anchor="middle" class="fc-lbl" style="font-size:12px">SYNTH</text>
   <text x="552" y="170" text-anchor="middle" class="fc-sub">grades</text>
+  <text x="552" y="199" text-anchor="middle" class="fc-sub" fill="#c9aaff" style="font-size:9px">Flagship arbiter</text>
 
   <!-- converged answer back to manager -->
   <path class="fl fmarch" stroke="url(#fs-rv)" stroke-width="7" d="M524 159 H378" marker-end="url(#fs-c)"/>
@@ -1056,6 +1138,7 @@
   <text x="292" y="537" text-anchor="middle" class="fc-sub" fill="#9fd9ff">R2 · new wave</text>
 
   <text x="525" y="500" text-anchor="middle" class="fc-sub" fill="#a98bff">② more documents — different agent types</text>
+  <text x="656" y="494" text-anchor="start" class="fc-sub" fill="#8b95bd" style="font-size:9px">· lighter tier · run many</text>
 
   <!-- typed wave stack -->
   <rect x="396" y="512" width="256" height="26" rx="7" fill="rgba(169,139,255,.05)" stroke="#a98bff"/><text x="524" y="529" text-anchor="middle" class="fc-sub" fill="#c9aaff">SCOUT · substrate findings</text>
@@ -1438,7 +1521,7 @@
         <text x="470" y="306" text-anchor="middle" class="fc-sub" fill="#ffb454">PARTIAL → a closer re-checks vs source&nbsp;&nbsp;·&nbsp;&nbsp;DIVERGE → redesign the question&nbsp;&nbsp;—&nbsp;&nbsp;loop back, run another wave</text>
       </svg>
     </div>
-    <p class="lead reveal" style="margin-top:10px">The manager stays lean on purpose: it conducts, aggregates, and monitors — it never fills its own context with raw work, so it can run wave after wave without losing the thread.</p>
+    <p class="lead reveal" style="margin-top:10px">The manager stays lean on purpose: it conducts, aggregates, and monitors — it never fills its own context with raw work, so it can run wave after wave without losing the thread. <b>And because the breadth seats run on a lighter tier, a wide wave stays cheap — context and cost go to the one Flagship seat that has to judge, not the many that only gather.</b></p>
   </div>
 </section>
 
@@ -1447,7 +1530,7 @@
   <div class="wrap">
     <p class="eyebrow reveal">The cast</p>
     <h2 class="reveal">The agent-type taxonomy — who does what, and the rules that keep them honest.</h2>
-    <p class="lead reveal">A swarm is only as good as its role discipline. Each sub-agent is <b>typed</b> at dispatch: it gets a narrow job, an isolation rule that keeps it from contaminating other roles, and a model tier. (Throughout, a <b>seat</b> just means one such typed sub-agent instance doing one job.) The isolation rules are the load-bearing part — they are what make the audits independent and the math trustworthy.</p>
+    <p class="lead reveal">A swarm is only as good as its role discipline. Each sub-agent is <b>typed</b> at dispatch: it gets a narrow job, an isolation rule that keeps it from contaminating other roles, and a model tier. <b>The tier is a real choice, not a default:</b> bounded, run-many jobs take a <b>lighter tier</b> for breadth, and the <b>Flagship</b> is reserved for the seats that arbitrate. (Throughout, a <b>seat</b> just means one such typed sub-agent instance doing one job.) The isolation rules are the load-bearing part — they are what make the audits independent and the math trustworthy.</p>
 
     <div class="taxwrap reveal">
       <div class="taxscroll">
@@ -1456,28 +1539,28 @@
             <tr><th>Role</th><th>What it does</th><th>Isolation rule</th><th>Model tier</th></tr>
           </thead>
           <tbody>
-            <tr><td class="role">Scout / Explorer</td><td>Reads the substrate (code, docs, data) and returns structured findings — not opinions.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Scout / Explorer</td><td>Reads the substrate (code, docs, data) and returns structured findings — not opinions.</td><td class="iso none">—</td><td><span class="tier step">lighter tier · run many</span></td></tr>
             <tr><td class="role">Worker</td><td>Produces a concrete deliverable: a plan, a design, a report.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
             <tr><td class="role">Mathematician</td><td>Derives and verifies formulas; runs throwaway prototypes to test them.</td><td class="iso">Math <b>never</b> shares a seat with code — settle the math first, in isolation.</td><td><span class="tier opus">Flagship</span></td></tr>
             <tr><td class="role">Code-builder</td><td>Turns a settled plan into working code.</td><td class="iso">Receives settled math as input; does <b>not</b> re-derive it.</td><td><span class="tier opus">Flagship</span> <span class="tier step">step-down OK (non-critical)</span></td></tr>
-            <tr><td class="role">Aggregator</td><td>Folds many outputs into one coherent surface.</td><td class="iso">Folds but <b>never decides</b> — it collates, it does not rule.</td><td><span class="tier step">regular tier OK</span></td></tr>
-            <tr><td class="role">Codebase-validator</td><td>Pins each claim to an exact <code>file:line</code> in the real source.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
-            <tr><td class="role">Independent auditor</td><td>Verifies a deliverable it did <b>not</b> write.</td><td class="iso">An author can never audit their own work.</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Aggregator</td><td>Folds many outputs into one coherent surface.</td><td class="iso">Folds but <b>never decides</b> — it collates, it does not rule.</td><td><span class="tier step">lighter tier OK</span></td></tr>
+            <tr><td class="role">Codebase-validator</td><td>Pins each claim to an exact <code>file:line</code> in the real source.</td><td class="iso none">—</td><td><span class="tier step">lighter tier · run many</span></td></tr>
+            <tr><td class="role">Independent auditor</td><td>Verifies a deliverable it did <b>not</b> write.</td><td class="iso">An author can never audit their own work.</td><td><span class="tier opus">Flagship</span> <span class="tier step">lighter tier if bounded</span></td></tr>
             <tr><td class="role">Adversarial auditor<span class="rk">/ plan-breaker</span></td><td>Actively attacks the converged plan, hunting for what prior audits missed.</td><td class="iso">A <b>different framing</b> than every prior audit.</td><td><span class="tier opus">Flagship</span></td></tr>
             <tr><td class="role">Alternative-design architect</td><td>Proposes a rival design as a sanity check on the chosen one.</td><td class="iso">Reads only the <b>final plan</b>, never the history that produced it.</td><td><span class="tier opus">Flagship</span></td></tr>
-            <tr><td class="role">Advisor</td><td>Axis-sliced review — examines exactly one concern at a time.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
-            <tr><td class="role">Audit-of-audit</td><td>Verifies that the audit itself was complete and well-scoped.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span></td></tr>
+            <tr><td class="role">Advisor</td><td>Axis-sliced review — examines exactly one concern at a time.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span> <span class="tier step">lighter tier if bounded</span></td></tr>
+            <tr><td class="role">Audit-of-audit</td><td>Verifies that the audit itself was complete and well-scoped.</td><td class="iso none">—</td><td><span class="tier opus">Flagship</span> <span class="tier step">lighter tier if bounded</span></td></tr>
             <tr><td class="role">Independent secondary<span class="rk">/ cross-model voice</span></td><td>A fresh auditor with a <b>different framing</b> — sometimes a different model or tool entirely.</td><td class="iso"><b>Mandatory</b> after any planning or code work.</td><td><span class="tier opus">Flagship</span> <span class="tier mand">/ other engine</span></td></tr>
             <tr><td class="role">Roving specialist</td><td>Time-travel (re-walk history), plan-break, and rules/memory inspection.</td><td class="iso">Fired <b>alongside</b> the waves — not as a terminal stage.</td><td><span class="tier opus">Flagship</span></td></tr>
             <tr class="sup"><td class="role">Executor <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Runs the build; the <b>only</b> instance that edits the tree &amp; commits.</td><td class="iso">One editor — clobber-safe, clean commit trail.</td><td><span class="tier opus">Flagship</span></td></tr>
             <tr class="sup"><td class="role">Shadow <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Verifies the Executor's premises against source, live; can also carry scope / settle / verify load.</td><td class="iso">Touches nothing but the ledger — unless a declared co-build partition.</td><td><span class="tier opus">Flagship</span></td></tr>
             <tr class="sup"><td class="role">Senior <span style="color:var(--dim);font-weight:500">· peer mgr</span></td><td>Outgoing manager turned light-touch backstop; carries full history, steps in on escalation / disagreement / silence / unaudited commit.</td><td class="iso">Defers to the active pair; periodic ~20-min cadence.</td><td><span class="tier opus">Flagship</span></td></tr>
-            <tr><td class="role">Visualizer / author</td><td>Builds the visual or written artifact (like this page).</td><td class="iso none">—</td><td><span class="tier step">regular tier OK</span></td></tr>
+            <tr><td class="role">Visualizer / author</td><td>Builds the visual or written artifact (like this page).</td><td class="iso none">—</td><td><span class="tier step">lighter tier OK</span></td></tr>
           </tbody>
         </table>
       </div>
       <div class="taxnote">
-        <b>Model policy:</b> math, investigation, and planning are <b>always</b> on a <b>Flagship</b> model — use the <b>latest Anthropic or OpenAI flagship models for best results.</b> Mechanical work — aggregation, rewriting, folding — <em>may</em> step down a tier but prefers Flagship. Only genuinely non-critical execution defers to a lower tier.
+        <b>Model policy — breadth vs. arbitration.</b> Spend the tier where judgment lives. A <b>lighter, faster tier is excellent for breadth</b> — run <b>many</b> in parallel on bounded, well-scoped jobs: evidence-gathering scouts, per-unit audits (run the tests, byte-diff the core, return a clean findings table with cites), <code>file:line</code> validators, and mechanical folding or rewriting. These pay high returns cheaply; a Flagship model on them is waste. <b>Reserve the Flagship for the arbiter</b> — the synthesis seat that reasons <em>conflicting</em> evidence to a verdict — plus math derivation, planning, and open-ended diagnosis. One nuance on diagnosis: a lighter tier <em>can</em> do it, but tends to <b>over-commit to a single theory</b>. So the move is <b>many lighter-tier scouts + one Flagship arbiter</b>: run several light scouts in parallel, let their <em>disagreement</em> surface the real tension, then let one Flagship seat resolve it. A complete result can look like <b>~7 lighter-tier seats</b> (bounded audits + scouts) <b>+ 1 Flagship arbiter</b> — decisive, at a fraction of the context and cost of an all-Flagship swarm. (Math, investigation, and planning still always name a Flagship — use the <b>latest Anthropic or OpenAI flagship models</b> for those.) Even the arbiter can overstate a point; the operator and the record still catch it.
       </div>
     </div>
   </div>
@@ -1512,7 +1595,7 @@
         <li><b>The prior stage's output.</b> The studied substrate handed forward, pinned to exact <code>file:line</code> citations — the agent never picks its own inputs.</li>
         <li><b>Hard rules + a "files not to touch" list.</b> The guardrails that keep a cold agent inside its lane.</li>
         <li><b>The required return shape.</b> An exact filename and numbered sections, so the next stage can consume the result mechanically — no human re-typing.</li>
-        <li><b>Typed seat + model tier.</b> Which role it plays and on which model.</li>
+        <li><b>Typed seat + model tier.</b> Which role it plays and on which model — a <b>lighter tier</b> for bounded run-many work, the <b>Flagship</b> reserved for the seat that arbitrates.</li>
       </ul>
     </div>
     <div class="callout cy reveal">

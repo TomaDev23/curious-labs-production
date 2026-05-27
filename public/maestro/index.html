@@ -60,12 +60,26 @@
     border:1px solid transparent; transition:.18s;
   }
   .site-shell__links a:hover{color:#fff; background:rgba(132,204,22,.1); border-color:rgba(132,204,22,.22)}
+  .site-shell__meta{margin-left:auto; display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap}
+  .site-shell__version{
+    display:flex; align-items:center; gap:8px; min-height:30px; padding:6px 10px; border-radius:9px;
+    border:1px solid rgba(79,214,255,.24); background:rgba(79,214,255,.07);
+    color:rgba(255,255,255,.68); font-family:var(--mono); font-size:11px; letter-spacing:.3px;
+  }
+  .site-shell__version b{color:var(--cyan); font-size:12px}
+  .site-shell__version .sep{color:rgba(255,255,255,.25)}
   @media(max-width:760px){
-    .site-shell__inner{align-items:center; justify-content:space-between; gap:14px; padding:10px 16px}
-    .site-shell__brand strong{font-size:14px}
-    .site-shell__brand small{font-size:9px; letter-spacing:1.3px}
-    .site-shell__links{margin-left:auto}
-    .site-shell__links a{padding:6px 8px; font-size:11px}
+    .site-shell__inner{align-items:center; justify-content:flex-start; gap:8px; padding:8px 14px; flex-wrap:nowrap}
+    .site-shell__brand{gap:8px}
+    .site-shell__brand img{height:24px}
+    .site-shell__brand strong{font-size:13px}
+    .site-shell__brand small{font-size:8px; letter-spacing:1.1px}
+    .site-shell__meta{width:auto; min-width:0; margin-left:auto; justify-content:flex-end; gap:6px; flex-wrap:nowrap}
+    .site-shell__version{min-width:0; font-size:9px; gap:4px; padding:5px 6px; flex:0 1 auto; white-space:nowrap}
+    .site-shell__version b{font-size:10px}
+    .site-shell__status{display:none}
+    .site-shell__links{margin-left:0}
+    .site-shell__links a{padding:6px 7px; font-size:10px}
     .site-shell{position:relative}
     .maestro-toc{top:0}
   }
@@ -672,9 +686,14 @@
         <small>Mission Control</small>
       </span>
     </a>
-    <nav class="site-shell__links" aria-label="Website navigation">
-      <a href="/contact">Contact</a>
-    </nav>
+    <div class="site-shell__meta">
+      <div class="site-shell__version" aria-label="Maestro version">
+        <b>V13</b><span class="site-shell__status">Updating article</span><span class="sep">·</span><span>Updated May 27, 2026</span>
+      </div>
+      <nav class="site-shell__links" aria-label="Website navigation">
+        <a href="/contact">Contact</a>
+      </nav>
+    </div>
   </div>
 </header>
 

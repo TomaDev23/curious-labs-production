@@ -191,24 +191,13 @@
   .hero .shift{font-size:15px;color:var(--dim);max-width:680px;margin:14px auto 0;font-family:var(--mono)}
   .hero .shift b{color:var(--cyan);font-weight:700}
   .orbit-emblem{width:140px; height:140px; margin:0 auto 6px; position:relative}
-  .stat-row{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:38px}
-  .stat{
-    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 20px; min-width:160px;
-  }
-  .stat .n{font-size:24px; font-weight:780; color:#fff; font-family:var(--mono)}
-  .stat .n.cy{color:var(--cyan)} .stat .n.mg{color:var(--magenta)} .stat .n.gd{color:var(--gold)} .stat .n.gr{color:var(--green)}
-  .stat .l{font-size:12px; color:var(--mut); letter-spacing:.4px; margin-top:5px}
-  .skill-cta{margin-top:22px; display:flex; justify-content:center}
-  .skill-cta.end{margin-top:22px}
-  .skill-cta a{
-    display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:42px;
-    padding:10px 18px; border-radius:10px; border:1px solid rgba(79,214,255,.38);
-    background:linear-gradient(180deg,rgba(79,214,255,.16),rgba(169,139,255,.08));
-    color:#fff; font-family:var(--mono); font-size:12px; letter-spacing:.8px; text-transform:uppercase;
-    box-shadow:0 18px 40px rgba(0,0,0,.22); transition:.18s;
-  }
-  .skill-cta a:hover{transform:translateY(-1px); border-color:rgba(79,214,255,.65); background:rgba(79,214,255,.18)}
-  .skill-cta a span{color:var(--cyan)}
+  .hero-cta{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:34px}
+  .cta-primary{display:inline-flex; align-items:center; gap:9px; font-family:var(--sans); font-size:15px; font-weight:700; color:#04121a; background:linear-gradient(180deg,#7fe3ff,#4fd6ff); border:1px solid rgba(79,214,255,.6); border-radius:11px; padding:13px 24px; text-decoration:none; box-shadow:0 6px 22px rgba(79,214,255,.22); transition:transform .12s, box-shadow .12s}
+  .cta-primary:hover{transform:translateY(-1px); box-shadow:0 10px 30px rgba(79,214,255,.34)}
+  .cta-secondary{display:inline-flex; align-items:center; gap:8px; font-family:var(--sans); font-size:15px; font-weight:600; color:var(--cyan); border:1px solid rgba(79,214,255,.32); border-radius:11px; padding:13px 22px; text-decoration:none; transition:background .12s, border-color .12s}
+  .cta-secondary:hover{background:rgba(79,214,255,.06); border-color:rgba(79,214,255,.5)}
+  .cta-note{margin-top:14px; font-size:13px; color:var(--mut); letter-spacing:.2px}
+  .cta-note b{color:var(--ink)}
 
   /* ---------- PANELS / CARDS ---------- */
   .panel{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:26px 28px; margin-top:22px}
@@ -753,18 +742,13 @@
     </div>
     <span class="badge">◆ The companion explainer to the orchestrator-mode skill</span>
     <h1>The Orchestration Method</h1>
-    <p class="sub"><b>Orchestrate, don't carry the load.</b> A single person directs a manager agent that conducts swarms of specialized sub-agents — to plan and build work too large for any one mind to hold — and converges on truth from many independent angles.</p>
-    <p class="shift">The shift: from <b>one agent grinding a task forward</b> and leaving gaps — to <b>one agent conducting many</b> and converging on what's true.</p>
-    <p class="shift" style="color:var(--cyan)">Want to run it? The <b>orchestrator-mode</b> Claude skill activates this method directly — this page explains what it's doing and why it pays off.</p>
-    <div class="stat-row">
-      <div class="stat"><div class="n cy">1</div><div class="l">operator · conducts the whole swarm</div></div>
-      <div class="stat"><div class="n mg">~1,000</div><div class="l">files edited across the build</div></div>
-      <div class="stat"><div class="n gd">~250K</div><div class="l">lines written &amp; revised</div></div>
-      <div class="stat"><div class="n gr">0</div><div class="l">incidents slip through — caught &amp; steered in flight, not hunted later</div></div>
+    <p class="sub"><b>Run a whole team of agents on one codebase — together, without the collisions.</b> You stay the conductor: a manager agent dispatches a swarm of specialists onto a shared target, they check each other's work in flight, and it converges on a result you can trust — even when the job is far too big for any single agent to hold.</p>
+    <p class="shift">The shift: from babysitting <b>one agent</b> that grinds forward and leaves gaps you only find later — to directing <b>many that cover each other</b> and agree on what's true before it ships.</p>
+    <div class="hero-cta">
+      <a class="cta-primary" href="https://github.com/TomaDev23/Maestro" target="_blank" rel="noopener">Get the skill on GitHub &#8594;</a>
+      <a class="cta-secondary" href="#chapters">See what's inside &#8595;</a>
     </div>
-    <div class="skill-cta">
-      <a href="https://github.com/TomaDev23/Maestro" target="_blank" rel="noopener">Get the skill here <span>GitHub</span></a>
-    </div>
+    <p class="cta-note">Free &amp; MIT-licensed &middot; drops straight into Claude Code as the <b>orchestrator-mode</b> skill &mdash; point it at your project and go.</p>
     <p class="byline" style="margin-top:22px;font-size:13.5px;color:var(--mut);letter-spacing:.2px">Created May 2026 by <b style="color:var(--ink)">Tom</b> <span style="color:var(--dim)">(TomaDev23)</span>, with <b style="color:var(--ink)">Claude (Opus 4.7)</b> as co-author · MIT License</p>
   </div>
 </header>

@@ -5,9 +5,13 @@
     "redirects": [
       { "source": "/Maestro", "destination": "/maestro", "permanent": false },
       { "source": "/Maestro/", "destination": "/maestro", "permanent": false },
-      { "source": "/Maestro/index.html", "destination": "/maestro", "permanent": false }
+      { "source": "/Maestro/index.html", "destination": "/maestro", "permanent": false },
+      { "source": "/Maestro/proof", "destination": "/maestro/proof", "permanent": false },
+      { "source": "/Maestro/proof/", "destination": "/maestro/proof", "permanent": false }
     ],
     "rewrites": [
+      { "source": "/maestro/proof", "destination": "/maestro/proof.html" },
+      { "source": "/maestro/proof/", "destination": "/maestro/proof.html" },
       { "source": "/maestro", "destination": "/maestro/index.html" },
       { "source": "/maestro/", "destination": "/maestro/index.html" },
       { "source": "/Maestro", "destination": "/maestro/index.html" },

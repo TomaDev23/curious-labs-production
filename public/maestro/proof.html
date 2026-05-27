@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#04050d" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Maestro Proof of Concept - Coordination Ledger V5</title>
+<meta name="description" content="A raw proof artifact from an actual project using the Maestro orchestration method: Coordination Ledger V5." />
+<style>
+  :root{
+    --bg0:#04050d; --bg1:#080b1c; --panel:rgba(13,18,42,.74); --panel2:rgba(18,26,56,.78);
+    --line:rgba(120,140,255,.16); --line2:rgba(79,214,255,.28);
+    --ink:#dbe1f5; --mut:#96a0c8; --dim:#647099;
+    --cyan:#4fd6ff; --green:#b9ff57; --gold:#ffd166; --violet:#a98bff;
+    --mono:ui-monospace,"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{min-height:100%; background:var(--bg0); scroll-behavior:smooth}
+  body{
+    margin:0; min-height:100svh; padding-bottom:env(safe-area-inset-bottom);
+    font-family:var(--sans); color:var(--ink); line-height:1.6; overflow-x:hidden;
+    background-color:var(--bg0);
+    background-image:linear-gradient(180deg,#080b1c 0%,#050713 42%,#04050d 100%);
+  }
+  a{color:var(--cyan); text-decoration:none}
+  a:hover{color:#fff}
+  .site-shell{
+    position:sticky; top:0; z-index:40; padding-top:env(safe-area-inset-top);
+    background:linear-gradient(180deg, rgba(2,4,14,.96), rgba(4,7,20,.88));
+    border-bottom:1px solid rgba(132,204,22,.22); box-shadow:0 20px 55px rgba(0,0,0,.35);
+    backdrop-filter:blur(18px);
+  }
+  .site-shell__inner{
+    display:flex; align-items:center; justify-content:flex-start; gap:18px;
+    width:100%; padding:12px 22px;
+  }
+  .site-shell__brand{display:flex; align-items:center; gap:10px; color:#fff; min-width:0}
+  .site-shell__brand img{height:28px; width:auto; filter:drop-shadow(0 0 8px rgba(132,204,22,.35))}
+  .site-shell__brand strong{display:block; font-size:15px; letter-spacing:.3px; color:var(--green)}
+  .site-shell__brand small{
+    display:block; margin-top:-2px; font-family:var(--mono); font-size:10px; letter-spacing:1.6px;
+    text-transform:uppercase; color:rgba(255,255,255,.58)
+  }
+  .site-shell__links{display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-left:auto; flex-wrap:wrap}
+  .site-shell__links a{
+    color:rgba(255,255,255,.76); font-family:var(--mono); font-size:12px; letter-spacing:.4px;
+    padding:7px 10px; border:1px solid transparent; border-radius:8px; transition:.18s;
+  }
+  .site-shell__links a:hover{color:#fff; background:rgba(132,204,22,.1); border-color:rgba(132,204,22,.22)}
+  .wrap{width:min(1180px,100%); margin:0 auto; padding:0 22px}
+  .hero{padding:72px 0 28px}
+  .kicker{
+    margin:0 0 12px; font-family:var(--mono); font-size:12px; letter-spacing:2px;
+    color:var(--cyan); text-transform:uppercase;
+  }
+  h1{margin:0; max-width:920px; color:#fff; font-size:clamp(36px,6vw,76px); line-height:1.03; letter-spacing:0}
+  .sub{max-width:860px; margin:20px 0 0; color:var(--mut); font-size:18px}
+  .meta-grid{
+    display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:26px; max-width:900px;
+  }
+  .meta{
+    border:1px solid var(--line); background:rgba(255,255,255,.035); border-radius:8px; padding:12px 13px;
+    min-width:0;
+  }
+  .meta b{display:block; color:#fff; font-family:var(--mono); font-size:13px}
+  .meta span{display:block; margin-top:4px; color:var(--mut); font-size:13px}
+  .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:28px}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 16px;
+    border-radius:8px; border:1px solid var(--line2); font-weight:700; transition:.16s;
+  }
+  .btn.primary{background:linear-gradient(180deg,#7fe3ff,#4fd6ff); color:#04121a; border-color:rgba(79,214,255,.6)}
+  .btn.secondary{color:var(--cyan); background:rgba(79,214,255,.055)}
+  .btn:hover{transform:translateY(-1px)}
+  .note{
+    margin:34px 0 0; padding:16px 18px; border-left:3px solid var(--gold);
+    background:rgba(255,209,102,.07); color:rgba(255,255,255,.78); max-width:980px;
+  }
+  .viewer-shell{padding:28px 0 72px}
+  .viewer-head{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap;
+    border-top:1px solid var(--line); padding-top:24px; margin-bottom:14px;
+  }
+  .viewer-head h2{margin:0; color:#fff; font-size:24px}
+  .viewer-head p{margin:5px 0 0; color:var(--mut); font-size:14px}
+  .viewer-tools{display:flex; gap:8px; flex-wrap:wrap}
+  .tool{
+    appearance:none; cursor:pointer; border:1px solid var(--line); border-radius:8px; background:rgba(255,255,255,.04);
+    color:rgba(255,255,255,.78); font-family:var(--mono); font-size:12px; padding:8px 10px;
+  }
+  .tool:hover{border-color:var(--line2); color:#fff}
+  .ledger-frame{
+    border:1px solid var(--line); border-radius:8px; background:rgba(3,5,14,.78);
+    box-shadow:0 24px 80px rgba(0,0,0,.35); overflow:hidden;
+  }
+  .ledger-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 12px;
+    border-bottom:1px solid var(--line); background:rgba(18,26,56,.72); color:var(--mut);
+    font-family:var(--mono); font-size:12px;
+  }
+  pre{
+    margin:0; min-height:50vh; max-height:none; padding:22px; overflow:auto;
+    color:#dbe1f5; white-space:pre-wrap; overflow-wrap:anywhere;
+    font-family:var(--mono); font-size:12px; line-height:1.62; tab-size:2;
+  }
+  .page-progress{
+    position:fixed; right:max(12px,env(safe-area-inset-right)); top:calc(84px + env(safe-area-inset-top));
+    bottom:calc(24px + env(safe-area-inset-bottom)); width:8px; z-index:30; pointer-events:none;
+  }
+  .page-progress span:first-child{
+    position:absolute; inset:0 3px; border-radius:999px; background:rgba(120,140,255,.12);
+    border:1px solid rgba(120,140,255,.14);
+  }
+  .page-progress span:last-child{
+    position:absolute; left:3px; right:3px; top:0; height:0%; border-radius:999px;
+    background:linear-gradient(180deg,var(--cyan),var(--violet),var(--green));
+    box-shadow:0 0 12px rgba(79,214,255,.55);
+  }
+  @media(max-width:760px){
+    .site-shell__inner{gap:10px; padding:8px 14px}
+    .site-shell__brand img{height:24px}
+    .site-shell__brand strong{font-size:13px}
+    .site-shell__brand small{font-size:8px; letter-spacing:1.1px}
+    .site-shell__links{gap:5px}
+    .site-shell__links a{font-size:10px; padding:6px 7px}
+    .hero{padding:34px 0 16px}
+    .wrap{padding:0 16px}
+    h1{font-size:clamp(30px,9vw,42px)}
+    .meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .meta{padding:9px 10px}
+    .meta b{font-size:12px}
+    .meta span{font-size:12px}
+    .sub{font-size:16px}
+    .actions{margin-top:20px; gap:8px}
+    .btn{min-height:38px; padding:9px 11px; font-size:13px}
+    .note{display:none}
+    .viewer-shell{padding-top:18px}
+    pre{padding:16px; font-size:11px; line-height:1.58}
+    .page-progress{right:4px; top:calc(68px + env(safe-area-inset-top)); width:7px}
+  }
+</style>
+<script defer src="/maestro/proof/proof-viewer.js"></script>
+</head>
+<body>
+<header class="site-shell" aria-label="CuriousLabs site navigation">
+  <div class="site-shell__inner">
+    <a class="site-shell__brand" href="/" aria-label="Back to CuriousLabs home">
+      <img src="/images/logo.svg" alt="" />
+      <span>
+        <strong>CuriousLabs</strong>
+        <small>Mission Control</small>
+      </span>
+    </a>
+    <nav class="site-shell__links" aria-label="Proof navigation">
+      <a href="/maestro">Method</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-progress" aria-hidden="true"><span></span><span id="pageProgress"></span></div>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker">Maestro proof artifact</p>
+      <h1>Coordination Ledger V5 from an actual project.</h1>
+      <p class="sub">This is a raw coordination ledger from a real multi-agent software campaign. It is published intentionally as proof of concept for the orchestration method: manager, shadow, senior, audit marks, handoffs, decisions, and convergence in the weeds.</p>
+      <div class="meta-grid" aria-label="Artifact metadata">
+        <div class="meta"><b>Artifact</b><span>Coordination Ledger V5</span></div>
+        <div class="meta"><b>Format</b><span>Markdown, preserved raw</span></div>
+        <div class="meta"><b>Size</b><span id="artifactSize">94,982 bytes</span></div>
+        <div class="meta"><b>Updated</b><span>May 27, 2026</span></div>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="#ledger">Read the ledger</a>
+        <a class="btn secondary" href="/maestro/proof/coordination-ledger-v5.md">Raw Markdown</a>
+        <a class="btn secondary" href="/maestro">Back to the method</a>
+      </div>
+      <p class="note">The artifact is intentionally unpolished. Its value is that it shows the coordination machinery as it ran inside a live project rather than as a simplified example.</p>
+    </div>
+  </section>
+
+  <section class="viewer-shell" id="ledger">
+    <div class="wrap">
+      <div class="viewer-head">
+        <div>
+          <h2>Raw Ledger</h2>
+          <p id="ledgerStatus">Loading raw markdown artifact...</p>
+        </div>
+        <div class="viewer-tools" aria-label="Ledger tools">
+          <button class="tool" type="button" id="copyRawLink">Copy raw link</button>
+          <a class="tool" href="/maestro/proof/coordination-ledger-v5.md" download>Download .md</a>
+        </div>
+      </div>
+      <article class="ledger-frame" aria-label="Coordination Ledger V5 raw markdown">
+        <div class="ledger-bar"><span>COORDINATION_LEDGER_V5.md</span><span id="ledgerMetrics">raw markdown</span></div>
+        <pre id="ledgerText">Loading...</pre>
+      </article>
+    </div>
+  </section>
+</main>
+</body>
+</html>

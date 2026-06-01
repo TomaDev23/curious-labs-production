@@ -2,14 +2,93 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const slides = Array.from({ length: 12 }, (_, index) => index + 1);
+const conversationMarkdownUrl = '/interview/interview-conversation.md';
 
 export default function Interview() {
   const canvasRef = useRef(null);
   const [activeSlide, setActiveSlide] = useState(1);
   const [progress, setProgress] = useState(0);
+  const [copyState, setCopyState] = useState('idle');
+  const [conversationText, setConversationText] = useState('');
+
+  const writeClipboardText = async (text) => {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return;
+      } catch (error) {
+        console.warn('Clipboard API copy failed, trying textarea fallback.', error);
+      }
+    }
+
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'fixed';
+    textArea.style.top = '0';
+    textArea.style.left = '-9999px';
+    textArea.style.width = '1px';
+    textArea.style.height = '1px';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textArea);
+
+    if (!copied) {
+      throw new Error('Clipboard copy was blocked');
+    }
+  };
+
+  const copyConversation = async () => {
+    setCopyState('copying');
+
+    try {
+      let text = conversationText;
+      if (!text) {
+        const response = await fetch(conversationMarkdownUrl);
+        if (!response.ok) {
+          throw new Error(`Unable to load transcript: ${response.status}`);
+        }
+        text = await response.text();
+        setConversationText(text);
+      }
+
+      await writeClipboardText(text);
+      setCopyState('copied');
+      window.setTimeout(() => setCopyState('idle'), 2600);
+    } catch (error) {
+      console.error(error);
+      setCopyState('failed');
+      window.setTimeout(() => setCopyState('idle'), 3200);
+    }
+  };
 
   useEffect(() => {
     document.title = 'Interview Presentation | CuriousLabs';
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(conversationMarkdownUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Unable to load transcript: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((text) => {
+        if (!cancelled) setConversationText(text);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -142,10 +221,10 @@ export default function Interview() {
         <title>Interview Presentation | CuriousLabs</title>
         <meta
           name="description"
-          content="A scrollable CuriousLabs interview presentation optimized for desktop and mobile reading."
+          content="A scrollable CuriousLabs interview presentation with a copyable markdown conversation transcript."
         />
         <meta property="og:title" content="Interview Presentation | CuriousLabs" />
-        <meta property="og:description" content="A responsive online interview deck from CuriousLabs." />
+        <meta property="og:description" content="A responsive online interview deck from CuriousLabs, with a plain-text markdown version for AI review." />
       </Helmet>
 
       <style>{`
@@ -216,6 +295,30 @@ export default function Interview() {
           font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:12px; transition:.18s;
         }
         .interview-strip a:hover,.interview-strip a.is-active{color:#fff; background:rgba(79,214,255,.13); border-color:var(--line2)}
+        .interview-text-tools{
+          position:relative; z-index:3; border-bottom:1px solid var(--line);
+          background:linear-gradient(180deg,rgba(3,5,14,.86),rgba(3,5,14,.58));
+          backdrop-filter:blur(14px);
+        }
+        .interview-text-tools .interview-wrap{
+          display:flex; align-items:center; justify-content:space-between; gap:14px; padding-top:10px; padding-bottom:10px;
+        }
+        .interview-text-copy{min-width:0}
+        .interview-text-copy b{display:block; color:#fff; font-size:14px; line-height:1.25}
+        .interview-text-copy span{display:block; margin-top:2px; color:var(--mut); font-size:12px; line-height:1.35}
+        .interview-actions{display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap}
+        .interview-action{
+          appearance:none; display:inline-flex; align-items:center; justify-content:center; min-height:36px;
+          border:1px solid rgba(79,214,255,.25); border-radius:8px; background:rgba(79,214,255,.07);
+          color:rgba(255,255,255,.86); font-family:ui-monospace,"Cascadia Code",Consolas,monospace;
+          font-size:12px; letter-spacing:.2px; line-height:1; padding:9px 11px; text-decoration:none; cursor:pointer;
+          transition:background .18s,border-color .18s,color .18s,transform .18s;
+        }
+        .interview-action:hover{background:rgba(79,214,255,.13); border-color:rgba(79,214,255,.44); color:#fff; transform:translateY(-1px)}
+        .interview-action.primary{background:linear-gradient(180deg,#79e1ff,#4fd6ff); border-color:rgba(79,214,255,.72); color:#06111a; font-weight:800}
+        .interview-action:disabled{opacity:.62; cursor:wait; transform:none}
+        .interview-action:disabled:hover{background:rgba(79,214,255,.07); border-color:rgba(79,214,255,.25); color:rgba(255,255,255,.86)}
+        .interview-action.primary:disabled:hover{background:linear-gradient(180deg,#79e1ff,#4fd6ff); color:#06111a}
         .interview-progress{
           position:fixed; right:max(10px,env(safe-area-inset-right)); top:calc(16px + env(safe-area-inset-top));
           bottom:calc(24px + env(safe-area-inset-bottom)); width:8px; z-index:50; pointer-events:none;
@@ -283,6 +386,11 @@ export default function Interview() {
           .interview-nav-label{display:none}
           .interview-strip{width:100%; gap:5px}
           .interview-strip a{min-width:34px; padding:5px 7px; font-size:11px}
+          .interview-text-tools .interview-wrap{display:block; padding:10px 12px}
+          .interview-text-copy b{font-size:13px}
+          .interview-text-copy span{font-size:11px}
+          .interview-actions{margin-top:9px; justify-content:flex-start; gap:6px}
+          .interview-action{min-height:34px; padding:8px 9px; font-size:11px; flex:1 1 auto}
           .interview-wrap{padding:0 16px}
           .interview-hero{padding:34px 0 12px}
           .interview-title{font-size:clamp(30px,9vw,42px)}
@@ -334,6 +442,31 @@ export default function Interview() {
           </div>
         </div>
       </nav>
+
+      <section className="interview-text-tools" aria-label="Plain text interview tools">
+        <div className="interview-wrap">
+          <div className="interview-text-copy">
+            <b>Plain-text conversation</b>
+            <span>Open, download, or copy the full markdown transcript for Claude, Codex, or review notes.</span>
+          </div>
+          <div className="interview-actions">
+            <a className="interview-action" href={conversationMarkdownUrl} target="_blank" rel="noopener noreferrer">
+              Open Markdown
+            </a>
+            <a className="interview-action" href={conversationMarkdownUrl} download="curiouslabs-interview-conversation.md">
+              Download .md
+            </a>
+            <button
+              className="interview-action primary"
+              type="button"
+              onClick={copyConversation}
+              disabled={copyState === 'copying' || !conversationText}
+            >
+              {!conversationText ? 'Loading text...' : copyState === 'copying' ? 'Copying...' : copyState === 'copied' ? 'Copied' : copyState === 'failed' ? 'Copy failed' : 'Copy for AI'}
+            </button>
+          </div>
+        </div>
+      </section>
 
       <div className="interview-progress" aria-hidden="true">
         <span />

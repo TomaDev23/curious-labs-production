@@ -55,6 +55,7 @@ const Privacy = lazy(() => import('./pages/privacy.jsx'));
 const Legal = lazy(() => import('./pages/legal.jsx'));
 const Careers = lazy(() => import('./pages/careers.jsx'));
 const Documentation = lazy(() => import('./pages/docs.jsx'));
+const Interview = lazy(() => import('./pages/interview.jsx'));
 const NotFound = lazy(() => import('./pages/404.jsx'));
 
 // ✅ CONTRACTS DASHBOARD - DEV TOOL
@@ -334,6 +335,12 @@ const AppRoutes = () => (
       <Route path="/docs/*" element={
         <Suspense fallback={<SimpleLoader />}>
           <Documentation />
+        </Suspense>
+      } />
+
+      <Route path="/interview/*" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <Interview />
         </Suspense>
       } />
       

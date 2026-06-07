@@ -56,6 +56,7 @@ const Legal = lazy(() => import('./pages/legal.jsx'));
 const Careers = lazy(() => import('./pages/careers.jsx'));
 const Documentation = lazy(() => import('./pages/docs.jsx'));
 const Interview = lazy(() => import('./pages/interview.jsx'));
+const MoonSignalDeck = lazy(() => import('./pages/moonsignal.jsx'));
 const NotFound = lazy(() => import('./pages/404.jsx'));
 
 // ✅ CONTRACTS DASHBOARD - DEV TOOL
@@ -344,6 +345,12 @@ const AppRoutes = () => (
         </Suspense>
       } />
       
+      <Route path="/moonsignal/*" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <MoonSignalDeck />
+        </Suspense>
+      } />
+
       <Route path="/dev/combined-parallax-test" element={
         <Suspense fallback={<SimpleLoader />}>
           <CombinedParallaxTest />

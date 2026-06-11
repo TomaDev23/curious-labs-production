@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SectionShell,
   SectionLabel,
@@ -25,23 +25,24 @@ import { useMediaState } from './hooks';
 const QUALITIES = [
   {
     code: 'MSL-01',
-    title: 'Signal logic',
-    body: 'Composable rules that turn raw inputs into reviewed, repeatable signals.'
+    title: 'Deterministic Market State',
+    body: 'Snapshots and deltas keep every decision grounded in calculated, repeatable market data.'
   },
   {
     code: 'MSL-02',
-    title: 'Research memory',
-    body: 'Context that persists across sessions, so work resumes instead of starting cold.'
+    title: 'Live/Replay Parity',
+    body: 'Historical replays reuse the same context shape as live trading, so old windows can be rerun under matching conditions.'
   },
   {
     code: 'MSL-03',
-    title: 'Human-in-the-loop',
+    title: 'As-Of Research Discipline',
+    copy: 'As-of inputs and contract-locked math keep formulas reviewable instead of hard-coded into strategy instincts.',
     body: 'Every decision stays reviewable and auditable — never a black box.'
   },
   {
     code: 'MSL-04',
-    title: 'Runs on AEGIS',
-    body: 'Governed, traceable execution inherited from the runtime beneath it.'
+    title: 'AEGIS Safety Layer',
+    body: 'Monitor boards, bus bars, and emergency stops keep execution observable, governed, and ready to halt when needed.'
   }
 ];
 
@@ -108,20 +109,21 @@ const SkeletonList = () => (
  * A single product "frame": window chrome + content area. When `src` is given,
  * renders the real image; otherwise renders an obvious, swappable placeholder.
  */
-const ScreenshotFrame = ({ src, alt, caption, url, variant, className = '' }) => {
+const ScreenshotFrame = ({ src, alt, caption, url, variant, className = '', fit = 'cover' }) => {
   const hasImage = Boolean(src);
   return (
     <figure className={`group ${className}`}>
       <div className="overflow-hidden rounded-xl border border-white/10 bg-curious-dark-900/70 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur-[2px] ring-1 ring-teal-300/10">
         <WindowChrome url={url} />
-        <div className="relative aspect-[16/10] w-full">
+        <div className="relative aspect-[16/10] w-full bg-[#071016]">
           {hasImage ? (
             <img
+              key={src}
               src={src}
               alt={alt || 'Moon Signal screenshot'}
               loading="lazy"
               decoding="async"
-              className="absolute inset-0 h-full w-full object-cover"
+              className={`absolute inset-0 h-full w-full ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
             />
           ) : (
             <div className="absolute inset-0 flex flex-col bg-[radial-gradient(circle_at_50%_30%,rgba(45,212,191,0.08),transparent_60%)]">
@@ -148,26 +150,44 @@ const ScreenshotFrame = ({ src, alt, caption, url, variant, className = '' }) =>
   );
 };
 
-const DEFAULT_SCREENSHOTS = [
-  { src: null, alt: '', caption: 'Signal dashboard — placeholder' },
-  { src: null, alt: '', caption: 'Research log — placeholder' }
+const MOON_SIGNAL_SCREENSHOTS = [
+  {
+    src: '/moonsignal/Landing/2_Markers.svg',
+    alt: 'Moon Signal marker workspace preview.',
+    caption: 'Signal markers'
+  },
+  {
+    src: '/moonsignal/Landing/3_Win.svg',
+    alt: 'Moon Signal review window preview.',
+    caption: 'Review window'
+  },
+  {
+    src: '/moonsignal/Landing/4_Lab.svg',
+    alt: 'Moon Signal research lab preview.',
+    caption: 'Research lab'
+  },
+  {
+    src: '/moonsignal/Landing/5_Lab.svg',
+    alt: 'Moon Signal analysis lab preview.',
+    caption: 'Analysis lab'
+  }
 ];
 
-const MoonSignalShowcase = ({ screenshots }) => {
-  const reduce = useReducedMotion();
-  const { isMobile } = useMediaState();
-  const accent = ACCENTS.teal;
+const DEFAULT_SCREENSHOTS = MOON_SIGNAL_SCREENSHOTS;
 
-  const frames =
-    Array.isArray(screenshots) && screenshots.length > 0
-      ? screenshots
-      : DEFAULT_SCREENSHOTS;
+const ScreenshotCarousel = ({ frames, reduce, isMobile }) => {
+  const [active, setActive] = useState(0);
 
-  const primary = frames[0] || DEFAULT_SCREENSHOTS[0];
-  const secondary = frames[1] || null;
+  useEffect(() => {
+    if (reduce || frames.length <= 1) return undefined;
+    const interval = window.setInterval(() => {
+      setActive((current) => (current + 1) % frames.length);
+    }, 3600);
+    return () => window.clearInterval(interval);
+  }, [frames.length, reduce]);
 
-  // Calm ambient float on the overlapping back frame — disabled on
-  // reduced-motion and on mobile (where frames stack and there is no overlap).
+  const current = frames[active] || frames[0];
+  const next = frames[(active + 1) % frames.length] || current;
   const ambient =
     reduce || isMobile
       ? undefined
@@ -177,7 +197,70 @@ const MoonSignalShowcase = ({ screenshots }) => {
         };
 
   return (
-    <SectionShell id="moon-signal" tone="teal" labelledBy="moon-signal-heading">
+    <div className="relative">
+      {!isMobile && frames.length > 1 && (
+        <motion.div
+          {...ambient}
+          className="pointer-events-none absolute -bottom-12 right-0 w-[58%] opacity-45 blur-[0.2px]"
+          aria-hidden="true"
+        >
+          <ScreenshotFrame
+            src={next.src}
+            alt=""
+            caption=""
+            url="app.moonsignal.dev/research"
+            fit="contain"
+          />
+        </motion.div>
+      )}
+
+      <ScreenshotFrame
+        src={current.src}
+        alt={current.alt}
+        caption={current.caption}
+        url="app.moonsignal.dev/signals"
+        fit="contain"
+        className="relative z-10 lg:max-w-[88%]"
+      />
+
+      {frames.length > 1 && (
+        <div className="mt-4 flex gap-2" aria-label="Moon Signal preview carousel status">
+          {frames.map((frame, index) => (
+            <span
+              key={frame.src}
+              className={[
+                'h-1.5 rounded-full transition-all duration-300',
+                index === active ? 'w-8 bg-teal-200/80 shadow-[0_0_14px_rgba(94,234,212,0.45)]' : 'w-1.5 bg-white/20'
+              ].join(' ')}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const MoonSignalShowcase = ({ screenshots }) => {
+  const reduce = useReducedMotion();
+  const { isMobile } = useMediaState();
+  const accent = ACCENTS.teal;
+
+  const frames =
+    Array.isArray(screenshots) && screenshots.length > 0
+      ? screenshots
+      : MOON_SIGNAL_SCREENSHOTS;
+
+  // The preview carousel owns the browser-frame motion and supplied SVG loop.
+  return (
+    <SectionShell id="moon-signal" tone="teal" labelledBy="moon-signal-heading" glow={false}>
+      <div
+        className="pointer-events-none absolute inset-x-0 -top-72 -z-10 h-[calc(100%+28rem)] bg-[radial-gradient(ellipse_at_72%_18%,rgba(20,184,166,0.20),rgba(20,184,166,0.09)_34%,transparent_68%),linear-gradient(180deg,transparent_0%,rgba(20,184,166,0.10)_24%,rgba(20,184,166,0.075)_62%,transparent_100%)]"
+        style={{
+          WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 78%, transparent 100%)',
+          maskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 78%, transparent 100%)'
+        }}
+        aria-hidden="true"
+      />
       <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
         {/* ── Narrative + qualities ───────────────────────────────── */}
         <div className="lg:col-span-5">
@@ -188,21 +271,20 @@ const MoonSignalShowcase = ({ screenshots }) => {
           <Reveal delay={0.05} y={20}>
             <h2
               id="moon-signal-heading"
-              className="font-space text-3xl font-semibold tracking-tight text-white sm:text-4xl"
+              className="font-space text-3xl font-semibold tracking-tight text-slate-100/90 sm:text-4xl"
             >
-              Moon Signal
+              MoonSignal
             </h2>
-            <p className={`mt-3 font-space text-lg font-medium ${accent.text}`}>
-              An AI-assisted research and signal-design workbench.
+            <p className="mt-3 font-space text-lg font-medium text-teal-200/85">
+              An algorithmic autonomous trading platform in development.
             </p>
           </Reveal>
 
           <Reveal delay={0.1}>
             <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-slate-300">
-              Moon Signal is a focused space for research, signal logic, and
-              human-reviewed decisions. It keeps the work, the reasoning, and the
-              context in one place — built on the AEGIS runtime so every run is
-              governed and traceable.
+              MoonSignal ingests and analyzes market data, executes trades,
+              monitors them with dynamic ratcheting and trailing stop-loss, and
+              manages positions to closure.
             </p>
           </Reveal>
 
@@ -217,7 +299,7 @@ const MoonSignalShowcase = ({ screenshots }) => {
                     {q.title}
                   </h3>
                   <p className="mt-2 text-[13px] leading-relaxed text-slate-400">
-                    {q.body}
+                    {q.copy || q.body}
                   </p>
                   <span
                     className={`mt-4 h-px w-full bg-gradient-to-r ${accent.rule}`}
@@ -232,34 +314,7 @@ const MoonSignalShowcase = ({ screenshots }) => {
         {/* ── Screenshot frames ───────────────────────────────────── */}
         <div className="lg:col-span-7">
           <Reveal delay={0.1} className="h-full">
-            {/* Mobile / tablet: stacked. Desktop: overlapping composition. */}
-            <div className="relative">
-              {/* primary frame */}
-              <ScreenshotFrame
-                src={primary.src}
-                alt={primary.alt}
-                caption={primary.caption}
-                url="app.moonsignal.dev/signals"
-                variant="chart"
-                className="relative z-10 lg:max-w-[88%]"
-              />
-
-              {/* secondary frame: stacks below on mobile, overlaps on desktop */}
-              {secondary && (
-                <motion.div
-                  {...ambient}
-                  className="mt-6 lg:absolute lg:-bottom-12 lg:right-0 lg:mt-0 lg:w-[58%]"
-                >
-                  <ScreenshotFrame
-                    src={secondary.src}
-                    alt={secondary.alt}
-                    caption={secondary.caption}
-                    url="app.moonsignal.dev/research"
-                    variant="list"
-                  />
-                </motion.div>
-              )}
-            </div>
+            <ScreenshotCarousel frames={frames} reduce={reduce} isMobile={isMobile} />
           </Reveal>
         </div>
       </div>

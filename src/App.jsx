@@ -68,6 +68,7 @@ const ContractsDashboard = lazy(() => import('./pages/contracts.jsx'));
 const HomePage_v7_wrapper = lazy(() => import('./pages/HomePage_v7_wrapper.jsx')); // Homepage - 3D isolated to component level
 const CosmicRevPage = lazy(() => import('./pages/cosmic-rev.jsx')); // Cosmic route - 3D with loader
 const PlanetSandboxWithStarsPage = lazy(() => import('./pages/dev/planet-sandbox-with-stars.jsx')); // Dev 3D route
+const PlanetSandboxPage = lazy(() => import('./pages/dev/planet-sandbox.jsx')); // Restored museum 3D solar system archive
 
 // ✅ NON-3D ROUTES: Clean routes with no 3D overhead
 const DevV4CosmicPage = lazy(() => import('./pages/dev_v4_cosmic.jsx'));
@@ -389,6 +390,18 @@ const AppRoutes = () => (
       <Route path="/dev/planet-sandbox-with-stars" element={
         <Suspense fallback={<SimpleLoader />}>
           <PlanetSandboxWithStarsPage />
+        </Suspense>
+      } />
+
+      <Route path="/dev/planet-sandbox" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <PlanetSandboxPage />
+        </Suspense>
+      } />
+
+      <Route path="/museum/legacy-3d-solar-system" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <PlanetSandboxPage />
         </Suspense>
       } />
       

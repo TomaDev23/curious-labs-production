@@ -508,16 +508,21 @@ const MissionMoon = ({
   fallbackToEclipse = false, 
   showDebugHUD = false,
   isEclipse = false,
+  cameraFov = 25,
   ...otherProps
 }) => {
   const moonRef = useRef();
   const groupRef = useRef();
-  const [cameraFOV, setCameraFOV] = useState(25);
+  const [cameraFOV, setCameraFOV] = useState(cameraFov);
   const [prevAnomalyMode, setPrevAnomalyMode] = useState(null);
   const textureConfiguredRef = useRef(false);
   
   // Get invalidate function to force re-renders
   const { invalidate } = useThree();
+
+  useEffect(() => {
+    setCameraFOV(cameraFov);
+  }, [cameraFov]);
   
   // 🎯 FOLLOW HEROEARTH PATTERN: Performance tier detection
   const [performanceMode, setPerformanceMode] = useState('high');

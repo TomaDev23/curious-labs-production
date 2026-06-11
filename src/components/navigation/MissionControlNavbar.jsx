@@ -130,6 +130,16 @@ const MissionControlNavbar = ({
       status: 'STANDBY',
       original: 'Contact',
       route: '/contact'
+    },
+    {
+      id: 'legacy',
+      label: 'Legacy Site',
+      icon: '🗂️',
+      description: 'Temporary access hatch to the previous CuriousLabs homepage while the Moon Signal landing page takes over.',
+      coordinates: 'LEG-008',
+      status: 'STANDBY',
+      original: 'Previous Home',
+      route: '/legacy'
     }
   ];
 

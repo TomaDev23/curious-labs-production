@@ -17,6 +17,8 @@ const MissionMoonWithCanvas = ({
   debugPhase = null, 
   anomalyMode = null, 
   className = "",
+  cameraPosition = [0, 0, 25],
+  cameraFov = 25,
   onMount = null,
   onUnmount = null,
   ...props 
@@ -329,8 +331,8 @@ const MissionMoonWithCanvas = ({
       <CanvasWrapper
         ref={canvasRef}
         camera={{ 
-          position: [0, 0, 25], 
-          fov: 25 
+          position: cameraPosition, 
+          fov: cameraFov 
         }}
         style={{ 
           width: '100%', 
@@ -355,6 +357,7 @@ const MissionMoonWithCanvas = ({
           showDebugHUD={false}
           debugPhase={debugPhase}
           anomalyMode={anomalyMode}
+          cameraFov={cameraFov}
           {...props}
         />
       </CanvasWrapper>

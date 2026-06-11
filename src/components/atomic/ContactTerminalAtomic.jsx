@@ -23,6 +23,11 @@ export const metadata = {
   doc: 'contract_contact_terminal_atomic.md'
 };
 
+const contactTargets = {
+  email: ['towcambodia', 'gmail', 'com'],
+  github: ['https://github.com/', 'Toma', 'Dev', '23']
+};
+
 const ContactTerminalAtomic = () => {
   // 🎯 INTERSECTION-BASED 3D: Load globe when contact section comes into view
   const location = useLocation();
@@ -55,6 +60,7 @@ const ContactTerminalAtomic = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [terminalOutput, setTerminalOutput] = useState([]);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [copiedTarget, setCopiedTarget] = useState(null);
   
   // Refs
   const terminalRef = useRef(null);
@@ -84,6 +90,34 @@ const ContactTerminalAtomic = () => {
     console.log('Form data submitted:', formData);
     // Form submission logic would go here
   };
+
+  const copyToClipboard = useCallback(async (target) => {
+    const value =
+      target === 'email'
+        ? `${contactTargets.email[0]}@${contactTargets.email[1]}.${contactTargets.email[2]}`
+        : contactTargets.github.join('');
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = value;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      setCopiedTarget(target);
+      window.setTimeout(() => setCopiedTarget(null), 1800);
+    } catch (error) {
+      setCopiedTarget('error');
+      window.setTimeout(() => setCopiedTarget(null), 1800);
+    }
+  }, []);
   
   // Handle responsive behavior and reduced motion preference
   useEffect(() => {
@@ -218,39 +252,35 @@ const ContactTerminalAtomic = () => {
                   className="mt-2 space-y-3 pl-4 border-l border-gray-800 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]"
                   style={{ animationDelay: '0.3s' }}
                 >
-                  <div className="text-white flex items-center">
+                  <div className="text-white flex items-center justify-between gap-3">
                     <span className="text-lime-400 mr-2">$</span>
-                    <span className="text-gray-400 mr-2">EMAIL:</span>
-                    <a 
-                      href="#"
-                      className="hover:text-lime-400 transition-colors"
-                      aria-label="Email CuriousLabs"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        window.location.href = 'mailto:' + 'hello' + '@' + 'curiouslabs.space';
-                      }}
+                    <span className="text-gray-400 mr-auto">EMAIL:</span>
+                    <button
+                      type="button"
+                      className="rounded border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-lime-300 transition-colors hover:border-lime-300 hover:bg-lime-400/20 focus:outline-none focus:ring-2 focus:ring-lime-400/70"
+                      aria-label="Copy email address"
+                      onClick={() => copyToClipboard('email')}
                     >
-                      hello@curiouslabs.space
-                    </a>
+                      {copiedTarget === 'email' ? 'Copied' : 'Copy Email'}
+                    </button>
                   </div>
-                  <div className="text-white flex items-center">
+                  <div className="text-white flex items-center justify-between gap-3">
                     <span className="text-lime-400 mr-2">$</span>
-                    <span className="text-gray-400 mr-2">DISCORD:</span>
-                    <span>@CuriousLabs</span>
-                  </div>
-                  <div className="text-white flex items-center">
-                    <span className="text-lime-400 mr-2">$</span>
-                    <span className="text-gray-400 mr-2">GITHUB:</span>
-                    <a 
-                      href="https://github.com/TomaDev23" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="hover:text-lime-400 transition-colors"
-                      aria-label="Visit our GitHub profile"
+                    <span className="text-gray-400 mr-auto">GITHUB:</span>
+                    <button
+                      type="button"
+                      className="rounded border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-lime-300 transition-colors hover:border-lime-300 hover:bg-lime-400/20 focus:outline-none focus:ring-2 focus:ring-lime-400/70"
+                      aria-label="Copy GitHub profile"
+                      onClick={() => copyToClipboard('github')}
                     >
-                      github.com/TomaDev23
-                    </a>
+                      {copiedTarget === 'github' ? 'Copied' : 'Copy GitHub'}
+                    </button>
                   </div>
+                  {copiedTarget === 'error' && (
+                    <div className="text-xs text-amber-300">
+                      copy failed - browser clipboard permission blocked
+                    </div>
+                  )}
                 </div>
               )}
               {/* Terminal Input Simulation */}

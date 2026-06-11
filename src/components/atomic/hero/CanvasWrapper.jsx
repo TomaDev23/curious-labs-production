@@ -133,15 +133,17 @@ const CanvasWrapper = React.forwardRef(({ children, fallback = null, ...canvasPr
 
   return (
     <Suspense fallback={fallback || defaultFallback}>
-      <CanvasComponent
-        ref={ref}
-        gl={glProps}
-        dpr={lowMobile ? 1 : undefined}  // Force DPR to 1 on low-end mobile
-        camera={{ position: [0, 0, 12], fov: 45 }}
-        {...canvasProps}
-      >
-        {children}
-      </CanvasComponent>
+      <div className="h-full w-full [&_canvas]:!h-full [&_canvas]:!w-full">
+        <CanvasComponent
+          ref={ref}
+          gl={glProps}
+          dpr={lowMobile ? 1 : undefined}  // Force DPR to 1 on low-end mobile
+          camera={{ position: [0, 0, 12], fov: 45 }}
+          {...canvasProps}
+        >
+          {children}
+        </CanvasComponent>
+      </div>
     </Suspense>
   );
 });

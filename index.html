@@ -10,29 +10,13 @@
     <meta name="description" content="CuriousLabs is an AI-driven creative code lab. Explore automation tools, stunning design systems, and breakthrough digital engineering.">
     <title>CuriousLabs - AI CodeOps Service Lab</title>
     
-    <!-- 🎯 LCP OPTIMIZATION: Critical font preloading for faster text rendering -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- 🎯 LCP OPTIMIZATION: Font display swap for faster rendering -->
+    <!-- 🎯 LCP OPTIMIZATION: preload the hero display weight (Clash Display 600) -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/clash-display-600.woff2" crossorigin>
+
+    <!-- 🎯 LCP OPTIMIZATION: critical subtitle fallback while webfonts swap -->
     <style>
-      /* Critical font loading with system fallbacks */
-      @font-face {
-        font-family: 'font-space';
-        src: local('system-ui'), local('-apple-system'), local('BlinkMacSystemFont'), local('Segoe UI');
-        font-display: swap;
-        font-weight: 400;
-      }
-      
-      /* Prevent invisible text during font swap */
-      .font-space {
-        font-family: 'font-space', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        font-display: swap;
-      }
-      
-      /* Critical CSS for LCP element */
       .hero-subtitle-critical {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         font-display: swap;
         font-size: 0.875rem;
         line-height: 1.25rem;

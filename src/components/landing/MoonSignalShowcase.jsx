@@ -36,8 +36,7 @@ const QUALITIES = [
   {
     code: 'MSL-03',
     title: 'As-Of Research Discipline',
-    copy: 'As-of inputs and contract-locked math keep formulas reviewable instead of hard-coded into strategy instincts.',
-    body: 'Every decision stays reviewable and auditable — never a black box.'
+    body: 'As-of inputs and contract-locked math keep formulas reviewable instead of hard-coded into strategy instincts.'
   },
   {
     code: 'MSL-04',
@@ -113,18 +112,29 @@ const ScreenshotFrame = ({ src, alt, caption, url, variant, className = '', fit 
   const hasImage = Boolean(src);
   return (
     <figure className={`group ${className}`}>
-      <div className="overflow-hidden rounded-xl border border-white/10 bg-curious-dark-900/70 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur-[2px] ring-1 ring-teal-300/10">
+      <div className="overflow-hidden rounded-xl border border-white/10 bg-curious-dark-900/70 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur-[2px] ring-1 ring-teal-300/15">
         <WindowChrome url={url} />
-        <div className="relative aspect-[16/10] w-full bg-[#071016]">
+        <div className="relative aspect-[16/10] w-full bg-[radial-gradient(ellipse_at_50%_30%,rgba(45,212,191,0.10),transparent_62%),#071016]">
           {hasImage ? (
-            <img
-              key={src}
-              src={src}
-              alt={alt || 'Moon Signal screenshot'}
-              loading="lazy"
-              decoding="async"
-              className={`absolute inset-0 h-full w-full ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
-            />
+            <>
+              <motion.img
+                key={src}
+                src={src}
+                alt={alt || 'Moon Signal screenshot'}
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className={`absolute inset-0 h-full w-full scale-[1.04] blur-[1.5px] ${fit === 'contain' ? 'object-contain' : 'object-cover'}`}
+              />
+              {/* glass sheen: keeps the preview a hint, not a full disclosure */}
+              <div
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),transparent_38%,rgba(7,16,22,0.16))]"
+                aria-hidden="true"
+              />
+            </>
           ) : (
             <div className="absolute inset-0 flex flex-col bg-[radial-gradient(circle_at_50%_30%,rgba(45,212,191,0.08),transparent_60%)]">
               {/* swappable placeholder content */}
@@ -180,10 +190,24 @@ const ScreenshotCarousel = ({ frames, reduce, isMobile }) => {
 
   useEffect(() => {
     if (reduce || frames.length <= 1) return undefined;
-    const interval = window.setInterval(() => {
-      setActive((current) => (current + 1) % frames.length);
-    }, 3600);
-    return () => window.clearInterval(interval);
+    let interval = 0;
+    const start = () => {
+      if (interval || document.hidden) return;
+      interval = window.setInterval(() => {
+        setActive((current) => (current + 1) % frames.length);
+      }, 3600);
+    };
+    const stop = () => {
+      if (interval) window.clearInterval(interval);
+      interval = 0;
+    };
+    const onVisibility = () => (document.hidden ? stop() : start());
+    start();
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, [frames.length, reduce]);
 
   const current = frames[active] || frames[0];
@@ -198,7 +222,7 @@ const ScreenshotCarousel = ({ frames, reduce, isMobile }) => {
 
   return (
     <div className="relative">
-      {!isMobile && frames.length > 1 && (
+      {!isMobile && !reduce && frames.length > 1 && (
         <motion.div
           {...ambient}
           className="pointer-events-none absolute -bottom-12 right-0 w-[58%] opacity-45 blur-[0.2px]"
@@ -254,14 +278,14 @@ const MoonSignalShowcase = ({ screenshots }) => {
   return (
     <SectionShell id="moon-signal" tone="teal" labelledBy="moon-signal-heading" glow={false}>
       <div
-        className="pointer-events-none absolute inset-x-0 -top-72 -z-10 h-[calc(100%+28rem)] bg-[radial-gradient(ellipse_at_72%_18%,rgba(20,184,166,0.20),rgba(20,184,166,0.09)_34%,transparent_68%),linear-gradient(180deg,transparent_0%,rgba(20,184,166,0.10)_24%,rgba(20,184,166,0.075)_62%,transparent_100%)]"
+        className="pointer-events-none absolute inset-x-0 -top-72 -z-10 h-[calc(100%+28rem)] bg-[radial-gradient(ellipse_at_72%_18%,rgba(20,184,166,0.10),rgba(20,184,166,0.045)_34%,transparent_68%),linear-gradient(180deg,transparent_0%,rgba(20,184,166,0.05)_24%,rgba(20,184,166,0.038)_60%,transparent_100%)]"
         style={{
-          WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 78%, transparent 100%)',
-          maskImage: 'linear-gradient(180deg, transparent 0%, #000 18%, #000 78%, transparent 100%)'
+          WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 20%, #000 66%, transparent 100%)',
+          maskImage: 'linear-gradient(180deg, transparent 0%, #000 20%, #000 66%, transparent 100%)'
         }}
         aria-hidden="true"
       />
-      <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
         {/* ── Narrative + qualities ───────────────────────────────── */}
         <div className="lg:col-span-5">
           <Reveal>
@@ -288,21 +312,21 @@ const MoonSignalShowcase = ({ screenshots }) => {
             </p>
           </Reveal>
 
-          <Stagger className="mt-10 grid gap-4 sm:grid-cols-2" step={0.08}>
+          <Stagger className="mt-8 grid grid-cols-2 gap-3 sm:gap-4" step={0.08}>
             {QUALITIES.map((q) => (
               <StaggerItem key={q.code}>
-                <GlassPanel className="flex h-full flex-col p-5">
-                  <span className="font-space text-[11px] font-semibold uppercase tracking-[0.18em] text-teal-200/70">
+                <GlassPanel className="flex h-full flex-col p-4 sm:p-5">
+                  <span className="font-space text-[10px] font-semibold uppercase tracking-[0.16em] text-teal-200/70 sm:text-[11px] sm:tracking-[0.18em]">
                     {q.code}
                   </span>
-                  <h3 className="mt-3 font-space text-base font-semibold text-white">
+                  <h3 className="mt-2.5 font-space text-sm font-semibold text-white sm:mt-3 sm:text-base">
                     {q.title}
                   </h3>
-                  <p className="mt-2 text-[13px] leading-relaxed text-slate-400">
-                    {q.copy || q.body}
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-400 sm:mt-2 sm:text-[13px]">
+                    {q.body}
                   </p>
                   <span
-                    className={`mt-4 h-px w-full bg-gradient-to-r ${accent.rule}`}
+                    className={`mt-3 h-px w-full bg-gradient-to-r ${accent.rule} sm:mt-4`}
                     aria-hidden="true"
                   />
                 </GlassPanel>

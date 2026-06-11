@@ -5,7 +5,7 @@ import MissionControlNavbar from '../components/navigation/MissionControlNavbar'
 import HeroDisclosureNotice from '../components/atomic/HeroDisclosureNotice';
 import LandingCosmicBackground from '../components/landing/LandingCosmicBackground';
 import HeroCelestial from '../components/landing/HeroCelestial';
-import { useNearViewport } from '../components/landing/hooks';
+import { useNearViewport, useMediaState } from '../components/landing/hooks';
 
 const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTerminalAtomic'));
 
@@ -19,6 +19,11 @@ const MoonSignalRevealSection = () => {
   const spotRef = useRef({ x: 66, y: 48 });
   const rafRef = useRef(0);
   const [isActive, setIsActive] = useState(false);
+  // The big -58vh pull-up is only correct under the desktop CelestialStage hero
+  // (sticky 190vh). On the mobile / reduced-motion heroes it would yank this
+  // panel up over the hero copy, so only overlap when the celestial hero runs.
+  const { isMobile, prefersReducedMotion } = useMediaState();
+  const celestial = !isMobile && !prefersReducedMotion;
 
   // Drive the mask position via CSS vars written straight to the element —
   // pointermove fires ~100x/s, so we never run that through React state.
@@ -97,7 +102,7 @@ const MoonSignalRevealSection = () => {
 
   return (
     <section
-      className="relative z-20 -mt-[58vh] overflow-hidden px-4 pb-20 pt-0 sm:px-6 lg:px-8"
+      className={`relative z-20 overflow-hidden px-4 pt-0 sm:px-6 lg:px-8 ${celestial ? '-mt-[58vh] pb-20' : 'mt-0 pb-12'}`}
       aria-labelledby="moon-signal-preview-heading"
     >
       <h2 id="moon-signal-preview-heading" className="sr-only">Moon Signal — Coming Soon</h2>
@@ -106,7 +111,7 @@ const MoonSignalRevealSection = () => {
         tabIndex={0}
         role="img"
         aria-label="Moon Signal coming soon preview with a movable circular reveal."
-        className="relative mx-auto min-h-[620px] max-w-7xl cursor-crosshair overflow-hidden rounded-2xl outline-none ring-1 ring-white/10 focus:ring-2 focus:ring-cyan-200/70 max-sm:min-h-[560px]"
+        className="relative mx-auto min-h-[620px] max-w-7xl cursor-crosshair overflow-hidden rounded-2xl outline-none ring-1 ring-white/10 focus:ring-2 focus:ring-cyan-200/70 max-sm:min-h-[480px]"
         style={frameStyle}
         onPointerDown={handlePointerMove}
         onPointerMove={handlePointerMove}
@@ -118,6 +123,8 @@ const MoonSignalRevealSection = () => {
       >
         <div className="absolute inset-0 z-0 isolate bg-[#071016]">
           <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.13)_1px,transparent_1px)] [background-size:42px_42px]" />
+          {/* teal pre-echo of MoonSignal — the descending hero moon dissolves into this glow */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-[3] mx-auto h-28 max-w-4xl bg-[radial-gradient(ellipse_at_50%_0%,rgba(45,212,191,0.16),transparent_70%)] blur-md" aria-hidden="true" />
           <div className="absolute -bottom-24 left-[2%] h-[54%] w-[56%] rounded-[50%] bg-[radial-gradient(circle_at_50%_12%,rgba(97,232,184,0.28),rgba(20,94,73,0.55)_44%,rgba(4,18,24,0.96)_78%)] blur-sm" />
           <div className="absolute bottom-0 left-0 h-[42%] w-[46%] bg-[linear-gradient(155deg,rgba(24,63,61,0.0),rgba(23,75,64,0.84)_44%,rgba(7,13,19,0.96))]" />
 
@@ -176,6 +183,7 @@ const MoonSignalRevealSection = () => {
             className="absolute inset-0 z-[1] h-full w-full object-cover"
             loading="lazy"
             decoding="async"
+            fetchpriority="low"
           />
           <div className="absolute inset-0 z-[2] bg-[radial-gradient(circle_at_60%_34%,transparent_0%,rgba(3,7,13,0.12)_64%,rgba(3,7,13,0.42)_100%)]" />
         </div>
@@ -193,18 +201,22 @@ const MoonSignalRevealSection = () => {
             <span className="font-space text-2xl font-medium text-[#dedac7] drop-shadow-[0_0_18px_rgba(125,211,252,0.15)] sm:text-4xl">Moon Signal</span>
           </div>
 
-          <div className="absolute left-6 top-[28%] sm:left-10 lg:left-14">
+          <div className="absolute left-6 top-[24%] sm:left-10 sm:top-[28%] lg:left-14">
             <div
               aria-hidden="true"
-              className="max-w-[11ch] font-space text-6xl font-semibold leading-none tracking-normal text-[#dedac7] drop-shadow-[0_0_24px_rgba(245,245,220,0.08)] sm:text-8xl lg:text-[9rem]"
+              className="max-w-[11ch] font-space text-5xl font-semibold leading-none tracking-normal text-[#dedac7] drop-shadow-[0_0_24px_rgba(245,245,220,0.08)] sm:text-8xl lg:text-[9rem]"
             >
               Coming Soon
             </div>
-            <p className="mt-7 max-w-md font-space text-sm leading-relaxed text-[#dedac7]/72 sm:text-base">
+            <p className="mt-5 max-w-md font-space text-sm leading-relaxed text-[#dedac7]/72 sm:mt-7 sm:text-base">
               The Moon Signal console — currently in private build.
             </p>
           </div>
         </div>
+
+        {/* top seam: feather the console's upper edge into page-black so the
+            descending moon cross-dissolves in rather than meeting a hard slab */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[11] h-[7%] bg-[linear-gradient(180deg,#020308,rgba(2,3,8,0))]" aria-hidden="true" />
 
         <div
           className="pointer-events-none absolute z-10 rounded-full border border-cyan-100/45 shadow-[0_0_0_1px_rgba(15,23,42,0.25),0_0_52px_rgba(103,232,249,0.24)] transition-[width,height] duration-200"

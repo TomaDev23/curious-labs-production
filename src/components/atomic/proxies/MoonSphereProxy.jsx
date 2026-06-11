@@ -72,10 +72,11 @@ const MoonFallback = ({ className = "" }) => (
 );
 
 // Main proxy component
-const MoonSphereProxy = ({ 
-  className = "", 
+const MoonSphereProxy = ({
+  className = "",
   enabled = null, // Allow override for dev/testing
   fallbackToEclipse = false,
+  loadingFallback = null, // ⭐ Caller-supplied placeholder shown while the 3D chunk loads
   ...otherProps // ⭐ NEW: Forward all other props to MoonSphere
 }) => {
   // BYPASS: Enable 3D Moon loading instead of hardcoded fallback
@@ -117,24 +118,21 @@ const MoonSphereProxy = ({
     loadMoonComponent();
   }, [webglSupported]);
   
-  // Show loading state
+  // Show loading state — prefer the caller's placeholder (e.g. the hero's
+  // glowing MoonFallback) so first paint is always a soft moon, never an emoji.
   if (isLoading) {
-    return (
-      <div className={`relative rounded-full flex items-center justify-center ${className}`}>
-        <div className="text-white/60 text-sm animate-pulse">🌙 Loading Moon...</div>
-      </div>
-    );
+    return loadingFallback || <MoonFallback className={className} />;
   }
-  
+
   // Show error fallback
   if (hasError || !MoonComponent) {
-    return <MoonFallback className={className} />;
+    return loadingFallback || <MoonFallback className={className} />;
   }
-  
+
   // Render the actual 3D Moon component
   return (
-    <Suspense fallback={<MoonFallback className={className} />}>
-      <MoonComponent 
+    <Suspense fallback={loadingFallback || <MoonFallback className={className} />}>
+      <MoonComponent
         className={className}
         fallbackToEclipse={fallbackToEclipse}
         {...otherProps}

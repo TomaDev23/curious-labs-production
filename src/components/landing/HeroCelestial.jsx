@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { SectionLabel } from './primitives';
 import { useMediaState } from './hooks';
 import useFlowingScrollProgress from '../../hooks/useFlowingScrollProgress';
@@ -21,7 +21,7 @@ const MoonFallback = () => (
 const HeroCopy = ({ innerRef }) => (
   <div ref={innerRef} className="w-full min-w-0 max-w-[16.5rem] will-change-[transform,opacity] sm:max-w-[18rem]">
     <SectionLabel tone="lime">Curious Labs</SectionLabel>
-    <h1 className="max-w-full break-words font-space text-2xl font-semibold leading-[1.08] tracking-normal text-white sm:text-3xl lg:text-[2.15rem]">
+    <h1 className="max-w-full break-words font-space text-2xl font-semibold leading-[1.05] tracking-[-0.015em] text-white sm:text-3xl lg:text-[2.3rem]">
       Building MoonSignal
     </h1>
     <p className="mt-3 max-w-full text-xs leading-6 text-slate-300/90 sm:text-[0.82rem]">
@@ -58,28 +58,50 @@ const StaticHero = () => (
   </section>
 );
 
-const MobileHero = () => (
-  <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden px-5 pb-8 pt-20">
-    <div className="pointer-events-none absolute inset-x-0 top-[10vh] flex justify-center">
-      <div className="relative aspect-square w-[112vw] max-w-[520px]">
-        <div className="absolute inset-[9%] rounded-full bg-[radial-gradient(circle,rgba(226,232,240,0.11),rgba(125,211,252,0.035)_48%,transparent_72%)] blur-2xl" aria-hidden="true" />
-        <div className="relative h-full w-full [filter:brightness(1.16)_contrast(1.06)]">
-          <Suspense fallback={<MoonFallback />}>
-            <MoonSphereProxy
-              className="h-full w-full"
-              cameraFov={23.5}
-              rotation={[0.1, -0.05, 0]}
-            />
-          </Suspense>
+const MobileHero = () => {
+  const sectionRef = useRef(null);
+  // Pause/unmount the 3D moon once the hero scrolls offscreen so it doesn't
+  // keep rendering every frame down the whole page (mobile perf).
+  const [moonLive, setMoonLive] = useState(true);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([entry]) => setMoonLive(entry.isIntersecting), {
+      rootMargin: '160px'
+    });
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden px-5 pb-8 pt-20">
+      <div className="pointer-events-none absolute inset-x-0 top-[clamp(6vh,10vh,14vh)] flex justify-center">
+        <div className="relative aspect-square max-h-[58svh] w-[108vw] max-w-[480px] [animation:moonIdleDrift_12s_ease-in-out_infinite] motion-reduce:animate-none">
+          <div className="absolute inset-[9%] rounded-full bg-[radial-gradient(circle,rgba(226,232,240,0.11),rgba(125,211,252,0.035)_48%,transparent_72%)] blur-2xl" aria-hidden="true" />
+          <div className="relative h-full w-full [filter:brightness(1.16)_contrast(1.06)]">
+            {moonLive ? (
+              <Suspense fallback={<MoonFallback />}>
+                <MoonSphereProxy
+                  className="h-full w-full"
+                  cameraFov={23.5}
+                  rotation={[0.1, -0.05, 0]}
+                  loadingFallback={<MoonFallback />}
+                />
+              </Suspense>
+            ) : (
+              <MoonFallback />
+            )}
+          </div>
         </div>
       </div>
-    </div>
 
-    <div className="relative z-10">
-      <HeroCopy />
-    </div>
-  </section>
-);
+      <div className="relative z-10">
+        <HeroCopy />
+      </div>
+    </section>
+  );
+};
 
 /* ----------------------- choreographed celestial ---------------------- */
 
@@ -88,40 +110,70 @@ const smooth = (a, b, t) => {
   return x * x * (3 - 2 * x);
 };
 const lerp = (a, b, t) => a + (b - a) * t;
+// Cinematic "release then settle" — accelerates gently, decelerates long.
+const easeOutExpo = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -9 * x));
 
 const CelestialStage = () => {
   const sectionRef = useRef(null);
   const copyRef = useRef(null);
   const moonRef = useRef(null);
   const tiltRef = useRef(null);
+  const haloRef = useRef(null);
+  const filterRef = useRef(null);
   const cueRef = useRef(null);
+
+  // Once the moon has fully cross-dissolved away, unmount the 3D canvas so it
+  // stops rendering for the rest of the page (the sticky moon would otherwise
+  // keep invalidating every frame all the way down). A ref guards the setState
+  // so we only flip at the threshold, not every scroll frame.
+  const [moonLive, setMoonLive] = useState(true);
+  const moonLiveRef = useRef(true);
 
   useFlowingScrollProgress({
     targetRef: sectionRef,
     stateful: false,
     onUpdate: (p) => {
+      const live = p < 0.94;
+      if (live !== moonLiveRef.current) {
+        moonLiveRef.current = live;
+        setMoonLive(live);
+      }
       if (moonRef.current) {
-        const e = smooth(0.16, 0.74, p);
-        const ty = -48 * Math.pow(e, 1.22);
-        const tx = 7 * Math.sin((e * Math.PI) / 2);
-        const rot = 5 * e;
-        const sc = lerp(1, 0.38, e);
+        // One continuous eased channel drives the whole departure so the moon
+        // glides (legato) instead of ramping evenly (staccato).
+        const e = easeOutExpo(smooth(0.16, 0.92, p));
+        const ty = -58 * e;                       // climbs toward the rising panel
+        const tx = 7 * Math.sin((e * Math.PI) / 2); // gentle rightward arc
+        const rot = 6 * e;
+        const sc = lerp(1, 0.3, e);
         moonRef.current.style.transform = `translate3d(${tx}vw, ${ty}vh, 0) rotate(${rot}deg) scale(${sc})`;
-        moonRef.current.style.opacity = String(1 - smooth(0.66, 0.84, p));
+        // Lingers, then cross-dissolves late as the Coming Soon panel arrives.
+        moonRef.current.style.opacity = String(1 - smooth(0.72, 0.96, p));
 
         if (tiltRef.current) {
           tiltRef.current.style.transform = `perspective(1400px) rotateX(${lerp(4.5, 0, e)}deg) rotateY(${lerp(-5.5, 0, e)}deg)`;
         }
+        // Atmospheric payoff: halo cools/expands and the rim catches light as
+        // the moon recedes (transform/opacity/filter only — no layout).
+        if (haloRef.current) {
+          haloRef.current.style.transform = `scale(${lerp(1, 1.25, e)})`;
+          haloRef.current.style.opacity = String(lerp(1, 0.4, e));
+        }
+        if (filterRef.current) {
+          filterRef.current.style.filter = `brightness(${lerp(1.2, 1.32, e)}) contrast(${lerp(1.08, 1.14, e)})`;
+        }
       }
 
       if (copyRef.current) {
-        const t = smooth(0.12, 0.58, p);
+        // Overlaps the moon's lift so the eye tracks one coordinated motion.
+        const t = smooth(0.18, 0.66, p);
         copyRef.current.style.opacity = String(1 - t);
-        copyRef.current.style.transform = `translate3d(${lerp(0, 28, t)}px, ${lerp(0, -130, t)}px, 0)`;
+        copyRef.current.style.transform = `translate3d(${lerp(0, 28, t)}px, ${lerp(0, -150, t)}px, 0)`;
       }
 
       if (cueRef.current) {
-        cueRef.current.style.opacity = String(1 - smooth(0, 0.1, p));
+        // Persists through the first deliberate scroll before fading.
+        cueRef.current.style.opacity = String(1 - smooth(0.06, 0.18, p));
       }
     }
   });
@@ -130,18 +182,22 @@ const CelestialStage = () => {
     <section ref={sectionRef} className="relative h-[190vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="relative h-[88vmin] w-[88vmin] min-h-[620px] min-w-[620px] max-h-[900px] max-w-[900px]">
+          <div className="relative h-[88vmin] w-[88vmin] min-h-[min(620px,84vmin)] min-w-[min(620px,84vmin)] max-h-[900px] max-w-[900px]">
             <div ref={moonRef} className="h-full w-full will-change-[transform,opacity]" style={{ transformOrigin: 'center' }}>
               <div
                 ref={tiltRef}
                 className="h-full w-full will-change-transform"
                 style={{ transform: 'perspective(1400px) rotateX(4.5deg) rotateY(-5.5deg)' }}
               >
-                <div className="absolute inset-[12%] rounded-full bg-[radial-gradient(circle,rgba(226,232,240,0.10),rgba(125,211,252,0.035)_45%,transparent_70%)] blur-2xl" aria-hidden="true" />
-                <div className="relative h-full w-full [filter:brightness(1.2)_contrast(1.08)]">
-                  <Suspense fallback={<MoonFallback />}>
-                    <MoonSphereProxy className="h-full w-full" cameraFov={22.5} rotation={[0.11, -0.04, 0]} />
-                  </Suspense>
+                <div ref={haloRef} className="absolute inset-[12%] rounded-full bg-[radial-gradient(circle,rgba(226,232,240,0.10),rgba(125,211,252,0.035)_45%,transparent_70%)] blur-2xl will-change-[transform,opacity]" aria-hidden="true" />
+                <div ref={filterRef} className="relative h-full w-full [filter:brightness(1.2)_contrast(1.08)]">
+                  {moonLive ? (
+                    <Suspense fallback={<MoonFallback />}>
+                      <MoonSphereProxy className="h-full w-full" cameraFov={22.5} rotation={[0.11, -0.04, 0]} loadingFallback={<MoonFallback />} />
+                    </Suspense>
+                  ) : (
+                    <MoonFallback />
+                  )}
                 </div>
               </div>
             </div>
@@ -156,7 +212,7 @@ const CelestialStage = () => {
 
         <div ref={cueRef} className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex flex-col items-center gap-1.5" aria-hidden="true">
           <span className="font-space text-[10px] uppercase tracking-[0.2em] text-slate-400">Scroll</span>
-          <span className="h-7 w-px bg-gradient-to-b from-slate-400/70 to-transparent" />
+          <span className="h-7 w-px bg-gradient-to-b from-slate-400/70 to-transparent [animation:moonCueBob_1.9s_ease-in-out_infinite] motion-reduce:animate-none" />
         </div>
       </div>
     </section>

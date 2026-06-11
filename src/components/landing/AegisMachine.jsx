@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from '../../FramerProvider';
-import { SectionShell, SectionLabel, Reveal, ACCENTS } from './primitives';
+import { SectionShell, SectionLabel, Reveal, Stagger, StaggerItem, ACCENTS } from './primitives';
 import { useMediaState } from './hooks';
 import {
   AEGIS_META,
@@ -11,7 +11,10 @@ import {
   AEGIS_SECURITY,
   AEGIS_CORE,
   AEGIS_LAYERS,
-  AEGIS_OUTPUT
+  AEGIS_OUTPUT,
+  AEGIS_BRIEF_LEDE,
+  AEGIS_DREAMS,
+  AEGIS_LEGIT_PROTOCOL
 } from '../../data/aegisArchitecture';
 
 /**
@@ -34,7 +37,8 @@ const RGB = {
   cyan: '56,189,248',
   teal: '45,212,191',
   lime: '190,242,100',
-  violet: '167,139,250'
+  violet: '167,139,250',
+  blue: '96,165,250'
 };
 
 const accentClass = (tone) => {
@@ -47,6 +51,8 @@ const accentClass = (tone) => {
       return { text: 'text-teal-200', dot: 'bg-teal-300', ring: 'border-teal-300/40' };
     case 'violet':
       return { text: 'text-violet-200', dot: 'bg-violet-300', ring: 'border-violet-300/40' };
+    case 'blue':
+      return { text: 'text-blue-200', dot: 'bg-blue-300', ring: 'border-blue-300/40' };
     case 'cyan':
     default:
       return { text: 'text-cyan-200', dot: 'bg-cyan-300', ring: 'border-cyan-300/40' };
@@ -63,7 +69,7 @@ const CornerBrackets = () => (
       'left-2 bottom-2 border-l border-b',
       'right-2 bottom-2 border-r border-b'
     ].map((pos) => (
-      <span key={pos} className={`pointer-events-none absolute h-4 w-4 border-amber-300/25 ${pos}`} aria-hidden="true" />
+      <span key={pos} className={`pointer-events-none absolute h-4 w-4 border-white/15 ${pos}`} aria-hidden="true" />
     ))}
   </>
 );
@@ -83,21 +89,28 @@ const Scanline = ({ active }) => {
 
 /* ------------------------------- reactor --------------------------------- */
 
-const Reactor = ({ animate }) => {
+const Reactor = ({ animate, accentRgb = RGB.cyan, size = 'h-44 w-44 sm:h-52 sm:w-52' }) => {
   const spin = animate ? '' : 'motion-reduce:animate-none';
   return (
-    <div className="relative grid h-44 w-44 place-items-center sm:h-52 sm:w-52" aria-hidden="true">
-      {/* ambient bloom */}
-      <div className="pointer-events-none absolute h-[120%] w-[120%] rounded-full bg-[radial-gradient(circle,rgba(245,158,11,0.28),transparent_62%)] blur-md" />
+    <div className={`relative grid place-items-center ${size}`} aria-hidden="true">
+      {/* ambient bloom — tints toward the active layer (cool cyan at rest) */}
+      <div
+        className="pointer-events-none absolute h-[124%] w-[124%] rounded-full blur-md transition-colors duration-500"
+        style={{ background: `radial-gradient(circle, rgba(${accentRgb},0.26), rgba(245,158,11,0.14) 42%, transparent 64%)` }}
+      />
 
-      {/* outer ring + orbiting nodes */}
-      <div className={`absolute inset-0 rounded-full border border-amber-300/25 ${animate ? 'animate-[spin_30s_linear_infinite]' : ''} ${spin}`}>
+      {/* outer ring + orbiting nodes — ring picks up the active accent */}
+      <div
+        className={`absolute inset-0 rounded-full border transition-colors duration-500 ${animate ? 'animate-[spin_30s_linear_infinite]' : ''} ${spin}`}
+        style={{ borderColor: `rgba(${accentRgb},0.35)` }}
+      >
         {[0, 90, 180, 270].map((deg) => (
-          <span
-            key={deg}
-            className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-amber-200/80 shadow-[0_0_8px_rgba(245,158,11,0.9)]"
-            style={{ transform: `rotate(${deg}deg) translateY(-50%) translateY(-${88}px)` }}
-          />
+          <span key={deg} className="absolute inset-0" style={{ transform: `rotate(${deg}deg)` }}>
+            <span
+              className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{ background: `rgba(${accentRgb},0.85)`, boxShadow: `0 0 8px rgba(${accentRgb},0.9)` }}
+            />
+          </span>
         ))}
       </div>
 
@@ -260,7 +273,7 @@ const LayerModule = ({ layer, active, dim, onActivate, onClear }) => {
 
 /* ------------------------------ telemetry -------------------------------- */
 
-const TelemetryHud = ({ events }) => (
+const TelemetryHud = ({ events, tintRgb }) => (
   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
     <div className="rounded-lg border border-lime-300/25 bg-lime-300/[0.04] px-3 py-2">
       <div className="font-mono text-[9px] uppercase tracking-[0.1em] text-lime-200/70">Events / s</div>
@@ -269,7 +282,10 @@ const TelemetryHud = ({ events }) => (
     {AEGIS_SLOS.map((slo) => (
       <div key={slo.label} className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
         <div className="font-mono text-[9px] uppercase tracking-[0.1em] text-slate-400">{slo.label}</div>
-        <div className="mt-0.5 font-mono text-base font-semibold leading-none text-amber-100">
+        <div
+          className="mt-0.5 font-mono text-base font-semibold leading-none tabular-nums transition-colors duration-300"
+          style={{ color: tintRgb ? `rgb(${tintRgb})` : 'rgb(254,243,199)' }}
+        >
           {slo.value}
           <span className="ml-0.5 text-[10px] font-normal text-slate-400">{slo.unit}</span>
         </div>
@@ -277,6 +293,213 @@ const TelemetryHud = ({ events }) => (
       </div>
     ))}
   </div>
+);
+
+/* ------------------------------- conduits SVG ----------------------------- */
+
+/**
+ * MachineConduits — a single measured SVG overlay that draws the request path
+ * (client → gateway → intake → core) and the six fan-out curves (core → each
+ * layer), with colour-coded data packets travelling each path. Geometry is
+ * measured from the live DOM so the curves track the real card positions at any
+ * width. Packets use native SMIL <animateMotion> (cheap, GPU-composited,
+ * auto-pauses when the tab is hidden) and only render when `animate` is true —
+ * under reduced motion the paths stay lit but static.
+ */
+const MachineConduits = ({ geo, layers, activeCode, animate }) => {
+  if (!geo || !geo.w || !geo.coreOut) return null;
+
+  const { w, h, coreIn, coreOut, intakeRight, intakeTop, gatewayTop, gatewayBottom, client, layers: layerPts } = geo;
+
+  const curve = (a, b) => {
+    const dx = b.x - a.x;
+    return `M ${a.x},${a.y} C ${a.x + dx * 0.5},${a.y} ${b.x - dx * 0.45},${b.y} ${b.x},${b.y}`;
+  };
+  const vcurve = (a, b) => `M ${a.x},${a.y} C ${a.x},${(a.y + b.y) / 2} ${b.x},${(a.y + b.y) / 2} ${b.x},${b.y}`;
+
+  const fan = layerPts
+    .map((pt, i) => {
+      if (!pt) return null;
+      const layer = layers[i];
+      const rgb = RGB[layer.accent] || RGB.cyan;
+      const active = activeCode === layer.code;
+      const dim = activeCode && !active;
+      return { id: `aegis-fan-${i}`, d: curve(coreOut, pt), rgb, active, dim, dur: active ? 1.7 : 2.7, delay: (i % 3) * 0.5 + (i >= 3 ? 0.25 : 0) };
+    })
+    .filter(Boolean);
+
+  const feeds = [];
+  if (client && gatewayTop) feeds.push({ id: 'aegis-c1', d: vcurve(client, gatewayTop), rgb: RGB.cyan, dur: 1.6, delay: 0 });
+  if (gatewayBottom && intakeTop) feeds.push({ id: 'aegis-c2', d: vcurve(gatewayBottom, intakeTop), rgb: RGB.amber, dur: 1.6, delay: 0.45 });
+  if (intakeRight && coreIn) feeds.push({ id: 'aegis-trunk', d: curve(intakeRight, coreIn), rgb: RGB.amber, dur: 2.0, delay: 0.2 });
+
+  const all = [...feeds, ...fan];
+
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 z-0 h-full w-full"
+      viewBox={`0 0 ${w} ${h}`}
+      preserveAspectRatio="none"
+      fill="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <filter id="aegis-packet-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="1.6" />
+        </filter>
+      </defs>
+
+      {/* static lit paths */}
+      {all.map((p) => (
+        <path
+          key={p.id}
+          d={p.d}
+          stroke={`rgba(${p.rgb},${p.active ? 0.7 : p.dim ? 0.12 : 0.26})`}
+          strokeWidth={p.active ? 1.5 : 1}
+          strokeLinecap="round"
+          style={{ transition: 'stroke 0.4s ease' }}
+        />
+      ))}
+
+      {/* travelling packets */}
+      {animate &&
+        all.map((p) => (
+          <g key={`${p.id}-pk`} opacity={p.dim ? 0.25 : 1} style={{ transition: 'opacity 0.4s ease' }}>
+            {/* soft halo */}
+            <circle r={p.active ? 5 : 4} fill={`rgb(${p.rgb})`} opacity="0.5" filter="url(#aegis-packet-glow)">
+              <animateMotion dur={`${p.dur}s`} begin={`${p.delay}s`} repeatCount="indefinite" path={p.d} />
+              <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.12;0.82;1" dur={`${p.dur}s`} begin={`${p.delay}s`} repeatCount="indefinite" />
+            </circle>
+            {/* core dot */}
+            <circle r={p.active ? 2.6 : 2.1} fill="#fff">
+              <animateMotion dur={`${p.dur}s`} begin={`${p.delay}s`} repeatCount="indefinite" path={p.d} />
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.82;1" dur={`${p.dur}s`} begin={`${p.delay}s`} repeatCount="indefinite" />
+            </circle>
+          </g>
+        ))}
+    </svg>
+  );
+};
+
+/* ------------------------------- briefing -------------------------------- */
+
+/**
+ * AegisBriefing — the prose layer beneath the console. A sticky DREAMS acrostic
+ * on the left, the X+B "spine" and the Legit invariants on the right. Reuses the
+ * shared landing primitives so its entrance matches every other section. Lives
+ * INSIDE the AEGIS SectionShell (no extra section / lazy boundary).
+ */
+/* Centered, ruled eyebrow (lines both sides) for the LEGIT module header. */
+const CenterLabel = ({ children, tone = 'violet' }) => {
+  const accent = ACCENTS[tone] || ACCENTS.violet;
+  return (
+    <div className={`mb-5 flex items-center justify-center gap-3 font-space text-[11px] font-semibold uppercase tracking-[0.2em] ${accent.label}`}>
+      <span className={`h-px w-9 bg-gradient-to-l ${accent.rule}`} />
+      <span>{children}</span>
+      <span className={`h-px w-9 bg-gradient-to-r ${accent.rule}`} />
+    </div>
+  );
+};
+
+const AegisBriefing = () => (
+  <>
+    {/* ── machine intelligence: DREAMS acrostic + visual asset ── */}
+    <div className="mt-12 grid gap-8 lg:mt-16 lg:grid-cols-12 lg:gap-12">
+      {/* LEFT — DREAMS acrostic */}
+      <div className="lg:col-span-5">
+        <Reveal>
+          <SectionLabel tone="amber">The DREAMS architecture</SectionLabel>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <p className="max-w-md text-[15px] leading-relaxed text-slate-300">{AEGIS_BRIEF_LEDE}</p>
+        </Reveal>
+        <Stagger className="mt-8 space-y-3" step={0.06}>
+          {AEGIS_DREAMS.map((row) => {
+            const a = accentClass(row.accent);
+            return (
+              <StaggerItem key={row.letter}>
+                <div className="flex items-start gap-4">
+                  <span
+                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${a.ring} bg-white/[0.03] font-space text-lg font-semibold ${a.text}`}
+                    aria-hidden="true"
+                  >
+                    {row.letter}
+                  </span>
+                  <div className="min-w-0 pt-0.5">
+                    <div className="font-space text-sm font-semibold text-white">{row.name}</div>
+                    <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">{row.blurb}</p>
+                  </div>
+                </div>
+              </StaggerItem>
+            );
+          })}
+        </Stagger>
+      </div>
+
+      {/* RIGHT — asset placeholder (machine visual, supplied later) */}
+      <div className="lg:col-span-7">
+        <Reveal y={28} className="h-full">
+          {/* TODO: swap this placeholder for the AEGIS machine asset:
+              <img src="/path/to/asset" alt="AEGIS runtime" className="h-full w-full rounded-2xl object-cover" /> */}
+          <div className="relative flex h-full min-h-[200px] items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/15 bg-[radial-gradient(ellipse_at_50%_40%,rgba(251,191,36,0.05),transparent_60%),rgba(255,255,255,0.012)] sm:min-h-[260px] lg:min-h-[440px]">
+            <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.4)_1px,transparent_1px)] [background-size:34px_34px]" aria-hidden="true" />
+            <CornerBrackets />
+            <div className="relative z-10 flex flex-col items-center gap-2 text-center">
+              <span className="grid h-12 w-12 place-items-center rounded-xl border border-amber-300/30 bg-amber-300/[0.06] text-2xl" aria-hidden="true">🛰️</span>
+              <span className="font-space text-sm font-semibold text-white/80">AEGIS machine visual</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">asset · incoming</span>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+
+    {/* ── LEGIT protocol ── */}
+    <div className="mt-16 lg:mt-24">
+      <div className="mx-auto max-w-3xl text-center">
+        <Reveal>
+          <CenterLabel tone="violet">{AEGIS_LEGIT_PROTOCOL.eyebrow}</CenterLabel>
+        </Reveal>
+        <Reveal delay={0.05} as="h3">
+          <span className="block bg-gradient-to-r from-amber-200 via-orange-300 to-amber-200 bg-clip-text font-space text-2xl font-semibold text-transparent sm:text-4xl">
+            {AEGIS_LEGIT_PROTOCOL.title}
+          </span>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 sm:mt-4 sm:text-[15px]">
+            {AEGIS_LEGIT_PROTOCOL.lede}
+          </p>
+        </Reveal>
+      </div>
+
+      <Stagger className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-5" step={0.06}>
+        {AEGIS_LEGIT_PROTOCOL.cards.map((card) => {
+          const a = accentClass(card.accent);
+          const rgb = RGB[card.accent] || RGB.cyan;
+          return (
+            <StaggerItem key={card.code}>
+              <div
+                className={`group relative flex h-full flex-col items-center overflow-hidden rounded-xl border ${a.ring} bg-white/[0.025] p-3.5 text-center transition-[transform,background-color,box-shadow] duration-300 hover:-translate-y-1 hover:bg-white/[0.05] sm:p-5`}
+                style={{ boxShadow: `0 0 0 0 rgba(${rgb},0)` }}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 28px -6px rgba(${rgb},0.4)`; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `0 0 0 0 rgba(${rgb},0)`; }}
+              >
+                <div
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-70"
+                  style={{ background: `linear-gradient(90deg, transparent, rgba(${rgb},0.7), transparent)` }}
+                  aria-hidden="true"
+                />
+                <div className={`font-mono text-[9px] tracking-[0.14em] sm:text-[10px] ${a.text}`}>{card.code}</div>
+                <div className="mt-2 text-2xl sm:mt-3 sm:text-3xl" aria-hidden="true">{card.icon}</div>
+                <div className={`mt-2 font-space text-sm font-semibold sm:mt-3 sm:text-base ${a.text}`}>{card.title}</div>
+                <p className="mt-1.5 text-xs leading-relaxed text-slate-400 sm:mt-2 sm:text-[13px]">{card.desc}</p>
+              </div>
+            </StaggerItem>
+          );
+        })}
+      </Stagger>
+    </div>
+  </>
 );
 
 /* -------------------------------- section -------------------------------- */
@@ -289,6 +512,67 @@ export default function AegisMachine() {
   const [activeLayer, setActiveLayer] = useState(null);
   const [scanIndex, setScanIndex] = useState(0);
   const [events, setEvents] = useState(2048);
+
+  // ── conduit geometry: measure card anchor points so the SVG curves track
+  //    the real layout at any width (and after the display font swaps in). ──
+  const [geo, setGeo] = useState(null);
+  const diagramRef = useRef(null);
+  const coreRef = useRef(null);
+  const clientRef = useRef(null);
+  const gatewayRef = useRef(null);
+  const intakeRef = useRef(null);
+  const layerRefs = useRef([]);
+
+  useEffect(() => {
+    const root = diagramRef.current;
+    if (!root || typeof window === 'undefined') return undefined;
+
+    const point = (el, side, base) => {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      const midY = r.top - base.top + r.height / 2;
+      const midX = r.left - base.left + r.width / 2;
+      if (side === 'left') return { x: r.left - base.left, y: midY };
+      if (side === 'right') return { x: r.right - base.left, y: midY };
+      if (side === 'top') return { x: midX, y: r.top - base.top };
+      if (side === 'bottom') return { x: midX, y: r.bottom - base.top };
+      return { x: midX, y: midY };
+    };
+
+    const measure = () => {
+      const base = root.getBoundingClientRect();
+      if (!base.width) {
+        setGeo((g) => (g ? null : g));
+        return;
+      }
+      setGeo({
+        w: base.width,
+        h: base.height,
+        client: point(clientRef.current, 'bottom', base),
+        gatewayTop: point(gatewayRef.current, 'top', base),
+        gatewayBottom: point(gatewayRef.current, 'bottom', base),
+        intakeTop: point(intakeRef.current, 'top', base),
+        intakeRight: point(intakeRef.current, 'right', base),
+        coreIn: point(coreRef.current, 'left', base),
+        coreOut: point(coreRef.current, 'right', base),
+        layers: layerRefs.current.map((el) => point(el, 'left', base))
+      });
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(root);
+    window.addEventListener('resize', measure);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(measure).catch(() => {});
+    }
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
+
+  const activeRgb = activeLayer ? (RGB[activeLayer.accent] || RGB.cyan) : RGB.cyan;
 
   // security intake scan sweep
   useEffect(() => {
@@ -327,7 +611,7 @@ export default function AegisMachine() {
           </span>
         </Reveal>
         <Reveal delay={0.1}>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300">
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300 sm:mt-5 sm:text-base">
             A live look at the runtime: every request is authenticated, governed, and traced through{' '}
             {AEGIS_META.totalServices} coordinated services before anything reaches the product layer.
           </p>
@@ -335,7 +619,7 @@ export default function AegisMachine() {
       </div>
 
       {/* ===================== THE CONSOLE ===================== */}
-      <Reveal delay={0.1} y={32} className="mt-10">
+      <Reveal delay={0.1} y={32} className="mt-8 sm:mt-10">
         <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.012] p-4 sm:p-6">
           {/* faint HUD grid */}
           <div
@@ -363,49 +647,55 @@ export default function AegisMachine() {
             </div>
           </div>
 
-          {/* ---------- DESKTOP: ingress → core → layers ---------- */}
-          <div className="relative z-10 hidden items-center gap-2 lg:flex">
-            {/* ingress */}
-            <div className="flex w-[210px] shrink-0 flex-col gap-2">
-              <IngressNode kicker="Client" title="User" sub="request" tone="cyan" />
-              <div className="mx-auto h-3"><ConduitV pulse={animate} tone="cyan" className="h-3" /></div>
-              <IngressNode kicker={`Gateway · ${AEGIS_GATEWAY.code}`} title={AEGIS_GATEWAY.name} sub={AEGIS_GATEWAY.role} tone="amber" />
-              <div className="mx-auto h-3"><ConduitV pulse={animate} tone="amber" className="h-3" /></div>
-              <SecurityIntake scanIndex={scanIndex} />
-            </div>
+          {/* ---------- DESKTOP: a tall pass-through console ---------- */}
+          {/* INTAKE rail → REACTOR hub → LAYER fan, wired by the measured SVG. */}
+          <div
+            ref={diagramRef}
+            className="relative z-10 hidden min-h-[480px] xl:min-h-[540px] lg:block"
+          >
+            <MachineConduits geo={geo} layers={AEGIS_LAYERS} activeCode={activeLayer?.code} animate={animate} />
 
-            {/* conduit into core */}
-            <ConduitH pulse={animate} tone="amber" className="flex-1" />
-
-            {/* core column */}
-            <div className="flex shrink-0 flex-col items-center gap-2">
-              <Reactor animate={reactorOn} />
-              <CoreLabel />
-              <ConduitV pulse={animate} tone="teal" className="h-5" />
-              <div
-                className="rounded-lg border border-teal-300/40 bg-teal-300/[0.06] px-3 py-2 text-center shadow-[0_0_24px_-8px_rgba(45,212,191,0.5)]"
-              >
-                <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-teal-200/80">Output</div>
-                <div className="font-space text-sm font-semibold text-white">{AEGIS_OUTPUT.name}</div>
-                <div className="font-mono text-[9px] text-teal-200/70">{AEGIS_OUTPUT.role}</div>
+            <div className="relative z-10 grid h-full grid-cols-[210px_1fr_452px] items-center gap-4 xl:grid-cols-[224px_1fr_496px]">
+              {/* INTAKE rail */}
+              <div className="flex flex-col gap-5">
+                <div ref={clientRef}>
+                  <IngressNode kicker="Client" title="User" sub="request" tone="cyan" />
+                </div>
+                <div ref={gatewayRef}>
+                  <IngressNode kicker={`Gateway · ${AEGIS_GATEWAY.code}`} title={AEGIS_GATEWAY.name} sub={AEGIS_GATEWAY.role} tone="amber" />
+                </div>
+                <div ref={intakeRef}>
+                  <SecurityIntake scanIndex={scanIndex} />
+                </div>
               </div>
-            </div>
 
-            {/* conduit out to layers (brightens to active layer accent) */}
-            <ConduitH pulse={animate} tone={activeLayer ? activeLayer.accent : 'cyan'} className="flex-1" />
+              {/* REACTOR hub */}
+              <div className="flex flex-col items-center justify-center gap-3">
+                <div ref={coreRef} className="flex flex-col items-center gap-2">
+                  <Reactor animate={reactorOn} accentRgb={activeRgb} size="h-56 w-56 sm:h-60 sm:w-60 xl:h-72 xl:w-72" />
+                  <CoreLabel />
+                </div>
+                <div className="rounded-lg border border-teal-300/40 bg-teal-300/[0.06] px-4 py-2 text-center shadow-[0_0_28px_-8px_rgba(45,212,191,0.55)]">
+                  <div className="font-mono text-[9px] uppercase tracking-[0.16em] text-teal-200/80">Output</div>
+                  <div className="font-space text-sm font-semibold text-white">{AEGIS_OUTPUT.name}</div>
+                  <div className="font-mono text-[9px] text-teal-200/70">{AEGIS_OUTPUT.role}</div>
+                </div>
+              </div>
 
-            {/* layers */}
-            <div className="grid w-[400px] shrink-0 grid-cols-2 gap-2.5 xl:w-[440px]">
-              {AEGIS_LAYERS.map((layer) => (
-                <LayerModule
-                  key={layer.code}
-                  layer={layer}
-                  active={activeLayer?.code === layer.code}
-                  dim={activeLayer && activeLayer.code !== layer.code}
-                  onActivate={() => setActiveLayer(layer)}
-                  onClear={() => setActiveLayer(null)}
-                />
-              ))}
+              {/* LAYER fan */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                {AEGIS_LAYERS.map((layer, i) => (
+                  <div key={layer.code} ref={(el) => { layerRefs.current[i] = el; }}>
+                    <LayerModule
+                      layer={layer}
+                      active={activeLayer?.code === layer.code}
+                      dim={activeLayer && activeLayer.code !== layer.code}
+                      onActivate={() => setActiveLayer(layer)}
+                      onClear={() => setActiveLayer(null)}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -455,7 +745,7 @@ export default function AegisMachine() {
                 ))}
               </div>
             </div>
-            <TelemetryHud events={events} />
+            <TelemetryHud events={events} tintRgb={activeLayer ? activeRgb : null} />
             <div className="mt-3 flex flex-wrap gap-1.5 sm:hidden">
               {AEGIS_COMPLIANCE.map((tag) => (
                 <span key={tag} className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.08em] text-slate-300">
@@ -467,8 +757,11 @@ export default function AegisMachine() {
         </div>
       </Reveal>
 
+      {/* briefing: DREAMS architecture + X/B spine + Legit invariants */}
+      <AegisBriefing />
+
       {/* CTA */}
-      <Reveal delay={0.15} className="mt-8 text-center">
+      <Reveal delay={0.15} className="mt-12 text-center">
         <Link
           to="/products/aegis"
           className="inline-flex min-h-[44px] items-center justify-center rounded-md border border-amber-300/45 bg-amber-300/10 px-7 font-space text-sm font-semibold text-amber-100 transition-colors hover:border-amber-200/75 hover:bg-amber-300/15 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:ring-offset-2 focus:ring-offset-black"

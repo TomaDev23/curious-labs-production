@@ -16,36 +16,39 @@ import { motion, useReducedMotion } from '../../FramerProvider';
  * Body copy is slate-300; muted labels slate-400/cyan-200.
  */
 
+/* Glows pull from the :root accent CSS vars (src/index.css) so the whole page
+ * shares one palette source. text/label/rule stay as Tailwind tokens. Labels
+ * sit at /85 for legibility on the deep-space background. */
 export const ACCENTS = {
   lime: {
-    text: 'text-lime-200',
-    label: 'text-lime-200/80',
-    rule: 'from-lime-300/60 via-lime-300/15 to-transparent',
-    glow: 'radial-gradient(circle at 50% 0%, rgba(190,242,100,0.10), transparent 45%)'
+    text: 'text-lime-300',
+    label: 'text-lime-300/85',
+    rule: 'from-lime-300/55 via-lime-300/15 to-transparent',
+    glow: 'radial-gradient(circle at 50% 0%, rgb(var(--accent-now) / 0.10), transparent 45%)'
   },
   amber: {
     text: 'text-amber-200',
-    label: 'text-amber-200/80',
+    label: 'text-amber-200/85',
     rule: 'from-amber-300/60 via-amber-300/15 to-transparent',
-    glow: 'radial-gradient(circle at 16% 18%, rgba(245,158,11,0.055), transparent 34%)'
+    glow: 'radial-gradient(circle at 16% 18%, rgb(var(--accent-aegis) / 0.06), transparent 36%)'
   },
   teal: {
     text: 'text-teal-200',
-    label: 'text-teal-200/80',
+    label: 'text-teal-200/85',
     rule: 'from-teal-300/60 via-cyan-300/15 to-transparent',
-    glow: 'radial-gradient(circle at 82% 28%, rgba(45,212,191,0.12), transparent 42%)'
+    glow: 'radial-gradient(circle at 82% 28%, rgb(var(--accent-signal) / 0.11), transparent 44%)'
   },
   cyan: {
     text: 'text-cyan-200',
-    label: 'text-cyan-200/75',
+    label: 'text-cyan-200/85',
     rule: 'from-cyan-300/55 via-cyan-300/15 to-transparent',
-    glow: 'radial-gradient(circle at 50% 30%, rgba(56,189,248,0.10), transparent 45%)'
+    glow: 'radial-gradient(circle at 50% 30%, rgb(var(--accent-signal-2) / 0.10), transparent 45%)'
   },
   violet: {
     text: 'text-violet-200',
-    label: 'text-violet-200/80',
+    label: 'text-violet-200/85',
     rule: 'from-violet-300/55 via-violet-300/15 to-transparent',
-    glow: 'radial-gradient(circle at 78% 70%, rgba(167,139,250,0.10), transparent 42%)'
+    glow: 'radial-gradient(circle at 78% 70%, rgb(var(--accent-write) / 0.10), transparent 42%)'
   }
 };
 
@@ -184,7 +187,7 @@ export const SectionShell = ({
     <section
       id={id}
       aria-labelledby={labelledBy}
-      className={`relative isolate px-4 py-24 sm:px-6 sm:py-28 lg:px-8 ${className}`}
+      className={`relative isolate px-4 py-14 sm:px-6 sm:py-20 lg:py-28 lg:px-8 ${className}`}
     >
       {glow && accent && (
         <div

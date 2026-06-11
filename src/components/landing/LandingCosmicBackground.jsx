@@ -26,6 +26,27 @@ const LandingCosmicBackground = () => {
   const galaxyRef = useRef(null);
   const { isMobile, prefersReducedMotion } = useMediaState();
 
+  /* ---- galaxy image: defer the 4K WebP off the critical path. It's invisible
+     (opacity 0) until the hero scrolls away, so there's no reason to fetch it
+     during first paint — load it on idle once the hero has rendered. ---- */
+  useEffect(() => {
+    const node = galaxyRef.current;
+    if (!node) return undefined;
+    let cancelled = false;
+    const load = () => {
+      if (!cancelled && galaxyRef.current) {
+        galaxyRef.current.style.backgroundImage = `url("${GALAXY_SRC}")`;
+      }
+    };
+    const ric = typeof window !== 'undefined' ? window.requestIdleCallback : null;
+    const handle = ric ? ric(load, { timeout: 2500 }) : window.setTimeout(load, 1800);
+    return () => {
+      cancelled = true;
+      if (ric && window.cancelIdleCallback) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, []);
+
   /* ---- galaxy: ramp opacity in as the hero scrolls away ---- */
   useFlowingScrollProgress({
     mode: 'viewport',
@@ -163,8 +184,8 @@ const LandingCosmicBackground = () => {
         ref={galaxyRef}
         className="absolute inset-0 bg-cover bg-center opacity-0 will-change-[opacity]"
         style={{
-          backgroundImage: `url("${GALAXY_SRC}")`,
-          // gentle blur keeps it as ambient depth rather than a literal photo
+          // backgroundImage is set on idle (see effect above) to keep the 4K
+          // WebP off the first-paint critical path.
           filter: 'saturate(1.05) brightness(0.9)'
         }}
       />

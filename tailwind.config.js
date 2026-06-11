@@ -18,7 +18,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'space': ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Display face — drives every existing `font-space` heading/label/CTA.
+        'space': ['Clash Display', 'Inter Tight', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Body face — site default sans.
+        'sans': ['Inter Tight', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Console / telemetry mono.
+        'mono': ['JetBrains Mono Variable', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       colors: {
         'curious-blue': {

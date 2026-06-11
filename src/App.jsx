@@ -35,6 +35,7 @@ const JourneyV2 = lazy(() => import('./pages/journey-v2.jsx'));
 const LegacyIndexSafeReview = lazy(() => import('./pages/legacy_index_safe_review.jsx'));
 const CosmicRevDev = lazy(() => import('./pages/CosmicRevDev'));
 const HomeLayout = lazy(() => import('./layouts/HomeLayout'));
+const CuriousLabsLanding = lazy(() => import('./pages/CuriousLabsLanding.jsx'));
 
 // ✅ SLEEP-UNTIL-CALLED: All pages lazy loaded with route-level splitting
 const ProductsPortal = lazy(() => import('./pages/products/index.jsx'));
@@ -101,7 +102,7 @@ const SimpleLoader = () => (
 // BackgroundManagerWrapper component that only renders on specific routes
 const BackgroundManagerWrapper = () => {
   const location = useLocation();
-  const allowedPaths = ['/', '/safe'];
+  const allowedPaths = ['/legacy', '/safe'];
   const shouldRenderBackground = allowedPaths.includes(location.pathname);
   
   // Check for reduced motion preference
@@ -173,8 +174,17 @@ const AppRoutes = () => (
     <BackgroundManagerWrapper />
     
     <Routes>
-      {/* 🚀 HOMEPAGE V7 ISOLATED: HomePage_v7_wrapper (3D engine isolated!) */}
+      {/* HOMEPAGE: Current Curious Labs / Moon Signal landing page */}
       <Route path="/" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <ErrorBoundary fallback={<SafeV4CosmicPage />}>
+            <CuriousLabsLanding />
+          </ErrorBoundary>
+        </Suspense>
+      } />
+
+      {/* LEGACY HOMEPAGE: Current V6 atomic site preserved on demand */}
+      <Route path="/legacy" element={
         <Suspense fallback={<SimpleLoader />}>
           <ErrorBoundary fallback={<SafeV4CosmicPage />}>
             <HomePage_v7_wrapper />
@@ -344,7 +354,7 @@ const AppRoutes = () => (
           <Interview />
         </Suspense>
       } />
-      
+
       <Route path="/moonsignal/*" element={
         <Suspense fallback={<SimpleLoader />}>
           <MoonSignalDeck />

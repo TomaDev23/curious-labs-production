@@ -281,7 +281,7 @@ const MissionControlNavbar = ({
               {/* Mobile Status & Menu */}
               <div className="flex items-center space-x-3">
                 {/* Mobile OPERATIONAL Status */}
-                <Link to="/mission-control">
+                <Link to="/mission-control" className="hidden sm:block">
                   <div className="flex items-center space-x-1.5 px-2 py-1 rounded-full border border-lime-400/30 bg-black/40 backdrop-blur-sm hover:bg-lime-400/20 hover:border-lime-400/50 transition-all duration-300 cursor-pointer">
                     <motion.div
                       className="w-1 h-1 rounded-full"
@@ -575,4 +575,4 @@ const MissionControlNavbar = ({
   );
 };
 
-export default MissionControlNavbar; 
+export default MissionControlNavbar;

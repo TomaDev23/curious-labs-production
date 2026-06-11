@@ -50,4 +50,9 @@
     <priority>0.6</priority>
     <changefreq>monthly</changefreq>
   </url>
-</urlset> 
+  <url>
+    <loc>https://curiouslabs-site.vercel.app/legacy</loc>
+    <priority>0.4</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+</urlset>

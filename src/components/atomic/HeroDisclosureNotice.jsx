@@ -55,7 +55,7 @@ const HeroDisclosureNotice = () => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed inset-0 z-[600] flex items-center justify-center bg-black/55 px-4 py-6 backdrop-blur-md"
+          className="fixed inset-0 z-[600] flex items-center justify-center bg-black/95 px-4 py-6 backdrop-blur-md"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -66,7 +66,7 @@ const HeroDisclosureNotice = () => {
             aria-modal="true"
             aria-labelledby="hero-disclosure-title"
             aria-describedby="hero-disclosure-copy"
-            className="relative max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-lg border border-lime-300/25 bg-[#05070d]/80 p-5 text-left shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-6"
+            className="relative max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-lg border border-lime-300/25 bg-[#05070d] p-5 text-left shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-6"
             initial={{ opacity: 0, y: 18, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}

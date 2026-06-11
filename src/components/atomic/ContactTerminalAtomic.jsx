@@ -26,7 +26,7 @@ export const metadata = {
 const ContactTerminalAtomic = () => {
   // 🎯 INTERSECTION-BASED 3D: Load globe when contact section comes into view
   const location = useLocation();
-  const routes3D = ['/']; // Only homepage needs 3D currently
+  const routes3D = ['/', '/legacy']; // Homepage and preserved V6 site use the contact globe
   const should3D = routes3D.includes(location.pathname);
   
   // Use intersection observer to load globe only when contact section is visible
@@ -143,13 +143,12 @@ const ContactTerminalAtomic = () => {
     >
       {/* Left Side - Contact Info Terminal */}
       <div className="w-full md:w-1/2 max-w-md mb-16 md:mb-0 md:absolute md:bottom-20 md:left-20 lg:bottom-16 lg:left-32 xl:left-48 2xl:left-64 z-50">
-        <h2 id="contact-heading" className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
+        <h2 id="contact-heading" className="font-space text-3xl font-semibold sm:text-4xl mb-6">
           Contact <span className="text-lime-400">Terminal</span>
         </h2>
-        
+
         <p className="text-lg text-gray-300 mb-8">
-          Ready to {activeTab === 'info' ? 'connect' : 'begin your cosmic journey'}? 
-          Reach out through our terminal interface.
+          Open a channel — reach out through the terminal interface.
         </p>
         
         {/* Terminal Tabs */}
@@ -388,4 +387,4 @@ const ContactTerminalAtomic = () => {
   );
 };
 
-export default ContactTerminalAtomic; 
+export default ContactTerminalAtomic;

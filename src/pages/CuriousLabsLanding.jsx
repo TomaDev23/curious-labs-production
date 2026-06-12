@@ -209,14 +209,14 @@ const MoonSignalRevealSection = () => {
               Coming Soon
             </div>
             <p className="mt-5 max-w-md font-space text-sm leading-relaxed text-[#dedac7]/72 sm:mt-7 sm:text-base">
-              The Moon Signal console — currently in private build.
+              MoonSignal is currently bootstrapping in stealth.
             </p>
           </div>
         </div>
 
-        {/* top seam: feather the console's upper edge into page-black so the
-            descending moon cross-dissolves in rather than meeting a hard slab */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[11] h-[7%] bg-[linear-gradient(180deg,#020308,rgba(2,3,8,0))]" aria-hidden="true" />
+        {/* soft inset vignette on all four edges: frames the panel and keeps the
+            top softened so the descending moon still cross-dissolves into it */}
+        <div className="pointer-events-none absolute inset-0 z-[11] rounded-2xl shadow-[inset_0_0_64px_14px_rgba(2,3,8,0.5)]" aria-hidden="true" />
 
         <div
           className="pointer-events-none absolute z-10 rounded-full border border-cyan-100/45 shadow-[0_0_0_1px_rgba(15,23,42,0.25),0_0_52px_rgba(103,232,249,0.24)] transition-[width,height] duration-200"

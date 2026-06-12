@@ -2,9 +2,9 @@ import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
-import HeroDisclosureNotice from '../components/atomic/HeroDisclosureNotice';
 import LandingCosmicBackground from '../components/landing/LandingCosmicBackground';
 import HeroCelestial from '../components/landing/HeroCelestial';
+import WorldClockBand from '../components/landing/WorldClockBand';
 import { useNearViewport, useMediaState } from '../components/landing/hooks';
 
 const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTerminalAtomic'));
@@ -256,17 +256,15 @@ const LazyContactSection = () => {
 
   return (
     <div ref={sectionRef} className="relative">
-      {/* seam: fade the continuous cosmic field down into the terminal */}
-      <div className="pointer-events-none h-24 w-full bg-[linear-gradient(180deg,transparent,#070C1A)]" aria-hidden="true" />
       <Suspense
         fallback={
-          <section className="flex min-h-[70vh] items-center justify-center bg-curious-dark-900 px-4 text-center">
+          <section className="flex min-h-[70vh] items-center justify-center px-4 text-center">
             <div className="font-space text-sm uppercase tracking-[0.16em] text-lime-300/70">Opening contact channel</div>
           </section>
         }
       >
-        {isNear ? <ContactTerminalAtomic /> : (
-          <section className="flex min-h-[70vh] items-center justify-center bg-curious-dark-900 px-4 text-center">
+        {isNear ? <ContactTerminalAtomic transparent /> : (
+          <section className="flex min-h-[70vh] items-center justify-center px-4 text-center">
             <div className="font-space text-sm uppercase tracking-[0.16em] text-lime-300/70">Opening contact channel</div>
           </section>
         )}
@@ -296,7 +294,6 @@ export default function CuriousLabsLanding() {
       {/* One persistent cosmic backdrop behind everything — the page's "flow". */}
       <LandingCosmicBackground />
 
-      <HeroDisclosureNotice />
       <MissionControlNavbar />
 
       <main className="relative z-10">
@@ -324,8 +321,13 @@ export default function CuriousLabsLanding() {
         {/* ───────────────────────── CONTACT ─────────────────────────── */}
         <LazyContactSection />
 
+        {/* ─────────────────── WORLD CLOCK (mission time band) ─────────── */}
+        {/* Eager mount: its scroll listener drives the floating/docking band. */}
+        <WorldClockBand />
+
         {/* ───────────────────────── FOOTER ──────────────────────────── */}
-        <footer className="bg-curious-dark-900 px-4 py-12 sm:px-6 lg:px-8">
+        {/* Transparent so the persistent celestial background flows through. */}
+        <footer className="px-4 pb-12 pt-2 sm:px-6 lg:px-8">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
             <p className="font-space text-xs uppercase tracking-[0.16em] text-slate-400">
               Curious Labs · Building the Moon Signal era
@@ -334,7 +336,7 @@ export default function CuriousLabsLanding() {
               to="/legacy"
               className="font-space text-sm font-semibold uppercase tracking-[0.14em] text-slate-400 transition-colors hover:text-lime-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-200 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
-              View the previous site →
+              View the original site →
             </Link>
           </div>
         </footer>

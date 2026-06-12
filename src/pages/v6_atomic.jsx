@@ -25,6 +25,7 @@ import SmartLazySection from '../components/lazy/SmartLazySection';
 import FooterExperience from '../components/home/v4/FooterExperience'; // CODE: FOOTER-001
 import ScrollToTop from '../components/ScrollToTop'; // CODE: SCROLL-001
 import LegalLink from '../components/LegalLink'; // CODE: LEGAL-LINK-001
+import HeroDisclosureNotice from '../components/atomic/HeroDisclosureNotice'; // CODE: LEGACY-DISCLOSURE
 
 // --- TEMPORARY: Scene imports will be replaced one by one ---
 // import HeroSequenceV6 from '../components/home/v6/HeroSequenceV6'; // Removed
@@ -79,6 +80,8 @@ const V6AtomicPage = () => {
 
   return (
     <SceneControllerV6>
+      {/* Disclaimer: this is the original/legacy site, kept as an archive. */}
+      <HeroDisclosureNotice />
       <LayoutWrapper>
         <CosmicBackgroundSystemV6 />
 

@@ -1,33 +1,56 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from '../../FramerProvider';
 
-const STORAGE_KEY = 'curiouslabs-hero-disclosure-seen';
+/**
+ * HeroDisclosureNotice — a one-per-session modal. Now scoped to the LEGACY
+ * (original) site only; the new landing no longer shows it. Prop-driven so the
+ * same component can carry different copy / storage key if reused elsewhere.
+ * Defaults describe the legacy/original site.
+ */
+const DEFAULTS = {
+  storageKey: 'curiouslabs-legacy-disclosure-seen',
+  tag: 'Archive note',
+  title: 'You’re viewing the original site.',
+  paragraphs: [
+    'This is the original CuriousLabs homepage, kept online as an archive to explore. It was built for fun by a vibe coder who started with zero experience in tech, code, or AI, then learned by poking at the early AI tools of 2025 until something delightfully real took shape.',
+    'It is happiest on desktop and is left largely as-is — mobile may arrive wearing one shoe and a brave smile. For the latest work, head back to the new Moon Signal landing page.'
+  ],
+  footnote: 'The new Moon Signal landing is where current work lives.',
+  buttonLabel: 'Got it, show me the original'
+};
 
-const HeroDisclosureNotice = () => {
+const HeroDisclosureNotice = ({
+  storageKey = DEFAULTS.storageKey,
+  tag = DEFAULTS.tag,
+  title = DEFAULTS.title,
+  paragraphs = DEFAULTS.paragraphs,
+  footnote = DEFAULTS.footnote,
+  buttonLabel = DEFAULTS.buttonLabel
+} = {}) => {
   const [isVisible, setIsVisible] = useState(false);
   const closeButtonRef = useRef(null);
 
   const handleDismiss = useCallback(() => {
     if (typeof window !== 'undefined') {
       try {
-        window.sessionStorage.setItem(STORAGE_KEY, 'true');
+        window.sessionStorage.setItem(storageKey, 'true');
       } catch {
         // Session storage can be blocked in private or hardened browsers.
       }
     }
 
     setIsVisible(false);
-  }, []);
+  }, [storageKey]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     try {
-      setIsVisible(window.sessionStorage.getItem(STORAGE_KEY) !== 'true');
+      setIsVisible(window.sessionStorage.getItem(storageKey) !== 'true');
     } catch {
       setIsVisible(true);
     }
-  }, []);
+  }, [storageKey]);
 
   useEffect(() => {
     if (!isVisible || typeof window === 'undefined' || typeof document === 'undefined') return;
@@ -85,37 +108,32 @@ const HeroDisclosureNotice = () => {
             </button>
 
             <div className="mb-4 inline-flex items-center gap-2 rounded-lg border border-lime-300/20 bg-lime-300/10 px-3 py-1.5 font-space text-[11px] font-semibold uppercase tracking-[0.18em] text-lime-200">
-              Mission note
+              {tag}
             </div>
 
             <h2 id="hero-disclosure-title" className="font-space text-2xl font-semibold leading-tight text-white sm:text-3xl">
-              Best viewed from the big screen.
+              {title}
             </h2>
 
             <div id="hero-disclosure-copy" className="mt-4 space-y-4 text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
-              <p>
-                CuriousLabs is happiest on desktop, where the visuals have room to stretch out. Mobile is invited too,
-                but it may occasionally arrive wearing one shoe and a brave smile while we tune it up.
-              </p>
-
-              <p>
-                Small disclosure: this site was built as a playground by a vibe coder who started with zero experience
-                in tech, code writing, or AI, then learned by poking at the early AI tools of 2025 until something
-                delightfully real began to take shape. It is all for fun.
-              </p>
+              {paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="font-space text-xs uppercase tracking-[0.16em] text-cyan-200/70">
-                Mobile polish: queued for a kinder future window.
-              </p>
+              {footnote && (
+                <p className="font-space text-xs uppercase tracking-[0.16em] text-cyan-200/70">
+                  {footnote}
+                </p>
+              )}
 
               <button
                 type="button"
                 onClick={handleDismiss}
-                className="rounded-lg bg-lime-300 px-5 py-3 font-space text-sm font-semibold text-curious-dark-950 transition-colors hover:bg-lime-200 focus:outline-none focus:ring-2 focus:ring-lime-200 focus:ring-offset-2 focus:ring-offset-black"
+                className="shrink-0 rounded-lg bg-lime-300 px-5 py-3 font-space text-sm font-semibold text-curious-dark-950 transition-colors hover:bg-lime-200 focus:outline-none focus:ring-2 focus:ring-lime-200 focus:ring-offset-2 focus:ring-offset-black"
               >
-                Got it, launch the site
+                {buttonLabel}
               </button>
             </div>
           </motion.div>

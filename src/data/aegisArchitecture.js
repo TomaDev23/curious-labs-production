@@ -80,12 +80,12 @@ export const AEGIS_DREAMS = [
 export const AEGIS_LEGIT_PROTOCOL = {
   eyebrow: 'Protocol Standard',
   title: 'LEGIT Framework',
-  lede: 'Every decision in AEGIS follows the LEGIT standard — our internal protocol for secure, testable, and audit-compliant AI runtimes.',
+  lede: 'AI that touches real business logic needs more than prompt engineering — it needs formal contracts, audit trails and fail-safes. LEGIT is the standard every AEGIS decision is held to: five invariants, enforced end to end.',
   cards: [
-    { code: 'LEG-001', letter: 'L', title: 'Logged', icon: '📝', accent: 'cyan', desc: 'Every action is recorded with full traceability.' },
-    { code: 'LEG-002', letter: 'E', title: 'Enforced', icon: '⚖️', accent: 'amber', desc: 'Contracts and schemas prevent invalid states.' },
-    { code: 'LEG-003', letter: 'G', title: 'Governed', icon: '👥', accent: 'violet', desc: 'Human oversight and approval workflows.' },
-    { code: 'LEG-004', letter: 'I', title: 'Isolated', icon: '🔒', accent: 'lime', desc: 'Secure execution environments and data protection.' },
-    { code: 'LEG-005', letter: 'T', title: 'Tested', icon: '🧪', accent: 'teal', desc: 'Continuous validation and quality assurance.' }
+    { code: 'LEG-001', letter: 'L', title: 'Logged', accent: 'cyan', desc: 'A complete audit trail of every decision, state change and agent interaction — nothing runs off the record.' },
+    { code: 'LEG-002', letter: 'E', title: 'Enforced', accent: 'amber', desc: 'Schema validation keeps agents from ever operating outside their defined parameters or contracts.' },
+    { code: 'LEG-003', letter: 'G', title: 'Governed', accent: 'violet', desc: 'Human approval workflows gate critical decisions, with explicit escalation paths and overrides.' },
+    { code: 'LEG-004', letter: 'I', title: 'Isolated', accent: 'lime', desc: 'Sandboxed execution environments with data encryption and strict, scoped access controls.' },
+    { code: 'LEG-005', letter: 'T', title: 'Tested', accent: 'teal', desc: 'Continuous validation through automated testing and regression — every path proven before it ships.' }
   ]
 };

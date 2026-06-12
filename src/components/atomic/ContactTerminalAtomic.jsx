@@ -28,7 +28,7 @@ const contactTargets = {
   github: ['https://github.com/', 'Toma', 'Dev', '23']
 };
 
-const ContactTerminalAtomic = () => {
+const ContactTerminalAtomic = ({ transparent = false } = {}) => {
   // 🎯 INTERSECTION-BASED 3D: Load globe when contact section comes into view
   const location = useLocation();
   const routes3D = ['/', '/legacy']; // Homepage and preserved V6 site use the contact globe
@@ -171,8 +171,8 @@ const ContactTerminalAtomic = () => {
   return (
     <section 
       ref={contactRef}
-      id="contact" 
-      className="min-h-screen flex flex-col md:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 py-20 bg-curious-dark-900"
+      id="contact"
+      className={`min-h-screen flex flex-col md:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 py-20 ${transparent ? '' : 'bg-curious-dark-900'}`}
       aria-labelledby="contact-heading"
     >
       {/* Left Side - Contact Info Terminal */}

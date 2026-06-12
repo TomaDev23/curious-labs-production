@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from '../../FramerProvider';
+import { motion, AnimatePresence, useReducedMotion } from '../../FramerProvider';
 import { SectionShell, SectionLabel, Reveal, Stagger, StaggerItem, ACCENTS } from './primitives';
 import { useMediaState } from './hooks';
 import {
@@ -401,34 +401,197 @@ const CenterLabel = ({ children, tone = 'violet' }) => {
   );
 };
 
-const AegisBriefing = () => (
-  <>
-    {/* ── machine intelligence: DREAMS acrostic + visual asset ── */}
-    <div className="mt-12 grid gap-8 lg:mt-16 lg:grid-cols-12 lg:gap-12">
-      {/* LEFT — DREAMS acrostic */}
-      <div className="lg:col-span-5">
-        <Reveal>
-          <SectionLabel tone="amber">The DREAMS architecture</SectionLabel>
-        </Reveal>
-        <Reveal delay={0.05}>
-          <p className="max-w-md text-[15px] leading-relaxed text-slate-300">{AEGIS_BRIEF_LEDE}</p>
-        </Reveal>
-        <Stagger className="mt-8 space-y-3" step={0.06}>
-          {AEGIS_DREAMS.map((row) => {
-            const a = accentClass(row.accent);
+/* Full-bleed image lightbox for the AEGIS machine asset. */
+const Lightbox = ({ open, src, alt, onClose }) => {
+  useEffect(() => {
+    if (!open || typeof document === 'undefined') return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open, onClose]);
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[700] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md sm:p-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={onClose}
+          role="dialog"
+          aria-modal="true"
+          aria-label="AEGIS machine — enlarged view"
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white/80 transition-colors hover:border-white/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </button>
+          <motion.img
+            src={src}
+            alt={alt}
+            className="max-h-[90vh] max-w-[94vw] rounded-lg border border-white/10 shadow-[0_30px_120px_rgba(0,0,0,0.6)]"
+            initial={{ scale: 0.96, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.97, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const AEGIS_ASSET = '/assets/aegis/aegis-machine.webp';
+const AEGIS_ASSET_FULL = '/assets/aegis/aegis-machine-full.webp';
+
+const AegisBriefing = () => {
+  const [zoom, setZoom] = useState(false);
+
+  return (
+    <>
+      {/* ── machine intelligence: DREAMS acrostic + visual asset ── */}
+      <div className="mt-12 grid gap-8 lg:mt-16 lg:grid-cols-12 lg:gap-12">
+        {/* LEFT — DREAMS acrostic */}
+        <div className="lg:col-span-5">
+          <Reveal>
+            <SectionLabel tone="amber">The DREAMS architecture</SectionLabel>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <p className="max-w-md text-[15px] leading-relaxed text-slate-300">{AEGIS_BRIEF_LEDE}</p>
+          </Reveal>
+          <Stagger className="mt-8 space-y-3" step={0.06}>
+            {AEGIS_DREAMS.map((row) => {
+              const a = accentClass(row.accent);
+              return (
+                <StaggerItem key={row.letter}>
+                  <div className="flex items-start gap-4">
+                    <span
+                      className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${a.ring} bg-white/[0.03] font-space text-lg font-semibold ${a.text}`}
+                      aria-hidden="true"
+                    >
+                      {row.letter}
+                    </span>
+                    <div className="min-w-0 pt-0.5">
+                      <div className="font-space text-sm font-semibold text-white">{row.name}</div>
+                      <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">{row.blurb}</p>
+                    </div>
+                  </div>
+                </StaggerItem>
+              );
+            })}
+          </Stagger>
+        </div>
+
+        {/* RIGHT — machine visual (click to enlarge) */}
+        <div className="lg:col-span-7">
+          <Reveal y={28}>
+            <figure className="lg:sticky lg:top-24">
+              <button
+                type="button"
+                onClick={() => setZoom(true)}
+                aria-label="Enlarge the AEGIS machine diagram"
+                className="group relative block w-full overflow-hidden rounded-2xl border border-white/12 bg-white/[0.02] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              >
+                <img
+                  src={AEGIS_ASSET}
+                  alt="AEGIS runtime machine — request pipeline flowing through the security layers into the core and fanning out to the DREAMS layers."
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                  className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.015]"
+                />
+                <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" aria-hidden="true" />
+                <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/85 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+                  ⤢ Expand
+                </span>
+              </button>
+              <figcaption className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
+                AEGIS V5 · request pipeline & layer fan-out — click to enlarge
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
+      </div>
+
+      {/* ── LEGIT protocol ── */}
+      <div className="mt-16 lg:mt-24">
+        <div className="mx-auto max-w-3xl text-center">
+          <Reveal>
+            <CenterLabel tone="violet">{AEGIS_LEGIT_PROTOCOL.eyebrow}</CenterLabel>
+          </Reveal>
+          <Reveal delay={0.05} as="h3">
+            <span className="block bg-gradient-to-r from-amber-200 via-orange-300 to-amber-200 bg-clip-text font-space text-2xl font-semibold text-transparent sm:text-4xl">
+              {AEGIS_LEGIT_PROTOCOL.title}
+            </span>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 sm:mt-4 sm:text-[15px]">
+              {AEGIS_LEGIT_PROTOCOL.lede}
+            </p>
+          </Reveal>
+        </div>
+
+        {/* Each card leads with its big LEGIT letter so scanning the row spells the
+            acronym; the title + precise definition make it a real spec, not fluff. */}
+        <Stagger className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-5" step={0.06}>
+          {AEGIS_LEGIT_PROTOCOL.cards.map((card) => {
+            const a = accentClass(card.accent);
+            const rgb = RGB[card.accent] || RGB.cyan;
             return (
-              <StaggerItem key={row.letter}>
-                <div className="flex items-start gap-4">
+              <StaggerItem key={card.code} className="h-full">
+                <div
+                  className={`group relative flex h-full flex-col overflow-hidden rounded-xl border ${a.ring} bg-gradient-to-b from-white/[0.05] to-white/[0.012] p-4 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 sm:p-5`}
+                  style={{ boxShadow: '0 0 0 0 rgba(0,0,0,0)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 30px -6px rgba(${rgb},0.45)`; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 0 0 rgba(0,0,0,0)'; }}
+                >
+                  {/* top accent hairline */}
                   <span
-                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${a.ring} bg-white/[0.03] font-space text-lg font-semibold ${a.text}`}
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                    style={{ background: `linear-gradient(90deg, transparent, rgba(${rgb},0.8), transparent)` }}
+                    aria-hidden="true"
+                  />
+                  {/* big letter watermark glow */}
+                  <span
+                    className="pointer-events-none absolute -right-3 -top-5 select-none font-space text-[5.5rem] font-semibold leading-none opacity-[0.06] sm:text-[7rem]"
+                    style={{ color: `rgb(${rgb})` }}
                     aria-hidden="true"
                   >
-                    {row.letter}
+                    {card.letter}
                   </span>
-                  <div className="min-w-0 pt-0.5">
-                    <div className="font-space text-sm font-semibold text-white">{row.name}</div>
-                    <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">{row.blurb}</p>
+
+                  <div className="relative flex items-start justify-between">
+                    <span
+                      className="font-space text-4xl font-semibold leading-none sm:text-5xl"
+                      style={{
+                        backgroundImage: `linear-gradient(160deg, rgb(${rgb}), rgba(${rgb},0.4))`,
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        color: 'transparent'
+                      }}
+                      aria-hidden="true"
+                    >
+                      {card.letter}
+                    </span>
+                    <span className={`font-mono text-[9px] tracking-[0.14em] sm:text-[10px] ${a.text} opacity-70`}>{card.code}</span>
                   </div>
+
+                  <div className={`relative mt-3 font-space text-base font-semibold ${a.text}`}>{card.title}</div>
+                  <p className="relative mt-1.5 text-xs leading-relaxed text-slate-400 sm:text-[13px]">{card.desc}</p>
                 </div>
               </StaggerItem>
             );
@@ -436,71 +599,10 @@ const AegisBriefing = () => (
         </Stagger>
       </div>
 
-      {/* RIGHT — asset placeholder (machine visual, supplied later) */}
-      <div className="lg:col-span-7">
-        <Reveal y={28} className="h-full">
-          {/* TODO: swap this placeholder for the AEGIS machine asset:
-              <img src="/path/to/asset" alt="AEGIS runtime" className="h-full w-full rounded-2xl object-cover" /> */}
-          <div className="relative flex h-full min-h-[200px] items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/15 bg-[radial-gradient(ellipse_at_50%_40%,rgba(251,191,36,0.05),transparent_60%),rgba(255,255,255,0.012)] sm:min-h-[260px] lg:min-h-[440px]">
-            <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.4)_1px,transparent_1px)] [background-size:34px_34px]" aria-hidden="true" />
-            <CornerBrackets />
-            <div className="relative z-10 flex flex-col items-center gap-2 text-center">
-              <span className="grid h-12 w-12 place-items-center rounded-xl border border-amber-300/30 bg-amber-300/[0.06] text-2xl" aria-hidden="true">🛰️</span>
-              <span className="font-space text-sm font-semibold text-white/80">AEGIS machine visual</span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">asset · incoming</span>
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </div>
-
-    {/* ── LEGIT protocol ── */}
-    <div className="mt-16 lg:mt-24">
-      <div className="mx-auto max-w-3xl text-center">
-        <Reveal>
-          <CenterLabel tone="violet">{AEGIS_LEGIT_PROTOCOL.eyebrow}</CenterLabel>
-        </Reveal>
-        <Reveal delay={0.05} as="h3">
-          <span className="block bg-gradient-to-r from-amber-200 via-orange-300 to-amber-200 bg-clip-text font-space text-2xl font-semibold text-transparent sm:text-4xl">
-            {AEGIS_LEGIT_PROTOCOL.title}
-          </span>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 sm:mt-4 sm:text-[15px]">
-            {AEGIS_LEGIT_PROTOCOL.lede}
-          </p>
-        </Reveal>
-      </div>
-
-      <Stagger className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-5" step={0.06}>
-        {AEGIS_LEGIT_PROTOCOL.cards.map((card) => {
-          const a = accentClass(card.accent);
-          const rgb = RGB[card.accent] || RGB.cyan;
-          return (
-            <StaggerItem key={card.code}>
-              <div
-                className={`group relative flex h-full flex-col items-center overflow-hidden rounded-xl border ${a.ring} bg-white/[0.025] p-3.5 text-center transition-[transform,background-color,box-shadow] duration-300 hover:-translate-y-1 hover:bg-white/[0.05] sm:p-5`}
-                style={{ boxShadow: `0 0 0 0 rgba(${rgb},0)` }}
-                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 28px -6px rgba(${rgb},0.4)`; }}
-                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = `0 0 0 0 rgba(${rgb},0)`; }}
-              >
-                <div
-                  className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-70"
-                  style={{ background: `linear-gradient(90deg, transparent, rgba(${rgb},0.7), transparent)` }}
-                  aria-hidden="true"
-                />
-                <div className={`font-mono text-[9px] tracking-[0.14em] sm:text-[10px] ${a.text}`}>{card.code}</div>
-                <div className="mt-2 text-2xl sm:mt-3 sm:text-3xl" aria-hidden="true">{card.icon}</div>
-                <div className={`mt-2 font-space text-sm font-semibold sm:mt-3 sm:text-base ${a.text}`}>{card.title}</div>
-                <p className="mt-1.5 text-xs leading-relaxed text-slate-400 sm:mt-2 sm:text-[13px]">{card.desc}</p>
-              </div>
-            </StaggerItem>
-          );
-        })}
-      </Stagger>
-    </div>
-  </>
-);
+      <Lightbox open={zoom} src={AEGIS_ASSET_FULL} alt="AEGIS machine — enlarged" onClose={() => setZoom(false)} />
+    </>
+  );
+};
 
 /* -------------------------------- section -------------------------------- */
 

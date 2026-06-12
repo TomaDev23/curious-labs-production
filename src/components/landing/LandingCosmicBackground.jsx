@@ -47,18 +47,23 @@ const LandingCosmicBackground = () => {
     };
   }, []);
 
-  /* ---- galaxy: ramp opacity in as the hero scrolls away ---- */
+  /* ---- galaxy: fade IN across the mid page, then fade OUT toward the bottom
+     so the hero starts (and the footer ends) on the clean starry base. ---- */
   useFlowingScrollProgress({
-    mode: 'viewport',
-    startVh: 0.18,
-    endVh: 0.96,
+    mode: 'document',
     stateful: false,
-    onUpdate: (progress) => {
+    onUpdate: (p) => {
       const node = galaxyRef.current;
       if (!node) return;
 
-      const maxOpacity = isMobile ? 0.32 : 0.5;
-      node.style.opacity = String(progress * maxOpacity);
+      const smooth = (a, b, t) => {
+        const x = Math.min(1, Math.max(0, (t - a) / (b - a)));
+        return x * x * (3 - 2 * x);
+      };
+      const maxOpacity = isMobile ? 0.3 : 0.5;
+      const fadeIn = smooth(0.1, 0.32, p); // hero clean → galaxy rises mid-page
+      const fadeOut = 1 - smooth(0.74, 0.97, p); // → recedes back to starry at the end
+      node.style.opacity = String(maxOpacity * fadeIn * fadeOut);
     }
   });
 

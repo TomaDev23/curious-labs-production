@@ -2,8 +2,11 @@ import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { SectionLabel } from './primitives';
 import { useMediaState } from './hooks';
 import useFlowingScrollProgress from '../../hooks/useFlowingScrollProgress';
+import MoonControlDock from './MoonControlDock';
+import { getCurrentLunarData } from '../../utils/luneBridge';
 
 const MoonSphereProxy = lazy(() => import('../atomic/proxies/MoonSphereProxy'));
+const MoonControlPanel = lazy(() => import('./MoonControlPanel'));
 
 /* ----------------------------- fallback ------------------------------ */
 
@@ -58,7 +61,7 @@ const StaticHero = () => (
   </section>
 );
 
-const MobileHero = () => {
+const MobileHero = ({ debugPhase, anomalyMode, lunar, onOpenControls }) => {
   const sectionRef = useRef(null);
   // Pause/unmount the 3D moon once the hero scrolls offscreen so it doesn't
   // keep rendering every frame down the whole page (mobile perf).
@@ -87,6 +90,8 @@ const MobileHero = () => {
                   cameraFov={23.5}
                   rotation={[0.1, -0.05, 0]}
                   loadingFallback={<MoonFallback />}
+                  debugPhase={debugPhase}
+                  anomalyMode={anomalyMode}
                 />
               </Suspense>
             ) : (
@@ -94,6 +99,11 @@ const MobileHero = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* minimal lunar dock */}
+      <div className="pointer-events-none absolute right-3 top-[16vh] z-20">
+        <MoonControlDock lunar={lunar} onOpen={onOpenControls} />
       </div>
 
       <div className="relative z-10">
@@ -113,7 +123,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
 // Cinematic "release then settle" — accelerates gently, decelerates long.
 const easeOutExpo = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -9 * x));
 
-const CelestialStage = () => {
+const CelestialStage = ({ debugPhase, anomalyMode, lunar, onOpenControls }) => {
   const sectionRef = useRef(null);
   const copyRef = useRef(null);
   const moonRef = useRef(null);
@@ -121,6 +131,7 @@ const CelestialStage = () => {
   const haloRef = useRef(null);
   const filterRef = useRef(null);
   const cueRef = useRef(null);
+  const dockRef = useRef(null);
 
   // Once the moon has fully cross-dissolved away, unmount the 3D canvas so it
   // stops rendering for the rest of the page (the sticky moon would otherwise
@@ -175,6 +186,14 @@ const CelestialStage = () => {
         // Persists through the first deliberate scroll before fading.
         cueRef.current.style.opacity = String(1 - smooth(0.06, 0.18, p));
       }
+
+      if (dockRef.current) {
+        // Fade the lunar dock out with the departure so it never lingers over
+        // the rising Coming Soon panel.
+        const o = 1 - smooth(0.16, 0.5, p);
+        dockRef.current.style.opacity = String(o);
+        dockRef.current.style.pointerEvents = o < 0.2 ? 'none' : 'auto';
+      }
     }
   });
 
@@ -193,7 +212,14 @@ const CelestialStage = () => {
                 <div ref={filterRef} className="relative h-full w-full [filter:brightness(1.2)_contrast(1.08)]">
                   {moonLive ? (
                     <Suspense fallback={<MoonFallback />}>
-                      <MoonSphereProxy className="h-full w-full" cameraFov={22.5} rotation={[0.11, -0.04, 0]} loadingFallback={<MoonFallback />} />
+                      <MoonSphereProxy
+                        className="h-full w-full"
+                        cameraFov={22.5}
+                        rotation={[0.11, -0.04, 0]}
+                        loadingFallback={<MoonFallback />}
+                        debugPhase={debugPhase}
+                        anomalyMode={anomalyMode}
+                      />
                     </Suspense>
                   ) : (
                     <MoonFallback />
@@ -202,6 +228,11 @@ const CelestialStage = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* minimal lunar dock — fades with the departure (see onUpdate) */}
+        <div ref={dockRef} className="absolute right-4 top-1/2 z-10 -translate-y-1/2 will-change-[opacity] lg:right-6">
+          <MoonControlDock lunar={lunar} onOpen={onOpenControls} />
         </div>
 
         <div className="absolute inset-x-0 bottom-[6.5vh] z-10 px-5 sm:px-7 lg:px-10 xl:px-12">
@@ -221,7 +252,47 @@ const CelestialStage = () => {
 
 export default function HeroCelestial() {
   const { isMobile, prefersReducedMotion } = useMediaState();
+
+  // Lunar control: phase/anomaly drive the hero's real 3D moon (null = auto).
+  const [moonPhase, setMoonPhase] = useState(null);
+  const [anomaly, setAnomaly] = useState(null);
+  const [boardOpen, setBoardOpen] = useState(false);
+  const [everOpened, setEverOpened] = useState(false);
+  const [lunar] = useState(() => {
+    try {
+      return getCurrentLunarData();
+    } catch {
+      return { phase: 0, illumination: 0, age: 0, phaseName: 'Moon' };
+    }
+  });
+
+  // Reduced motion uses the static CSS moon (nothing to drive), so no dock there.
   if (prefersReducedMotion) return <StaticHero />;
-  if (isMobile) return <MobileHero />;
-  return <CelestialStage />;
+
+  const variantProps = {
+    debugPhase: moonPhase,
+    anomalyMode: anomaly,
+    lunar,
+    onOpenControls: () => {
+      setEverOpened(true);
+      setBoardOpen(true);
+    }
+  };
+
+  return (
+    <>
+      {isMobile ? <MobileHero {...variantProps} /> : <CelestialStage {...variantProps} />}
+      {/* Loaded only after the dock is first clicked — never on a normal visit. */}
+      {everOpened && (
+        <Suspense fallback={null}>
+          <MoonControlPanel
+            open={boardOpen}
+            onPhaseChange={setMoonPhase}
+            onAnomalyChange={setAnomaly}
+            onClose={() => setBoardOpen(false)}
+          />
+        </Suspense>
+      )}
+    </>
+  );
 }

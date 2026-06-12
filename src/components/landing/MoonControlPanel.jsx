@@ -28,6 +28,13 @@ const CONDITIONS = [
   { code: 'eclipse', name: 'Eclipse' }
 ];
 
+// Tide rendered as a visual cue (arrow + short code) rather than the full word.
+const TIDE = {
+  High: { glyph: '▲', abbr: 'HI', rgb: '251,146,60' },
+  Low: { glyph: '▼', abbr: 'LO', rgb: '56,189,248' },
+  Neutral: { glyph: '≈', abbr: 'MID', rgb: '45,212,191' }
+};
+
 const PERIGEE = 356500;
 const APOGEE = 406700;
 
@@ -91,25 +98,25 @@ const MoonControlPanel = ({ open, onPhaseChange, onAnomalyChange, onClose }) => 
           aria-modal="false"
           aria-label="Lunar control"
         >
-          <div className="pointer-events-auto mx-auto max-w-5xl overflow-hidden rounded-2xl border border-white/12 bg-[#070b14]/85 shadow-[0_-20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+          <div className="pointer-events-auto mx-auto max-w-4xl overflow-hidden rounded-xl border border-white/12 bg-[#070b14]/85 shadow-[0_-20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl">
             {/* header — live LED + day/date/time */}
-            <div className="flex items-center justify-between gap-3 border-b border-white/8 px-4 py-2">
-              <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-                <span className="relative flex h-2 w-2" title="Live moon status">
+            <div className="flex items-center justify-between gap-3 border-b border-white/8 px-3 py-1.5">
+              <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
+                <span className="relative flex h-1.5 w-1.5" title="Live moon status">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime-400/70 motion-reduce:hidden" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.9)]" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.9)]" />
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-200/70">Lunar Control</span>
-                <span className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.14em] text-slate-400">easter egg</span>
-                <span className="h-3 w-px bg-white/10" aria-hidden="true" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-slate-300">{dateStr}</span>
-                <span className="font-mono text-[10px] tabular-nums text-lime-200/80">{timeStr}</span>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-cyan-200/70">Lunar Control</span>
+                <span className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-[7px] uppercase tracking-[0.12em] text-slate-400">easter egg</span>
+                <span className="h-2.5 w-px bg-white/10" aria-hidden="true" />
+                <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-slate-300">{dateStr}</span>
+                <span className="font-mono text-[9px] tabular-nums text-lime-200/80">{timeStr}</span>
               </div>
               <button
                 type="button"
                 aria-label="Close lunar control"
                 onClick={onClose}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-cyan-200/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-200/60"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-cyan-200/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-cyan-200/60"
               >
                 <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -117,15 +124,32 @@ const MoonControlPanel = ({ open, onPhaseChange, onAnomalyChange, onClose }) => 
               </button>
             </div>
 
-            <div className="grid gap-3 p-3 sm:grid-cols-[minmax(0,290px)_minmax(0,1fr)] sm:gap-4">
-              {/* lunar distance board — compact */}
-              <div className="rounded-xl border border-white/8 bg-white/[0.02] p-3">
+            <div className="grid gap-2.5 p-2.5 sm:grid-cols-[minmax(0,1fr)_minmax(0,370px)] sm:gap-3">
+              {/* lunar distance — one wide module, the 3 readings combined into one chip */}
+              <div className="flex flex-col justify-center rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2.5">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-slate-500">Lunar Distance</span>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-cyan-200/70">{data.phaseName}</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-cyan-200/70">{data.phaseName}</span>
                 </div>
-                <div className="mt-0.5 font-space text-xl font-semibold tabular-nums text-white">
-                  {distK}k <span className="text-xs font-normal text-slate-400">km</span>
+                <div className="mt-0.5 flex items-end justify-between gap-3">
+                  <div className="font-space text-2xl font-semibold tabular-nums leading-none text-white">
+                    {distK}k <span className="text-xs font-normal text-slate-400">km</span>
+                  </div>
+                  {(() => {
+                    const t = TIDE[data.tide] || TIDE.Neutral;
+                    return (
+                      <div className="flex items-center gap-2 rounded-md border border-white/8 bg-white/[0.03] px-2 py-1 font-mono text-[10px] tabular-nums">
+                        <span><span className="text-slate-500">AGE </span><span className="text-slate-200">{data.age}d</span></span>
+                        <span className="text-white/15">·</span>
+                        <span><span className="text-slate-500">LUM </span><span className="text-cyan-100">{data.illumination}%</span></span>
+                        <span className="text-white/15">·</span>
+                        <span title={`Tide: ${data.tide}`}>
+                          <span className="text-slate-500">TIDE </span>
+                          <span className="font-semibold" style={{ color: `rgb(${t.rgb})` }}>{t.glyph} {t.abbr}</span>
+                        </span>
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="relative mt-2 h-1.5 rounded-full bg-gradient-to-r from-rose-400/30 via-slate-500/30 to-cyan-400/30">
                   <span
@@ -138,41 +162,61 @@ const MoonControlPanel = ({ open, onPhaseChange, onAnomalyChange, onClose }) => 
                   <span>356k perigee</span>
                   <span>407k apogee</span>
                 </div>
-                <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-white/8 pt-2 font-mono text-[10px] tabular-nums">
-                  <span className="text-slate-400">Age <span className="text-slate-200">{data.age}d</span></span>
-                  <span className="text-slate-400">Light <span className="text-cyan-100">{data.illumination}%</span></span>
-                  <span className="text-slate-400">Tide <span className="text-teal-200">{data.tide}</span></span>
-                </div>
               </div>
 
-              {/* phase + condition controls — 2 rows on desktop */}
+              {/* phase control: double-wide AUTO (armed LED) + 8 small square phases */}
               <div className="flex flex-col justify-between gap-2">
                 <div>
-                  <div className="mb-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-500">Phase — drives the moon</div>
-                  <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5">
-                    {PHASES.map((p) => {
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Phase</span>
+                    <span className="font-mono text-[8px] uppercase tracking-[0.12em] text-slate-500">
+                      {activePhase === 'AUTO' ? 'auto-sync' : 'manual override'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-10 gap-1">
+                    {(() => {
+                      const armed = activePhase !== 'AUTO';
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => selectPhase(PHASES[0])}
+                          aria-label={armed ? 'Return to live auto phase' : 'Auto phase active'}
+                          className={`col-span-2 flex items-center justify-center gap-1 rounded border transition-colors ${
+                            armed ? 'border-red-400/50 bg-red-500/10' : 'border-lime-400/50 bg-lime-400/10'
+                          }`}
+                        >
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className={`absolute inline-flex h-full w-full rounded-full ${armed ? 'bg-red-400/70' : 'animate-ping bg-lime-400/70'} motion-reduce:hidden`} />
+                            <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${armed ? 'bg-red-400' : 'bg-lime-400'}`} />
+                          </span>
+                          <span className={`font-space text-[10px] font-bold tracking-wide ${armed ? 'text-red-200' : 'text-lime-200'}`}>AUTO</span>
+                        </button>
+                      );
+                    })()}
+                    {PHASES.slice(1).map((p) => {
                       const on = activePhase === p.code;
                       return (
                         <button
                           key={p.code}
                           type="button"
+                          title={p.name}
+                          aria-label={p.name}
                           onClick={() => selectPhase(p)}
-                          className={`flex items-center justify-center gap-1 rounded-lg border px-1.5 py-1.5 transition-colors ${
+                          className={`flex aspect-square items-center justify-center rounded border transition-colors ${
                             on
-                              ? 'border-cyan-300/50 bg-cyan-300/10'
+                              ? 'border-cyan-300/60 bg-cyan-300/15'
                               : 'border-white/10 bg-white/[0.02] hover:border-white/25 hover:bg-white/[0.05]'
                           }`}
                         >
-                          <span className="text-sm leading-none" aria-hidden="true">{p.glyph}</span>
-                          <span className={`font-space text-[10px] font-semibold ${on ? 'text-cyan-100' : 'text-slate-300'}`}>{p.name}</span>
+                          <span className="text-[13px] leading-none" aria-hidden="true">{p.glyph}</span>
                         </button>
                       );
                     })}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-slate-500">Conditions</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-slate-500">Cond</span>
                   {CONDITIONS.map((c) => {
                     const on = activeAnomaly === c.code;
                     return (
@@ -180,7 +224,7 @@ const MoonControlPanel = ({ open, onPhaseChange, onAnomalyChange, onClose }) => 
                         key={c.code}
                         type="button"
                         onClick={() => toggleAnomaly(c.code)}
-                        className={`rounded-lg border px-3 py-1 font-space text-[10px] font-semibold transition-colors ${
+                        className={`rounded border px-2 py-0.5 font-space text-[10px] font-semibold transition-colors ${
                           on
                             ? 'border-amber-300/50 bg-amber-300/10 text-amber-100'
                             : 'border-white/10 bg-white/[0.02] text-slate-300 hover:border-white/25 hover:bg-white/[0.05]'

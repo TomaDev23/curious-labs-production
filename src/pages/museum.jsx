@@ -30,8 +30,8 @@ export default function Museum() {
     },
     {
       title: "Legacy 3D Solar System",
-      route: "/legacy",
-      description: "Original Three.js solar system - where it all began",
+      route: "/museum/legacy-3d-solar-system",
+      description: "Original Three.js solar system sandbox with planets, starfield, HUDs, and camera controls",
       importance: "HISTORICAL",
       date: "v1.0 Era", 
       status: "PRESERVED",

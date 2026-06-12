@@ -53,16 +53,36 @@ const MoonControlPanel = ({ open, onPhaseChange, onAnomalyChange, onClose }) => 
     }
   }, []);
 
-  // live clock while the panel is open (drives the LED + date/time readout)
+  // live clock while the panel is open (drives the LED + date/time readout) +
+  // close on ESC, and auto-close once the user clearly scrolls on (≈3–4 notches,
+  // not a single tick — so it never pops away on an accidental scroll).
   useEffect(() => {
     if (!open || typeof window === 'undefined') return undefined;
     setNow(new Date());
     const id = window.setInterval(() => setNow(new Date()), 1000);
+
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
+
+    let scrolled = 0;
+    const CLOSE_AT = 360; // px of accumulated scroll ≈ 3–4 wheel notches
+    const onWheel = (e) => {
+      scrolled += Math.abs(e.deltaY);
+      if (scrolled >= CLOSE_AT) onClose();
+    };
+    const startY = window.scrollY;
+    const onScroll = () => {
+      // covers trackpad / keyboard / momentum scrolling too
+      if (Math.abs(window.scrollY - startY) >= CLOSE_AT) onClose();
+    };
+    window.addEventListener('wheel', onWheel, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+
     return () => {
       window.clearInterval(id);
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('scroll', onScroll);
     };
   }, [open, onClose]);
 
@@ -98,7 +118,7 @@ const MoonControlPanel = ({ open, onPhaseChange, onAnomalyChange, onClose }) => 
           aria-modal="false"
           aria-label="Lunar control"
         >
-          <div className="pointer-events-auto mx-auto max-w-4xl overflow-hidden rounded-xl border border-white/12 bg-[#070b14]/85 shadow-[0_-20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+          <div className="pointer-events-auto ml-auto max-w-4xl overflow-hidden rounded-xl border border-white/12 bg-[#070b14]/85 shadow-[0_-20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl">
             {/* header — live LED + day/date/time */}
             <div className="flex items-center justify-between gap-3 border-b border-white/8 px-3 py-1.5">
               <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">

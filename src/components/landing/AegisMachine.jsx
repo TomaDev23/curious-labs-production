@@ -429,56 +429,60 @@ const AegisBriefing = () => {
               const open = openLetter === row.letter;
               return (
                 <StaggerItem key={row.letter}>
-                  <button
-                    type="button"
-                    onClick={() => setOpenLetter(open ? null : row.letter)}
-                    aria-expanded={open}
-                    aria-label={`${row.name} layer — ${open ? 'hide' : 'show'} services`}
-                    className={`group flex w-full items-start gap-4 rounded-lg border px-3 py-3 text-left outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                  <div
+                    className={`group rounded-lg border transition-colors duration-300 ${
                       open ? 'bg-white/[0.05]' : 'border-white/[0.06] hover:border-white/15 hover:bg-white/[0.02]'
                     }`}
                     style={open ? { borderColor: `rgba(${rgb},0.5)`, boxShadow: `0 0 24px -10px rgba(${rgb},0.5)` } : undefined}
                   >
-                    <span
-                      className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${a.ring} bg-white/[0.03] font-space text-lg font-semibold ${a.text}`}
-                      aria-hidden="true"
+                    <button
+                      type="button"
+                      onClick={() => setOpenLetter(open ? null : row.letter)}
+                      aria-expanded={open}
+                      aria-label={`${row.name} layer — ${open ? 'hide' : 'show'} services`}
+                      className="flex w-full items-start gap-4 rounded-lg px-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/40"
                     >
-                      {row.letter}
-                    </span>
-                    <div className="min-w-0 flex-1 pt-0.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-space text-sm font-semibold text-white">{row.name}</span>
-                        <span className="flex shrink-0 items-center gap-2">
-                          {row.count && (
-                            <span className={`font-mono text-[10px] ${a.text} opacity-70`}>{row.count} svc</span>
-                          )}
-                          <svg
-                            className={`h-3 w-3 text-slate-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
+                      <span
+                        className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${a.ring} bg-white/[0.03] font-space text-lg font-semibold ${a.text}`}
+                        aria-hidden="true"
+                      >
+                        {row.letter}
+                      </span>
+                      <span className="min-w-0 flex-1 pt-0.5">
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="font-space text-sm font-semibold text-white">{row.name}</span>
+                          <span className="flex shrink-0 items-center gap-2">
+                            {row.count && (
+                              <span className={`font-mono text-[10px] ${a.text} opacity-70`}>{row.count} svc</span>
+                            )}
+                            <svg
+                              className={`h-3 w-3 text-slate-400 transition-transform duration-300 motion-reduce:transition-none ${open ? 'rotate-180' : ''}`}
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </span>
                         </span>
-                      </div>
-                      <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">{row.blurb}</p>
-                      <div className={`grid transition-all duration-300 ${open ? 'mt-3 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                        <div className="overflow-hidden">
-                          <ul className="flex flex-wrap gap-1.5">
-                            {row.services.map((svc) => (
-                              <li
-                                key={svc}
-                                className="rounded border border-white/10 bg-white/[0.03] px-2 py-1 font-mono text-[10px] text-slate-300"
-                              >
-                                {svc}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                        <span className="mt-0.5 block text-[13px] leading-relaxed text-slate-400">{row.blurb}</span>
+                      </span>
+                    </button>
+                    <div className={`grid transition-all duration-300 motion-reduce:transition-none ${open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                      <div className="overflow-hidden">
+                        <ul aria-hidden={!open} className="flex flex-wrap gap-1.5 px-3 pb-3 pl-[3.25rem]">
+                          {row.services.map((svc) => (
+                            <li
+                              key={svc}
+                              className="rounded border border-white/10 bg-white/[0.03] px-2 py-1 font-mono text-[10px] text-slate-300"
+                            >
+                              {svc}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
-                  </button>
+                  </div>
                 </StaggerItem>
               );
             })}
@@ -573,13 +577,13 @@ const AegisBriefing = () => {
                     <p className="mt-0.5 text-xs leading-relaxed text-slate-400 sm:text-[13px]">{card.desc}</p>
                   </div>
                   <span
-                    className="hidden shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] sm:inline-flex"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] sm:px-2.5"
                     style={{ borderColor: `rgba(${rgb},0.35)`, color: `rgb(${rgb})` }}
                   >
                     <svg className="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                       <path d="M2.5 6.5L5 9L9.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                    Enforced
+                    <span className="hidden sm:inline">Enforced</span>
                   </span>
                 </div>
               </StaggerItem>

@@ -234,7 +234,7 @@ const MoonSignalShowcase = () => {
       {/* Staggered so the row reads as an editorial rail, not a perfect lattice. */}
       <Stagger className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-start" step={0.08}>
         {QUALITIES.map((q, i) => (
-          <StaggerItem key={q.code} className={['', 'lg:mt-8', 'lg:mt-16', 'lg:mt-6'][i] || ''}>
+          <StaggerItem key={q.code} className={['', 'lg:mt-6', 'lg:mt-12', 'lg:mt-16'][i] || ''}>
             <CapabilityCard q={q} />
           </StaggerItem>
         ))}

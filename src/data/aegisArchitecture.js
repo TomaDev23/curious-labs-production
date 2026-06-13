@@ -87,6 +87,7 @@ export const AEGIS_DREAMS = [
     letter: 'E',
     name: 'Entry',
     accent: 'amber',
+    count: 4,
     blurb: 'The API gateway — every request, API call and login enters and is authenticated here.',
     services: ['API Gateway', 'Auth Service', 'Token Validator', 'Rate Limiter']
   },
@@ -116,17 +117,19 @@ export const AEGIS_DREAMS = [
   }
 ];
 
-// "LEGIT" — the internal protocol every AEGIS decision follows (mirrors the
-// LEGIT Framework on the AEGIS product page). Colourful per-card accents.
+// "L.E.G.I.T." — the engineering standard every MoonSignal component is built
+// to. Source of truth: MoonSignal_RULES/MOONSIGNAL_000_RULES_short.md → the
+// "L.E.G.I.T. FRAMEWORK" table (Lifecycle, Enum, Guardrails, Interface, Trace,
+// each with its enforcement mechanism). Per-card accents are decorative.
 export const AEGIS_LEGIT_PROTOCOL = {
-  eyebrow: 'Protocol Standard',
+  eyebrow: 'Engineering Standard',
   title: 'LEGIT Framework',
-  lede: 'AI that touches real business logic needs more than prompt engineering — it needs formal contracts, audit trails and fail-safes. LEGIT is the standard every AEGIS decision is held to: five invariants, enforced end to end.',
+  lede: 'Every MoonSignal component is held to the same five invariants — lifecycle-managed, enum-typed, guarded, protocol-based and traceable — enforced in code by guards that stay green, not by convention.',
   cards: [
-    { code: 'LEG-001', letter: 'L', title: 'Logged', accent: 'cyan', lead: 'Nothing runs off the record.', desc: 'A complete audit trail of every decision, state change and agent interaction.' },
-    { code: 'LEG-002', letter: 'E', title: 'Enforced', accent: 'amber', lead: 'Agents never act outside their contract.', desc: 'Schema validation keeps every call inside its defined parameters.' },
-    { code: 'LEG-003', letter: 'G', title: 'Governed', accent: 'violet', lead: 'Humans gate the critical calls.', desc: 'Approval workflows with explicit escalation paths and overrides.' },
-    { code: 'LEG-004', letter: 'I', title: 'Isolated', accent: 'lime', lead: 'The blast radius of one is one.', desc: 'Sandboxed execution with data encryption and strict, scoped access.' },
-    { code: 'LEG-005', letter: 'T', title: 'Tested', accent: 'teal', lead: 'Every path is proven before it ships.', desc: 'Continuous validation through automated testing and regression.' }
+    { code: 'LEG-L', letter: 'L', title: 'Lifecycle', accent: 'cyan', lead: 'States are explicit, not implied.', desc: 'IDLE → WARMING → READY → RUNNING → ERROR, every transition logged and gated by _set_state() and validate_component_transition().' },
+    { code: 'LEG-E', letter: 'E', title: 'Enum', accent: 'amber', lead: 'Typed enums, never magic strings.', desc: 'ComponentState, RegimeTrend, Volatility and SignalStrength — enforced by type hints and guards.' },
+    { code: 'LEG-G', letter: 'G', title: 'Guardrails', accent: 'violet', lead: 'Bad input fails safe, never silent.', desc: 'Input validation, circuit breakers, warmup checks and rate limiting, with UNKNOWN / NEUTRAL fallbacks via the breaker registry.' },
+    { code: 'LEG-I', letter: 'I', title: 'Interface', accent: 'lime', lead: 'Every component speaks through a Protocol.', desc: 'Runtime isinstance() checks and no duck typing — protocol-first design keeps implementations swappable.' },
+    { code: 'LEG-T', letter: 'T', title: 'Trace', accent: 'teal', lead: 'Every decision traces to its evidence.', desc: 'session.trace_id in logs, session.stable_hash() evidence keys and telemetry metadata, enforced by SessionHandle discipline.' }
   ]
 };

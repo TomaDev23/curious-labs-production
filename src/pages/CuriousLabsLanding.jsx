@@ -302,6 +302,43 @@ const LazyContactSection = () => {
   );
 };
 
+/* The page's ending — a full-width send-off that closes the "leave the moon →
+   launch from stealth" loop, in the Coming-Soon cream, with asymmetric CTAs. */
+const FinaleBand = () => (
+  <section
+    className="relative overflow-hidden px-4 py-28 sm:px-6 sm:py-36 lg:px-8"
+    aria-labelledby="finale-heading"
+  >
+    <div
+      className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_120%,rgba(222,218,199,0.10),transparent_60%),radial-gradient(ellipse_at_72%_0%,rgba(45,212,191,0.08),transparent_55%)]"
+      aria-hidden="true"
+    />
+    <div className="mx-auto max-w-6xl">
+      <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-teal-200/70">// Mission status</p>
+      <h2
+        id="finale-heading"
+        className="mt-4 max-w-[15ch] font-space font-semibold leading-[0.92] tracking-[-0.02em] text-[#dedac7] text-[clamp(2.6rem,8vw,7rem)]"
+      >
+        Built on AEGIS. Launching from stealth.
+      </h2>
+      <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <a
+          href="#contact"
+          className="inline-flex min-h-11 items-center justify-center rounded-md bg-lime-300 px-6 font-space text-sm font-semibold text-curious-dark-950 transition-colors hover:bg-lime-200 focus:outline-none focus:ring-2 focus:ring-lime-200 focus:ring-offset-2 focus:ring-offset-black"
+        >
+          Request access
+        </a>
+        <a
+          href="#contact"
+          className="inline-flex min-h-11 items-center justify-center rounded-md border border-white/20 px-6 font-space text-sm font-semibold text-white/85 transition-colors hover:border-white/45 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-black"
+        >
+          Recruiting? Talk to us&nbsp;→
+        </a>
+      </div>
+    </div>
+  </section>
+);
+
 export default function CuriousLabsLanding() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[#020308] text-white">
@@ -349,6 +386,9 @@ export default function CuriousLabsLanding() {
 
         {/* ───────────────────────── CONTACT ─────────────────────────── */}
         <LazyContactSection />
+
+        {/* ───────────────────────── FINALE ──────────────────────────── */}
+        <FinaleBand />
 
         {/* ─────────────────── WORLD CLOCK (mission time band) ─────────── */}
         {/* Eager mount: its scroll listener drives the floating/docking band. */}

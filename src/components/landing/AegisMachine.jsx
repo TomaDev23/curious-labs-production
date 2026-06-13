@@ -406,6 +406,7 @@ const AEGIS_ASSET_FULL = '/assets/aegis/aegis-machine-full.webp';
 
 const AegisBriefing = () => {
   const [zoom, setZoom] = useState(false);
+  const [openLetter, setOpenLetter] = useState(null);
 
   return (
     <>
@@ -419,23 +420,65 @@ const AegisBriefing = () => {
           <Reveal delay={0.05}>
             <p className="max-w-md text-[15px] leading-relaxed text-slate-300">{AEGIS_BRIEF_LEDE}</p>
           </Reveal>
-          <Stagger className="mt-8 space-y-3" step={0.06}>
+          {/* Each letter expands to its real service list — depth on demand,
+              not a wall of cards. */}
+          <Stagger className="mt-8 space-y-2" step={0.06}>
             {AEGIS_DREAMS.map((row) => {
               const a = accentClass(row.accent);
+              const rgb = RGB[row.accent] || RGB.cyan;
+              const open = openLetter === row.letter;
               return (
                 <StaggerItem key={row.letter}>
-                  <div className="flex items-start gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setOpenLetter(open ? null : row.letter)}
+                    aria-expanded={open}
+                    aria-label={`${row.name} layer — ${open ? 'hide' : 'show'} services`}
+                    className={`group flex w-full items-start gap-4 rounded-lg border px-3 py-3 text-left outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                      open ? 'bg-white/[0.05]' : 'border-white/[0.06] hover:border-white/15 hover:bg-white/[0.02]'
+                    }`}
+                    style={open ? { borderColor: `rgba(${rgb},0.5)`, boxShadow: `0 0 24px -10px rgba(${rgb},0.5)` } : undefined}
+                  >
                     <span
                       className={`grid h-9 w-9 shrink-0 place-items-center rounded-md border ${a.ring} bg-white/[0.03] font-space text-lg font-semibold ${a.text}`}
                       aria-hidden="true"
                     >
                       {row.letter}
                     </span>
-                    <div className="min-w-0 pt-0.5">
-                      <div className="font-space text-sm font-semibold text-white">{row.name}</div>
+                    <div className="min-w-0 flex-1 pt-0.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-space text-sm font-semibold text-white">{row.name}</span>
+                        <span className="flex shrink-0 items-center gap-2">
+                          {row.count && (
+                            <span className={`font-mono text-[10px] ${a.text} opacity-70`}>{row.count} svc</span>
+                          )}
+                          <svg
+                            className={`h-3 w-3 text-slate-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </span>
+                      </div>
                       <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">{row.blurb}</p>
+                      <div className={`grid transition-all duration-300 ${open ? 'mt-3 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                        <div className="overflow-hidden">
+                          <ul className="flex flex-wrap gap-1.5">
+                            {row.services.map((svc) => (
+                              <li
+                                key={svc}
+                                className="rounded border border-white/10 bg-white/[0.03] px-2 py-1 font-mono text-[10px] text-slate-300"
+                              >
+                                {svc}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 </StaggerItem>
               );
             })}
@@ -491,58 +534,63 @@ const AegisBriefing = () => {
           </Reveal>
         </div>
 
-        {/* Each card leads with its big LEGIT letter so scanning the row spells the
-            acronym; the title + precise definition make it a real spec, not fluff. */}
-        <Stagger className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-5" step={0.06}>
+        {/* A numbered spec ledger — each row leads with the CONSEQUENCE; reading
+            the column top-to-bottom still spells L·E·G·I·T. Replaces five
+            look-alike bento tiles with one continuous instrument. */}
+        <Stagger
+          className="mx-auto mt-8 max-w-4xl divide-y divide-white/[0.06] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.012] sm:mt-10"
+          step={0.06}
+        >
           {AEGIS_LEGIT_PROTOCOL.cards.map((card) => {
             const a = accentClass(card.accent);
             const rgb = RGB[card.accent] || RGB.cyan;
             return (
-              <StaggerItem key={card.code} className="h-full">
-                <div
-                  className={`group relative flex h-full flex-col overflow-hidden rounded-xl border ${a.ring} bg-gradient-to-b from-white/[0.05] to-white/[0.012] p-4 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 sm:p-5`}
-                  style={{ boxShadow: '0 0 0 0 rgba(0,0,0,0)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 30px -6px rgba(${rgb},0.45)`; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 0 0 rgba(0,0,0,0)'; }}
-                >
-                  {/* top accent hairline */}
+              <StaggerItem key={card.code}>
+                <div className="group relative flex items-center gap-4 px-4 py-4 transition-colors duration-300 hover:bg-white/[0.025] sm:gap-6 sm:px-6 sm:py-5">
                   <span
-                    className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                    style={{ background: `linear-gradient(90deg, transparent, rgba(${rgb},0.8), transparent)` }}
+                    className="pointer-events-none absolute inset-y-0 left-0 w-0.5"
+                    style={{ background: `linear-gradient(180deg, transparent, rgba(${rgb},0.7), transparent)` }}
                     aria-hidden="true"
                   />
-                  {/* big letter watermark glow */}
                   <span
-                    className="pointer-events-none absolute -right-3 -top-5 select-none font-space text-[5.5rem] font-semibold leading-none opacity-[0.06] sm:text-[7rem]"
-                    style={{ color: `rgb(${rgb})` }}
+                    className="shrink-0 font-space text-4xl font-semibold leading-none sm:text-5xl"
+                    style={{
+                      backgroundImage: `linear-gradient(160deg, rgb(${rgb}), rgba(${rgb},0.4))`,
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      color: 'transparent'
+                    }}
                     aria-hidden="true"
                   >
                     {card.letter}
                   </span>
-
-                  <div className="relative flex items-start justify-between">
-                    <span
-                      className="font-space text-4xl font-semibold leading-none sm:text-5xl"
-                      style={{
-                        backgroundImage: `linear-gradient(160deg, rgb(${rgb}), rgba(${rgb},0.4))`,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent'
-                      }}
-                      aria-hidden="true"
-                    >
-                      {card.letter}
-                    </span>
-                    <span className={`font-mono text-[9px] tracking-[0.14em] sm:text-[10px] ${a.text} opacity-70`}>{card.code}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                      <span className={`font-space text-base font-semibold ${a.text}`}>{card.title}</span>
+                      <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">{card.code}</span>
+                    </div>
+                    <p className="mt-1 font-space text-sm font-medium text-white sm:text-[15px]">{card.lead}</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-slate-400 sm:text-[13px]">{card.desc}</p>
                   </div>
-
-                  <div className={`relative mt-3 font-space text-base font-semibold ${a.text}`}>{card.title}</div>
-                  <p className="relative mt-1.5 text-xs leading-relaxed text-slate-400 sm:text-[13px]">{card.desc}</p>
+                  <span
+                    className="hidden shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] sm:inline-flex"
+                    style={{ borderColor: `rgba(${rgb},0.35)`, color: `rgb(${rgb})` }}
+                  >
+                    <svg className="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path d="M2.5 6.5L5 9L9.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Enforced
+                  </span>
                 </div>
               </StaggerItem>
             );
           })}
         </Stagger>
+
+        {/* compliance rule line closes the ledger */}
+        <div className="mx-auto mt-4 max-w-4xl text-center font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
+          · GDPR · HIPAA · CCPA · PCI-DSS · Zero Trust ·
+        </div>
       </div>
 
       <Lightbox open={zoom} src={AEGIS_ASSET_FULL} alt="AEGIS machine — enlarged" onClose={() => setZoom(false)} />

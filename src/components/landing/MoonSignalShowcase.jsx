@@ -74,7 +74,7 @@ const CapabilityCard = ({ q }) => {
   const promoted = q.promoted;
   return (
     <div
-      className={`group relative flex h-full flex-col overflow-hidden rounded-xl p-5 transition-colors duration-300 ${
+      className={`group relative flex min-h-[200px] flex-col overflow-hidden rounded-xl p-5 transition-colors duration-300 ${
         promoted
           ? 'border border-amber-300/40 bg-amber-300/[0.05] shadow-[0_0_0_1px_rgba(245,158,11,0.12),0_0_36px_-12px_rgba(245,158,11,0.5)]'
           : 'border-y border-r border-l-2 border-white/[0.08] border-l-teal-300/55 bg-white/[0.02] hover:bg-white/[0.045]'
@@ -231,9 +231,10 @@ const MoonSignalShowcase = () => {
       </Reveal>
 
       {/* ── Capability rail: differentiated modules, AEGIS-safety promoted ── */}
-      <Stagger className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" step={0.08}>
-        {QUALITIES.map((q) => (
-          <StaggerItem key={q.code} className="h-full">
+      {/* Staggered so the row reads as an editorial rail, not a perfect lattice. */}
+      <Stagger className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-start" step={0.08}>
+        {QUALITIES.map((q, i) => (
+          <StaggerItem key={q.code} className={['', 'lg:mt-8', 'lg:mt-16', 'lg:mt-6'][i] || ''}>
             <CapabilityCard q={q} />
           </StaggerItem>
         ))}

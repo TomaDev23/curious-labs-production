@@ -67,12 +67,53 @@ export const AEGIS_BRIEF_LEDE =
 // D·R·E·A·M·S — each letter maps onto a layer/stage accent for colour.
 // (E = Entry: the API gateway / authentication door, code 'E' in AEGIS_GATEWAY.)
 export const AEGIS_DREAMS = [
-  { letter: 'D', name: 'Data', accent: 'blue', blurb: 'Documents, events, blob and trace stores — the system of record.' },
-  { letter: 'R', name: 'Runtime', accent: 'violet', blurb: 'Sessions, the FSM core, path resolution and live flags.' },
-  { letter: 'E', name: 'Entry', accent: 'amber', blurb: 'The API gateway — every request, API call and login enters and is authenticated here.' },
-  { letter: 'A', name: 'AI', accent: 'lime', blurb: 'Vision, mapping, parsing and the rules engine that turn raw input into structured signal.' },
-  { letter: 'M', name: 'Management', accent: 'teal', blurb: 'Cost, quality, performance and alerting — the machine watching the machine.' },
-  { letter: 'S', name: 'Security', accent: 'cyan', blurb: 'The 41-service intake every request passes before anything else runs.' }
+  {
+    letter: 'D',
+    name: 'Data',
+    accent: 'blue',
+    count: 12,
+    blurb: 'Documents, events, blob and trace stores — the system of record.',
+    services: ['Repo.Documents', 'Repo.Events', 'Blob Storage', 'Distributed Tracing']
+  },
+  {
+    letter: 'R',
+    name: 'Runtime',
+    accent: 'violet',
+    count: 7,
+    blurb: 'Sessions, the FSM core, path resolution and live flags.',
+    services: ['Session Factory', 'FSM Core', 'Path Resolver', 'Settings / Flags']
+  },
+  {
+    letter: 'E',
+    name: 'Entry',
+    accent: 'amber',
+    blurb: 'The API gateway — every request, API call and login enters and is authenticated here.',
+    services: ['API Gateway', 'Auth Service', 'Token Validator', 'Rate Limiter']
+  },
+  {
+    letter: 'A',
+    name: 'AI',
+    accent: 'lime',
+    count: 5,
+    blurb: 'Vision, mapping, parsing and the rules engine that turn raw input into structured signal.',
+    services: ['Vision Engine (OCR)', 'Mapper (Chunking)', 'Parser (JSON)', 'Rules Engine']
+  },
+  {
+    letter: 'M',
+    name: 'Management',
+    accent: 'teal',
+    count: 8,
+    blurb: 'Cost, quality, performance and alerting — the machine watching the machine.',
+    services: ['Cost Mgmt', 'Quality Orchestrator', 'Performance Analytics', 'Alert System']
+  },
+  {
+    letter: 'S',
+    name: 'Security',
+    accent: 'cyan',
+    count: 41,
+    blurb: 'The 41-service intake every request passes before anything else runs.',
+    services: ['Authentication', 'Authorization', 'PII Protection', 'Threat Detection']
+  }
 ];
 
 // "LEGIT" — the internal protocol every AEGIS decision follows (mirrors the
@@ -82,10 +123,10 @@ export const AEGIS_LEGIT_PROTOCOL = {
   title: 'LEGIT Framework',
   lede: 'AI that touches real business logic needs more than prompt engineering — it needs formal contracts, audit trails and fail-safes. LEGIT is the standard every AEGIS decision is held to: five invariants, enforced end to end.',
   cards: [
-    { code: 'LEG-001', letter: 'L', title: 'Logged', accent: 'cyan', desc: 'A complete audit trail of every decision, state change and agent interaction — nothing runs off the record.' },
-    { code: 'LEG-002', letter: 'E', title: 'Enforced', accent: 'amber', desc: 'Schema validation keeps agents from ever operating outside their defined parameters or contracts.' },
-    { code: 'LEG-003', letter: 'G', title: 'Governed', accent: 'violet', desc: 'Human approval workflows gate critical decisions, with explicit escalation paths and overrides.' },
-    { code: 'LEG-004', letter: 'I', title: 'Isolated', accent: 'lime', desc: 'Sandboxed execution environments with data encryption and strict, scoped access controls.' },
-    { code: 'LEG-005', letter: 'T', title: 'Tested', accent: 'teal', desc: 'Continuous validation through automated testing and regression — every path proven before it ships.' }
+    { code: 'LEG-001', letter: 'L', title: 'Logged', accent: 'cyan', lead: 'Nothing runs off the record.', desc: 'A complete audit trail of every decision, state change and agent interaction.' },
+    { code: 'LEG-002', letter: 'E', title: 'Enforced', accent: 'amber', lead: 'Agents never act outside their contract.', desc: 'Schema validation keeps every call inside its defined parameters.' },
+    { code: 'LEG-003', letter: 'G', title: 'Governed', accent: 'violet', lead: 'Humans gate the critical calls.', desc: 'Approval workflows with explicit escalation paths and overrides.' },
+    { code: 'LEG-004', letter: 'I', title: 'Isolated', accent: 'lime', lead: 'The blast radius of one is one.', desc: 'Sandboxed execution with data encryption and strict, scoped access.' },
+    { code: 'LEG-005', letter: 'T', title: 'Tested', accent: 'teal', lead: 'Every path is proven before it ships.', desc: 'Continuous validation through automated testing and regression.' }
   ]
 };

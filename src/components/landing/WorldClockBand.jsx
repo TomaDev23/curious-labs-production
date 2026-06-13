@@ -9,12 +9,19 @@ import React, { useEffect, useRef, useState } from 'react';
  * A single 1s tick runs only while the band is active and the tab is visible.
  */
 
-// The three market sessions that actually matter to a trading platform —
-// the band carries payload instead of decorating with a dozen cities.
 const CITIES = [
+  { code: 'LAX', flag: '🇺🇸', tz: 'America/Los_Angeles', c: '56,189,248' },
   { code: 'NYC', flag: '🇺🇸', tz: 'America/New_York', c: '56,189,248' },
+  { code: 'SAO', flag: '🇧🇷', tz: 'America/Sao_Paulo', c: '34,197,94' },
   { code: 'LON', flag: '🇬🇧', tz: 'Europe/London', c: '96,165,250' },
-  { code: 'TYO', flag: '🇯🇵', tz: 'Asia/Tokyo', c: '248,113,113' }
+  { code: 'PAR', flag: '🇫🇷', tz: 'Europe/Paris', c: '129,140,248' },
+  { code: 'BER', flag: '🇩🇪', tz: 'Europe/Berlin', c: '251,191,36' },
+  { code: 'TLV', flag: '🇮🇱', tz: 'Asia/Jerusalem', c: '56,189,248' },
+  { code: 'DXB', flag: '🇦🇪', tz: 'Asia/Dubai', c: '45,212,191' },
+  { code: 'DEL', flag: '🇮🇳', tz: 'Asia/Kolkata', c: '251,146,60' },
+  { code: 'BEJ', flag: '🇨🇳', tz: 'Asia/Shanghai', c: '248,113,113' },
+  { code: 'TYO', flag: '🇯🇵', tz: 'Asia/Tokyo', c: '248,113,113' },
+  { code: 'SYD', flag: '🇦🇺', tz: 'Australia/Sydney', c: '45,212,191' }
 ];
 
 const fmt = (date, tz, seconds = false) => {

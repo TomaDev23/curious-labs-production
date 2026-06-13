@@ -302,42 +302,72 @@ const LazyContactSection = () => {
   );
 };
 
-/* The page's ending — a full-width send-off that closes the "leave the moon →
-   launch from stealth" loop, in the Coming-Soon cream, with asymmetric CTAs. */
-const FinaleBand = () => (
+/* Bridge from MoonSignal into the runtime it's built on — a full-width title
+   card that introduces AEGIS, then hands off to the base-runtime detail below. */
+const AegisIntroBand = () => (
   <section
-    className="relative overflow-hidden px-4 py-28 sm:px-6 sm:py-36 lg:px-8"
-    aria-labelledby="finale-heading"
+    className="relative overflow-hidden px-4 py-24 sm:px-6 sm:py-32 lg:px-8"
+    aria-labelledby="aegis-intro-heading"
   >
     <div
       className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_120%,rgba(222,218,199,0.10),transparent_60%),radial-gradient(ellipse_at_72%_0%,rgba(45,212,191,0.08),transparent_55%)]"
       aria-hidden="true"
     />
     <div className="mx-auto max-w-6xl">
-      <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-teal-200/70">// Mission status</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-teal-200/70">// The runtime</p>
       <h2
-        id="finale-heading"
+        id="aegis-intro-heading"
         className="mt-4 max-w-[15ch] font-space font-semibold leading-[0.92] tracking-[-0.02em] text-[#dedac7] text-[clamp(2.6rem,8vw,7rem)]"
       >
         Built on AEGIS. Launching from stealth.
       </h2>
-      <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-        <a
-          href="#contact"
-          className="inline-flex min-h-11 items-center justify-center rounded-md bg-lime-300 px-6 font-space text-sm font-semibold text-curious-dark-950 transition-colors hover:bg-lime-200 focus:outline-none focus:ring-2 focus:ring-lime-200 focus:ring-offset-2 focus:ring-offset-black"
-        >
-          Request access
-        </a>
-        <a
-          href="#contact"
-          className="inline-flex min-h-11 items-center justify-center rounded-md border border-white/20 px-6 font-space text-sm font-semibold text-white/85 transition-colors hover:border-white/45 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-black"
-        >
-          Recruiting? Talk to us&nbsp;→
-        </a>
-      </div>
+      <p className="mt-6 max-w-md font-mono text-[12px] uppercase tracking-[0.18em] text-slate-400">
+        MoonSignal runs on a runtime, not a framework. Here it is.
+      </p>
     </div>
   </section>
 );
+
+/* Colourful scroll-progress rail on the right edge — mirrors the interview /
+   Maestro decks. Driven via a ref so it never re-renders on scroll. */
+const ScrollProgressRail = () => {
+  const fillRef = useRef(null);
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    const update = () => {
+      rafRef.current = 0;
+      const doc = document.documentElement;
+      const max = Math.max(1, doc.scrollHeight - window.innerHeight);
+      const p = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
+      if (fillRef.current) fillRef.current.style.height = `${p}%`;
+    };
+    const onScroll = () => {
+      if (!rafRef.current) rafRef.current = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <div
+      className="pointer-events-none fixed right-1.5 top-20 bottom-24 z-[60] w-1.5 sm:right-2.5 sm:w-2"
+      aria-hidden="true"
+    >
+      <span className="absolute inset-0 rounded-full border border-white/10 bg-white/[0.05]" />
+      <span
+        ref={fillRef}
+        className="absolute inset-x-0 top-0 h-0 rounded-full bg-gradient-to-b from-cyan-300 via-violet-400 to-lime-300 shadow-[0_0_12px_rgba(103,232,249,0.55)]"
+      />
+    </div>
+  );
+};
 
 export default function CuriousLabsLanding() {
   return (
@@ -361,6 +391,7 @@ export default function CuriousLabsLanding() {
       <LandingCosmicBackground />
 
       <MissionControlNavbar />
+      <ScrollProgressRail />
 
       <main className="relative z-10">
         {/* ──── HERO → celestial transition: Earth recedes, Moon grows to cover ──── */}
@@ -374,6 +405,9 @@ export default function CuriousLabsLanding() {
           <MoonSignalShowcase />
         </LazySection>
 
+        {/* ─────────── AEGIS INTRO (title card → leads into the runtime) ─────────── */}
+        <AegisIntroBand />
+
         {/* ───────────────────────── AEGIS MACHINE ───────────────────── */}
         <LazySection label="Loading AEGIS runtime" rootMargin="600px">
           <AegisMachine />
@@ -386,9 +420,6 @@ export default function CuriousLabsLanding() {
 
         {/* ───────────────────────── CONTACT ─────────────────────────── */}
         <LazyContactSection />
-
-        {/* ───────────────────────── FINALE ──────────────────────────── */}
-        <FinaleBand />
 
         {/* ─────────────────── WORLD CLOCK (mission time band) ─────────── */}
         {/* Eager mount: its scroll listener drives the floating/docking band. */}

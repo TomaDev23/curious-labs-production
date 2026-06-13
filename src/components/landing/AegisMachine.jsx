@@ -550,6 +550,99 @@ const AegisBriefing = () => {
   );
 };
 
+/* ------------------------------ stat posters ----------------------------- */
+
+/**
+ * StatBand — the runtime's credibility, rendered as full-bleed posters instead
+ * of metadata. Four numbers (services · security · auth latency · invariants)
+ * at clamp() display scale, hairline-divided, no card borders. Each counts up
+ * once when the band scrolls into view (gated by the section's `animate`).
+ */
+const StatPoster = ({ value, decimals = 0, prefix = '', suffix = '', label, accent = false, animate, start }) => {
+  const [n, setN] = useState(animate ? 0 : value);
+
+  useEffect(() => {
+    if (!animate || !start) {
+      setN(value);
+      return undefined;
+    }
+    let raf = 0;
+    let t0 = 0;
+    const dur = 1100;
+    const tick = (t) => {
+      if (!t0) t0 = t;
+      const p = Math.min(1, (t - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(value * eased);
+      if (p < 1) raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
+  }, [animate, start, value]);
+
+  const display = decimals ? n.toFixed(decimals) : Math.round(n);
+  return (
+    <div className="flex min-w-0 flex-col px-5 py-5 sm:px-7 sm:py-6">
+      <div
+        className={`flex items-baseline whitespace-nowrap font-space font-semibold leading-none tabular-nums ${
+          accent ? 'text-amber-200' : 'text-white'
+        }`}
+      >
+        <span className="text-[clamp(2.5rem,5.4vw,5.75rem)]">
+          {prefix}
+          {display}
+        </span>
+        {suffix && (
+          <span className="ml-1 text-[clamp(0.85rem,1.5vw,1.6rem)] font-medium text-slate-400">
+            {suffix}
+          </span>
+        )}
+      </div>
+      <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400 sm:text-[11px]">
+        {label}
+      </div>
+    </div>
+  );
+};
+
+const StatBand = ({ animate }) => {
+  const ref = useRef(null);
+  const [start, setStart] = useState(!animate);
+
+  useEffect(() => {
+    if (!animate) return undefined;
+    const node = ref.current;
+    if (!node || typeof IntersectionObserver === 'undefined') {
+      setStart(true);
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStart(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '-12% 0px' }
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [animate]);
+
+  return (
+    <div ref={ref} className="relative left-1/2 mt-10 w-screen -ml-[50vw] sm:mt-12">
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
+        <div className="grid grid-cols-2 divide-x divide-y divide-white/10 border-y border-white/10 lg:grid-cols-4 lg:divide-y-0">
+          <StatPoster value={118} suffix="+" label="Coordinated services" animate={animate} start={start} />
+          <StatPoster value={41} label="Security pipeline" animate={animate} start={start} />
+          <StatPoster value={0.07} decimals={2} suffix="ms" label="JWT auth · p50" accent animate={animate} start={start} />
+          <StatPoster value={5} suffix=" / 5" label="LEGIT invariants" animate={animate} start={start} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* -------------------------------- section -------------------------------- */
 
 export default function AegisMachine() {
@@ -666,9 +759,13 @@ export default function AegisMachine() {
         </Reveal>
       </div>
 
-      {/* ===================== THE CONSOLE ===================== */}
-      <Reveal delay={0.1} y={32} className="mt-8 sm:mt-10">
-        <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.012] p-4 sm:p-6">
+      {/* ===================== STAT BAND (numbers as posters) ===================== */}
+      <StatBand animate={animate} />
+
+      {/* ===================== THE CONSOLE (full-bleed) ===================== */}
+      <Reveal delay={0.1} y={32} className="relative left-1/2 mt-8 w-screen -ml-[50vw] sm:mt-10">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-8">
+        <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.012] p-4 sm:p-6 lg:p-8">
           {/* faint HUD grid */}
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.10] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:34px_34px]"
@@ -703,7 +800,7 @@ export default function AegisMachine() {
           >
             <MachineConduits geo={geo} layers={AEGIS_LAYERS} activeCode={activeLayer?.code} animate={animate} />
 
-            <div className="relative z-10 grid h-full grid-cols-[210px_1fr_452px] items-center gap-4 xl:grid-cols-[224px_1fr_496px]">
+            <div className="relative z-10 grid h-full grid-cols-[200px_1fr_430px] items-center gap-5 xl:grid-cols-[240px_1fr_540px]">
               {/* INTAKE rail */}
               <div className="flex flex-col gap-5">
                 <div ref={clientRef}>
@@ -720,7 +817,7 @@ export default function AegisMachine() {
               {/* REACTOR hub */}
               <div className="flex flex-col items-center justify-center gap-3">
                 <div ref={coreRef} className="flex flex-col items-center gap-2">
-                  <Reactor animate={reactorOn} accentRgb={activeRgb} size="h-56 w-56 sm:h-60 sm:w-60 xl:h-72 xl:w-72" />
+                  <Reactor animate={reactorOn} accentRgb={activeRgb} size="h-52 w-52 xl:h-80 xl:w-80" />
                   <CoreLabel />
                 </div>
                 <div className="rounded-lg border border-teal-300/40 bg-teal-300/[0.06] px-4 py-2 text-center shadow-[0_0_28px_-8px_rgba(45,212,191,0.55)]">
@@ -802,6 +899,7 @@ export default function AegisMachine() {
               ))}
             </div>
           </div>
+        </div>
         </div>
       </Reveal>
 

@@ -200,6 +200,17 @@ const LandingCosmicBackground = () => {
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       {/* 4. vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_52%,rgba(0,0,0,0.6)_100%)]" />
+      {/* 5. grain — a single procedural-noise layer that kills the "default
+         gradient" plasticity on the galaxy and every accent glow. ~5% over
+         blend; zero deps. */}
+      <div
+        className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E\")",
+          backgroundSize: '160px 160px'
+        }}
+      />
     </div>
   );
 };

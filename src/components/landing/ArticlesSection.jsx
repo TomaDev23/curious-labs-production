@@ -7,6 +7,7 @@ import {
   Stagger,
   StaggerItem,
   GlassPanel,
+  BlueprintDots,
   ACCENTS
 } from './primitives';
 import { useMediaState } from './hooks';
@@ -224,26 +225,43 @@ const ArticlesSection = () => {
 
   return (
     <SectionShell id="writing" tone="violet" labelledBy="writing-heading">
-      <Reveal>
-        <SectionLabel tone="violet">Field Notes</SectionLabel>
-        <h2
-          id="writing-heading"
-          className="max-w-2xl font-space text-3xl font-semibold leading-tight text-white sm:text-4xl"
-        >
-          Writing &amp; live work
-        </h2>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
-          Live pieces and decks — on orchestration, signal, and how the work actually runs.
-        </p>
-      </Reveal>
+      <div className="relative">
+        {/* engineering substrate, faded so it reads as texture not a grid */}
+        <BlueprintDots className="-z-10 opacity-50 [mask-image:radial-gradient(ellipse_at_28%_22%,#000,transparent_72%)]" />
 
-      <Stagger className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {ARTICLES.map((article) => (
-          <StaggerItem key={article.id} className="h-full">
-            <ArticleCard article={article} animate={animate} />
-          </StaggerItem>
-        ))}
-      </Stagger>
+        {/* vertical index spine, bleeding off the left gutter */}
+        <div
+          className="pointer-events-none absolute -left-2 top-1 hidden select-none lg:block xl:-left-6"
+          aria-hidden="true"
+        >
+          <span className="font-mono text-[11px] uppercase tracking-[0.42em] text-violet-200/35 [writing-mode:vertical-rl]">
+            Field&nbsp;Notes · 003
+          </span>
+        </div>
+
+        <div className="lg:pl-12">
+          <Reveal>
+            <SectionLabel tone="violet">Field Notes</SectionLabel>
+            <h2
+              id="writing-heading"
+              className="max-w-2xl font-space text-3xl font-semibold leading-tight text-white sm:text-4xl"
+            >
+              Writing &amp; live work
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">
+              Live pieces and decks — on orchestration, signal, and how the work actually runs.
+            </p>
+          </Reveal>
+
+          <Stagger className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {ARTICLES.map((article) => (
+              <StaggerItem key={article.id} className="h-full">
+                <ArticleCard article={article} animate={animate} />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </div>
     </SectionShell>
   );
 };

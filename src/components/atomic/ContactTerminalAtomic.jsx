@@ -181,7 +181,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
           Contact <span className="text-lime-400">Terminal</span>
         </h2>
 
-        <p className="text-lg text-gray-300 mb-8">
+        <p className="text-lg text-slate-300 mb-8">
           Open a channel — reach out through the terminal interface.
         </p>
         
@@ -190,8 +190,8 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
           <button
             className={`px-4 py-2 rounded-t-md ${
               activeTab === 'info' 
-                ? 'bg-black bg-opacity-70 text-lime-400 border-t border-l border-r border-gray-800' 
-                : 'bg-gray-900 bg-opacity-50 text-gray-400 hover:text-gray-200'
+                ? 'bg-black bg-opacity-70 text-lime-400 border-t border-l border-r border-slate-800' 
+                : 'bg-slate-900 bg-opacity-50 text-slate-400 hover:text-slate-200'
             }`}
             onClick={() => setActiveTab('info')}
             aria-selected={activeTab === 'info'}
@@ -205,8 +205,8 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
           <button
             className={`px-4 py-2 rounded-t-md ml-2 ${
               activeTab === 'form' 
-                ? 'bg-black bg-opacity-70 text-lime-400 border-t border-l border-r border-gray-800' 
-                : 'bg-gray-900 bg-opacity-50 text-gray-400 hover:text-gray-200'
+                ? 'bg-black bg-opacity-70 text-lime-400 border-t border-l border-r border-slate-800' 
+                : 'bg-slate-900 bg-opacity-50 text-slate-400 hover:text-slate-200'
             }`}
             onClick={() => setActiveTab('form')}
             aria-selected={activeTab === 'form'}
@@ -221,19 +221,19 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
         
         {/* Terminal-inspired Contact Info */}
         <div 
-          className="bg-black bg-opacity-70 border border-gray-800 rounded-lg p-6 backdrop-blur-sm shadow-lg ring-1 ring-lime-900/30"
+          className="bg-black bg-opacity-70 border border-slate-800 rounded-lg p-6 backdrop-blur-sm shadow-lg ring-1 ring-lime-900/30"
           role="tabpanel"
           id="contact-panel"
           aria-labelledby={activeTab === 'info' ? 'contact-info-tab' : 'contact-form-tab'}
         >
           {/* Terminal Header */}
-          <div className="flex items-center border-b border-gray-800 pb-4 mb-6">
+          <div className="flex items-center border-b border-slate-800 pb-4 mb-6">
             <div className="flex space-x-2">
               <div className="w-3 h-3 rounded-full bg-red-500" aria-hidden="true"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500" aria-hidden="true"></div>
               <div className="w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></div>
             </div>
-            <div className="ml-4 text-sm text-gray-400 font-mono">
+            <div className="ml-4 text-sm text-slate-400 font-mono">
               curious_labs:~$ {activeTab === 'info' ? 'contact_info' : 'contact_init'}
             </div>
           </div>
@@ -249,12 +249,12 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
               </div>
               {typingComplete && (
                 <div 
-                  className="mt-2 space-y-3 pl-4 border-l border-gray-800 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]"
+                  className="mt-2 space-y-3 pl-4 border-l border-slate-800 opacity-0 animate-[fadeIn_0.5s_ease-in-out_forwards]"
                   style={{ animationDelay: '0.3s' }}
                 >
                   <div className="text-white flex items-center justify-between gap-3">
                     <span className="text-lime-400 mr-2">$</span>
-                    <span className="text-gray-400 mr-auto">EMAIL:</span>
+                    <span className="text-slate-400 mr-auto">EMAIL:</span>
                     <button
                       type="button"
                       className="rounded border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-lime-300 transition-colors hover:border-lime-300 hover:bg-lime-400/20 focus:outline-none focus:ring-2 focus:ring-lime-400/70"
@@ -266,7 +266,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                   </div>
                   <div className="text-white flex items-center justify-between gap-3">
                     <span className="text-lime-400 mr-2">$</span>
-                    <span className="text-gray-400 mr-auto">GITHUB:</span>
+                    <span className="text-slate-400 mr-auto">GITHUB:</span>
                     <button
                       type="button"
                       className="rounded border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-lime-300 transition-colors hover:border-lime-300 hover:bg-lime-400/20 focus:outline-none focus:ring-2 focus:ring-lime-400/70"
@@ -289,7 +289,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                 style={{ animationDelay: typingComplete ? '0.8s' : '0s' }}
               >
                 <span className="text-lime-400 mr-2">[terminal] &gt;_</span>
-                <span className="text-gray-300">how can we assist?</span>
+                <span className="text-slate-300">how can we assist?</span>
                 <span className="ml-1 h-4 w-2 bg-lime-400 animate-pulse"></span>
               </div>
               {/* Switch to form tab suggestion */}
@@ -310,7 +310,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
             // Contact Form Tab
             (<form onSubmit={handleSubmit} className="space-y-6 font-mono">
               <div>
-                <label htmlFor="name" className="block text-sm text-gray-400 mb-1">$ name:</label>
+                <label htmlFor="name" className="block text-sm text-slate-400 mb-1">$ name:</label>
                 <input
                   type="text"
                   id="name"
@@ -318,12 +318,12 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full bg-black bg-opacity-50 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
+                  className="w-full bg-black bg-opacity-50 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
                   placeholder="John Doe"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm text-gray-400 mb-1">$ email:</label>
+                <label htmlFor="email" className="block text-sm text-slate-400 mb-1">$ email:</label>
                 <input
                   type="email"
                   id="email"
@@ -331,7 +331,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-black bg-opacity-50 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
+                  className="w-full bg-black bg-opacity-50 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
                   placeholder="john@example.com"
                 />
               </div>
@@ -345,13 +345,13 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                 aria-hidden="true"
               />
               <div>
-                <label htmlFor="project" className="block text-sm text-gray-400 mb-1">$ project_type:</label>
+                <label htmlFor="project" className="block text-sm text-slate-400 mb-1">$ project_type:</label>
                 <select
                   id="project"
                   name="project"
                   value={formData.project}
                   onChange={handleChange}
-                  className="w-full bg-black bg-opacity-50 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
+                  className="w-full bg-black bg-opacity-50 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
                 >
                   {projectTypes.map(type => (
                     <option key={type.id} value={type.id}>{type.label}</option>
@@ -359,7 +359,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                 </select>
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm text-gray-400 mb-1">$ message:</label>
+                <label htmlFor="message" className="block text-sm text-slate-400 mb-1">$ message:</label>
                 <textarea
                   id="message"
                   name="message"
@@ -367,7 +367,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                   onChange={handleChange}
                   required
                   rows="4"
-                  className="w-full bg-black bg-opacity-50 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
+                  className="w-full bg-black bg-opacity-50 border border-slate-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-lime-400 focus:border-lime-400"
                   placeholder="Tell us about your project..."
                 ></textarea>
               </div>
@@ -382,7 +382,7 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
                 </svg>
               </button>
               {/* Switch to info tab suggestion */}
-              <div className="text-center text-xs text-gray-400 mt-4">
+              <div className="text-center text-xs text-slate-400 mt-4">
                 <button 
                   onClick={() => setActiveTab('info')} 
                   className="text-lime-400 hover:underline"
@@ -402,11 +402,11 @@ const ContactTerminalAtomic = ({ transparent = false } = {}) => {
           {/* Interactive Globe Visualization - Now loads only when contact section is visible */}
           <div className="w-full h-full">
             {LazyContactGlobe ? (
-              <Suspense fallback={<div className="flex items-center justify-center h-full text-gray-400">Loading globe...</div>}>
+              <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-400">Loading globe...</div>}>
                 <LazyContactGlobe />
               </Suspense>
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-400">
+              <div className="flex items-center justify-center h-full text-slate-400">
                 <div className="animate-pulse">Globe loading when visible...</div>
               </div>
             )}

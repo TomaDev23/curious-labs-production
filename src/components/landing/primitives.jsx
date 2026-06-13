@@ -155,6 +155,22 @@ export const GlassPanel = ({ children, className = '', hover = true, as: Tag = '
 );
 
 /**
+ * Blueprint dot-grid — the shared "engineering substrate" texture. One source
+ * of truth so SchematicCard, the Coming-Soon underlay, the AEGIS stat band and
+ * the Field-Notes underlay all read as the same machine. Drop <BlueprintDots/>
+ * as an absolute underlay inside any `relative` surface.
+ */
+export const BLUEPRINT_DOTS =
+  '[background-image:radial-gradient(circle,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:22px_22px]';
+
+export const BlueprintDots = ({ className = '' }) => (
+  <div
+    className={`pointer-events-none absolute inset-0 ${BLUEPRINT_DOTS} ${className}`}
+    aria-hidden="true"
+  />
+);
+
+/**
  * Seam: an optional hairline divider with a soft glow, dropped between
  * sections to echo the old site's gradient "seams" without breaking the
  * continuous cosmic backdrop. Mostly the continuous background does the work;

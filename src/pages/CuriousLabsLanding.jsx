@@ -16,7 +16,11 @@ const ArticlesSection = lazy(() => import('../components/landing/ArticlesSection
 
 const MoonSignalRevealSection = () => {
   const frameRef = useRef(null);
-  const spotRef = useRef({ x: 66, y: 48 });
+  // Resting spot is a composed corner (not mid-word): the cover reads as a
+  // clean "Coming Soon" poster with light pooled like a flashlight on a desk,
+  // so the reveal becomes a reward for moving rather than a circle floating
+  // over the headline.
+  const spotRef = useRef({ x: 78, y: 64 });
   const rafRef = useRef(0);
   const [isActive, setIsActive] = useState(false);
   // The big -58vh pull-up is only correct under the desktop CelestialStage hero
@@ -90,8 +94,8 @@ const MoonSignalRevealSection = () => {
   };
 
   const coverMask = {
-    WebkitMaskImage: 'radial-gradient(circle var(--spot-size,clamp(130px,17vw,260px)) at var(--spot-x,66%) var(--spot-y,48%), transparent 0 48%, #000 49%)',
-    maskImage: 'radial-gradient(circle var(--spot-size,clamp(130px,17vw,260px)) at var(--spot-x,66%) var(--spot-y,48%), transparent 0 48%, #000 49%)'
+    WebkitMaskImage: 'radial-gradient(circle var(--spot-size,clamp(130px,17vw,260px)) at var(--spot-x,78%) var(--spot-y,64%), transparent 0 48%, #000 49%)',
+    maskImage: 'radial-gradient(circle var(--spot-size,clamp(130px,17vw,260px)) at var(--spot-x,78%) var(--spot-y,64%), transparent 0 48%, #000 49%)'
   };
 
   const coverStyle = {
@@ -220,11 +224,34 @@ const MoonSignalRevealSection = () => {
             top softened so the descending moon still cross-dissolves into it */}
         <div className="pointer-events-none absolute inset-0 z-[11] rounded-2xl shadow-[inset_0_0_64px_14px_rgba(2,3,8,0.5)]" aria-hidden="true" />
 
+        {/* discoverability: a pulsing echo of the spotlight + a mono cue, both
+            shown only at rest so the reveal reads as interactive. */}
+        {!isActive && (
+          <>
+            <span
+              className="pointer-events-none absolute z-10 rounded-full border border-cyan-200/35 motion-safe:animate-ping"
+              style={{
+                left: 'var(--spot-x,78%)',
+                top: 'var(--spot-y,64%)',
+                width: 'var(--spot-size,clamp(130px,17vw,260px))',
+                height: 'var(--spot-size,clamp(130px,17vw,260px))',
+                transform: 'translate(-50%, -50%)'
+              }}
+              aria-hidden="true"
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-6 z-[12] flex justify-center" aria-hidden="true">
+              <span className="rounded-full border border-cyan-100/20 bg-black/35 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-100/65 backdrop-blur-sm">
+                ↔ Drag to reveal
+              </span>
+            </div>
+          </>
+        )}
+
         <div
           className="pointer-events-none absolute z-10 rounded-full border border-cyan-100/45 shadow-[0_0_0_1px_rgba(15,23,42,0.25),0_0_52px_rgba(103,232,249,0.24)] transition-[width,height] duration-200"
           style={{
-            left: 'var(--spot-x,66%)',
-            top: 'var(--spot-y,48%)',
+            left: 'var(--spot-x,78%)',
+            top: 'var(--spot-y,64%)',
             width: 'var(--spot-size,clamp(130px,17vw,260px))',
             height: 'var(--spot-size,clamp(130px,17vw,260px))',
             transform: 'translate(-50%, -50%)'
@@ -330,15 +357,16 @@ export default function CuriousLabsLanding() {
         {/* ───────────────────────── FOOTER ──────────────────────────── */}
         {/* Transparent so the persistent celestial background flows through. */}
         <footer className="px-4 pb-12 pt-2 sm:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
             <p className="font-space text-xs uppercase tracking-[0.16em] text-slate-400">
               Curious Labs · Building the Moon Signal era
             </p>
+            {/* demoted: the old site is a tiny utility link, never the last word */}
             <Link
               to="/legacy"
-              className="font-space text-sm font-semibold uppercase tracking-[0.14em] text-slate-400 transition-colors hover:text-lime-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-200 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400 transition-colors hover:text-slate-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
-              View the original site →
+              /legacy
             </Link>
           </div>
         </footer>

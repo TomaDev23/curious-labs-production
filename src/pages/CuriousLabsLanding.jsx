@@ -328,47 +328,6 @@ const AegisIntroBand = () => (
   </section>
 );
 
-/* Colourful scroll-progress rail on the right edge — mirrors the interview /
-   Maestro decks. Driven via a ref so it never re-renders on scroll. */
-const ScrollProgressRail = () => {
-  const fillRef = useRef(null);
-  const rafRef = useRef(0);
-
-  useEffect(() => {
-    const update = () => {
-      rafRef.current = 0;
-      const doc = document.documentElement;
-      const max = Math.max(1, doc.scrollHeight - window.innerHeight);
-      const p = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
-      if (fillRef.current) fillRef.current.style.height = `${p}%`;
-    };
-    const onScroll = () => {
-      if (!rafRef.current) rafRef.current = window.requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  return (
-    <div
-      className="pointer-events-none fixed right-1.5 top-20 bottom-24 z-[60] w-1.5 sm:right-2.5 sm:w-2"
-      aria-hidden="true"
-    >
-      <span className="absolute inset-0 rounded-full border border-white/10 bg-white/[0.05]" />
-      <span
-        ref={fillRef}
-        className="absolute inset-x-0 top-0 h-0 rounded-full bg-gradient-to-b from-cyan-300 via-violet-400 to-lime-300 shadow-[0_0_12px_rgba(103,232,249,0.55)]"
-      />
-    </div>
-  );
-};
-
 export default function CuriousLabsLanding() {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-[#020308] text-white">
@@ -387,11 +346,28 @@ export default function CuriousLabsLanding() {
         <meta property="og:type" content="website" />
       </Helmet>
 
+      {/* Colour the single, built-in scrollbar (cyan → violet → lime). Scoped to
+          this page by the <style> element's mount lifecycle — it reverts the
+          native scrollbar on navigate-away. */}
+      <style>{`
+        html { scrollbar-color: #8b5cf6 rgba(255,255,255,0.04); scrollbar-width: thin; }
+        html::-webkit-scrollbar { width: 11px; }
+        html::-webkit-scrollbar-track { background: rgba(255,255,255,0.035); }
+        html::-webkit-scrollbar-thumb {
+          border-radius: 999px;
+          border: 2px solid transparent;
+          background-clip: padding-box;
+          background-image: linear-gradient(180deg, #67e8f9, #a78bfa 55%, #bef264);
+        }
+        html::-webkit-scrollbar-thumb:hover {
+          background-image: linear-gradient(180deg, #7dd3fc, #c4b5fd 55%, #d9f99d);
+        }
+      `}</style>
+
       {/* One persistent cosmic backdrop behind everything — the page's "flow". */}
       <LandingCosmicBackground />
 
       <MissionControlNavbar />
-      <ScrollProgressRail />
 
       <main className="relative z-10">
         {/* ──── HERO → celestial transition: Earth recedes, Moon grows to cover ──── */}

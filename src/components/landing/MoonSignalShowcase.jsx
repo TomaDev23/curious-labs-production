@@ -6,7 +6,8 @@ import {
   Stagger,
   StaggerItem,
   GlassPanel,
-  ACCENTS
+  ACCENTS,
+  Lightbox
 } from './primitives';
 import { motion, useReducedMotion } from '../../FramerProvider';
 import { useMediaState } from './hooks';
@@ -264,6 +265,72 @@ const ScreenshotCarousel = ({ frames, reduce, isMobile }) => {
   );
 };
 
+/* ── Math principles: the deterministic 6-stage signal pipeline ───────── */
+const MATH_ASSET = '/moonsignal/Landing/ms_math_asset_1.png';
+
+const MathPrinciples = () => {
+  const [zoom, setZoom] = useState(false);
+
+  return (
+    <div className="mt-16 border-t border-white/[0.06] pt-14 sm:mt-20 sm:pt-16 lg:mt-24 lg:pt-20">
+      <div className="max-w-2xl">
+        <Reveal>
+          <SectionLabel tone="teal">Math principles</SectionLabel>
+        </Reveal>
+
+        <Reveal delay={0.05} y={20}>
+          <h3 className="font-space text-2xl font-semibold tracking-tight text-slate-100/90 sm:text-3xl">
+            A deterministic signal pipeline
+          </h3>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <p className="mt-4 text-[15px] leading-relaxed text-slate-300">
+            Every MoonSignal decision walks the same six contracted stages — from raw market
+            state to a single, auditable output. Each stage is a reviewable formula rather than a
+            black box: snapshots in, bounded confidence out, and contract validation gating
+            anything that reaches execution.
+          </p>
+        </Reveal>
+      </div>
+
+      <Reveal delay={0.1} y={28} className="mt-9 sm:mt-11">
+        <figure>
+          <button
+            type="button"
+            onClick={() => setZoom(true)}
+            aria-label="Enlarge the MoonSignal math pipeline diagram"
+            className="group relative block w-full overflow-hidden rounded-2xl border border-white/12 bg-white/[0.02] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.9)] ring-1 ring-teal-300/12 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-200/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+          >
+            <img
+              src={MATH_ASSET}
+              alt="MoonSignal math pipeline — market state, feature field, confidence boundary, strategy consensus, contract validation, and signal output, each shown with its governing formula."
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              className="w-full transition-transform duration-500 group-hover:scale-[1.01]"
+            />
+            <span className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" aria-hidden="true" />
+            <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/85 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+              ⤢ Expand
+            </span>
+          </button>
+          <figcaption className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
+            Market State → Feature Field → Confidence Boundary → Strategy Consensus → Contract Validation → Signal Output · click to enlarge
+          </figcaption>
+        </figure>
+      </Reveal>
+
+      <Lightbox
+        open={zoom}
+        src={MATH_ASSET}
+        alt="MoonSignal math pipeline — enlarged"
+        onClose={() => setZoom(false)}
+      />
+    </div>
+  );
+};
+
 const MoonSignalShowcase = ({ screenshots }) => {
   const reduce = useReducedMotion();
   const { isMobile } = useMediaState();
@@ -342,6 +409,9 @@ const MoonSignalShowcase = ({ screenshots }) => {
           </Reveal>
         </div>
       </div>
+
+      {/* ── Math principles band: the deterministic signal pipeline ─── */}
+      <MathPrinciples />
     </SectionShell>
   );
 };

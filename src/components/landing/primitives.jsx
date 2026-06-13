@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion, useReducedMotion } from '../../FramerProvider';
+import React, { useEffect } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from '../../FramerProvider';
 
 /**
  * Landing-page design system.
@@ -202,3 +202,61 @@ export const SectionShell = ({
 };
 
 export const EASE_OUT = EASE;
+
+/**
+ * Lightbox: a full-bleed modal for enlarging a single image asset. Locks body
+ * scroll while open, closes on Escape or backdrop click. Shared by the AEGIS
+ * machine and the Moon Signal math-pipeline assets so they zoom identically.
+ */
+export const Lightbox = ({ open, src, alt, onClose }) => {
+  useEffect(() => {
+    if (!open || typeof document === 'undefined') return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open, onClose]);
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[700] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md sm:p-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={onClose}
+          role="dialog"
+          aria-modal="true"
+          aria-label={alt || 'Enlarged view'}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white/80 transition-colors hover:border-white/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </button>
+          <motion.img
+            src={src}
+            alt={alt}
+            className="max-h-[90vh] max-w-[94vw] rounded-lg border border-white/10 shadow-[0_30px_120px_rgba(0,0,0,0.6)]"
+            initial={{ scale: 0.96, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.97, opacity: 0 }}
+            transition={{ duration: 0.25, ease: EASE }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};

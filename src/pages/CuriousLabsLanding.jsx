@@ -96,8 +96,10 @@ const MoonSignalRevealSection = () => {
 
   const coverStyle = {
     ...coverMask,
-    background:
-      'radial-gradient(circle at 70% 18%, rgba(118,255,223,0.13), transparent 29%), radial-gradient(circle at 20% 82%, rgba(203,255,112,0.055), transparent 34%), linear-gradient(135deg, #383a37 0%, #2f312f 42%, #272928 100%)'
+    backgroundColor: '#070b16',
+    backgroundImage: "url('/moonsignal/Landing/ms_math_bg_1.png')",
+    backgroundSize: 'cover',
+    backgroundPosition: 'center'
   };
 
   return (
@@ -189,8 +191,8 @@ const MoonSignalRevealSection = () => {
         </div>
 
         <div className="absolute inset-0 z-10" style={coverStyle}>
-          <div className="absolute inset-0 opacity-[0.09] [background-image:linear-gradient(rgba(255,255,255,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.34)_1px,transparent_1px)] [background-size:48px_48px]" />
-          <div className="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.35)_0_1px,transparent_1px),radial-gradient(circle_at_76%_64%,rgba(139,255,225,0.36)_0_1px,transparent_1px)] [background-size:28px_28px,46px_46px]" />
+          {/* subtle left-edge scrim keeps the cream copy legible over the artwork */}
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(7,11,22,0.62)_0%,rgba(7,11,22,0.28)_34%,transparent_58%)]" aria-hidden="true" />
           <div className="absolute left-6 top-6 flex items-center gap-3 sm:left-10 sm:top-10">
             <img
               src="/assets/images/general/Page_Logos/MoonSignal_logo.webp"

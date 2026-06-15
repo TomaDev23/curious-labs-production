@@ -16,6 +16,8 @@
       { "source": "/maestro/", "destination": "/maestro/index.html" },
       { "source": "/Maestro", "destination": "/maestro/index.html" },
       { "source": "/Maestro/", "destination": "/maestro/index.html" },
+      { "source": "/the_office", "destination": "/the_office/index.html" },
+      { "source": "/the_office/", "destination": "/the_office/index.html" },
       { "source": "/(.*)", "destination": "/" }
     ],
     "cleanUrls": true,
@@ -38,7 +40,7 @@
           { "key": "X-Content-Type-Options", "value": "nosniff" },
           { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
           { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-          { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'sha256-8m8C91+VvYgC1kiCTFiGDyFUoH+cPu/BFgT15i1RJok=' 'sha256-aTXL2ewkCseutSogGzR/n1OoF43563AxVklkWJSBV64=' vercel.live *.vercel-insights.com blob:; style-src 'self' 'unsafe-inline' fonts.googleapis.com; img-src * blob: data:; font-src 'self' fonts.gstatic.com; connect-src 'self' vercel.live *.vercel-insights.com" }
+          { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'sha256-8m8C91+VvYgC1kiCTFiGDyFUoH+cPu/BFgT15i1RJok=' 'sha256-aTXL2ewkCseutSogGzR/n1OoF43563AxVklkWJSBV64=' 'sha256-Jg/vZeyce2184AaEGM9QpTKzoU5fouzYhav/4C3Z/r4=' 'sha256-I5xI0T1LeaYCC4VoXliUpvFqa7F9UItdxt8Fpkm8grI=' vercel.live *.vercel-insights.com blob:; style-src 'self' 'unsafe-inline' fonts.googleapis.com; img-src * blob: data:; font-src 'self' fonts.gstatic.com; connect-src 'self' vercel.live *.vercel-insights.com" }
         ]
       }
     ]

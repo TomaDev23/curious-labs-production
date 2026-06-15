@@ -106,6 +106,10 @@ export default defineConfig({
       name: 'handle-client-side-routing',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
+          if (req.url === '/the_office' || req.url === '/the_office/') {
+            req.url = '/the_office/index.html';
+          }
+
           // Check if the request is for a client-side route
           if (req.url.startsWith('/dev/') && !req.url.includes('.')) {
             // Serve the index.html for client-side routes

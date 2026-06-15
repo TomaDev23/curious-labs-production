@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Office — Orchestration Floor (v0.3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b1019;
+    --ink-2:#0e1522;
+    --panel:#121b2b;
+    --panel-2:#16202f;
+    --wall:#36617d;          /* blueprint line — the fixed structure */
+    --wall-bright:#5b9dc4;
+    --label:#8fb0c9;
+    --label-dim:#5d7791;
+    --signal:#e8a13c;        /* warm = live work moving */
+    --signal-soft:#f0bf78;
+    --alert:#e5644e;         /* blocking */
+    --gate:#5fb98c;          /* convergence / pass */
+    --idle:#3f5067;
+    --cap:#c9a8e8;           /* the human — the captain loop */
+    --rd:#b88be0;            /* R&D dept accent */
+    --fab:#e8a13c;           /* factory dept accent */
+    --svc:#46b8b0;           /* service / peer offices accent (teal) */
+    --hair: rgba(91,157,196,.18);
+    --glow-signal: rgba(232,161,60,.55);
+    --glow-alert: rgba(229,100,78,.6);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--ink);color:var(--label);font-family:"Space Grotesk",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 700px at 78% -10%, rgba(91,157,196,.07), transparent 60%),
+      radial-gradient(900px 600px at 5% 110%, rgba(232,161,60,.05), transparent 55%),
+      var(--ink);
+    padding:0 0 48px;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
+    background-image:
+      linear-gradient(var(--hair) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+    background-size:34px 34px;
+    mask-image:radial-gradient(circle at 50% 25%, #000 30%, transparent 85%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 22px}
+
+  /* header */
+  header{padding:30px 0 18px;border-bottom:1px solid var(--hair);margin-bottom:26px}
+  .topline{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .topline h1{font-size:26px;font-weight:700;letter-spacing:.02em;color:#dce8f2}
+  .topline h1 .b{color:var(--signal)}
+  .topline .sub{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--label-dim);letter-spacing:.06em;text-transform:uppercase}
+  .tag{margin-top:12px;max-width:820px;font-size:14.5px;line-height:1.55;color:var(--label)}
+  .tag b{color:var(--signal-soft);font-weight:600}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.04em}
+  .legend .grp{display:flex;align-items:center;gap:8px;color:var(--label-dim)}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:0 0 0 0 transparent}
+  .dot.act{background:var(--signal);box-shadow:0 0 9px var(--glow-signal);animation:pulse 2.4s ease-in-out infinite}
+  .dot.wait{background:var(--wall-bright)}
+  .dot.blk{background:var(--alert);box-shadow:0 0 9px var(--glow-alert);animation:blink 1.1s steps(1) infinite}
+  .dot.idle{background:var(--idle)}
+  .tier{font-family:"JetBrains Mono",monospace;font-size:9px;padding:1px 6px;border-radius:3px;letter-spacing:.08em}
+  .tier.flag{color:var(--signal);border:1px solid rgba(232,161,60,.4);background:rgba(232,161,60,.07)}
+  .tier.reg{color:var(--wall-bright);border:1px solid rgba(91,157,196,.35);background:rgba(91,157,196,.06)}
+  .tier.cap{color:var(--cap);border:1px solid rgba(201,168,232,.4);background:rgba(201,168,232,.08)}
+
+  /* main split */
+  .deck{display:grid;grid-template-columns:1fr 318px;gap:22px;align-items:start}
+  @media(max-width:980px){.deck{grid-template-columns:1fr}}
+
+  /* room base */
+  .room{
+    position:relative;border:1px solid var(--wall);border-radius:7px;background:linear-gradient(180deg,var(--panel),var(--ink-2));
+    padding:11px 12px 12px;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s;
+    display:flex;flex-direction:column;
+  }
+  .room:hover{border-color:var(--wall-bright);box-shadow:0 0 0 1px rgba(91,157,196,.25),0 8px 26px rgba(0,0,0,.4);transform:translateY(-1px)}
+  .room.sel{border-color:var(--signal);box-shadow:0 0 0 1px rgba(232,161,60,.4),0 0 26px rgba(232,161,60,.12)}
+  .room .rhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .room .rname{font-size:12.5px;font-weight:600;color:#cfe0ee;letter-spacing:.01em;line-height:1.15}
+  .room .rcode{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);letter-spacing:.1em;text-align:right}
+  .room .rcast{margin-top:7px;display:flex;flex-direction:column;gap:3px}
+  .room .seat{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--label-dim);display:flex;align-items:center;gap:6px;line-height:1.3}
+  .room .seat .dot{width:6px;height:6px}
+  .room.captainloop{border-style:dashed;border-color:var(--cap)}
+  .room .cl-badge{position:absolute;top:-8px;right:9px;font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.1em;color:var(--cap);background:var(--ink);padding:1px 6px;border:1px solid rgba(201,168,232,.4);border-radius:3px}
+
+  .zone-label{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.22em;color:var(--label-dim);text-transform:uppercase;margin:0 0 11px 2px;display:flex;align-items:center;gap:9px}
+  .zone-label::after{content:"";flex:1;height:1px;background:var(--hair)}
+  .zone-label b{color:var(--label)}
+  .band{margin-bottom:18px}
+
+  /* ===== TIER A — vertical command hierarchy ===== */
+  .command-v{display:flex;flex-direction:column}
+  .room.wide{width:100%}
+  .room.captain{border-color:var(--cap);background:linear-gradient(180deg,rgba(201,168,232,.07),var(--ink-2))}
+  .room.captain .rname{color:#e7d6f7}
+  .room.gm{border-color:var(--signal);background:linear-gradient(180deg,rgba(232,161,60,.05),var(--ink-2))}
+  .room.gm .rname{color:#f0cf94}
+  .desks{margin-top:10px;display:flex;flex-wrap:wrap;gap:9px}
+  .desk{flex:1;min-width:165px;border:1px solid var(--hair);border-radius:5px;background:rgba(91,157,196,.04);padding:8px 10px}
+  .desk .dn{font-size:11.5px;color:#cfe0ee;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:6px;line-height:1.2}
+  .desk .dd{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);margin-top:4px;line-height:1.35}
+  .desk.human .dn{color:#e7d6f7}
+
+  .vconnect{height:28px;position:relative}
+  .vconnect::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:repeating-linear-gradient(var(--cap),var(--cap) 3px,transparent 3px,transparent 7px);opacity:.55}
+  .vconnect .lock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:"JetBrains Mono",monospace;font-size:8px;color:var(--cap);background:var(--ink);padding:0 9px;letter-spacing:.16em;white-space:nowrap}
+  .vconnect.plain::before{background:repeating-linear-gradient(var(--wall),var(--wall) 3px,transparent 3px,transparent 7px);opacity:.7}
+  .vconnect.plain .lock{color:var(--label-dim)}
+
+  .submgmt-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.14em;color:var(--label-dim);text-transform:uppercase;margin:0 0 9px 2px}
+  .mgmt4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .mgmt3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:720px){.mgmt4,.mgmt3{grid-template-columns:repeat(2,1fr)}}
+  .room.captainloop.wide{background:linear-gradient(180deg,rgba(201,168,232,.06),var(--ink-2))}
+  .field-tag{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.06em;color:var(--rd);border:1px solid rgba(184,139,224,.4);border-radius:3px;padding:1px 5px;margin-left:6px}
+  .otype{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.05em;padding:2px 7px;border-radius:3px;margin:7px 0 2px;text-transform:uppercase}
+  .otype.mgr{color:var(--signal);border:1px solid rgba(232,161,60,.45);background:rgba(232,161,60,.06)}
+  .otype.fresh{color:var(--alert);border:1px solid rgba(229,100,78,.45);background:rgba(229,100,78,.06)}
+  .otype.pool{color:#5fd29a;border:1px solid rgba(95,210,154,.45);background:rgba(95,210,154,.06)}
+  .room .deploys{margin-top:7px;font-family:"JetBrains Mono",monospace;font-size:8.5px;letter-spacing:.1em;color:var(--label-dim);text-transform:uppercase}
+  .room.office{border-top-width:3px}
+  .room.office.mgr{border-top-color:var(--signal)}
+  .room.office.fresh{border-top-color:var(--alert)}
+  .room.office.pool{border-top-color:#5fd29a}
+
+  /* ===== LEDGER — the barrier ===== */
+  .ledger{
+    border:1px solid var(--wall);border-top:2px dashed var(--signal);border-bottom:2px dashed var(--signal);border-radius:7px;
+    background:repeating-linear-gradient(45deg,rgba(232,161,60,.05),rgba(232,161,60,.05) 8px,transparent 8px,transparent 16px),var(--ink-2);
+    padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;
+    transition:box-shadow .18s;flex-wrap:wrap;
+  }
+  .ledger:hover{box-shadow:0 0 0 1px rgba(232,161,60,.3)}
+  .ledger.sel{box-shadow:0 0 0 1px rgba(232,161,60,.5),0 0 22px rgba(232,161,60,.1)}
+  .ledger .l-title{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+  .ledger .l-title .rname{font-size:13px;font-weight:700;color:#f0cf94;letter-spacing:.04em}
+  .ledger .l-title .rcode{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--alert);letter-spacing:.12em}
+  .ledger .l-meta{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--label-dim);letter-spacing:.04em}
+  .ledger .l-meta b{color:var(--signal)}
+
+  /* ===== TIER B — two isolated departments ===== */
+  .depts{display:grid;grid-template-columns:1fr 1fr;gap:16px;position:relative}
+  @media(max-width:720px){.depts{grid-template-columns:1fr}}
+  .iso{position:absolute;left:50%;top:-2px;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.14em;color:var(--label-dim);background:var(--ink);padding:1px 8px;border:1px solid var(--hair);border-radius:3px;z-index:2}
+  .dept{border:1px solid var(--wall);border-radius:9px;padding:12px;background:linear-gradient(180deg,var(--panel),var(--ink-2))}
+  .dept.rd{border-color:rgba(184,139,224,.45)}
+  .dept.factory{border-color:rgba(232,161,60,.38)}
+  .dhead{display:flex;flex-direction:column;gap:3px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--hair)}
+  .dh-name{font-size:13.5px;font-weight:700;letter-spacing:.02em}
+  .dept.rd .dh-name{color:#e0c8f5}
+  .dept.factory .dh-name{color:#f0cf94}
+  .dh-sub{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);letter-spacing:.08em;text-transform:uppercase}
+  .dept .rooms{display:flex;flex-direction:column;gap:9px}
+
+  .cubes{margin-top:9px;display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+  .cube{border:1px solid var(--hair);border-radius:4px;background:rgba(91,157,196,.04);padding:6px 7px;display:flex;flex-direction:column;gap:5px}
+  .cube .ticket{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label);letter-spacing:.06em;display:flex;align-items:center;justify-content:space-between}
+  .cube .work{font-family:"JetBrains Mono",monospace;font-size:8px;color:var(--label-dim);line-height:1.2}
+  .audit-seats{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+
+  .converge{border:1px dashed var(--gate);border-radius:6px;background:rgba(95,185,140,.06);padding:9px 11px;cursor:pointer;transition:box-shadow .18s}
+  .converge:hover{box-shadow:0 0 0 1px rgba(95,185,140,.35)}
+  .converge.sel{box-shadow:0 0 0 1px rgba(95,185,140,.5)}
+  .converge .rhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .converge .rname{color:var(--gate);font-size:12px;font-weight:600}
+  .converge .rcode{font-family:"JetBrains Mono",monospace;font-size:8.5px;color:var(--label-dim);letter-spacing:.08em}
+
+  /* ===== co-working spaces — meeting rooms / workshops (square, numbered, spawn per campaign) ===== */
+  .cowork-band{margin-top:12px;border-top:1px dashed var(--hair);padding-top:11px}
+  .cowork-label{font-family:"JetBrains Mono",monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--label-dim);margin-bottom:9px;display:flex;align-items:center;gap:8px;line-height:1.45}
+  .cowork-label b{color:var(--label)}
+  .cowork-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+  .cowork{border:1px solid var(--wall);border-radius:7px;background:linear-gradient(180deg,rgba(91,157,196,.07),var(--ink-2));padding:9px 10px;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s;position:relative;display:flex;flex-direction:column;min-height:120px}
+  .cowork::before{content:"";position:absolute;inset:0;border-radius:7px;pointer-events:none;background:repeating-linear-gradient(90deg,rgba(91,157,196,.05),rgba(91,157,196,.05) 2px,transparent 2px,transparent 9px);opacity:.5}
+  .cowork:hover{border-color:var(--wall-bright);box-shadow:0 6px 20px rgba(0,0,0,.35);transform:translateY(-1px)}
+  .cowork.sel{border-color:var(--signal);box-shadow:0 0 0 1px rgba(232,161,60,.4),0 0 22px rgba(232,161,60,.1)}
+  .cowork.mr{border-top:3px solid var(--rd)}
+  .cowork.ws{border-top:3px solid var(--fab)}
+  .cw-head{position:relative;z-index:1;display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+  .cw-name{font-size:12px;font-weight:600;color:#dbe7f1;letter-spacing:.01em;line-height:1.12}
+  .cw-phase{position:relative;z-index:1;font-family:"JetBrains Mono",monospace;font-size:8px;color:var(--label-dim);letter-spacing:.05em;text-transform:uppercase;margin-top:6px;display:flex;align-items:center;gap:5px}
+  .cw-roster{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:9px}
+  .cw-agent{font-family:"JetBrains Mono",monospace;font-size:8px;color:#bcd0e0;background:rgba(91,157,196,.09);border:1px solid var(--hair);border-radius:4px;padding:2px 6px}
+  .cw-booth{font-family:"JetBrains Mono",monospace;font-size:8px;color:#f0a08f;background:rgba(229,100,78,.07);border:1px dashed rgba(229,100,78,.45);border-radius:4px;padding:2px 6px}
+  .cowork.spawn{border-style:dashed;background:transparent;opacity:.6;align-items:center;justify-content:center;text-align:center}
+  .cowork.spawn::before{display:none}
+  .cowork.spawn:hover{opacity:1;border-color:var(--wall-bright);transform:none}
+  .cowork .spawn-txt{position:relative;z-index:1;font-family:"JetBrains Mono",monospace;font-size:8.5px;color:var(--label-dim);line-height:1.5}
+  .cowork .spawn-txt b{display:block;font-size:19px;color:var(--label);margin-bottom:2px;font-weight:400}
+
+  /* dossier */
+  .dossier{position:sticky;top:18px;border:1px solid var(--wall);border-radius:9px;background:linear-gradient(180deg,var(--panel-2),var(--ink-2));padding:18px 17px;min-height:420px}
+  .dossier .d-eyebrow{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;color:var(--label-dim);text-transform:uppercase}
+  .dossier .d-name{font-size:19px;font-weight:700;color:#e2eef7;margin:5px 0 2px;line-height:1.1}
+  .dossier .d-code{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--signal);letter-spacing:.08em;margin-bottom:14px}
+  .dossier .d-sec{margin-top:15px}
+  .dossier .d-sec h4{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.14em;color:var(--label-dim);text-transform:uppercase;margin-bottom:7px}
+  .dossier .d-rule{font-size:13px;line-height:1.55;color:#cdddea;border-left:2px solid var(--signal);padding-left:11px}
+  .dossier .cast-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--label);margin-bottom:5px;line-height:1.3}
+  .dossier .cast-row .nm{flex:1}
+  .dossier .flow-line{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--label);line-height:1.5;display:flex;gap:8px}
+  .dossier .flow-line .ar{color:var(--signal)}
+  .dossier .d-intro p{font-size:13px;line-height:1.6;color:var(--label);margin-bottom:10px}
+  .dossier .d-intro b{color:var(--signal-soft);font-weight:600}
+  .dossier .d-intro .cl{color:var(--cap);font-weight:600}
+
+  /* flow ribbon */
+  .flowwrap{margin-top:26px;border:1px solid var(--hair);border-radius:10px;background:linear-gradient(180deg,rgba(201,168,232,.04),transparent);padding:22px 18px 20px;position:relative}
+  .flowwrap .cl-bracket{position:absolute;top:9px;left:18px;right:18px;display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.16em;color:var(--cap);text-transform:uppercase}
+  .flow-title{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;color:var(--label-dim);text-transform:uppercase;text-align:center;margin-bottom:16px}
+  .flow-title b{color:var(--cap)}
+  .ribbon{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding-bottom:6px}
+  .step{flex:none;display:flex;align-items:center;gap:0}
+  .chip{border:1px solid var(--wall);border-radius:5px;background:var(--panel);padding:7px 10px;text-align:center;min-width:78px}
+  .chip .ph{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.06em;color:var(--label-dim);display:block;margin-bottom:2px}
+  .chip .nm{font-size:11px;color:#cfe0ee;font-weight:500;white-space:nowrap}
+  .chip.cap{border-color:var(--cap);background:rgba(201,168,232,.06)}
+  .chip.cap .nm{color:var(--cap)}
+  .chip.gate{border-color:var(--gate);background:rgba(95,185,140,.07)}
+  .chip.gate .nm{color:var(--gate)}
+  .chip.rd{border-color:rgba(184,139,224,.4)}
+  .chip.fab{border-color:rgba(232,161,60,.4)}
+  .chip.svc{border-color:rgba(70,184,176,.45);background:rgba(70,184,176,.06)}
+  .chip.svc .nm{color:var(--svc)}
+  .arrow{color:var(--wall);font-size:13px;padding:0 6px;flex:none;align-self:center}
+  .arrow.cap{color:var(--cap)}
+  .loopnote{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(201,168,232,.3);font-size:12px;line-height:1.55;color:var(--label)}
+  .loopnote b{color:var(--cap);font-weight:600}
+
+  footer{margin-top:26px;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--label-dim);letter-spacing:.04em;line-height:1.7;border-top:1px solid var(--hair);padding-top:16px}
+  footer b{color:var(--label)}
+
+  @keyframes pulse{0%,100%{box-shadow:0 0 5px var(--glow-signal)}50%{box-shadow:0 0 12px var(--glow-signal),0 0 3px var(--signal)}}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.25}}
+  @media(prefers-reduced-motion:reduce){.dot{animation:none!important}}
+
+  /* ===== view tabs ===== */
+  .tabs{display:inline-flex;gap:4px;margin:0 0 22px;border:1px solid var(--wall);border-radius:9px;padding:4px;background:var(--ink-2)}
+  .tab{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.04em;color:var(--label-dim);background:transparent;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;text-transform:uppercase}
+  .tab:hover{color:#cfe0ee}
+  .tab.on{background:rgba(232,161,60,.13);color:var(--signal)}
+
+  /* ===== merged: THE LOOP view ===== */
+  .lp-intro{max-width:800px;font-size:13.5px;line-height:1.55;margin:2px 0 16px;color:var(--label)}
+  .lp-intro b{color:#cfe0ee}
+  .lp-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:22px;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--label-dim)}
+  .lp-legend span{display:flex;align-items:center;gap:7px}
+  .lp-sw{width:11px;height:11px;border-radius:3px}
+  .lp-chart{display:grid;grid-template-columns:54px 1fr;max-width:860px}
+  .lp-rail{position:relative;border-right:2px dashed rgba(201,168,232,.45);margin-right:18px}
+  .lp-bar{position:sticky;top:20px;writing-mode:vertical-rl;transform:rotate(180deg);font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;color:var(--cap);text-transform:uppercase;padding:8px 0;white-space:nowrap}
+  .lp-bar b{color:#e7d6f7}
+  .lp-flow{display:flex;flex-direction:column;align-items:stretch}
+  .lp-node{border:1px solid var(--wall);border-radius:9px;background:linear-gradient(180deg,var(--panel),var(--ink-2));padding:11px 14px}
+  .lp-node .nm{font-size:14px;font-weight:600;color:#cfe0ee;display:flex;align-items:center;gap:9px}
+  .lp-node .sb{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--label-dim);margin-top:4px;line-height:1.4}
+  .lp-tag{font-family:"JetBrains Mono",monospace;font-size:8.5px;letter-spacing:.08em;padding:2px 7px;border-radius:20px}
+  .lp-tag.you{color:var(--gate);border:1px solid rgba(95,185,140,.5);background:rgba(95,185,140,.08)}
+  .lp-tag.cap{color:var(--cap);border:1px solid rgba(201,168,232,.5);background:rgba(201,168,232,.08)}
+  .lp-node.op{border-color:var(--gate);background:linear-gradient(180deg,rgba(95,185,140,.10),var(--ink-2))}
+  .lp-node.op .nm{color:#bfe9d2}
+  .lp-node.gate{border-color:var(--gate);background:linear-gradient(180deg,rgba(95,185,140,.12),var(--ink-2));border-width:1.5px}
+  .lp-node.gate .nm{color:#bfe9d2}
+  .lp-node.cap{border-style:dashed;border-color:var(--cap)}.lp-node.cap .nm{color:#e7d6f7}
+  .lp-node.mgr{border-color:var(--signal)}.lp-node.mgr .nm{color:#f0cf94}
+  .lp-node.done{border-color:var(--wall-bright)}
+  .lp-conn{height:26px;width:2px;background:var(--wall);align-self:center;position:relative}
+  .lp-conn::after{content:"▼";position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);color:var(--wall);font-size:9px}
+  .lp-zone{border:1.5px solid;border-radius:11px;padding:12px 13px 14px}
+  .lp-zone.rd{border-color:rgba(184,139,224,.5);background:rgba(184,139,224,.05)}
+  .lp-zone.fab{border-color:rgba(232,161,60,.45);background:rgba(232,161,60,.04)}
+  .lp-zone .zt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  .lp-zone.rd .zt{color:#e0c8f5}.lp-zone.fab .zt{color:#f0cf94}
+  .lp-stage{border:1px solid var(--hair);border-radius:7px;background:rgba(18,27,43,.7);padding:8px 11px}
+  .lp-stage .sn{font-size:12.5px;color:#cfe0ee;font-weight:500}
+  .lp-stage .ss{font-family:"JetBrains Mono",monospace;font-size:9.5px;color:var(--label-dim);margin-top:3px;line-height:1.35}
+  .lp-stage.gate{border-color:var(--gate);background:rgba(95,185,140,.08)}.lp-stage.gate .sn{color:#bfe9d2}
+  .lp-mini{height:16px;width:2px;background:rgba(91,157,196,.4);margin:0 auto}
+  .lp-back{align-self:flex-end;margin:6px 4px 0 0;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--alert);border:1px dashed rgba(229,100,78,.45);border-radius:20px;padding:3px 10px;background:rgba(229,100,78,.05)}
+  .lp-back b{color:#f0a08f}
+  .lp-foot{max-width:860px;margin:26px 0 0;border-top:1px solid var(--hair);padding-top:16px;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--label-dim);line-height:1.7}
+  .lp-foot b{color:var(--label)}.lp-foot .a{color:var(--alert)}.lp-foot .c{color:var(--cap)}
+
+  /* ===== merged: ORG & LEDGER view ===== */
+  #view-org{max-width:1180px}
+  .og-summary{max-width:920px;font-size:12.5px;line-height:1.6;color:var(--label);margin:2px 0 14px}
+  .og-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-family:"JetBrains Mono",monospace;font-size:11px;position:sticky;top:0;background:var(--ink);padding:8px 0;z-index:5}
+  .og-nav a{color:var(--label-dim);text-decoration:none;border:1px solid var(--wall);border-radius:6px;padding:5px 11px}
+  .og-nav a:hover{color:var(--signal);border-color:var(--signal)}
+  .og-sec{margin:24px 0 8px}
+  .og-sec h2{font-size:15px;color:#dce8f2;font-weight:700;letter-spacing:.02em;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .og-sec h2 .ct{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--label-dim);font-weight:400}
+  .og-sec .tline{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--label-dim);line-height:1.55;margin:7px 0 2px;max-width:920px}
+  .og-group{margin:16px 0 8px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--label-dim);display:flex;align-items:center;gap:9px}
+  .og-group::after{content:"";flex:1;height:1px;background:var(--hair)}
+  .og-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:11px}
+  .og-card{border:1px solid var(--wall);border-left-width:3px;border-radius:8px;background:linear-gradient(180deg,var(--panel),var(--ink-2));padding:11px 12px}
+  .og-card.a-append{border-left-color:var(--signal)}
+  .og-card.a-readscratch{border-left-color:#5fd29a}
+  .og-card.a-read{border-left-color:var(--wall-bright)}
+  .og-card.a-scratch{border-left-color:var(--cap)}
+  .og-card.a-none{border-left-color:var(--idle)}
+  .og-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .og-name{font-size:12.5px;font-weight:600;color:#cfe0ee;line-height:1.2}
+  .og-kind{font-family:"JetBrains Mono",monospace;font-size:8.5px;letter-spacing:.05em;color:var(--label-dim);text-transform:uppercase;white-space:nowrap}
+  .og-meta{font-family:"JetBrains Mono",monospace;font-size:9px;margin:6px 0 7px;display:flex;flex-wrap:wrap;gap:5px}
+  .og-chip{padding:1px 6px;border-radius:10px;border:1px solid var(--hair);color:var(--label-dim)}
+  .og-chip.append{color:var(--signal);border-color:rgba(232,161,60,.4)}
+  .og-chip.readscratch{color:#5fd29a;border-color:rgba(95,210,154,.4)}
+  .og-chip.read{color:var(--wall-bright);border-color:rgba(91,157,196,.4)}
+  .og-chip.scratch{color:var(--cap);border-color:rgba(201,168,232,.4)}
+  .og-chip.flag{color:var(--signal)} .og-chip.regular{color:var(--wall-bright)} .og-chip.mixed{color:#5fd29a} .og-chip.human{color:var(--cap)}
+  .og-op{font-size:11.5px;color:#cdd4df;line-height:1.45}
+  .og-rep{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);margin-top:6px}
+  .og-seats{margin-top:5px;font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);line-height:1.4}
+  .og-notes{margin-top:7px;font-size:10px;color:var(--label-dim);line-height:1.45;border-top:1px dashed var(--hair);padding-top:6px}
+  .og-led-tables{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+  .og-tbl{border:1px solid var(--wall);border-radius:8px;background:var(--ink-2);padding:11px 12px}
+  .og-tbl h4{font-family:"JetBrains Mono",monospace;font-size:11px;color:#f0cf94;margin-bottom:4px}
+  .og-tbl .pp{font-size:10.5px;color:var(--label-dim);line-height:1.45;margin-bottom:8px}
+  .og-tbl table{width:100%;border-collapse:collapse;font-family:"JetBrains Mono",monospace;font-size:9.5px}
+  .og-tbl td{border-top:1px solid var(--hair);padding:3px 5px;vertical-align:top;color:var(--label)}
+  .og-tbl td.f{color:var(--wall-bright);white-space:nowrap} .og-tbl td.t{color:var(--label-dim);white-space:nowrap}
+  .og-marks{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}
+  .og-marks th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);text-transform:uppercase;padding:5px 6px;border-bottom:1px solid var(--wall)}
+  .og-marks td{border-bottom:1px solid var(--hair);padding:6px;vertical-align:top;color:#cdd4df;line-height:1.45}
+  .og-marks .mk{font-family:"JetBrains Mono",monospace;font-weight:700;white-space:nowrap}
+  .og-ack{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);white-space:nowrap}
+  .og-life{margin:6px 0;padding-left:20px} .og-life li{font-size:11.5px;color:#cdd4df;line-height:1.5;margin-bottom:6px}
+  .og-pre{background:#0a0e16;border:1px solid var(--wall);border-radius:8px;padding:12px 14px;overflow-x:auto;font-family:"JetBrains Mono",monospace;font-size:10px;line-height:1.5;color:var(--label);white-space:pre-wrap;word-break:break-word}
+  .og-pre .id{color:var(--label-dim)} .og-pre .au{color:var(--wall-bright)} .og-pre .ts{color:var(--label-dim)}
+  .og-pre .mOBSERVATION{color:var(--wall-bright)} .og-pre .mSTEER{color:var(--signal)} .og-pre .mBLOCKING{color:var(--alert)} .og-pre .mACK{color:var(--gate)} .og-pre .mDEFER{color:var(--cap)} .og-pre .mESCALATE{color:#f0a08f} .og-pre .mACT{color:#5fd29a}
+  .og-rules li,.og-q li{font-size:11.5px;color:#cdd4df;line-height:1.5;margin-bottom:7px}
+  .og-flowtbl{width:100%;border-collapse:collapse;font-size:11px}
+  .og-flowtbl th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--label-dim);text-transform:uppercase;padding:6px;border-bottom:1px solid var(--wall)}
+  .og-flowtbl td{border-bottom:1px solid var(--hair);padding:7px 6px;vertical-align:top;color:#cdd4df;line-height:1.45}
+  .og-flowtbl td.s{color:#cfe0ee;font-weight:600;white-space:nowrap} .og-flowtbl td.led{font-family:"JetBrains Mono",monospace;font-size:9.5px;color:var(--label-dim)}
+
+  /* ===== GRAPH view (Obsidian-style) ===== */
+  #view-graph{max-width:1180px}
+  .graph-hint{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--label-dim);margin:2px 2px 10px;line-height:1.5}
+  .graph-hint b{color:#cfe0ee}
+  .graph-wrap{position:relative;border:1px solid var(--wall);border-radius:12px;background:radial-gradient(900px 500px at 50% 38%,rgba(91,157,196,.06),#0a0e16 70%);overflow:hidden}
+  #gcanvas{display:block;width:100%;height:640px;cursor:grab}
+  #gcanvas.grabbing{cursor:grabbing}
+  .graph-legend{display:flex;gap:16px;flex-wrap:wrap;margin:11px 2px;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--label-dim)}
+  .graph-legend span{display:flex;align-items:center;gap:7px}
+  .gl-line{display:inline-block;width:20px;height:0;border-top-width:2px;border-top-style:solid}
+  .gl-dot{width:10px;height:10px;border-radius:50%}
+  .gdetail{position:absolute;top:12px;right:12px;width:255px;background:rgba(18,27,43,.96);border:1px solid var(--wall-bright);border-radius:10px;padding:13px 14px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .gdetail .ge{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.14em;color:var(--label-dim);text-transform:uppercase;margin-bottom:5px}
+  .gdetail h4{font-size:14px;color:#cfe0ee;margin-bottom:6px}
+  .gdetail p{font-size:11.5px;color:#cdd4df;line-height:1.5}
+  .gdetail .gx{position:absolute;top:8px;right:12px;cursor:pointer;color:var(--label-dim);font-size:15px}
+
+  /* ===== cold-start (paste into a new agent) ===== */
+  .coldstart{border:1px solid var(--wall);border-left:3px solid var(--signal);border-radius:9px;background:linear-gradient(180deg,rgba(232,161,60,.05),var(--ink-2));margin:18px 0 6px;overflow:hidden}
+  .coldstart .cs-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;cursor:pointer}
+  .coldstart .cs-title{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--signal-soft)}
+  .coldstart .cs-right{display:flex;gap:11px;align-items:center}
+  .coldstart .cs-hint{font-family:"JetBrains Mono",monospace;font-size:9.5px;color:var(--label-dim)}
+  .coldstart .cs-btn{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--label);background:rgba(10,14,22,.9);border:1px solid var(--wall);border-radius:5px;padding:5px 12px;cursor:pointer}
+  .coldstart .cs-btn:hover{border-color:var(--signal);color:var(--signal)}
+  .coldstart pre{margin:0;padding:13px 15px;max-height:320px;overflow:auto;font-family:"JetBrains Mono",monospace;font-size:11px;line-height:1.55;color:#cdd4df;white-space:pre-wrap;word-break:break-word;background:#0a0e16;border-top:1px solid var(--hair)}
+  .coldstart.collapsed pre{display:none}
+  .cs-row{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 6px}
+  .cs-row .coldstart{flex:1 1 380px;min-width:0;margin:0}
+  .coldstart.fe{border-left-color:var(--svc)}
+  .coldstart.fe .cs-title{color:var(--svc)}
+
+  /* ===== Tier-A service/peer band · method charter · ledger levels · production gate ===== */
+  .charter{margin:0 0 14px;border:1px solid var(--cap);border-left:3px solid var(--cap);border-radius:8px;background:linear-gradient(180deg,rgba(201,168,232,.07),var(--ink-2));padding:9px 13px;cursor:pointer;transition:box-shadow .18s}
+  .charter:hover{box-shadow:0 0 0 1px rgba(201,168,232,.3)}
+  .charter.sel{box-shadow:0 0 0 1px rgba(201,168,232,.5)}
+  .charter .ch-t{font-family:"JetBrains Mono",monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--cap);margin-bottom:4px}
+  .charter .ch-b{font-size:11px;line-height:1.5;color:#cdddea}
+  .charter .ch-b b{color:var(--signal-soft)}
+
+  .svc-band{margin-top:4px}
+  .svc-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.14em;color:var(--label-dim);text-transform:uppercase;margin:0 0 9px 2px;display:flex;align-items:center;gap:9px;line-height:1.45}
+  .svc-label::after{content:"";flex:1;height:1px;background:var(--hair)}
+  .svc-label b{color:var(--svc)}
+  .svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(166px,1fr));gap:10px}
+  .room.peer{border-top:3px solid var(--svc)}
+  .room.peer .rname{color:#bfeae6}
+  .room.peer.devops{border-top-color:var(--alert)}
+  .room.peer.devops .rname{color:#f0b6aa}
+  .tier.svc{color:var(--svc);border:1px solid rgba(70,184,176,.4);background:rgba(70,184,176,.08)}
+  .peer-role{font-family:"JetBrains Mono",monospace;font-size:8px;letter-spacing:.07em;color:var(--svc);text-transform:uppercase;margin-top:6px}
+  .room.peer.devops .peer-role{color:#f0a08f}
+
+  .world-node{margin-top:11px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace}
+  .push-edge{display:flex;align-items:center;gap:7px;font-size:9px;color:var(--label-dim)}
+  .push-lock{color:var(--alert);border:1px solid rgba(229,100,78,.5);border-radius:4px;padding:2px 7px;background:rgba(229,100,78,.06)}
+  .world-box{border:1px dashed var(--gate);border-radius:7px;background:rgba(95,185,140,.06);padding:7px 12px;cursor:pointer;transition:box-shadow .18s}
+  .world-box:hover{box-shadow:0 0 0 1px rgba(95,185,140,.35)}
+  .world-box.sel{box-shadow:0 0 0 1px rgba(95,185,140,.5)}
+  .world-box .wn{font-size:11px;font-weight:600;color:var(--gate);font-family:"Space Grotesk",sans-serif}
+  .world-box .wd{font-size:8px;color:var(--label-dim);margin-top:2px}
+
+  .ledger-levels{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px dashed rgba(232,161,60,.3);width:100%}
+  .ll-step{font-family:"JetBrains Mono",monospace;font-size:8.5px;color:var(--label-dim);border:1px solid var(--hair);border-radius:4px;padding:2px 7px}
+  .ll-step b{color:var(--signal-soft)}
+  .ll-arrow{color:var(--wall);font-size:10px}
+  .ll-rotate{font-family:"JetBrains Mono",monospace;font-size:8px;color:var(--cap);border:1px dashed rgba(201,168,232,.45);border-radius:4px;padding:2px 7px}
+  .cowork.cmd{border-top-color:var(--svc)}
+
+  /* ===== CuriousLabs review shell ===== */
+  .office-sitebar{
+    position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:16px;justify-content:space-between;
+    padding:10px 18px calc(10px + env(safe-area-inset-top));padding-top:calc(10px + env(safe-area-inset-top));
+    border-bottom:1px solid rgba(91,157,196,.24);background:rgba(7,12,20,.94);backdrop-filter:blur(16px);
+    box-shadow:0 16px 44px rgba(0,0,0,.34)
+  }
+  .office-brand{display:flex;align-items:center;gap:10px;min-width:0;color:#dce8f2;text-decoration:none}
+  .office-brand img{width:26px;height:26px;filter:drop-shadow(0 0 9px rgba(232,161,60,.24))}
+  .office-brand strong{display:block;color:var(--signal);font-size:14px;line-height:1.1;letter-spacing:.02em}
+  .office-brand span span{display:block;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.16em;color:var(--label-dim);text-transform:uppercase;white-space:nowrap}
+  .office-site-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .office-site-links a{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--label);text-decoration:none;border:1px solid transparent;border-radius:7px;padding:7px 9px;transition:.16s}
+  .office-site-links a:hover{color:#fff;border-color:rgba(232,161,60,.34);background:rgba(232,161,60,.08)}
+  .office-review-note{position:relative;z-index:1;margin:14px auto 0;max-width:1320px;padding:0 22px}
+  .office-review-note-inner{display:flex;gap:10px;align-items:center;border:1px solid rgba(232,161,60,.28);border-radius:8px;background:rgba(232,161,60,.06);padding:10px 12px;font-size:12.5px;line-height:1.45;color:#d6c2a0}
+  .office-review-note-inner b{font-family:"JetBrains Mono",monospace;color:var(--signal);font-size:10px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+  .office-progress{position:fixed;right:max(8px,env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));bottom:calc(18px + env(safe-area-inset-bottom));width:8px;z-index:70;pointer-events:none}
+  .office-progress span:first-child{position:absolute;inset:0 3px;border-radius:999px;background:rgba(91,157,196,.14);border:1px solid rgba(91,157,196,.16)}
+  .office-progress span:last-child{position:absolute;left:3px;right:3px;top:0;height:0%;border-radius:999px;background:linear-gradient(180deg,var(--signal),var(--cap),var(--gate));box-shadow:0 0 12px rgba(232,161,60,.48)}
+  @media(max-width:760px){
+    body{padding-bottom:28px}
+    .office-sitebar{gap:10px;padding-left:12px;padding-right:12px;align-items:flex-start}
+    .office-brand img{width:24px;height:24px}.office-brand strong{font-size:13px}.office-brand span span{font-size:8px;letter-spacing:.12em}
+    .office-site-links a{font-size:10px;padding:6px 7px}.office-site-links a:nth-child(2){display:none}
+    .office-review-note{padding:0 12px;margin-top:10px}.office-review-note-inner{display:block;font-size:11.5px;padding:9px 10px}.office-review-note-inner b{display:block;margin-bottom:3px}
+    .wrap{padding:0 12px;max-width:100%;overflow:hidden}
+    .cs-row{grid-template-columns:1fr!important;gap:10px!important}.coldstart pre{max-height:170px!important;font-size:10px!important}
+    header{padding:18px 0 14px;margin-bottom:14px}.topline h1{font-size:21px}.topline .sub{font-size:9.5px}.tag{font-size:12.5px;line-height:1.48}.legend{gap:8px;font-size:9px}
+    .tabs{position:sticky;top:calc(51px + env(safe-area-inset-top));z-index:65;display:flex;width:100%;overflow-x:auto;margin-bottom:14px;border-radius:8px;scrollbar-width:thin}
+    .tab{flex:0 0 auto;padding:8px 12px;font-size:10px;white-space:nowrap}
+    .deck{grid-template-columns:1fr!important;gap:14px}.dossier{position:relative!important;top:auto!important;min-height:0;padding:14px 13px}.dossier .d-name{font-size:17px}
+    .room,.charter,.ledger,.dept,.cowork,.converge{border-radius:6px}.mgmt4,.mgmt3,.depts,.cowork-grid,.og-grid,.og-led-tables{grid-template-columns:1fr!important}
+    .desks,.legend,.lp-legend,.graph-legend{gap:7px}.desk{min-width:140px}.ribbon{padding-bottom:10px}.chip{min-width:130px}
+    .lp-chart{grid-template-columns:34px 1fr}.lp-bar{font-size:9px}.lp-node .nm{font-size:12.5px}.lp-node .sb{font-size:9.5px}
+    .og-nav{position:sticky;top:calc(95px + env(safe-area-inset-top));overflow-x:auto;flex-wrap:nowrap;padding:7px 0}.og-nav a{white-space:nowrap;font-size:10px;padding:5px 9px}
+    .og-sec h2{font-size:13px}.og-op,.og-rules li,.og-q li{font-size:10.5px}.og-flowtbl{display:block;overflow-x:auto;white-space:nowrap}
+    #gcanvas{height:520px!important}.gdetail{position:relative!important;top:auto!important;right:auto!important;width:auto!important;margin:10px;max-width:none}.graph-wrap{overflow:visible}.graph-hint{font-size:9.5px}
+    .office-progress{right:3px;top:calc(10px + env(safe-area-inset-top));bottom:calc(12px + env(safe-area-inset-bottom));width:7px;opacity:.76}
+  }
+</style>
+</head>
+<body>
+<div class="office-sitebar" aria-label="CuriousLabs site navigation">
+  <a class="office-brand" href="/" aria-label="Back to CuriousLabs home">
+    <img src="/images/logo.svg" alt="">
+    <span><strong>CuriousLabs</strong><span>Mission Control</span></span>
+  </a>
+  <nav class="office-site-links" aria-label="Page navigation">
+    <a href="/">Home</a>
+    <a href="/maestro/index.html">Maestro</a>
+    <a href="/contact">Contact</a>
+  </nav>
+</div>
+<div class="office-progress" aria-hidden="true"><span></span><span id="office-progress-fill"></span></div>
+<div class="office-review-note"><div class="office-review-note-inner"><b>Phone review</b><span>Use the tabs as the page index. The layout now collapses for mobile, with the dossier and graph stacked for easier scrolling.</span></div></div>
+<div class="wrap">
+
+  <div class="cs-row">
+  <div class="coldstart" id="coldstart">
+    <div class="cs-bar" data-collapse-target="coldstart">
+      <span class="cs-title">❄ Cold start — backend</span>
+      <span class="cs-right"><span class="cs-hint">click bar to collapse</span><button class="cs-btn" id="cs-copy">⧉ Copy</button></span>
+    </div>
+    <pre id="cs-text"></pre>
+  </div>
+  <div class="coldstart fe" id="coldstart-fe">
+    <div class="cs-bar" data-collapse-target="coldstart-fe">
+      <span class="cs-title">❄ Cold start — frontend</span>
+      <span class="cs-right"><span class="cs-hint">click bar to collapse</span><button class="cs-btn" id="cs-copy-fe">⧉ Copy</button></span>
+    </div>
+    <pre id="cs-text-fe"></pre>
+  </div>
+  </div>
+
+  <header>
+    <div class="topline">
+      <h1>THE <span class="b">OFFICE</span></h1>
+      <span class="sub">// orchestration floor · v0.3 · vertical authority spine + a side service/peer band</span>
+    </div>
+    <p class="tag">A real office floor for your agents. <b>Geography is the rulebook</b>. An <b>office is a capability</b>, not a swarm: one manager runs its responsibilities as <b>sub-agents in a single thread</b> — only <b>Audit Rooms</b> are always a fresh adversarial agent, and <b>Intern Pools</b> are script-scaled mechanical crews. Two tiers split by the Ledger. Tier A carries the <b>vertical authority spine</b> plus a non-dispatching <b>service/peer band</b> (Agent Resources, Mapping, Creative/Visual, DevOps) that serves every floor. Each work floor has <b>specialist offices</b> (the homes, where agents have desks) plus <b>co-working spaces</b> spawned one-per-campaign — <b>Meeting Rooms</b> in R&amp;D, <b>Workshops</b> (the Build Floor in action) in the Factory, and <b>Command Co-Working Rooms</b> above the barrier for campaign management — where the specialists gather to work, so you read the <b>room</b>, not a racing list of agents. Tap any space.</p>
+    <div class="legend">
+      <div class="grp"><span class="dot act"></span> WORKING</div>
+      <div class="grp"><span class="dot wait"></span> WAITING</div>
+      <div class="grp"><span class="dot blk"></span> BLOCKED</div>
+      <div class="grp"><span class="dot idle"></span> IDLE</div>
+      <div class="grp"><span class="tier flag">FLAG</span> flagship tier</div>
+      <div class="grp"><span class="tier reg">REG</span> regular tier</div>
+      <div class="grp"><span class="tier cap">CAP</span> captain-loop seat</div>
+      <div class="grp"><span class="tier svc">SVC</span> service/peer office</div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab on" data-view="floor">▦ Floor Plan</button>
+    <button class="tab" data-view="loop">⟲ The Loop</button>
+    <button class="tab" data-view="org">⛬ Org &amp; Ledger</button>
+    <button class="tab" data-view="graph">◈ Graph</button>
+  </div>
+
+  <div id="view-floor">
+  <div class="deck">
+    <!-- ============ LEFT: THE FLOOR ============ -->
+    <div class="plan">
+
+      <!-- ===================== TIER A — COMMAND ===================== -->
+      <div class="band">
+        <div class="zone-label"><b>Tier A · Command Wing</b> — vertical authority spine + a side service/peer band</div>
+        <div class="command-v">
+
+          <!-- 0. Method charter (doctrine rule-card, pinned to the apex) -->
+          <div class="charter" data-room="charter">
+            <div class="ch-t">⚑ Method charter — the framing</div>
+            <div class="ch-b">Not the cheapest way to work — but blind agent <b>swarms</b> are expensive <i>and</i> less productive. We spread load across many <b>scope-bounded</b> agents (some ultracode campaign agents, some periodic light ones) so none holds too much context, coordinate by the <b>company hierarchy</b>, and talk through the <b>Ledger</b>. Cost · usage · context-awareness is existential — mechanical pruning keeps it lean.</div>
+          </div>
+
+          <!-- 1. Captain's Office (apex) -->
+          <div class="room captain wide" data-room="captain">
+            <div class="rhead"><span class="rname">Captain's Office</span><span class="rcode">APEX · YOU + 2 LANES</span></div>
+            <div class="desks">
+              <div class="desk human"><div class="dn">The Captain <span class="tier cap">YOU</span></div><div class="dd">doubt · decision · intent</div></div>
+              <div class="desk"><div class="dn">Chief of Staff <span class="tier cap">CAP</span></div><div class="dd">main lane · gates · BLOCKING · sign-off</div></div>
+              <div class="desk"><div class="dn">Operator's Aide <span class="tier cap">CAP</span></div><div class="dd">side lane · questions &amp; progress, anytime</div></div>
+            </div>
+          </div>
+
+          <div class="vconnect plain" style="height:18px"><span class="lock">works alongside the Captain ↕</span></div>
+
+          <!-- 1b. Navigator — THE Captain Loop (lifted to the apex) -->
+          <div class="room captainloop wide" data-room="navigator">
+            <span class="cl-badge">THE CAPTAIN LOOP</span>
+            <div class="rhead"><span class="rname">Navigator — Captain's Loop</span><span class="rcode">HIGHEST-LEVEL HUMAN-LIKE OVERSIGHT</span></div>
+            <div class="desks">
+              <div class="desk"><div class="dn">Navigator <span class="tier cap">CAP</span></div><div class="dd">holds intent + anchor docs per active work · reviews the plans from the studio · watches progression, time &amp; effort · calls situations</div></div>
+              <div class="desk"><div class="dn">Sanity Watch <span class="tier cap">CAP</span></div><div class="dd">every 7–10 min · sanity check vs a set of considerations · reads the Ledger for drift / conflict · authority to STEER or send it back to planning</div></div>
+            </div>
+          </div>
+
+          <div class="vconnect"><span class="lock">↑ GATES ONLY ↓</span></div>
+
+          <!-- 2. General Manager's Office — now lane-isolated (Group GM + per-campaign GMs) -->
+          <div class="room gm wide" data-room="gm">
+            <div class="rhead"><span class="rname">General Manager's Office</span><span class="rcode">PLANS WHO DOES WHAT · ONE APPENDER PER LEDGER</span></div>
+            <div class="desks">
+              <div class="desk"><div class="dn">Group GM <span class="tier flag">FLAG</span></div><div class="dd">reads the manager-layer + main index ledger · ACK / STEER · the only seam where lanes converge</div></div>
+              <div class="desk"><div class="dn">Campaign GM ×N <span class="tier flag">FLAG</span></div><div class="dd">one per campaign · reads its own ledger tail · ACK / STEER · never holds the whole board</div></div>
+              <div class="desk"><div class="dn">Ledger Assistant ×N <span class="tier reg">SONNET</span></div><div class="dd">one cheap appender per ledger · collects scratch → appends · no two hands on one ledger</div></div>
+              <div class="desk"><div class="dn">GM Auditor <span class="tier reg">REG</span></div><div class="dd">nothing-lost · #id gap-free · everything folded</div></div>
+            </div>
+          </div>
+
+          <div class="vconnect plain"><span class="lock">ALL WORK FLOWS THROUGH THE GM ↓</span></div>
+
+          <!-- 3. Operational managers -->
+          <div class="submgmt-label">Operational Managers · under the GM · operate before the Ledger barrier</div>
+          <div class="mgmt3">
+            <div class="room" data-room="task">
+              <div class="rhead"><span class="rname">Task Mgrs</span><span class="rcode">TM</span></div>
+              <div class="rcast">
+                <span class="seat"><span class="dot act"></span> Task Mgr A <span class="tier flag">FLAG</span></span>
+                <span class="seat"><span class="dot idle"></span> Task Mgr B</span>
+              </div>
+            </div>
+            <div class="room" data-room="shadow">
+              <div class="rhead"><span class="rname">Shadow Office</span><span class="rcode">SHDW</span></div>
+              <div class="rcast"><span class="seat"><span class="dot wait"></span> Shadow Mgr <span class="tier flag">FLAG</span></span><span class="seat">peer · premise check</span><span class="seat"><span class="dot wait"></span> Triage Cell <span class="tier reg">REG</span></span><span class="seat">scores the activation rung → AR consumes (no re-scoring)</span></div>
+            </div>
+            <div class="room" data-room="mapping">
+              <div class="rhead"><span class="rname">Mapping Office</span><span class="rcode">RECORDS · CONTINUITY</span></div>
+              <div class="rcast">
+                <span class="seat"><span class="dot act"></span> Campaign Mapper <span class="tier flag">FLAG</span></span>
+                <span class="seat"><span class="dot act"></span> Archive <span class="tier flag">FLAG</span></span>
+                <span class="seat"><span class="dot wait"></span> Librarian <span class="tier flag">FLAG</span></span>
+                <span class="seat">one office · dedicated narrow-scope agents · spawn cheap Sonnet sub-agents</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Service / peer band — non-dispatching peers; serve every floor -->
+          <div class="svc-band">
+            <div class="svc-label">Service &amp; Peer Offices · <b>non-dispatching peers</b> · beside the GM, above the Ledger · serve every floor <span style="color:var(--label-dim)">· records folded into the Mapping Office · isolation is a planning principle, not an office</span></div>
+            <div class="svc-grid">
+              <div class="room peer" data-room="ar">
+                <div class="rhead"><span class="rname">Agent Resources</span><span class="rcode">AR · AGR</span></div>
+                <div class="peer-role">designs the wave → hands it to a manager</div>
+                <div class="rcast">
+                  <span class="seat"><span class="dot act"></span> AR Manager <span class="tier flag">FLAG</span></span>
+                  <span class="seat">scopes loop shape · #agents · naming · mints agent TYPES · plans the activation script · runs the first-request operator interview</span>
+                  <span class="seat">consumes Triage's rung — no re-scoring</span>
+                  <span class="seat">dual-mode: self-enforce OR be requested · re-composes multiple times incl. on side-quests</span>
+                  <span class="seat">surfaces as OBSERVATION [AR] · never appends to the ledger</span>
+                </div>
+              </div>
+              <div class="room peer" data-room="creative">
+                <div class="rhead"><span class="rname">Creative / Visual</span><span class="rcode">ALL VISUALS · ONE STYLE</span></div>
+                <div class="peer-role">never send words — always visualize</div>
+                <div class="rcast">
+                  <span class="seat"><span class="dot act"></span> Design Mgr <span class="tier flag">FLAG</span></span>
+                  <span class="seat">boards · diagrams · mermaid · plans-as-visuals</span>
+                  <span class="seat">invoked by GMs + Navigator only — NOT by script</span>
+                </div>
+              </div>
+              <div class="room peer devops" data-room="devops">
+                <div class="rhead"><span class="rname">DevOps</span><span class="rcode">LAST REVIEW · GIT GATE</span></div>
+                <div class="peer-role">commit-but-never-push is a system-wide rule — enforced here; the Push Operator is the only push-capable seat anywhere</div>
+                <div class="rcast">
+                  <span class="seat"><span class="dot wait"></span> DevOps Mgr <span class="tier flag">FLAG</span></span>
+                  <span class="seat" style="color:#f0a08f"><span class="dot idle"></span> Push Operator — only push-capable seat <span class="tier flag">FLAG</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- above-barrier co-working (one unified type) -->
+            <div class="cowork-band">
+              <div class="cowork-label">▦ <b>Command Co-Working Rooms</b> (Service Bays) · one per campaign · numbered, spawnable — AR's Wave Room, per-campaign Management Meeting Rooms &amp; the utility Service Bays all use this one above-barrier type</div>
+              <div class="cowork-grid">
+                <div class="cowork cmd" data-room="cmd-room-1">
+                  <div class="cw-head"><span class="cw-name">Command Room 1</span></div>
+                  <div class="cw-phase"><span class="dot act"></span> a campaign's mgmt lane</div>
+                  <div class="cw-roster">
+                    <span class="cw-agent">Campaign GM</span>
+                    <span class="cw-agent">AR</span>
+                    <span class="cw-agent">Librarian</span>
+                    <span class="cw-agent">Creative</span>
+                  </div>
+                </div>
+                <div class="cowork cmd" data-room="cmd-room-2">
+                  <div class="cw-head"><span class="cw-name">Command Room 2</span></div>
+                  <div class="cw-phase"><span class="dot wait"></span> a second campaign · isolated</div>
+                  <div class="cw-roster">
+                    <span class="cw-agent">Campaign GM</span>
+                    <span class="cw-agent">Task Mgr</span>
+                    <span class="cw-agent">Archive</span>
+                  </div>
+                </div>
+                <div class="cowork cmd spawn" data-room="cowork-spawn">
+                  <div class="spawn-txt"><b>＋</b>spawn on demand</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DevOps push edge to the outside world -->
+            <div class="world-node">
+              <span class="push-edge">DevOps gateway <span class="push-lock">🔒 PUSH — locked until all-green + operator OK</span> →</span>
+              <div class="world-box" data-room="world">
+                <div class="wn">🌐 World / LIVE</div>
+                <div class="wd">outside the office · production · the only way out</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== LEDGER BARRIER ===================== -->
+      <div class="band">
+        <div class="ledger" data-room="ledger">
+          <div class="l-title">
+            <span class="rname">▤ THE LEDGER</span>
+            <span class="rcode">BARRIER · COMMAND ⟺ WORKING</span>
+          </div>
+          <div class="l-meta">append-only · a <b>hierarchy of ledgers</b> · one Ledger Assistant appender each · managers read digests + the tail</div>
+          <div class="ledger-levels">
+            <span class="ll-step">per ledger: <b>scratch</b> (every agent) → <b>Sonnet digest</b> (happenings list) → <b>Ledger Assistant</b> appends → ledger (mgr reads the tail)</span>
+            <span class="ll-arrow">⇈</span>
+            <span class="ll-step">hierarchy: <b>campaign</b> ledger → <b>manager-layer</b> → <b>main INDEX</b> (names &amp; numbers only)</span>
+            <span class="ll-rotate">↻ seal vX at the KB cap · per-level list · track board flushed on close</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== TIER B — DEPARTMENTS ===================== -->
+      <div class="band">
+        <div class="zone-label"><b>Tier B · Working Tier</b> — isolated departments · specialist offices (homes) + co-working spaces grouped by campaign</div>
+        <div class="depts">
+          <div class="iso">⊥ ISOLATED · NO MIX · crosses only as a green, signed plan</div>
+
+          <!-- R&D -->
+          <div class="dept rd">
+            <div class="dhead">
+              <div class="dh-name">R&amp;D — the Office</div>
+              <div class="dh-sub">plan &amp; simulate · sandbox · 3 specialist offices + meeting rooms</div>
+            </div>
+            <div class="rooms">
+              <div class="room office mgr" data-room="rd-studio">
+                <div class="rhead"><span class="rname">Architect's Studio</span><span class="rcode">DESIGN OFFICE</span></div>
+                <div><span class="otype mgr">1 manager · sub-agents in-thread</span></div>
+                <div class="deploys">deploys ▾</div>
+                <div class="rcast">
+                  <span class="seat"><span class="dot act"></span> Math Lab <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot act"></span> Planner's Desk <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot wait"></span> Simulation Lab <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot idle"></span> Rival / Alt-design <span class="tier flag">FLAG</span></span>
+                </div>
+              </div>
+              <div class="room office fresh" data-room="rd-audit">
+                <div class="rhead"><span class="rname">Audit Room</span><span class="rcode">AUTHOR≠AUDITOR</span></div>
+                <div><span class="otype fresh">always a fresh, separate agent</span></div>
+                <div class="deploys">adversarial vs the Studio · same seats, as auditors ▾</div>
+                <div class="audit-seats">
+                  <span class="seat"><span class="dot act"></span> Independent · Adversarial <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot wait"></span> Audit-of-Audit · Secondary <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot idle"></span> (math / arch / planner seats, as checks)</span>
+                  <span class="seat" style="color:var(--cap)" title="open: may fold into the Navigator — see CLAUDE.md §6"><span class="dot idle"></span> Final Eye <span class="tier cap">CAP</span></span>
+                </div>
+              </div>
+              <div class="room office pool" data-room="rd-intern">
+                <div class="rhead"><span class="rname">Intern Pool</span><span class="rcode">MECHANICAL · SERVES BOTH</span></div>
+                <div><span class="otype pool">script-scaled to load</span></div>
+                <div class="deploys">folds in ▾</div>
+                <div class="rcast">
+                  <span class="seat"><span class="dot act"></span> Scout Bay (study → digests) <span class="tier reg">REG</span></span>
+                  <span class="seat"><span class="dot act"></span> Folders / Aggregators ×N <span class="tier reg">REG</span></span>
+                  <span class="seat">boil &amp; simmer · handover @ ~80% ctx</span>
+                </div>
+              </div>
+              <div class="converge" data-room="rd-converge">
+                <div class="rhead"><span class="rname">◇ Converge Gate</span><span class="rcode">CONVERGE / PARTIAL / DIVERGE · green passport</span></div>
+              </div>
+
+              <!-- co-working: meeting rooms (one per campaign, spawn on demand) -->
+              <div class="cowork-band">
+                <div class="cowork-label">▦ <b>Meeting Rooms</b> · one per campaign · Studio &amp; Intern seats come here to plan / review — read the room, not the agents</div>
+                <div class="cowork-grid">
+                  <div class="cowork mr" data-room="mr-1">
+                    <div class="cw-head"><span class="cw-name">Meeting Room 1</span></div>
+                    <div class="cw-phase"><span class="dot act"></span> planning</div>
+                    <div class="cw-roster">
+                      <span class="cw-agent">Planner</span>
+                      <span class="cw-agent">Math</span>
+                      <span class="cw-agent">Scouts ×2</span>
+                      <span class="cw-booth">⊟ sealed audit booth</span>
+                    </div>
+                  </div>
+                  <div class="cowork mr" data-room="mr-2">
+                    <div class="cw-head"><span class="cw-name">Meeting Room 2</span></div>
+                    <div class="cw-phase"><span class="dot wait"></span> in review</div>
+                    <div class="cw-roster">
+                      <span class="cw-agent">Rival</span>
+                      <span class="cw-agent">Sim</span>
+                      <span class="cw-booth">⊟ sealed audit booth</span>
+                    </div>
+                  </div>
+                  <div class="cowork mr spawn" data-room="cowork-spawn">
+                    <div class="spawn-txt"><b>＋</b>spawn on demand</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FACTORY -->
+          <div class="dept factory">
+            <div class="dhead">
+              <div class="dh-name">Factory — the Floor</div>
+              <div class="dh-sub">execute the green plan · the real tree · 3 offices + a 4th open · workshops</div>
+            </div>
+            <div class="rooms">
+              <div class="room office mgr" data-room="fac-build">
+                <div class="rhead"><span class="rname">Build Floor — Workshops</span><span class="rcode">THE PRODUCTION LINES</span></div>
+                <div><span class="otype mgr">manager + specialists who staff the workshops</span></div>
+                <div class="deploys">home desks — sit here, go into a workshop to work the line ▾</div>
+                <div class="rcast">
+                  <span class="seat"><span class="dot wait"></span> Build Manager <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot act"></span> Builders pool <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot act"></span> Math Field <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot idle"></span> Architect Field <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot wait"></span> Test / Verify <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot wait"></span> Committer — commit freely · NEVER push <span class="tier reg">REG</span></span>
+                </div>
+                <!-- co-working: workshops (one production line per campaign, spawn on demand) -->
+                <div class="cowork-band">
+                  <div class="cowork-label">⚒ <b>Workshops</b> · one production line per campaign · spawn as many as needed — staffed from the desks above · commit freely · NEVER push → DevOps Push Operator</div>
+                  <div class="cowork-grid">
+                    <div class="cowork ws" data-room="ws-1">
+                      <div class="cw-head"><span class="cw-name">Workshop 1</span></div>
+                      <div class="cw-phase"><span class="dot act"></span> building</div>
+                      <div class="cw-roster">
+                        <span class="cw-agent">Builders ×2 (disjoint surfaces)</span>
+                        <span class="cw-agent">Math Field</span>
+                        <span class="cw-agent">Committer</span>
+                        <span class="cw-booth">⊟ sealed audit booth</span>
+                      </div>
+                    </div>
+                    <div class="cowork ws" data-room="ws-2">
+                      <div class="cw-head"><span class="cw-name">Workshop 2</span></div>
+                      <div class="cw-phase"><span class="dot blk"></span> building · surface clash held — one-builder-per-surface rule</div>
+                      <div class="cw-roster">
+                        <span class="cw-agent">Builders ×2</span>
+                        <span class="cw-agent">Arch Field</span>
+                        <span class="cw-booth">⊟ sealed audit booth</span>
+                      </div>
+                    </div>
+                    <div class="cowork ws spawn" data-room="cowork-spawn">
+                      <div class="spawn-txt"><b>＋</b>spawn on demand</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="room office fresh" data-room="fac-audit">
+                <div class="rhead"><span class="rname">Audit Room</span><span class="rcode">AUTHOR≠AUDITOR</span></div>
+                <div><span class="otype fresh">always a fresh, separate agent</span></div>
+                <div class="deploys">adversarial vs the Build Floor ▾</div>
+                <div class="audit-seats">
+                  <span class="seat"><span class="dot act"></span> Independent · Adversarial <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot wait"></span> Audit-of-Execution · Secondary <span class="tier flag">FLAG</span></span>
+                  <span class="seat"><span class="dot idle"></span> + math &amp; architect adversarial seats <span class="tier flag">FLAG</span></span>
+                </div>
+              </div>
+              <div class="room office pool" data-room="fac-intern">
+                <div class="rhead"><span class="rname">Intern Pool</span><span class="rcode">MECHANICAL · SERVES BOTH</span></div>
+                <div><span class="otype pool">script-scaled to load</span></div>
+                <div class="deploys">folds in ▾</div>
+                <div class="rcast">
+                  <span class="seat"><span class="dot act"></span> Ground-truth Scout / confirm <span class="tier reg">REG</span></span>
+                  <span class="seat"><span class="dot act"></span> Folders / Aggregators ×N <span class="tier reg">REG</span></span>
+                  <span class="seat">boil &amp; simmer · handover @ ~80% ctx</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============ RIGHT: DOSSIER ============ -->
+    <aside class="dossier" id="dossier">
+      <div class="d-eyebrow">Briefing</div>
+      <div class="d-name">Two tiers, one barrier</div>
+      <div class="d-code">// command above · work below</div>
+      <div class="d-intro">
+        <p><b>Tier A — Command</b> is a vertical authority spine. You sit at the apex with <span class="cl">two comms lanes</span>, and the <span class="cl">Navigator — the Captain Loop</span> works alongside you. Every project opens with an <b>operator interview</b> (a few ping-pong rounds that set scope, environment &amp; risk). Under you, the <b>GM</b> plans <i>who does what</i>; the Ledger is now a <i>hierarchy</i> — one cheap appender per ledger, managers read the tail. Operational managers sit under the GM: Task, Shadow, and the <b>Mapping Office</b> (the records umbrella — Campaign Mapper · Archive · Librarian, dedicated agents). Beside them a <b style="color:var(--svc)">service / peer band</b> of non-dispatching offices serves every floor: <b style="color:var(--svc)">Agent Resources</b> (designs the wave, hands it off), <b style="color:var(--svc)">Creative/Visual</b> (never send words — always visualize), and <b style="color:var(--alert)">DevOps</b> — the only door to <b style="color:var(--gate)">production</b>: agents commit, but nothing pushes without your logged OK. <i>Isolation is a planning principle, not an office.</i></p>
+        <p>The <b>Ledger</b> is the barrier. Above it, command. Below it, work.</p>
+        <p><b>Tier B — Work</b> is two isolated departments. Each holds <b>specialist offices</b> (the homes) and <b>co-working spaces</b> (where the work happens). An office is a <b>capability</b>: one manager runs its responsibilities as sub-agents <i>in one thread</i> (the <span class="cl">Studio</span> folds Math/Planner/Sim; the <b>Build Floor</b> folds the field offices). Only the <b style="color:var(--alert)">Audit Rooms</b> are always a fresh, separate adversarial agent; the <b style="color:#5fd29a">Intern Pools</b> are script-scaled mechanical crews that serve both offices.</p>
+        <p><b>Two axes.</b> Offices answer <i>what kind of work</i> (fixed homes, where agents keep desks). <b style="color:#9fd0ee">Co-working spaces</b> answer <i>which campaign</i> — one room per campaign, <b>numbered and spawnable</b>, where the specialists come in from their desks to work. <b>Meeting Rooms</b> on the R&amp;D floor (plan &amp; review); <b>Workshops</b> on the Factory floor — the Build Floor <i>is</i> its workshops, the production lines where building actually happens. So a busy floor reads as a handful of rooms — you check the <i>room</i>, never a racing list of agents.</p>
+        <p style="color:var(--label-dim);font-size:12px">Tap any office or co-working space to inspect it and the law it enforces.</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============ FLOW RIBBON ============ -->
+  <div class="flowwrap">
+    <div class="cl-bracket"><span>⟵ CAPTAIN LOOP</span><span>CAPTAIN LOOP ⟶</span></div>
+    <div class="flow-title">how work moves · <b>plan in R&amp;D → operator OK → re-plan implementation → build in the factory</b></div>
+    <div class="ribbon" id="ribbon"></div>
+    <div class="loopnote">⟲ <b>The Captain Loop rides the whole run:</b> the Navigator holds the intent + anchor docs and reviews progression end-to-end, while the Sanity Watch sweeps every <b>7–10 min</b> — reading the Ledger for drift, conflict, or stalls — with the authority to STEER or call it back to planning.</div>
+  </div>
+
+  <footer>
+    <b>Reading the floor:</b> cool blueprint lines = the fixed structure (your doctrine, made into walls). Warm amber = live work moving through it.<br>
+    <b>The two tiers:</b> command plans &amp; routes above the Ledger; R&amp;D and the Factory do the work below it — isolated, so it's always clear whether you're <i>planning</i> or <i>building</i>.<br>
+    <b>v0.3 · still draft.</b> Next: seat the extra small agents around each space, and lock the exact flow.
+  </footer>
+  </div><!-- /view-floor -->
+
+  <!-- ============ VIEW: THE LOOP (merged) ============ -->
+  <div id="view-loop" style="display:none">
+    <p class="lp-intro">The operator hands in a raw idea; AR runs an <b>interview</b> to define the environment and risks, designs the wave shape, then hands it to the GM — who dispatches R&amp;D to <b>plan it</b> under the full method, brings it back for a <b>green-light</b>, <b>builds it in the Factory</b>, and returns it signed — pushed to production only through the <b>DevOps gate</b>. The <span style="color:var(--cap)">Captain Loop</span> rides the whole run. The human appears at <b>gates the environment sets</b> (green): pure-dev = the interview + the packaged plan; production = a stop per campaign. Each lane talks through its own <b>ledger</b>; one appender per ledger.</p>
+    <div class="lp-legend">
+      <span><span class="lp-sw" style="background:var(--gate)"></span>you / gate</span>
+      <span><span class="lp-sw" style="background:var(--cap)"></span>captain loop</span>
+      <span><span class="lp-sw" style="background:var(--signal)"></span>general manager</span>
+      <span><span class="lp-sw" style="background:#b88be0"></span>R&amp;D (plan &amp; simulate)</span>
+      <span><span class="lp-sw" style="background:var(--signal)"></span>Factory (execute)</span>
+      <span><span class="lp-sw" style="background:var(--alert)"></span>loop-back / send-back</span>
+    </div>
+    <div class="lp-chart">
+      <div class="lp-rail"><div class="lp-bar"><b>CAPTAIN LOOP</b> · Navigator + Sanity Watch (every 7–10 min) · STEER / back-to-planning</div></div>
+      <div class="lp-flow" id="lpflow"></div>
+    </div>
+    <div class="lp-foot">
+      <b>Loop-backs (why it's a loop, not a line):</b><br>
+      <span class="a">↺</span> Converge = DIVERGE → back to Plan &nbsp;·&nbsp; <span class="a">↺</span> Operator send-back → re-enter R&amp;D &nbsp;·&nbsp; <span class="a">↺</span> Decide send-back → re-plan / rebuild &nbsp;·&nbsp; <span class="c">⟲</span> Final Eye REVISE → the office goes around again, without spending you (Final Eye seat: Navigator or Audit Room — open).<br><br>
+      <b>Running the whole time (not stages):</b> the Captain Loop (Navigator + 7–10 min Sanity Watch) · the standing watch (reference-anchor / vocabulary-drift / nothing-lost) · the Shadow peer challenging premises live. Full spec: <b>docs/CANONICAL-LOOP.md</b>.
+    </div>
+  </div><!-- /view-loop -->
+
+  <!-- ============ VIEW: ORG & LEDGER (merged, data-driven from office-data.js) ============ -->
+  <div id="view-org" style="display:none"></div>
+
+  <!-- ============ VIEW: GRAPH (Obsidian-style node/edge flow) ============ -->
+  <div id="view-graph" style="display:none">
+    <div class="graph-hint">An <b>Obsidian-style map</b> of the office. <b>Drag</b> a node to rearrange · <b>hover</b> to isolate its links · <b>click</b> for detail. Amber arrows = the work flow (out through DevOps to <b>World / LIVE</b>) · green = the Ledger hierarchy (write solid · read dashed) · grey / dashed-amber = reporting &amp; non-dispatching peers (AR, Creative, DevOps).</div>
+    <div class="graph-wrap">
+      <canvas id="gcanvas"></canvas>
+      <div class="gdetail" id="gdetail"><span class="gx" id="gdetail-close">✕</span><div class="ge" id="gd-e"></div><h4 id="gd-n"></h4><p id="gd-p"></p></div>
+    </div>
+    <div class="graph-legend">
+      <span><span class="gl-line" style="border-color:var(--signal)"></span> work flow</span>
+      <span><span class="gl-line" style="border-color:#5fd29a"></span> ledger · append</span>
+      <span><span class="gl-line" style="border-color:#5fd29a;border-top-style:dashed"></span> ledger · read</span>
+      <span><span class="gl-line" style="border-color:var(--wall)"></span> reports / serves</span>
+      <span><span class="gl-dot" style="background:#c9a8e8"></span> captain loop</span>
+      <span><span class="gl-dot" style="background:var(--signal)"></span> command</span>
+      <span><span class="gl-dot" style="background:#b88be0"></span> R&amp;D</span>
+      <span><span class="gl-dot" style="background:#e8a13c"></span> factory</span>
+      <span><span class="gl-dot" style="background:#5fd29a"></span> ledger</span>
+      <span><span class="gl-dot" style="background:var(--gate)"></span> gate / you</span>
+    </div>
+  </div>
+
+</div>
+
+<script src="office-data.js"></script>
+<script>
+const ROOMS = {
+  captain:{eyebrow:"Tier A · Command · the apex",name:"Captain's Office",code:"// you + two comms lanes",
+    rule:"The top of the hierarchy. You are reached only through two dedicated comms agents, so you're never blind and never interrupted on the wrong channel. The Chief of Staff carries the main decision lane — gates, BLOCKING items, sign-offs. The Operator's Aide is an always-open side desk for questions and progress: ask \"where are we?\" any time without touching the main lane.",
+    cast:[["The Captain — you","cap"],["Chief of Staff — main lane","cap"],["Operator's Aide — progress & Q&A","cap"]],
+    flow:[["in","the whole office, via 2 lanes"],["out","intent · decisions"]]},
+  gm:{eyebrow:"Tier A · Command · under the Captain",name:"General Manager's Office",code:"// plans WHO does what — not the work",
+    rule:"All work flows through here. The GM does NOT plan the actual work — it reasons over incoming intent, picks the paths, writes the prompts, and dispatches the next offices: who does what, how to fan out. Under the 2026-06-15 ledger hierarchy, the Group GM owns the cross-campaign index ledger and each Campaign GM owns its own campaign ledger — but the physical append in each case is done by a dedicated cheap (Sonnet) Ledger Assistant (one per ledger, no collisions); the GM reads the tail and issues ACK / STEER, it no longer personally appends. To keep its own context clean it runs cheap assistants of its own — and dispatches more on demand: a Mechanical Assistant that digests the scratch pouring in from every seat and stages it for the Ledger, and a GM Auditor invoked every few minutes to guarantee nothing is lost and everything is folded into the GM's documents.",
+    cast:[["Group GM (index / cross-campaign ledger)","flag"],["Campaign GM ×N (one per campaign ledger)","flag"],["Ledger Assistant (Sonnet) — one per ledger","reg"],["Mechanical Assistant ×N","reg"],["GM Auditor (every X min)","reg"]],
+    flow:[["in","intent from the Captain's Office"],["out","dispatch orders · ledger marks"]]},
+  task:{eyebrow:"Tier A · Command · under the GM",name:"Task Managers",code:"// run the agent lists",
+    rule:"One or two managers each run a slice of the work — their own list of seats — and surface up to the GM. They operate above the Ledger barrier. They read their own ledger tail (via the per-ledger Ledger Assistant) and issue ACK / STEER back through scratch — they never hold the whole board. Roles outlive instances: a manager low on context hands its load to a fresh successor and becomes a light-touch Senior backstop.",
+    cast:[["Task Manager A","flag"],["Task Manager B","flag"]],
+    flow:[["in","GM dispatch"],["out","seat results → GM"]]},
+  shadow:{eyebrow:"Tier A · Command · paired",name:"Shadow Office",code:"// a peer, not a sub-agent",
+    rule:"Its own thread, its own waves — possibly a different engine. It reads source fresh and challenges whether the run's premises are actually true, while the work is still steerable. Touches nothing but the Ledger. The live second framing is the whole value. It houses the Triage Cell, which assesses workload and scores the activation rung from the set of considerations; AR consumes that score and composes the wave shape — no re-scoring.",
+    cast:[["Shadow Manager","flag"],["Triage Cell — rung scorer","reg"]],
+    flow:[["in","source (fresh) · the live run"],["out","STEER / BLOCKING → GM"]]},
+  navigator:{eyebrow:"Apex · THE Captain Loop",name:"Navigator — Captain's Loop",code:"// capture the human factor",
+    rule:"Lifted up to the Captain's Office to become the Captain Loop itself — the human coordination instinct that the operator runs by hand, turned into logic and injected into the rigid machine. It tracks the whole run from the highest level and thinks like a human lead: it receives the plans from the Architect's Studio and reviews them, keeps an intent + anchor document for every active piece of work, and watches progression — how long, how much effort, is this still worth it. It reads the Ledger to spot when the agents below are drifting, catching issues, or fighting each other. Riding underneath is the Sanity Watch: every 7–10 minutes it runs a sanity check against a set of considerations and, with the authority of a higher vantage, can STEER or call the situation — pause, reassess, or go back to planning. A drift-protector from above, alongside the in-wave ones. The Navigator reads only digested roll-ups — never raw traffic — so its own context stays bounded; full-traffic exposure is the price of the apex seat, paid only in digest form (ISO-15/16).",
+    cast:[["Navigator","cap"],["Sanity Watch · 7–10 min","cap"]],
+    flow:[["in","plans from the Studio · the live Ledger"],["out","intent/anchor docs · STEER · back-to-planning calls"]]},
+  mapping:{eyebrow:"Tier A · Command · records & continuity",name:"Mapping Office",code:"// one office · dedicated records agents",
+    rule:"The records umbrella: ONE office running several DEDICATED, narrow-scope agents — not one manager wearing many hats; narrow scopes let each run long, handing over at ~85% context to a successor on the same scope. It holds: the Campaign Mapper (owns the campaign map — continuity and stage progression across waves and handovers); the Archive (constantly prunes, digests, indexes and folds everything produced into the North-Star intent, spawning hundreds of cheap Sonnet diggers to keep the corpus tight and searchable); and the Librarian (authors & maintains the campaign docs, rules, wiki and visual boards — maybe an Obsidian pensieve). It is the office's memory and hygiene, protecting everyone's context.",
+    cast:[["Campaign Mapper","flag"],["Archive (+ Sonnet diggers ×100s)","reg"],["Librarian (docs · wiki · rules)","reg"]],
+    flow:[["in","everything every office produces + stage results"],["out","the live map · a pruned, indexed corpus · the North Star"]]},
+  ledger:{eyebrow:"The barrier · a hierarchy of ledgers",name:"The Ledger",code:"// command ⟺ working",
+    rule:"Not one ledger — a HIERARCHY that mirrors the company. Each campaign has its own ledger: every agent writes only its own scratch (never reads others'), one dedicated cheap (Sonnet) assistant collects that scratch and APPENDS — one hand per ledger, so no collisions — and the manager reads the tail and issues ACK / STEER. Each campaign's activity rolls up into a manager-layer ledger by another assistant, up to the main INDEX ledger that lists every ledger by name & number (no detail) + a live track board. Mark types: OBSERVATION · STEER · BLOCKING · ACK · DEFER · ESCALATE; mandatory-ack, no silent ignores. Each ledger is pruned: at a comfortable KB cap it is SEALED, the work moves to vX, and the progression is appended to that level's list — so every manager reads a short tail, never the whole board.",
+    cast:[["one appender per ledger (Sonnet)","reg"],["managers read the tail + digests","flag"]],
+    flow:[["in","scratch → Sonnet appender → ledger → roll-up"],["out","the live tail every screen & the phone read"]]},
+
+  charter:{eyebrow:"Doctrine · the framing",name:"Method Charter",code:"// method over blind swarms",
+    rule:"The system's stance, pinned to the apex. Not the cheapest way to work — but a blind SWARM of agents (what raw workflows push) is BOTH expensive and less productive: one agent drowns in context and quality falls. Instead we spread the load across many scope-bounded agents — some ultracode campaign agents driving true campaigns, some invoked periodically with a lighter load — coordinate them by a company-style hierarchy, and have them talk only through the Ledger. Cost, usage and context-discipline are existential: every seat is told to respect them, and mechanical pruning / digesting keeps the whole system lean.",
+    cast:[["a rule-card, not an office","cap"]],
+    flow:[["in","every agent's framing & prompt"],["out","lean · hierarchical · ledger-coordinated work"]]},
+  ar:{eyebrow:"Tier A · service/peer · the assembly architect",name:"Agent Resources (AR / AGR)",code:"// designs the wave, hands it off",
+    rule:"A standing, always-on PEER beside the GM (it doesn't boss anyone) that DESIGNS each effort — the shape of the loop, how many agents, which offices, the managers' naming conventions — then hands an index + document to a MANAGER, who manages the flow and activation. It runs the first-request OPERATOR INTERVIEW (a few ping-pong rounds that deepen scope, environment and risks before any plan), and re-composes whenever new substance arrives (incl. side-quests). Its scoped seats are dual-mode: they can self-enforce or be called in on request. It holds a concerns set + a menu of capabilities, stays agnostic per project, and can MINT new agent TYPES from the pool (e.g. a mathematician) not needed on every project. It authors the ACTIVATION_SCRIPT — a versioned artifact (fixed grammar + agent-composed slots + a validation gate that stamps validated=1 before enactment); the hybrid shape is the 2026-06-15 D4 recommendation, pending operator confirmation of the sub-items. AR designs; the GM still dispatches. AR writes only scratch (never appends); the coordination ledger is appended by the dedicated Ledger Assistant per ledger; AR surfaces as OBSERVATION [AR].",
+    cast:[["AR Manager","flag"],["first-request operator interview","flag"],["loop shape · #agents · naming · agent-type minting","flag"]],
+    flow:[["in","a raw request → the interview → the 'enough substance' signal"],["out","an index + document → a manager enacts it"]]},
+  creative:{eyebrow:"Tier A · service/peer · serves everyone",name:"Creative / Visual Office",code:"// never send words — always visualize",
+    rule:"The single home for ALL visuals. Other offices don't draw their own — they escalate requests here, so everything is made in ONE shape, palette and font, aggregated to one place: tracking boards, diagrams, mermaid graphs, and the plans themselves rendered as visuals. The hard rule: never hand the operator words or raw documents to read — always give them a simplified visual (flow charts, edges) of what the project is doing, how it's progressing, and what the plans are. It can also stand up a quick front-end (index + menu + HTML spaces) in setup. Invoked by the GMs and the Navigator (not by script).",
+    cast:[["Design Manager","flag"],["boards · diagrams · mermaid · plans-as-visuals","reg"]],
+    flow:[["in","plans · requests from every manager"],["out","one-style visuals → the operator's board"]]},
+  devops:{eyebrow:"Tier A · service/peer · last gate before the world",name:"DevOps Office",code:"// commit freely · never push without a logged OK",
+    rule:"The last review and the only door to production. It assesses the DevOps perspective — how things merge, how they affect live behavior — after the work is already audited and fixed, and it HOLDS and INDEXES every change (by time · manager · ID) ready to ship. The hard rule (identical for dev and production): every seat may COMMIT with clear, descriptive messages, but NO seat may PUSH; the single Push Operator is the only push-capable seat, and it pushes only on an explicit, logged operator OK routed through a manager. The first-request interview sets the environment: in a PURE-DEV project the operator may waive and let it push; in a real PRODUCTION project the system REFUSES to auto-push — it works, audits, commits and waits while the communication office surfaces DevOps's change-info to the operator, who confirms each campaign's push. Never push without a clear order — logged in the ledger, the archive and the library.",
+    cast:[["DevOps Manager","flag"],["Push Operator — the only push-capable seat","flag"]],
+    flow:[["in","all-green work, committed & indexed, held for logged operator OK"],["out","🔒 push to World / LIVE only on a logged operator OK"]]},
+  world:{eyebrow:"Outside the office · production",name:"World / LIVE",code:"// the only way out",
+    rule:"Production — outside the office boundary. The system reaches it through exactly one locked door: the DevOps Push Operator, on full-hierarchy green (and the operator's OK for live systems). Agents commit inside the office all day; nothing leaves until it passes through here. This is the last human-in-the-loop before the work is live in the world.",
+    cast:[["reached only via DevOps push","flag"]],
+    flow:[["in","🔒 a green, signed-off, pushed build"],["out","live in production"]]},
+  "cmd-room-1":{eyebrow:"Tier A · co-working · a campaign's mgmt lane",name:"Command Co-Working Room",code:"// the above-barrier Service Bay",
+    rule:"The command-floor twin of a Meeting Room / Workshop: a campaign's MANAGEMENT convenes here, isolated from other campaigns. ONE unified above-barrier room type — AR's Wave Room and the utility Service Bays all use it; there is no Isolation Office — isolation is a principle the offices uphold by planning disjoint campaigns. Numbered and spawned per campaign (reaped on fold), named by the GM after the campaign's natural-parent lane, color / ID / campaign-name coded so the operator reads ONE room instead of a racing list. Service & peer offices second seats in; only digests rise from here to the apex.",
+    cast:[["Campaign GM ◂ GM office","flag"],["AR · Librarian · Creative ◂ seconded","flag"]],
+    flow:[["in","a campaign's management work"],["out","digests up to the apex · isolated from other lanes"]]},
+  "cmd-room-2":{eyebrow:"Tier A · co-working · a second campaign",name:"Command Co-Working Room 2",code:"// isolated from Room 1",
+    rule:"A second campaign's management lane — proof the model scales: each campaign gets its own isolated Command Co-Working Room with its own Campaign GM and seconded seats. The two never mix; they only meet at the apex, and only as digests. Same unified above-barrier type, numbered and spawnable.",
+    cast:[["Campaign GM ◂ GM office","flag"],["Task Mgr · Archive ◂ seconded","flag"]],
+    flow:[["in","a different campaign's management work"],["out","digests up to the apex"]]},
+
+  "rd-studio":{eyebrow:"Tier B · R&D · design office",name:"Architect's Studio",code:"// one manager · sub-agents in-thread",
+    rule:"The design office: ONE manager on ONE thread that deploys its design responsibilities as sub-agents in-thread (Claude Code / Codex spawning) rather than as separate cold-start agents — less scratch, fewer cold starts, less drift. It folds the Math Lab (settle the math, walled off — math/code isolation still holds inside the thread), the Planner's Desk (author the plan), the Simulation Lab (throwaway prototype to force hidden ambiguity), and the rival / alt-design. Scout Bay is NOT here — it moved to the Intern Pool.",
+    cast:[["Studio Manager","flag"],["Math Lab (sub-agent)","flag"],["Planner's Desk (sub-agent)","flag"],["Simulation Lab (sub-agent)","flag"],["Rival / Alt-design (sub-agent)","flag"]],
+    flow:[["in","anchor + study digests (from Intern Pool)"],["out","the draft plan → Audit Room"]]},
+  "rd-audit":{eyebrow:"Tier B · R&D · fresh adversarial",name:"Audit Room (R&D)",code:"// always a fresh, separate agent",
+    rule:"A SEPARATE office on purpose: always a fresh agent on its own context, never folded into the Studio's thread — that separation IS the author≠auditor rule, made adversarial by construction. It has the same capabilities available (it can seat math / architect / planner / sim sub-agents) but uses them as AUDITORS of the Studio's work: independent → adversarial/plan-breaker → audit-of-audit → mandatory secondary, plus the Final Eye human-style 'would I sign it?' pass.",
+    cast:[["Audit Manager (fresh)","flag"],["Independent · Adversarial","flag"],["Audit-of-Audit · Secondary","flag"],["math/arch/planner seats, as checks","flag"],["Final Eye","cap"]],
+    flow:[["in","the draft plan + rival + sim findings"],["out","PASS / REVISE / FAIL → Converge"]]},
+  "rd-intern":{eyebrow:"Tier B · R&D · mechanical pool",name:"Intern Pool (R&D)",code:"// script-scaled · serves both offices",
+    rule:"The mechanical operations pool, supplying services to BOTH professional offices on the floor. Mechanically invoked by a script that scales the crew to load (context + job size + number of surfaces). Folds the Scout Bay (read substrate → digests) plus all folding / aggregation: it boils & simmers raw output into fresh digests the manager acknowledges, so agents rely on the latest info and never re-read long substrates. Each worker's surface is bounded (lines / #docs) and its context never exhausted — at ~80% it writes a handover to disk and the next mechanical agent takes over on the same scope. Folds, never decides.",
+    cast:[["Scout Bay (study → digests)","reg"],["Folders / Aggregators ×N","reg"],["(scales with load · handover @ ~80% ctx)","reg"]],
+    flow:[["in","raw scratch + substrates from both offices"],["out","clean acknowledged digests → manager"]]},
+  "rd-converge":{eyebrow:"Tier B · R&D · the gate",name:"Converge Gate",code:"// green-lights the next stage",
+    rule:"Not an office — the output gate. A fresh measure of agreement: CONVERGE / PARTIAL / DIVERGE. Agreement — not authority — green-lights the plan. Only a green, signed plan leaves R&D: to operator review, then back to the GM to plan the implementation fan-out. Disagreement routes back to the Studio (redesign) or a closer.",
+    cast:[["Convergence Arbiter","flag"]],
+    flow:[["in","all audit verdicts + dissent"],["out","green plan → operator → GM"]]},
+
+  "fac-build":{eyebrow:"Tier B · Factory · the build office = the workshops",name:"Build Floor — Workshops",code:"// the production lines",
+    rule:"The Build Floor and the workshops are ONE thing: the build office IS its production lines. The build specialists have home desks here — the Build Manager, the Builders pool, the Math Field and Architect Field (same framing as their R&D homes — settled math holds, build matches the signed design), and Test/Verify with the one Committer — but they don't build at their desks. When a campaign is ready they go into a Workshop and work the line there: one builder per disjoint surface, atomic write per file, exactly one Committer to the real tree. Each Workshop is one campaign's production line; spawn as many as the load needs. Click a Workshop to see who's on its line.",
+    cast:[["Build Manager","flag"],["Builders pool","flag"],["Math Field","flag"],["Architect Field","flag"],["Test/Verify · one Committer","flag"]],
+    flow:[["in","the green signed plan + settled math"],["out","built (uncommitted) → Audit Room"]]},
+  "fac-audit":{eyebrow:"Tier B · Factory · fresh adversarial",name:"Audit Room (Factory)",code:"// always a fresh, separate agent",
+    rule:"A separate fresh agent working adversarially against the Build Floor managers (author≠auditor by separate context). All current audit functions — independent → adversarial → audit-of-execution (every identifier resolves; diff vs a pre-change backup) → audit-of-audit → mandatory secondary — PLUS a representative math and architect seat it can deploy as adversarial sub-agents to check the build's math and design independently.",
+    cast:[["Audit Manager (fresh)","flag"],["Independent · Adversarial","flag"],["Audit-of-Execution · Secondary","flag"],["math & architect adversarial seats","flag"]],
+    flow:[["in","the built artifact + its signed plan"],["out","PASS / REVISE / FAIL → GM"]]},
+  "fac-intern":{eyebrow:"Tier B · Factory · mechanical pool",name:"Intern Pool (Factory)",code:"// script-scaled · serves both offices",
+    rule:"The factory's mechanical pool, same logic as R&D's: script-scaled to load, serving both factory offices. Folds the ground-truth Scout / confirm (does the real tree still match what the plan assumed?) plus folding / aggregation of build and audit outputs. Boils & simmers to fresh digests the manager acknowledges; bounded surface per worker; handover to disk at ~80% context so the next mechanical agent continues on scope.",
+    cast:[["Ground-truth Scout / confirm","reg"],["Folders / Aggregators ×N","reg"],["(scales with load · handover @ ~80% ctx)","reg"]],
+    flow:[["in","raw build/audit scratch + the real tree"],["out","clean acknowledged digests → manager"]]},
+
+  "mr-1":{eyebrow:"Tier B · R&D · co-working space",name:"Meeting Room (per campaign)",code:"// one room = one campaign · numbered, spawnable",
+    rule:"A Meeting Room is one campaign's planning gathering. Instead of hunting a racing list of agents to learn who's doing what, you glance at one room and everyone inside is on the same campaign: the Planner and Math seats come in from the Architect's Studio, the scouts from the Intern Pool — they keep their home desks, but their live work shows here. The audit stays in a SEALED booth (author≠auditor — a separate context), attached for legibility but never sharing the room's thread. Rooms are numbered so it's obvious the system spawns one per active campaign and as many as the load needs; in real use each carries the campaign's natural-parent lane name (the GM keeps it stable, so you never chase names). Born when planning starts; dissolves when the plan crosses the gate.",
+    cast:[["Planner ◂ Studio","flag"],["Math ◂ Studio","flag"],["Scouts ×2 ◂ Intern Pool","reg"],["⊟ sealed audit booth","flag"]],
+    flow:[["in","anchor + the campaign"],["out","a green plan → the Converge Gate"]]},
+  "mr-2":{eyebrow:"Tier B · R&D · co-working space",name:"Meeting Room (in review)",code:"// a second campaign, in end-of-plan review",
+    rule:"A second Meeting Room shows the model holds for any number of campaigns at once: this one is in end-of-plan review. The rival/alt-design and simulation seats come in from the Studio to pressure the plan before convergence; the sealed audit booth runs adversarially on its own context. You read the room (and, in real use, its lane name) and know what this cluster is about — no agent names to track. When it converges it crosses the gate and reopens as a Workshop on the Factory floor.",
+    cast:[["Rival design ◂ Studio","flag"],["Sim ◂ Studio","flag"],["⊟ sealed audit booth","flag"]],
+    flow:[["in","the draft plan"],["out","converge / send-back"]]},
+  "ws-1":{eyebrow:"Tier B · Factory · co-working space",name:"Workshop (per campaign)",code:"// the Build Floor's production line for one campaign",
+    rule:"A Workshop is one campaign's production line — the Build Floor in action. The build specialists keep desks on the Build Floor, but they come into a Workshop to actually build: builders (one per disjoint surface, atomic write per file), the Math Field check, and the single Committer to the real tree. The audit runs in a SEALED booth adversarially (author≠auditor). You watch one numbered room, not a swarm scattered across a list — and when it's signed off the Workshop dissolves and the crew returns to their desks. Spawn as many Workshops as the load needs; in real use each carries its campaign's natural-parent lane name.",
+    cast:[["Builders ×2 ◂ Build Floor","flag"],["Math Field ◂ Build Floor","flag"],["Committer ◂ Build Floor","flag"],["⊟ sealed audit booth","flag"]],
+    flow:[["in","the green signed plan + settled math"],["out","built artifact → audit → Decide"]]},
+  "ws-2":{eyebrow:"Tier B · Factory · co-working space",name:"Workshop (surface clash held)",code:"// a second line — a block, made legible",
+    rule:"A second Workshop, currently held on a surface clash — two builders staged writes to the same file, so the one-builder-per-surface law tripped and the Committer waits until the line re-splits. Because the work is batched into one room, the block is legible at a glance: the room shows red, not an anonymous agent buried in a list. The Architect Field seat comes in from the Build Floor to confirm conformance to the signed design; the sealed audit booth watches adversarially.",
+    cast:[["Builders ×2 ◂ Build Floor","flag"],["Arch Field ◂ Build Floor","flag"],["⊟ sealed audit booth","flag"]],
+    flow:[["in","the green plan"],["out","re-split → resume build"]]},
+  "cowork-spawn":{eyebrow:"Co-working · capacity",name:"Spawn on demand",code:"// rooms are created per campaign, reaped when done",
+    rule:"Co-working spaces are not a fixed set — the system spawns one per active campaign and reaps it when the work folds. The same pattern runs on every floor: a Meeting Room (R&D), a Workshop (Factory), and a Command Co-Working Room / Service Bay (above the barrier). That's why they're numbered, not pre-named: capacity scales to the load (and the activation rung), so a busy floor reads as a handful of named rooms instead of a racing list of agents. The specialists' home offices stay put; only the rooms come and go.",
+    cast:[["(spawns when a campaign activates)","reg"]],
+    flow:[["in","a new campaign reaches plan / build"],["out","a fresh room · reaped on fold"]]},
+};
+
+const FLOW = [
+  ["SET","Intent","cap"],
+  ["INTV","Interview · pure-dev Gate 1","cap"],
+  ["NAV","Anchor doc","cap"],
+  ["AR","Compose wave","svc"],
+  ["GM","Dispatch",""],
+  ["R&D","Study","rd"],
+  ["R&D","Plan","rd"],
+  ["R&D","Simulate","rd"],
+  ["R&D","Audit-plan","rd"],
+  ["ADV","Adversarial","rd"],
+  ["GATE","Converge","gate"],
+  ["YOU","Operator OK","cap"],
+  ["GM","Re-plan: fan-out",""],
+  ["FAB","Build","fab"],
+  ["FAB","Verify","fab"],
+  ["FAB","Audit-exec","fab"],
+  ["DEV","Ship-ready","svc"],
+  ["YOU","Decide","cap"],
+  ["PUSH","Push Operator","svc"],
+  ["DONE","Deliver",""],
+];
+
+const rib = document.getElementById('ribbon');
+FLOW.forEach((s,i)=>{
+  const step=document.createElement('div');step.className='step';
+  const chip=document.createElement('div');chip.className='chip'+(s[2]?' '+s[2]:'');
+  chip.innerHTML='<span class="ph">'+s[0]+'</span><span class="nm">'+s[1]+'</span>';
+  step.appendChild(chip);
+  if(i<FLOW.length-1){const a=document.createElement('span');a.className='arrow'+((s[2]==='cap'||FLOW[i+1][2]==='cap')?' cap':'');a.textContent='→';step.appendChild(a);}
+  rib.appendChild(step);
+});
+
+const tierName={flag:'FLAG',reg:'REG',cap:'CAP'};
+const dossier=document.getElementById('dossier');
+function render(key){
+  const r=ROOMS[key];if(!r)return;
+  let cast=r.cast.map(c=>`<div class="cast-row"><span class="nm">${c[0]}</span><span class="tier ${c[1]}">${tierName[c[1]]}</span></div>`).join('');
+  let flow=r.flow.map(f=>`<div class="flow-line"><span class="ar">${f[0]==='in'?'▸ in':'◂ out'}</span><span>${f[1]}</span></div>`).join('');
+  dossier.innerHTML=`
+    <div class="d-eyebrow">${r.eyebrow}</div>
+    <div class="d-name">${r.name}</div>
+    <div class="d-code">${r.code}</div>
+    <div class="d-sec"><h4>The law this wall enforces</h4><div class="d-rule">${r.rule}</div></div>
+    <div class="d-sec"><h4>Who sits here</h4>${cast}</div>
+    <div class="d-sec"><h4>Work flow</h4>${flow}</div>`;
+}
+document.querySelectorAll('[data-room]').forEach(el=>{
+  el.addEventListener('click',(e)=>{
+    e.stopPropagation();   // a room nested inside another (workshops inside the Build Floor) selects itself, not its container
+    document.querySelectorAll('.sel').forEach(s=>s.classList.remove('sel'));
+    el.classList.add('sel');
+    render(el.dataset.room);
+    if(window.innerWidth<980) dossier.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+});
+
+/* ===== merged: THE LOOP flowchart ===== */
+const LOOPFLOW=[
+ {type:'op',  name:'SET',          sub:'operator hands in a raw idea → Chief of Staff', tag:'you'},
+ {type:'mgr', name:'Operator Interview', sub:'[AR] runs a few ping-pong rounds — deepen scope, define the ENVIRONMENT (pure-dev vs production) & risks before any plan'},
+ {type:'gate',name:'GATE — interview done', sub:'PURE-DEV: this IS Gate 1 → OK to plan · PRODUCTION: sets per-campaign human-in-the-loop stops (gate count = the environment minimum)', tag:'you', back:'more questions → keep interviewing'},
+ {type:'cap', name:'Anchor doc',   sub:'Navigator shapes intent (consumes AR\'s interview digest) → scope & what “done” means', tag:'cap'},
+ {type:'mgr', name:'GM Dispatch',  sub:'AR designs the wave shape → GM plans WHO does what (not the work) · one appender per ledger — a Campaign GM (one per campaign lane, under a Group GM) owns each ledger; its dedicated Sonnet Ledger Assistant physically appends'},
+ {type:'zone',zone:'rd',title:'R&D — the office · plan & simulate (sandbox) · runs in a Meeting Room (seconded specialists, one room per campaign)',stages:[
+    {name:'Study',          ss:'scouts → digests · audit-of-study'},
+    {name:'Settle Math',    ss:'Math Lab (walled) — settle before code sees it'},
+    {name:'Plan',           ss:'Planner authors the plan vs studied substrate'},
+    {name:'Simulate',       ss:'throwaway prototype · force hidden ambiguity'},
+    {name:'Audit-of-Plan',  ss:'independent → adversarial → audit² → secondary + rival design · sealed audit booth rides the room (separate context)'},
+    {name:'Converge',       ss:'agreement, not authority — GREEN only', gate:true, back:'DIVERGE → Plan'},
+ ]},
+ {type:'cap', name:'Final Eye',       sub:'human-style review vs the original anchor (seat TBD — open: Navigator or Audit Room)', tag:'cap'},
+ {type:'gate',name:'OPERATOR REVIEW', sub:'GATE — plan review · pure-dev: THIS IS GATE 2 — the packaged plan as a VISUAL BOARD + simplified-English walkthrough + code examples + stack + wave shapes (never raw words) → "OK, proceed" / send back · production: one of the per-campaign operator stops set by the interview', tag:'you', back:'send-back → R&D'},
+ {type:'mgr', name:'GM Re-plan',      sub:'implementation fan-out: how to parallelise & split across managers (each its own Campaign GM + ledger)'},
+ {type:'zone',zone:'fab',title:'Factory — the floor · execute the green plan (real tree) · runs in a Workshop (the Build Floor IS its workshops — the production lines)',stages:[
+    {name:'Build',              ss:'one builder per disjoint surface + field math/arch checks on the line · seconded into the Workshop'},
+    {name:'Test / Verify',     ss:'run it · render · parse — never assume'},
+    {name:'Audit-of-Execution',ss:'every identifier resolves · diff vs backup → audit² → secondary · sealed audit booth rides the Workshop (separate context)'},
+ ]},
+ {type:'cap', name:'Final Eye', sub:'review the finished build vs intent (seat TBD — open: Navigator or Audit Room)', tag:'cap'},
+ {type:'gate',name:'DECIDE',    sub:'irreducible calls, evidence prepared → sign / send back', tag:'you', back:'send-back → re-plan / rebuild'},
+ {type:'mgr', name:'DevOps — push gate', sub:'last review + only door to production · agents COMMIT but never PUSH — the single Push Operator pushes only on a logged operator OK (pure-dev may waive; production refuses auto-push: the comms office surfaces DevOps\'s change-info to the operator first, who confirms each campaign\'s push)'},
+ {type:'done',name:'Fold & Hand Off', sub:'merge additively · drop nothing · clean baton · each ledger seals to vX, the index keeps the list'},
+];
+const lpflow=document.getElementById('lpflow');
+function lpConn(){const c=document.createElement('div');c.className='lp-conn';return c;}
+LOOPFLOW.forEach((n,i)=>{
+  if(n.type==='zone'){
+    const z=document.createElement('div');z.className='lp-zone '+n.zone;
+    z.innerHTML='<div class="zt">◇ '+n.title+'</div>';
+    n.stages.forEach((s,j)=>{
+      const st=document.createElement('div');st.className='lp-stage'+(s.gate?' gate':'');
+      st.innerHTML='<div class="sn">'+s.name+'</div><div class="ss">'+s.ss+'</div>';
+      z.appendChild(st);
+      if(s.back){const b=document.createElement('div');b.className='lp-back';b.innerHTML='↺ <b>'+s.back+'</b>';z.appendChild(b);}
+      if(j<n.stages.length-1){const m=document.createElement('div');m.className='lp-mini';z.appendChild(m);}
+    });
+    lpflow.appendChild(z);
+  } else {
+    const d=document.createElement('div');d.className='lp-node '+n.type;
+    let tag=n.tag?'<span class="lp-tag '+n.tag+'">'+(n.tag==='you'?'YOU':'CAPTAIN LOOP')+'</span>':'';
+    d.innerHTML='<div class="nm">'+n.name+' '+tag+'</div><div class="sb">'+n.sub+'</div>';
+    lpflow.appendChild(d);
+    if(n.back){const b=document.createElement('div');b.className='lp-back';b.innerHTML='↺ <b>'+n.back+'</b>';lpflow.appendChild(b);}
+  }
+  if(i<LOOPFLOW.length-1)lpflow.appendChild(lpConn());
+});
+
+/* ===== view tabs (generic) ===== */
+const allViews=document.querySelectorAll('[id^="view-"]');
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    const v=t.dataset.view;
+    allViews.forEach(el=>{el.style.display=(el.id==='view-'+v)?'':'none';});
+    if(v==='graph') initGraph();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* ===== ORG & LEDGER renderer (data from office-data.js → window.ORGSPEC) ===== */
+(function(){
+  const S=window.ORGSPEC, root=document.getElementById('view-org');
+  if(!root) return;
+  if(!S){ root.innerHTML='<p style="color:var(--label-dim);font-family:monospace;font-size:12px">office-data.js not loaded — open this file from its folder so the data asset can load.</p>'; return; }
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const accCard={append:'a-append','read+scratch':'a-readscratch',read:'a-read','scratch-only':'a-scratch',none:'a-none'};
+  const accChip={append:'append','read+scratch':'readscratch',read:'read','scratch-only':'scratch',none:''};
+  const nameById={}; S.org.forEach(u=>nameById[u.id]=u.name);
+  const markCls=m=>/OBSERVATION/.test(m)?'mOBSERVATION':/STEER/.test(m)?'mSTEER':/BLOCKING/.test(m)?'mBLOCKING':/\bACK\b/.test(m)?'mACK':/DEFER/.test(m)?'mDEFER':/ESCALATE/.test(m)?'mESCALATE':/ACTIVATE|WIND/.test(m)?'mACT':'';
+  const shortType=m=>/ACTIVATE|WIND/.test(m)?'ACTIVATE/WIND-DOWN':m;
+
+  let h='';
+  h+='<div class="og-summary">'+esc(S.summary)+'</div>';
+  h+='<div class="og-nav"><a href="#og-roster">▸ Roster ('+S.org.length+')</a><a href="#og-ledger">▸ Ledger model</a><a href="#og-flow">▸ Campaign flow</a><a href="#og-open">▸ Open questions ('+S.openQuestions.length+')</a></div>';
+
+  h+='<div class="og-sec" id="og-roster"><h2>The Roster <span class="ct">// '+S.org.length+' units · border &amp; chip colour = ledger access (append / read+scratch / read / scratch-only)</span></h2></div>';
+  S.tiers.forEach(t=>{
+    const units=S.org.filter(u=>u.tier===t.id);
+    h+='<div class="og-sec"><h2>Tier '+esc(t.id)+' — '+esc(t.name)+' <span class="ct">'+units.length+' units</span></h2><div class="tline">'+esc(t.oneLine)+'</div></div>';
+    [...new Set(units.map(u=>u.dept))].forEach(dp=>{
+      const us=units.filter(u=>u.dept===dp).sort((a,b)=>(a.level-b.level)||a.name.localeCompare(b.name));
+      h+='<div class="og-group">'+esc(dp)+' · '+us.length+'</div><div class="og-grid">';
+      us.forEach(u=>{
+        h+='<div class="og-card '+(accCard[u.ledgerAccess]||'a-read')+'">'
+          +'<div class="og-h"><span class="og-name">'+esc(u.name)+'</span><span class="og-kind">'+esc(u.kind)+'</span></div>'
+          +'<div class="og-meta"><span class="og-chip '+esc(u.modelTier)+'">'+esc(u.modelTier)+'</span><span class="og-chip">'+esc(u.ledgerSide)+'</span><span class="og-chip '+(accChip[u.ledgerAccess]||'')+'">'+esc(u.ledgerAccess)+'</span></div>'
+          +'<div class="og-op">'+esc(u.operates)+'</div>'
+          +'<div class="og-rep">'+(u.parent?('↳ reports to '+esc(nameById[u.parent]||u.parent)):'↳ apex / human-launched peer')+'</div>'
+          +((u.seats&&u.seats.length)?'<div class="og-seats">seats: '+u.seats.map(esc).join(' · ')+'</div>':'')
+          +(u.notes?'<div class="og-notes">'+esc(u.notes)+'</div>':'')
+          +'</div>';
+      });
+      h+='</div>';
+    });
+  });
+
+  const L=S.ledger;
+  h+='<div class="og-sec" id="og-ledger"><h2>The Coordination Ledger — internal model</h2><div class="tline">'+esc(L.structure)+'</div></div>';
+  h+='<div class="og-group">the bus — '+L.tables.length+' tables</div><div class="og-led-tables">';
+  L.tables.forEach(t=>{
+    h+='<div class="og-tbl"><h4>'+esc(t.name)+'</h4><div class="pp">'+esc(t.purpose)+'</div><table>'
+      +(t.fields||[]).map(f=>'<tr><td class="f">'+esc(f.name)+'</td><td class="t">'+esc(f.type)+'</td><td>'+esc(f.note)+'</td></tr>').join('')+'</table></div>';
+  });
+  h+='</div>';
+  h+='<div class="og-group">mark types</div><table class="og-marks"><tr><th>Mark</th><th>Ack</th><th>Meaning</th></tr>';
+  L.markTypes.forEach(m=>{ h+='<tr><td class="mk '+markCls(m.mark)+'">'+esc(shortType(m.mark))+'</td><td class="og-ack">'+esc(m.ack)+'</td><td>'+esc(m.meaning)+'</td></tr>'; });
+  h+='</table>';
+  h+='<div class="og-group">mark lifecycle</div><ol class="og-life">'+L.lifecycle.map(s=>'<li>'+esc(String(s).replace(/^\s*\d+\.\s*/,''))+'</li>').join('')+'</ol>';
+  h+='<div class="og-group">example ledger (showcase)</div><div class="og-pre">'+L.example.map(e=>
+      '<span class="id">'+esc(e.id)+'</span>  <span class="'+markCls(e.type)+'">'+esc(shortType(e.type))+'</span>  <span class="au">['+esc(e.author)+']</span>  <span class="ts">'+esc(e.time)+'</span>\n    '+esc(e.body)
+    ).join('\n')+'</div>';
+  h+='<div class="og-group">ledger rules · '+L.rules.length+'</div><ul class="og-rules">'+L.rules.map(r=>'<li>'+esc(r)+'</li>').join('')+'</ul>';
+
+  h+='<div class="og-sec" id="og-flow"><h2>The campaign flow <span class="ct">// '+S.flow.length+' steps · work + marks moving through the org</span></h2></div>';
+  h+='<table class="og-flowtbl"><tr><th>#</th><th>Step</th><th>Actor</th><th>Action</th><th>Ledger</th></tr>';
+  S.flow.forEach((f,i)=>{ h+='<tr><td>'+(i+1)+'</td><td class="s">'+esc(f.step)+'</td><td class="led">'+esc(f.actor)+'</td><td>'+esc(f.action)+'</td><td class="led">'+esc(f.ledger)+'</td></tr>'; });
+  h+='</table>';
+
+  h+='<div class="og-sec" id="og-open"><h2>Open questions <span class="ct">// resolve before writing the logic</span></h2></div><ol class="og-q">'+S.openQuestions.map(q=>'<li>'+esc(q)+'</li>').join('')+'</ol>';
+
+  root.innerHTML=h;
+})();
+
+/* ===== GRAPH (Obsidian-style force graph) ===== */
+const GCOL={loop:'#c9a8e8',cmd:'#e8a13c',cmd2:'#5b9dc4',ledger:'#5fd29a',rd:'#b88be0',fac:'#e8a13c',gate:'#5fb98c',human:'#c9a8e8'};
+const GN=[
+  {id:'captain',label:'Captain (you)',g:'human',r:15,sx:.50,sy:.07,pin:1,e:'Apex · the human',d:'You. Reached only through the two comms lanes; you spend doubt + decision at the two gates.'},
+  {id:'chief',label:'Chief of Staff',g:'loop',r:10,sx:.37,sy:.17,e:'Comms · main lane',d:'Main lane: carries intent in, surfaces the gates out, packages each decision with evidence.'},
+  {id:'aide',label:"Operator's Aide",g:'loop',r:9,sx:.63,sy:.17,e:'Comms · side lane',d:'Always-open side lane for status & questions — never touches the main gate lane.'},
+  {id:'nav',label:'Navigator',g:'loop',r:13,sx:.50,sy:.22,e:'THE Captain Loop',d:'Apex oversight beside the GM. Holds intent+anchor docs, reviews plans, calls situations.'},
+  {id:'sanity',label:'Sanity Watch',g:'loop',r:9,sx:.62,sy:.30,e:'Captain Loop · ~7–10 min',d:'Sweeps the Ledger for drift/conflict; can STEER or send work back to planning.'},
+  {id:'gm',label:'General Manager',g:'cmd',r:15,sx:.50,sy:.42,e:'Command · one appender per ledger',d:'Plans WHO does what (not the work) and dispatches within AR\'s composed shape. NOT a single global appender: a Group GM owns the index/cross-campaign ledger and a Campaign GM owns each campaign\'s ledger. The physical append is done by a cheap Sonnet Ledger Assistant per ledger (one hand per ledger); the manager reads the tail and ACK / STEERs. All work flows through it.'},
+  {id:'ar',label:'Agent Resources',g:'cmd2',r:12,sx:.22,sy:.34,e:'Service/peer · the assembly architect',d:'A standing, non-dispatching PEER beside the GM. Designs each effort (loop shape, #agents, offices, naming) + the activation script, runs the first-request operator interview, re-composes multiple times across the lifecycle (incl. on new substance / side-quests), and mints new agent TYPES from a pool (types = seats, never offices) → hands an index + document to a manager. Surfaces as OBSERVATION [AR]; never appends.'},
+  {id:'creative',label:'Creative / Visual',g:'cmd2',r:11,sx:.20,sy:.50,e:'Service/peer · serves everyone',d:'The single home for ALL visuals in one style — boards, diagrams, mermaid, plans-as-visuals. Hard rule: never send the operator words or raw docs — always visualize, including the plan. Invoked by the GMs and the Navigator, not by script.'},
+  {id:'task',label:'Task Mgrs',g:'cmd2',r:11,sx:.35,sy:.47,e:'Command · under GM',d:'Each runs a disjoint slice of seats, reads its own ledger, and surfaces up to the GM — never holds the whole board.'},
+  {id:'shadow',label:'Shadow Office',g:'cmd2',r:11,sx:.66,sy:.47,e:'Command · human-launched peer',d:'A peer (own thread) challenging premises live; its Triage Cell SCORES the activation rung (AR consumes that score).'},
+  {id:'mapping',label:'Mapping Office',g:'cmd2',r:10,sx:.50,sy:.52,e:'Records umbrella · continuity',d:'ONE office, dedicated narrow-scope agents (run long → ~85% handover): Campaign Mapper (the campaign map / continuity), Archive (prune/digest/index everything into the North-Star intent; spawns hundreds of cheap Sonnet diggers), Librarian (campaign docs, rules, wiki, visual boards). The legacy Campaign Archivist / Handover Clerk folds into Archive.'},
+  {id:'devops',label:'DevOps',g:'cmd',r:12,sx:.80,sy:.34,e:'Service/peer · the only door to production',d:'The last review and the only door to production. Holds + indexes every change (by time / manager / ID). Every seat may COMMIT but NO seat may PUSH — the single Push Operator pushes only on an explicit, logged operator OK routed through a manager. Production refuses auto-push (waiver only in pure-dev).'},
+  {id:'ledger',label:'THE LEDGER',g:'ledger',r:18,sx:.50,sy:.62,pin:1,e:'The barrier · a hierarchy of ledgers',d:'A HIERARCHY mirroring the company: per-campaign ledger → manager-layer ledger → main index ledger (names + numbers only) + a live track board. Append-only + monotonic #id per ledger; one appender per ledger (the Sonnet Ledger Assistant), everyone reads. At a KB cap a ledger SEALS to vX and the index keeps the list. The hub every screen and the phone read from.'},
+  {id:'ledgerasst',label:'Ledger Assistant',g:'ledger',r:8,sx:.40,sy:.55,e:'Ledger · the single appending hand',d:'Dedicated cheap (Sonnet) appender per ledger; collects scratch and appends — one hand per ledger, no collisions. The manager reads the tail and issues ACK / STEER; this seat does the physical append on the manager\'s decision.'},
+  {id:'studio',label:"Architect's Studio",g:'rd',r:14,sx:.17,sy:.72,e:'R&D · design office',d:'Multiple positions within one agent: holds the Math Lab, Planner, Simulation and rival-design positions at once. Keeps home desks here; seconded into a numbered Meeting Room (one co-working space per campaign) to plan & review.'},
+  {id:'rdaudit',label:'R&D Audit Room',g:'rd',r:12,sx:.28,sy:.86,e:'R&D · fresh adversarial',d:'Always a fresh separate agent auditing the Studio; rides each Meeting Room as a sealed audit booth (separate context): independent → adversarial → audit² → secondary → Final Eye.'},
+  {id:'rdintern',label:'R&D Intern Pool',g:'rd',r:11,sx:.10,sy:.88,e:'R&D · mechanical pool',d:'Script-scaled crew; folds the Scout Bay; boils outputs to digests; serves both R&D offices.'},
+  {id:'converge',label:'Converge Gate',g:'gate',r:10,sx:.40,sy:.74,e:'R&D · the green passport',d:'Measures agreement; only a green, signed plan leaves R&D.'},
+  {id:'opreview',label:'Operator Review',g:'gate',r:11,sx:.50,sy:.83,e:'Plan Review Gate · you',d:'You review the green plan (plans + summaries + visual aids) → go or send back. Gate number is set by the environment: in pure-dev this is Gate 2; in production it is one of the per-campaign operator stops.'},
+  {id:'build',label:'Build Floor',g:'fac',r:14,sx:.83,sy:.72,e:'Factory · build office = its workshops',d:'Multiple positions within one agent (builders + Math Field + Architect Field + Test/Verify + one Committer). The Build Floor IS its Workshops — specialists keep home desks here and are seconded into a numbered Workshop (one co-working space per campaign) to work the line.'},
+  {id:'facaudit',label:'Factory Audit Room',g:'fac',r:12,sx:.72,sy:.86,e:'Factory · fresh adversarial',d:'Fresh separate agent vs the Build Floor; rides each Workshop as a sealed audit booth (separate context): audit-of-execution + math & architect adversarial seats.'},
+  {id:'facintern',label:'Factory Intern Pool',g:'fac',r:11,sx:.90,sy:.88,e:'Factory · mechanical pool',d:'Script-scaled crew; folds ground-truth scout/confirm; serves both factory offices.'},
+  {id:'decide',label:'Decide',g:'gate',r:11,sx:.62,sy:.80,e:'Gate · you',d:'You sign the finished build (evidence prepared) → ship or send back. The gate count is set by the environment: pure-dev signs the packaged plan + the finished build; production adds a stop per campaign.'},
+  {id:'world',label:'World / LIVE',g:'gate',r:12,sx:.92,sy:.50,e:'Production · the only way out',d:'Production, outside the office boundary. Reached through exactly one locked door — the DevOps Push Operator, on full-hierarchy green (and the operator\'s OK for live systems). Agents commit inside the office all day; nothing leaves until it passes through DevOps.'},
+];
+const GE=[
+  // work flow
+  ['captain','chief','flow'],['chief','nav','flow'],['nav','gm','flow'],['gm','studio','flow'],
+  ['studio','rdaudit','flow'],['rdaudit','converge','flow'],['converge','opreview','flow'],['opreview','gm','flow'],
+  ['gm','build','flow'],['build','facaudit','flow'],['facaudit','decide','flow'],['decide','captain','flow'],
+  // production exit — DevOps is the only door to the world
+  ['decide','devops','flow'],['devops','world','flow'],
+  // reporting / serves / peer
+  ['aide','captain','rep'],['sanity','nav','rep'],['gm','task','rep'],['gm','mapping','rep'],['gm','shadow','peer'],
+  ['ar','gm','peer'],['creative','gm','serve'],['creative','nav','serve'],['devops','gm','peer'],
+  ['studio','rdintern','serve'],['rdaudit','rdintern','serve'],['build','facintern','serve'],['facaudit','facintern','serve'],
+  // ledger — the Ledger Assistant is the single appending hand; the GM reads + ACK/STEERs
+  ['gm','ledgerasst','peer'],['ledgerasst','ledger','lw'],['gm','ledger','lr'],
+  ['nav','ledger','lr'],['sanity','ledger','lr'],['task','ledger','lr'],['shadow','ledger','lr'],['mapping','ledger','lr'],
+  ['chief','ledger','lr'],['studio','ledger','lr'],['rdaudit','ledger','lr'],['rdintern','ledger','lr'],
+  ['build','ledger','lr'],['facaudit','ledger','lr'],['facintern','ledger','lr'],
+  ['ar','ledger','lr'],['creative','ledger','lr'],['devops','ledger','lr'],
+];
+const GNI={}; GN.forEach(n=>GNI[n.id]=n);
+let gcv,gx,gW,gH,gInit=false,gDrag=null,gHover=null,graphRAF=null,gDPR=Math.min(2,window.devicePixelRatio||1);
+function gColor(n){return GCOL[n.g]||'#8fb0c9';}
+function sizeGraph(){const w=gcv.parentElement.clientWidth;gW=w;gH=640;gcv.width=gW*gDPR;gcv.height=gH*gDPR;gcv.style.height=gH+'px';gx.setTransform(gDPR,0,0,gDPR,0,0);}
+function initGraph(){
+  if(gInit){ sizeGraph(); return; }
+  gInit=true;
+  gcv=document.getElementById('gcanvas'); gx=gcv.getContext('2d'); sizeGraph();
+  GN.forEach(n=>{n.x=n.sx*gW;n.y=n.sy*gH;n.vx=0;n.vy=0;});
+  for(let i=0;i<200;i++) gStep(); // pre-settle so the first painted frame is already arranged
+  // interaction
+  const pos=e=>{const b=gcv.getBoundingClientRect();return{x:e.clientX-b.left,y:e.clientY-b.top};};
+  const pick=p=>{let best=null,bd=1e9;GN.forEach(n=>{const d=(n.x-p.x)**2+(n.y-p.y)**2;if(d<bd&&d<(n.r+8)**2){bd=d;best=n;}});return best;};
+  gcv.addEventListener('mousedown',e=>{const n=pick(pos(e));if(n){gDrag=n;gcv.classList.add('grabbing');}});
+  window.addEventListener('mousemove',e=>{if(!gInit)return;const p=pos(e);
+    if(gDrag){gDrag.x=p.x;gDrag.y=p.y;gDrag.vx=0;gDrag.vy=0;}
+    else{const n=pick(p);gHover=n;gcv.style.cursor=n?'pointer':'grab';}});
+  window.addEventListener('mouseup',()=>{gDrag=null;gcv.classList.remove('grabbing');});
+  gcv.addEventListener('click',e=>{const n=pick(pos(e));const d=document.getElementById('gdetail');
+    if(n){document.getElementById('gd-e').textContent=n.e;document.getElementById('gd-n').textContent=n.label;document.getElementById('gd-p').textContent=n.d;d.style.display='block';}else{d.style.display='none';}});
+  gLoop(); // draw the first frame immediately, then self-arm via rAF
+}
+function gStep(){
+  const REP=5200, SPR=0.015, CEN=0.012, DAMP=0.86;
+  const len={flow:96,lr:120,lw:80,rep:78,serve:70,peer:104};
+  for(let i=0;i<GN.length;i++){const a=GN[i];if(a===gDrag||a.pin)continue;
+    for(let j=0;j<GN.length;j++){if(i===j)continue;const b=GN[j];let dx=a.x-b.x,dy=a.y-b.y;let d2=dx*dx+dy*dy||0.01;const f=REP/d2;const d=Math.sqrt(d2);a.vx+=f*dx/d;a.vy+=f*dy/d;}
+    a.vx+=(gW/2-a.x)*CEN; a.vy+=(gH/2-a.y)*CEN;
+  }
+  GE.forEach(e=>{const a=GNI[e[0]],b=GNI[e[1]];const L=len[e[2]]||90;let dx=b.x-a.x,dy=b.y-a.y;let d=Math.hypot(dx,dy)||0.01;const f=SPR*(d-L);const ux=dx/d,uy=dy/d;
+    if(a!==gDrag&&!a.pin){a.vx+=f*ux;a.vy+=f*uy;} if(b!==gDrag&&!b.pin){b.vx-=f*ux;b.vy-=f*uy;}});
+  GN.forEach(n=>{if(n===gDrag||n.pin)return;n.vx*=DAMP;n.vy*=DAMP;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(n.r+6,Math.min(gW-n.r-6,n.x));n.y=Math.max(n.r+6,Math.min(gH-n.r-6,n.y));});
+}
+/* ===== cold-start block ===== */
+const COLDSTART =
+`COLD START — AEGIS Office   (paste into a new agent, then add your request)
+
+PROJECT: an opinionated agent-orchestration engine wrapped in a watchable "office" UI. Hand it a raw idea; it interviews you, plans under a multi-agent method ("Maestro"), brings it back for a green-light, builds it, returns it signed — the human appears at gates whose number the project environment sets. Repo: C:\\AEGIS_OFFICE (github.com/TomaDev23/AEGIS_Office). Stage: DESIGN / SPEC — write NO production code unless I explicitly ask.
+
+READ IN THIS ORDER before acting:
+  1. CLAUDE.md — operating rules, locked decisions, current state (AGENTS.md mirrors it).
+  2. docs/CANONICAL-LOOP.md — authoritative spec of how a campaign flows. THIS WINS any conflict.
+  3. docs/anchor/INTENT.md — what we're building & why; locked vs open.
+  4. docs/ORG-AND-LEDGER.md — the org (offices-as-capabilities) + the SQLite ledger/bus internals.
+  5. docs/anchor/concerns-and-questions.md — open design questions (pre-logic).
+  6. docs/reference/01–10 — VERBATIM source texts. IMMUTABLE: never edit; add new references only. (Ref 10 = the operator's 2026-06-15 rulings message.)
+  Visual: open the-office.html — 4 tabs: Floor Plan (homes + numbered co-working spaces: Meeting Rooms / Workshops + above-barrier Command Co-Working Rooms) · The Loop · Org & Ledger · Graph.
+
+LOCKED (do not relitigate — CLAUDE.md §3):
+  • Offices = capabilities; a work-floor office is MULTIPLE POSITIONS WITHIN ONE AGENT — one manager on one thread filling several responsibilities by spawning in-thread sub-agents, NOT a swarm of cold-start agents. Only Audit Rooms are always fresh, separate agents. Intern Pools are script-scaled mechanical crews. At ~80% context an agent writes a handover to disk; the next continues (roles outlive instances).
+  • Two location-types per work floor: HOMES (offices) organised by capability — where a specialist keeps a desk and its standing state — and CO-WORKING SPACES organised by campaign, one numbered, spawnable room per active campaign (spawn on demand, reaped on fold). Meeting Room = the R&D co-working space (plan & review); Workshop = the Factory co-working space (build). THE BUILD FLOOR *IS* ITS WORKSHOPS — the workshops are the production lines where building happens, not a separate box beside them. Specialists are SECONDED in from their home desks; the Audit Room rides each room as a SEALED AUDIT BOOTH (separate context, author≠auditor). The GM names each room after the campaign's natural-parent lane and keeps it stable, so the operator reads the ROOM, not a racing list of agents.
+  • Two tiers split by the Ledger barrier. Captain Loop (Navigator + ~7–10 min Sanity Watch) at the apex — ONLY the apex sees full traffic, and only as digests. Human appears at gates whose NUMBER the project ENVIRONMENT sets (see flows below), reached only via the two comms lanes.
+  • Tier A also carries a SERVICE / PEER band beside the GM — non-dispatching peers that serve every floor (they don't boss anyone): AGENT RESOURCES (AR/AGR) designs each effort's shape (loop, #agents, offices, naming) + the activation script, runs the first-request OPERATOR INTERVIEW, re-composes multiple times across the lifecycle (incl. on new substance / side-quests), and mints new agent TYPES from a pool (TYPES = seats, NEVER new offices) → hands an index + document to a MANAGER who enacts; surfaces its own marks as OBSERVATION [AR] via the GM's pen — never a new appender (ledger_access = read+scratch only); CREATIVE / VISUAL is the single home for ALL visuals in one style (hard rule: never send the operator words — always visualize, incl. the plan); invoked by the GMs and the Navigator — never by script; DEVOPS is the last review and the only door to production. There is NO "Isolation Office" — isolation is a PRINCIPLE offices uphold by planning disjoint campaigns; per-campaign management convenes in COMMAND CO-WORKING ROOMS (one unified above-barrier room type, numbered/spawnable, named by the natural-parent lane).
+  • Records umbrella = the MAPPING OFFICE: ONE office, dedicated narrow-scope agents (run long → ~85% handover): Campaign Mapper (continuity), Archive (prune/digest/index into the North-Star; spawns hundreds of cheap Sonnet diggers), Librarian (docs, rules, wiki, visual boards). The legacy Campaign Archivist / Handover Clerk folds into Archive.
+  • LEDGER HIERARCHY (no longer one global GM as sole appender): per-CAMPAIGN ledger → MANAGER-LAYER ledger → MAIN INDEX ledger (names + numbers only) + a live track board (flushed on close). ONE APPENDER PER LEDGER — a Group GM owns the index/cross-campaign ledger, a Campaign GM owns each campaign's ledger; the physical append is done by a cheap (Sonnet) LEDGER ASSISTANT per ledger (one hand per ledger → no collisions) while the manager reads the tail and issues ACK / STEER. Every agent writes only its OWN scratch (never reads others'). At a KB cap: SEAL the ledger → vX → append the progression to that level's list (the top index lists all ledgers, no detail). Append-only + monotonic #id preserved per ledger.
+  • COMMIT freely, never PUSH (hard rule, identical for dev AND production): every seat may COMMIT with clear, descriptive messages; NO seat may PUSH; the single DEVOPS PUSH OPERATOR is the only push-capable seat, pushing ONLY on an explicit, LOGGED operator OK routed through a manager. Production REFUSES auto-push (waiver allowed ONLY in pure-dev).
+  • METHOD CHARTER (apex doctrine, operationalized into prompts by AR): not the cheapest way to work — but blind agent SWARMS are expensive AND less productive. Spread load across many scope-bounded agents (some ultracode campaign agents, some periodic light ones); coordinate by the company hierarchy; talk through the ledger. Cost / usage / context-awareness is existential; mechanical pruning/digesting keeps it lean.
+  • ACTIVATION via AR's HYBRID script: a FIXED GRAMMAR (mandatory studs re-checked every time — standing crew ≥3, one dedicated Ledger Assistant (cheap Sonnet) appends per ledger — the manager reads the tail and issues ACK/STEER (does not physically append), audit = fresh sealed context, math before build, one builder per surface + one Committer, gates ≥ the environment minimum, the rung ladder, Triage-scores → AR-composes → Controller-enacts → GM-dispatches) + AGENT-COMPOSED SLOTS (which offices fire & when, depth, quotas, lane naming, new agent TYPE stubs) + a VALIDATION GATE before enactment (mechanical asserts on every script; one adversarial pass at STANDARD+; reject → recompose the slot, max 2 tries → STEER to the GM, never a new operator gate). Emitted as a versioned ACTIVATION_SCRIPT stamped validated=1 (the activation twin of the green-plan signed=1). AR CONSUMES Triage's already-scored rung (no re-scoring).
+  • Side-quests go to their OWN loop — never fixed in-flight; routed to the field offices to be planned, kept under their natural parent lane. The GM constantly renumbers/aggregates items under natural parents (parent.child IDs) so the operator never chases names.
+  • The loop is "gluing", not a command queue: intent/anchor docs come first; with no human present a seat decides by serves-the-project-best → works-with-what-exists → fits-the-plan, then a quick adversarial/break-the-plan round, always born from the anchor.
+
+FLOWS / GATES (environment-driven; set by the first-request interview):
+  • FIRST ACTION = the OPERATOR INTERVIEW — a few ping-pong rounds that deepen scope and define the ENVIRONMENT + risks before any plan (not one-prompt magic, but a user may insist on starting from one prompt). It classifies the project into one of two flows.
+  • PURE-DEV (no production to respect): Gate 1 = the completed interview → OK to plan. Gate 2 = end of the full orchestrator loop (multiple break-the-plan rounds, comparison to professional standards) → a packaged plan (index + VISUAL BOARD + simplified-English walkthrough + a couple of code examples + the stack + the wave shapes) opened in the browser → explicit "OK, proceed". Afterward: meet at the end only, OR add discussion stops by operator request.
+  • PRODUCTION (real DB / users / company): break into per-campaign HUMAN-IN-THE-LOOP stops; DevOps HOLDS + INDEXES every change; the comms office surfaces it; the operator confirms EACH campaign's push; never auto-push; a CHANGELOG + DECISION LOG records each push only on a clear, referenced operator OK.
+
+HOW TO WORK: capture, don't guess (derive via the loop; never invent). Orchestrate, don't carry the load (digests over raw reads). Author≠auditor; math settled before code; one hand writes EACH ledger (the hierarchy keeps one appender per ledger). Reuse vocabulary — don't coin parallel names. Reconcile any doc conflict to CANONICAL-LOOP and flag it. Mockups stay single-file. Do NOT fire workflows/ultracode unless I opt in.
+
+Confirm you've read the above, then ask me for my next thoughts.`;
+(function(){ const el=document.getElementById('cs-text'); if(el) el.textContent=COLDSTART; })();
+const csBtn=document.getElementById('cs-copy');
+if(csBtn) csBtn.addEventListener('click',async()=>{
+  const t=document.getElementById('cs-text').textContent;
+  try{ await navigator.clipboard.writeText(t); }
+  catch(e){ const r=document.createRange(); r.selectNodeContents(document.getElementById('cs-text')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); try{document.execCommand('copy');}catch(_){ } s.removeAllRanges(); }
+  csBtn.textContent='✓ Copied'; setTimeout(()=>{csBtn.textContent='⧉ Copy';},1500);
+});
+
+/* ===== frontend cold-start block ===== */
+const COLDSTART_FE =
+`COLD START — AEGIS Office · FRONTEND manager   (paste into a new agent, then add your request)
+
+YOU ARE A FRONTEND MANAGER. Scope: the game-like 3D "office / campus" the operator WATCHES the agents work in — layout, greybox, assets, the operator UI. NOT the orchestration logic. This prompt is deliberately LIGHT: read the operating rules, then go straight to the frontend spec and skip the backend internals unless a specific question forces you in.
+
+PROJECT (one line): AEGIS Office is an agent-orchestration engine wrapped in a watchable "office". Two halves, ALWAYS separate — the LOGIC (agents running the loop) and the INTERFACE (this front-end). You own the interface. Repo: C:/AEGIS_OFFICE. Stage: DESIGN / SPEC — write NO production code unless I explicitly ask.
+
+THE BOUNDARY (renderer, not logic): the front-end RENDERS the SQLite Bus live + holds thin presentation logic (agent movement, animation, notifications, camera, hover / select). It holds NO domain logic. Rule of thumb: if it would still be true with the screen off, it's backend; if it's only about SHOWING, it's front-end.
+
+READ IN THIS ORDER (focused — this is enough to start):
+  1. CLAUDE.md — operating rules, locked decisions, stage, rules of engagement. (Every agent reads this.)
+  2. frontend/README.md — your entry point + the "▶ next agent — start here" greybox kickoff (task · constraints · deliverable).
+  3. frontend/00-vision-and-design-intent.md — the WHY, the domain-general thesis (code is one vertical; the self-verifying loop is the moat), and the high-tech CAMPUS art direction.
+  4. frontend/01-building-program.md — massing + per-floor room program + the proportion standard + the operator's chat & information channels.
+  5. frontend/02-runtime-and-packaging.md — what AEGIS IS as software (a Claude Code interface: Electron shell + Python engine daemon), so you know what each room REPRESENTS.
+
+LOOK UP ONLY IF A SPECIFIC ROOM NEEDS IT (don't read end-to-end):
+  • office-data.js (window.ORGSPEC) + docs/ORG-AND-LEDGER.md — the canonical office / room roster (what each office is). A lookup for room meaning, not a full read.
+  • the-office.html — the current BACKEND floor-plan mockup (reference only; the FE campus design lives in frontend/, not here).
+
+SKIP FOR NOW (backend internals — open only if a question truly forces it): docs/CANONICAL-LOOP.md · docs/anchor/* · docs/reference/*.
+
+LOCKED — FRONTEND decisions (do not relitigate):
+  • LOOK: 2.5D = real low-poly 3D + a LOCKED ORTHOGRAPHIC camera (depth, one fixed angle). A modern high-tech CAMPUS — realistic factory base + office floors above, on landscaped grounds (lawns, parking, approach), gamified & readable.
+  • BUILD ORDER: GREYBOX FIRST at human scale (1 u = 1 m; build the human figure as the ruler; snap to a grid module). Art is the LAST skin.
+  • PARAMETRIC: the greybox is generated from a DATA FILE (rooms as numbers — position · size · floor · type), not hand-modelled, so layout iterates as number edits.
+  • DOMAIN-NEUTRAL: keep every universal room legible for ANY project (research / content / monitoring …), not just code. ONLY DevOps is code / ship-specific.
+  • Geography is doctrine; the operator reads the ROOM, not a racing list of agents.
+
+CURRENT PRIORITY: map the offices → assess the spaces each needs → design the greybox of the campus. Deliverable: a dimensioned, DATA-FILE-READY plan. Resolve / carry the open questions in frontend/01 §8 first — especially the Meeting Room symmetry.
+
+Confirm you've read CLAUDE.md + the frontend/ docs, then ask me for my next thoughts.`;
+(function(){ const el=document.getElementById('cs-text-fe'); if(el) el.textContent=COLDSTART_FE; })();
+const csBtnFe=document.getElementById('cs-copy-fe');
+if(csBtnFe) csBtnFe.addEventListener('click',async()=>{
+  const t=document.getElementById('cs-text-fe').textContent;
+  try{ await navigator.clipboard.writeText(t); }
+  catch(e){ const r=document.createRange(); r.selectNodeContents(document.getElementById('cs-text-fe')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); try{document.execCommand('copy');}catch(_){ } s.removeAllRanges(); }
+  csBtnFe.textContent='✓ Copied'; setTimeout(()=>{csBtnFe.textContent='⧉ Copy';},1500);
+});
+
+document.querySelectorAll('[data-collapse-target]').forEach(bar=>{
+  bar.addEventListener('click',()=>{
+    const target=document.getElementById(bar.dataset.collapseTarget);
+    if(target) target.classList.toggle('collapsed');
+  });
+});
+document.querySelectorAll('.cs-btn').forEach(btn=>btn.addEventListener('click',event=>event.stopPropagation()));
+const graphDetailClose=document.getElementById('gdetail-close');
+if(graphDetailClose) graphDetailClose.addEventListener('click',()=>{
+  const detail=document.getElementById('gdetail');
+  if(detail) detail.style.display='none';
+});
+
+function gLoop(){
+  gStep();
+  gx.clearRect(0,0,gW,gH);
+  const lit=id=>!gHover|| gHover.id===id;
+  const edgeLit=e=>!gHover|| e[0]===gHover.id|| e[1]===gHover.id;
+  // edges
+  GE.forEach(e=>{const a=GNI[e[0]],b=GNI[e[1]],t=e[2];const on=edgeLit(e);
+    let col,dash=[],w=1.3,al=on?1:.12;
+    if(t==='flow'){col='#e8a13c';w=2;}
+    else if(t==='lw'){col='#5fd29a';w=2;}
+    else if(t==='lr'){col='#5fd29a';dash=[4,5];w=1;al=on?.8:.08;}
+    else if(t==='peer'){col='#e8a13c';dash=[5,5];al=on?.9:.12;}
+    else if(t==='rep'){col='#c9a8e8';dash=[3,4];w=1;al=on?.7:.10;}
+    else if(t==='serve'){col='#46b8b0';dash=[2,6];w=1;al=on?.8:.10;}
+    else{col='#36617d';al=on?.8:.12;}
+    gx.save();gx.globalAlpha=al;gx.strokeStyle=col;gx.lineWidth=w;gx.setLineDash(dash);
+    gx.beginPath();gx.moveTo(a.x,a.y);gx.lineTo(b.x,b.y);gx.stroke();gx.setLineDash([]);
+    if(t==='flow'&&on){const ang=Math.atan2(b.y-a.y,b.x-a.x);const ex=b.x-Math.cos(ang)*(b.r+3),ey=b.y-Math.sin(ang)*(b.r+3);
+      gx.fillStyle=col;gx.beginPath();gx.moveTo(ex,ey);gx.lineTo(ex-Math.cos(ang-0.4)*8,ey-Math.sin(ang-0.4)*8);gx.lineTo(ex-Math.cos(ang+0.4)*8,ey-Math.sin(ang+0.4)*8);gx.closePath();gx.fill();}
+    gx.restore();
+  });
+  // nodes
+  GN.forEach(n=>{const on=lit(n.id)|| (gHover&&GE.some(e=>(e[0]===gHover.id&&e[1]===n.id)||(e[1]===gHover.id&&e[0]===n.id)));
+    const c=gColor(n);gx.save();gx.globalAlpha=on?1:.25;
+    gx.shadowColor=c;gx.shadowBlur=n===gHover?20:10;gx.fillStyle=c;gx.beginPath();gx.arc(n.x,n.y,n.r,0,7);gx.fill();
+    gx.shadowBlur=0;gx.fillStyle='#0a0e16';gx.beginPath();gx.arc(n.x,n.y,n.r-3,0,7);gx.fill();
+    gx.fillStyle=c;gx.beginPath();gx.arc(n.x,n.y,n.r-3,0,7);gx.globalAlpha=on?.22:.1;gx.fill();gx.globalAlpha=on?1:.25;
+    gx.fillStyle=on?'#dce8f2':'#5d7791';gx.font='600 11px "Space Grotesk",sans-serif';gx.textAlign='center';gx.textBaseline='top';
+    gx.fillText(n.label,n.x,n.y+n.r+4);gx.restore();
+  });
+  graphRAF=requestAnimationFrame(gLoop);
+}
+</script>
+<script>
+(function(){
+  const fill=document.getElementById('office-progress-fill');
+  if(!fill) return;
+  let ticking=false;
+  const update=()=>{
+    const doc=document.documentElement;
+    const max=Math.max(1,doc.scrollHeight-window.innerHeight);
+    fill.style.height=Math.min(100,Math.max(0,(window.scrollY/max)*100)).toFixed(1)+'%';
+    ticking=false;
+  };
+  const request=()=>{ if(ticking) return; ticking=true; requestAnimationFrame(update); };
+  window.addEventListener('scroll',request,{passive:true});
+  window.addEventListener('resize',request);
+  document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>setTimeout(update,80)));
+  update();
+})();
+</script>
+</body>
+</html>

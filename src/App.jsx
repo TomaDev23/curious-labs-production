@@ -52,6 +52,7 @@ const Blog = lazy(() => import('./pages/blog.jsx'));
 const Transmissions = lazy(() => import('./pages/Transmissions.jsx'));
 const About = lazy(() => import('./pages/about.jsx'));
 const Contact = lazy(() => import('./pages/contact.jsx'));
+const AiConsultation = lazy(() => import('./pages/ai-consultation.jsx'));
 const Privacy = lazy(() => import('./pages/privacy.jsx'));
 const Legal = lazy(() => import('./pages/legal.jsx'));
 const Careers = lazy(() => import('./pages/careers.jsx'));
@@ -286,17 +287,9 @@ const AppRoutes = () => (
           <UnderDevelopment />
         </Suspense>
       } />
-      <Route path="/codelab" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <CodeLab />
-        </Suspense>
-      } />
-      {/* 🎖️ MISSION CONTROL ALIAS: Engineering Bay */}
-      <Route path="/EngineeringBay" element={
-        <Suspense fallback={<SimpleLoader />}>
-          <CodeLab />
-        </Suspense>
-      } />
+      <Route path="/codelab" element={<Navigate to="/ai-consultation" replace />} />
+      {/* 🎖️ MISSION CONTROL ALIAS: Engineering Bay → now routes to AI Consultation */}
+      <Route path="/EngineeringBay" element={<Navigate to="/ai-consultation" replace />} />
       <Route path="/blog" element={
         <Suspense fallback={<SimpleLoader />}>
           <Blog />
@@ -316,6 +309,11 @@ const AppRoutes = () => (
       <Route path="/contact" element={
         <Suspense fallback={<SimpleLoader />}>
           <Contact />
+        </Suspense>
+      } />
+      <Route path="/ai-consultation" element={
+        <Suspense fallback={<SimpleLoader />}>
+          <AiConsultation />
         </Suspense>
       } />
       {/* 🎖️ MISSION CONTROL ALIAS: Deep Space Communications */}

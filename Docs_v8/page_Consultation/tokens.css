@@ -1,0 +1,31 @@
+/* v0.3 • Proposed design tokens sampled by eye from the supplied references.
+   Component-scoped: do not move these onto :root during integration. */
+.cl-consultation {
+  --cl-bg: #03090e;
+  --cl-panel: #071117;
+  --cl-panel-raised: #0a171f;
+  --cl-cream: #f4efdc;
+  --cl-text: #c2cdd4;
+  --cl-muted: #96aab7;
+  --cl-lime: #c6f75b;
+  --cl-ice: #afd4df;
+  --cl-line: #2b414c;
+  --cl-line-soft: #1b2b35;
+  --cl-ink: #0b1309;
+  --cl-amber: #d9bf8b;
+  --cl-font: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --cl-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --cl-max: 1320px;
+  --cl-gutter: clamp(20px, 2.6vw, 40px);
+  --cl-section-gap: clamp(64px, 7.2vw, 108px);
+  --cl-panel-pad: clamp(24px, 3.4vw, 48px);
+  --cl-radius: 14px;
+  --cl-card-radius: 10px;
+  --cl-focus: 0 0 0 4px #c6f75b;
+  --cl-anchor-offset: 96px;
+  color: var(--cl-text);
+  font-family: var(--cl-font);
+  font-size: 17px;
+  line-height: 1.65;
+  color-scheme: dark;
+}

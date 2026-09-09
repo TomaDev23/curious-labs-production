@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Design reference for CuriousLabs AI integration consultation. Draft copy and unconfigured contacts; not a published service page.">
+<title>AI Integration Consultation — CuriousLabs · Design Reference</title>
+<link rel="icon" href="data:,">
+<style data-source="css/tokens.css">
+/* v0.3 • Proposed design tokens sampled by eye from the supplied references.
+   Component-scoped: do not move these onto :root during integration. */
+.cl-consultation {
+  --cl-bg: #03090e;
+  --cl-panel: #071117;
+  --cl-panel-raised: #0a171f;
+  --cl-cream: #f4efdc;
+  --cl-text: #c2cdd4;
+  --cl-muted: #96aab7;
+  --cl-lime: #c6f75b;
+  --cl-ice: #afd4df;
+  --cl-line: #2b414c;
+  --cl-line-soft: #1b2b35;
+  --cl-ink: #0b1309;
+  --cl-amber: #d9bf8b;
+  --cl-font: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --cl-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --cl-max: 1320px;
+  --cl-gutter: clamp(20px, 2.6vw, 40px);
+  --cl-section-gap: clamp(64px, 7.2vw, 108px);
+  --cl-panel-pad: clamp(24px, 3.4vw, 48px);
+  --cl-radius: 14px;
+  --cl-card-radius: 10px;
+  --cl-focus: 0 0 0 4px #c6f75b;
+  --cl-anchor-offset: 96px;
+  color: var(--cl-text);
+  font-family: var(--cl-font);
+  font-size: 17px;
+  line-height: 1.65;
+  color-scheme: dark;
+}
+
+</style>
+<style data-source="css/consultation.css">
+/* CURIOUSLABS / AI CONSULTATION / v0.3
+   All component selectors are scoped. No dependency on a framework, font CDN,
+   global CSS reset, canvas, WebGL, existing contract system, or motion engine. */
+.cl-consultation *, .cl-consultation *::before, .cl-consultation *::after { box-sizing: border-box; }
+.cl-consultation [hidden] { display: none !important; }
+.cl-consultation h1, .cl-consultation h2, .cl-consultation h3, .cl-consultation p,
+.cl-consultation figure, .cl-consultation dl, .cl-consultation dd { margin: 0; }
+.cl-consultation h1, .cl-consultation h2, .cl-consultation h3 { color: var(--cl-cream); text-wrap: balance; }
+.cl-consultation h1 { font-size: clamp(42px, 4.4vw, 70px); font-weight: 750; letter-spacing: -.058em; line-height: 1.05; }
+.cl-consultation h2 { font-size: clamp(34px, 3.4vw, 49px); font-weight: 700; letter-spacing: -.048em; line-height: 1.1; }
+.cl-consultation h3 { font-size: 21px; font-weight: 650; letter-spacing: -.025em; line-height: 1.3; }
+.cl-consultation a { color: inherit; text-decoration: none; }
+.cl-consultation button, .cl-consultation a, .cl-consultation summary { -webkit-tap-highlight-color: transparent; }
+.cl-consultation button { font: inherit; color: inherit; cursor: pointer; }
+.cl-consultation button:disabled { cursor: not-allowed; }
+.cl-consultation :is(a, button, summary):focus-visible { outline: 2px solid var(--cl-lime); outline-offset: 5px; border-radius: 4px; }
+.cl-consultation img { max-width: 100%; height: auto; display: block; }
+.cl-consultation :is(section[id], details[id], main[id]) { scroll-margin-top: var(--cl-anchor-offset); }
+.cl-consultation .cl-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.cl-consultation .cl-icon { display: inline-block; flex: 0 0 auto; width: 21px; height: 21px; vertical-align: middle; }
+.cl-consultation .cl-main { position: relative; z-index: 1; width: min(calc(100% - 2 * var(--cl-gutter)), var(--cl-max)); margin-inline: auto; }
+.cl-consultation .cl-panel { position: relative; border: 1px solid var(--cl-line); border-radius: var(--cl-radius); background: linear-gradient(120deg, #071117e8, #071117aa 58%, #040c12ee); isolation: isolate; }
+.cl-consultation .cl-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; font-family: var(--cl-mono); font-size: 12px; line-height: 1.5; font-weight: 500; letter-spacing: .10em; color: var(--cl-lime); }
+.cl-consultation .cl-eyebrow > span { opacity: .7; }
+.cl-consultation .cl-micro { color: var(--cl-muted); font-family: var(--cl-mono); font-size: 11px; letter-spacing: .09em; line-height: 1.65; }
+.cl-consultation .cl-lead { font-size: 18px; line-height: 1.65; color: var(--cl-text); }
+.cl-consultation .cl-caption { color: var(--cl-muted); font-size: 13px; line-height: 1.6; }
+.cl-consultation .cl-keep { white-space: nowrap; }
+.cl-consultation .cl-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.cl-consultation .cl-button { display: inline-flex; align-items: center; justify-content: center; gap: 16px; min-height: 50px; padding: 12px 20px; border-radius: 7px; border: 1px solid transparent; font-size: 14px; font-weight: 650; line-height: 1.5; transition: background .15s ease, border-color .15s ease, transform .15s ease; text-align: center; }
+.cl-consultation .cl-button .cl-icon { width: 18px; height: 18px; }
+.cl-consultation .cl-button--primary { background: var(--cl-lime); color: var(--cl-ink); border-color: var(--cl-lime); box-shadow: 0 0 28px #c6f75b0a; }
+.cl-consultation .cl-button--secondary { background: #091218b8; color: var(--cl-cream); border-color: #596747; }
+.cl-consultation .cl-button--primary:hover { background: #d6ff83; transform: translateY(-1px); }
+.cl-consultation .cl-button--secondary:hover { border-color: var(--cl-lime); background: #101d20; }
+.cl-consultation [aria-disabled="true"], .cl-consultation button:disabled { cursor: default; color: var(--cl-muted); box-shadow: none; transform: none; }
+.cl-consultation .cl-button[aria-disabled="true"], .cl-consultation .cl-button:disabled { background: #0a141a; border-color: var(--cl-line); }
+.cl-consultation .cl-text-link, .cl-consultation .cl-text-button { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-size: 14px; font-weight: 550; color: var(--cl-lime); }
+.cl-consultation .cl-text-link:hover { text-decoration: underline; text-underline-offset: 5px; }
+.cl-consultation .cl-text-button { padding: 0; border: 0; background: transparent; }
+.cl-consultation .cl-text-button:hover { color: var(--cl-cream); }
+.cl-consultation .cl-icon-ring { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 49px; height: 49px; border: 1px solid #466975; border-radius: 50%; background: radial-gradient(circle at 30% 10%, #20404d5c, #0a131900); color: var(--cl-ice); }
+.cl-consultation .cl-icon-ring .cl-icon { width: 24px; height: 24px; }
+.cl-consultation .cl-card-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+/* D1 • The type and actions are independent of the decorative orbital. */
+.cl-consultation .cl-hero { display: grid; grid-template-columns: 1.12fr .88fr; gap: 0 8px; padding: var(--cl-panel-pad); overflow: hidden; }
+.cl-consultation .cl-hero::before { content: ""; position: absolute; z-index: -1; inset: 0; background: radial-gradient(ellipse at 80% 39%, #24596e27, transparent 55%), radial-gradient(ellipse at 4% 110%, #66533a24, transparent 50%); pointer-events: none; }
+.cl-consultation .cl-hero__copy { position: relative; z-index: 1; }
+.cl-consultation .cl-hero h1 { max-width: 16ch; margin-bottom: 24px; }
+.cl-consultation .cl-hero .cl-lead { max-width: 57ch; }
+.cl-consultation .cl-hero__invitation { margin-top: 16px; max-width: 58ch; font-size: 16px; color: #aebbc5; }
+.cl-consultation .cl-hero .cl-actions { margin-top: 28px; }
+.cl-consultation .cl-hero__visual { display: flex; align-items: center; min-width: 0; }
+.cl-consultation .cl-hero__meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; margin-top: 35px; padding-top: 20px; border-top: 1px solid #263a4566; font-family: var(--cl-mono); font-size: 11px; letter-spacing: .015em; color: var(--cl-muted); }
+.cl-consultation .cl-hero__meta > span { display: inline-flex; align-items: center; gap: 9px; }
+.cl-consultation .cl-hero__meta .cl-icon { width: 15px; height: 15px; color: var(--cl-ice); }
+.cl-consultation .cl-orbit { width: 100%; position: relative; }
+.cl-consultation .cl-orbit__svg { display: block; width: 100%; height: auto; }
+.cl-consultation .cl-orbit__footer { display: flex; align-items: center; justify-content: center; gap: 15px; font: 9px/1.6 var(--cl-mono); letter-spacing: .12em; color: var(--cl-muted); }
+.cl-consultation .cl-cross { font-size: 18px; color: var(--cl-lime); }
+.cl-consultation .cl-jump-links { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px 38px; padding: 22px 8px; border-bottom: 1px solid var(--cl-line-soft); }
+.cl-consultation .cl-jump-links > span { margin-right: 4px; }
+.cl-consultation .cl-jump-links a { display: inline-flex; align-items: center; gap: 16px; min-height: 44px; font-size: 13px; color: var(--cl-text); }
+.cl-consultation .cl-jump-links a .cl-icon { width: 15px; height: 15px; color: var(--cl-lime); }
+.cl-consultation .cl-jump-links a:hover { color: var(--cl-lime); }
+/* Major sections: content-led, not a stack of full-screen panels. */
+.cl-consultation .cl-section { margin-top: var(--cl-section-gap); }
+.cl-consultation .cl-section-heading { margin-bottom: 34px; }
+.cl-consultation .cl-section-heading .cl-eyebrow { margin-bottom: 16px; }
+.cl-consultation .cl-section-intro { max-width: 65ch; margin-top: 22px; font-size: 17px; color: var(--cl-text); }
+.cl-consultation .cl-heading-split { display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: end; }
+.cl-consultation .cl-heading-split .cl-section-intro { margin: 0; max-width: 38ch; justify-self: end; }
+/* D2 • Equal audience weight, shared recognition prompts. */
+.cl-consultation .cl-audiences { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 22px; }
+.cl-consultation .cl-audience-card { padding: 30px; border: 1px solid var(--cl-line); border-radius: var(--cl-card-radius); background: linear-gradient(145deg, #0b1720da, #071117b5); }
+.cl-consultation .cl-audience-card h3 { font-size: 27px; margin-top: 24px; margin-bottom: 16px; max-width: 27ch; }
+.cl-consultation .cl-audience-card > p:not(.cl-card-foot) { max-width: 55ch; }
+.cl-consultation .cl-card-foot { color: var(--cl-ice); padding-top: 18px; margin-top: 22px; font-size: 13px; border-top: 1px solid var(--cl-line-soft); }
+.cl-consultation .cl-recognition { margin-top: 32px; }
+.cl-consultation .cl-recognition__intro { font-size: 14px; color: var(--cl-muted); margin-bottom: 20px; }
+.cl-consultation .cl-recognition__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 28px; }
+.cl-consultation .cl-recognition__grid article { padding-left: 17px; border-left: 1px solid #638340; }
+.cl-consultation .cl-recognition__grid .cl-micro { color: var(--cl-lime); margin-bottom: 8px; }
+.cl-consultation .cl-recognition__grid article > p:last-child { font-size: 15px; color: var(--cl-text); }
+.cl-consultation .cl-bridge { display: flex; gap: 16px; align-items: flex-start; margin-top: 30px; color: var(--cl-muted); font-size: 14px; }
+.cl-consultation .cl-bridge > span { display: block; flex: 0 0 23px; height: 1px; margin-top: 12px; background: var(--cl-lime); }
+/* D3 • Six subject spaces, no interactive package cards. */
+.cl-consultation .cl-subject-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+.cl-consultation .cl-subject { min-width: 0; padding: 28px; border-radius: var(--cl-card-radius); border: 1px solid var(--cl-line); background: #08131cd2; }
+.cl-consultation .cl-subject h3 { margin: 25px 0 14px; font-size: 23px; }
+.cl-consultation .cl-subject p { font-size: 16px; line-height: 1.65; }
+.cl-consultation .cl-subject .cl-micro { align-self: flex-start; }
+.cl-consultation .cl-delivery-band { display: grid; grid-template-columns: .75fr 1.25fr; gap: 36px; margin-top: 28px; padding: 30px 0; border-top: 1px solid var(--cl-line); border-bottom: 1px solid var(--cl-line); }
+.cl-consultation .cl-delivery-band h3 { margin-top: 12px; max-width: 24ch; }
+.cl-consultation .cl-delivery-band p { font-size: 15px; }
+.cl-consultation .cl-delivery-band p + p { margin-top: 12px; color: var(--cl-muted); }
+.cl-consultation .cl-scope-note { margin-top: 24px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+.cl-consultation .cl-scope-note p { max-width: 80ch; font-size: 14px; color: var(--cl-muted); }
+/* D4 • A text-led, personal editorial section; no placeholder portrait. */
+.cl-consultation .cl-person { display: grid; grid-template-columns: .84fr 1.16fr; gap: 24px 72px; padding-block: 44px; border-top: 1px solid var(--cl-line); border-bottom: 1px solid var(--cl-line); }
+.cl-consultation .cl-person h2 { max-width: 14ch; }
+.cl-consultation .cl-person__strands { display: grid; gap: 15px; margin-top: 34px; }
+.cl-consultation .cl-person__strands span { display: flex; gap: 12px; align-items: center; font-size: 14px; color: var(--cl-ice); }
+.cl-consultation .cl-person__strands .cl-icon { width: 18px; height: 18px; }
+.cl-consultation .cl-person__opening { font-size: 24px; line-height: 1.5; color: var(--cl-cream); letter-spacing: -.02em; }
+.cl-consultation .cl-person__body > p + p { margin-top: 18px; }
+.cl-consultation .cl-person__body h3 { margin: 24px 0 10px; font-size: 17px; }
+.cl-consultation .cl-person__body > p:not(.cl-person__opening) { font-size: 16px; }
+.cl-consultation .cl-person__body .cl-text-link { margin-top: 22px; }
+/* D5 • Quiet prose and independent native disclosures. */
+.cl-consultation .cl-approach-top { display: grid; grid-template-columns: .95fr 1.05fr; gap: 56px; align-items: end; }
+.cl-consultation .cl-approach-top .cl-section-heading { margin-bottom: 0; }
+.cl-consultation .cl-approach-top__text p { font-size: 16px; }
+.cl-consultation .cl-approach-top__text p + p { margin-top: 14px; }
+.cl-consultation .cl-contrast { display: grid; grid-template-columns: .8fr 50px 1.2fr; gap: 24px; align-items: center; margin-top: 36px; padding: 30px; border: 1px solid #354a36; border-radius: var(--cl-card-radius); background: linear-gradient(110deg, #1021184d, #08131ac7); }
+.cl-consultation .cl-contrast p { margin-top: 12px; font-size: 21px; line-height: 1.45; letter-spacing: -.015em; color: var(--cl-cream); }
+.cl-consultation .cl-contrast .cl-micro { color: var(--cl-lime); }
+.cl-consultation .cl-contrast > div:first-child p { color: var(--cl-muted); }
+.cl-consultation .cl-contrast__arrow { display: flex; justify-content: center; color: var(--cl-lime); }
+.cl-consultation .cl-contrast + .cl-caption { margin-top: 12px; }
+.cl-consultation .cl-readings-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin: 36px 0 18px; }
+.cl-consultation .cl-readings-heading h3 { font-size: 19px; }
+.cl-consultation .cl-readings-heading p { color: var(--cl-muted); font-size: 13px; }
+.cl-consultation .cl-readings { border-top: 1px solid var(--cl-line); }
+.cl-consultation .cl-reading { border-bottom: 1px solid var(--cl-line); background: #07111775; }
+.cl-consultation .cl-reading > summary { display: grid; grid-template-columns: 30px 1fr 24px; align-items: center; gap: 18px; padding: 23px 20px; list-style: none; cursor: pointer; }
+.cl-consultation .cl-reading > summary::-webkit-details-marker { display: none; }
+.cl-consultation .cl-reading > summary:hover { background: #0d1a20; }
+.cl-consultation .cl-reading__number { align-self: start; padding-top: 4px; font-family: var(--cl-mono); font-size: 11px; color: var(--cl-lime); }
+.cl-consultation .cl-reading__label { display: flex; flex-direction: column; gap: 5px; }
+.cl-consultation .cl-reading__label strong { font-size: 19px; font-weight: 550; color: var(--cl-cream); }
+.cl-consultation .cl-reading__label > span { color: var(--cl-muted); font-size: 14px; }
+.cl-consultation .cl-plus { position: relative; display: block; width: 20px; height: 20px; color: var(--cl-lime); }
+.cl-consultation .cl-plus::before, .cl-consultation .cl-plus::after { content: ""; position: absolute; top: 9px; left: 3px; width: 14px; height: 1px; background: currentColor; }
+.cl-consultation .cl-plus::after { transform: rotate(90deg); }
+.cl-consultation .cl-reading[open] .cl-plus::after { transform: rotate(0); }
+.cl-consultation .cl-reading[open] > summary { background: #101e21; }
+.cl-consultation .cl-reading__body { padding: 0 68px 24px; background: #101e21; }
+.cl-consultation .cl-reading__body > p { max-width: 82ch; font-size: 16px; }
+.cl-consultation .cl-reading__body .cl-text-button { margin-top: 18px; font-size: 13px; }
+/* D6 • Explicit, non-deceptive evidence slots. Real data replaces these after approval. */
+.cl-consultation .cl-reference-notice { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 18px; padding: 12px 16px; margin-bottom: 20px; border-left: 2px solid #a89563; background: #b3933e0b; color: var(--cl-amber); font-family: var(--cl-mono); font-size: 10px; letter-spacing: .08em; }
+.cl-consultation .cl-reference-notice > span { font-family: var(--cl-font); color: var(--cl-muted); font-size: 13px; letter-spacing: 0; }
+.cl-consultation .cl-proof-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.cl-consultation .cl-proof-card { min-width: 0; overflow: hidden; background: #08131bc7; border: 1px solid var(--cl-line); border-radius: var(--cl-card-radius); }
+.cl-consultation .cl-proof-slot { position: relative; display: flex; flex-direction: column; min-height: 248px; padding: 20px 24px; border-bottom: 1px solid var(--cl-line); background: linear-gradient(160deg, #18323e36, #071017), repeating-linear-gradient(135deg, transparent 0 15px, #558da01c 15px 16px); }
+.cl-consultation .cl-proof-slot__center { margin: auto; display: flex; align-items: center; flex-direction: column; gap: 12px; text-align: center; }
+.cl-consultation .cl-proof-slot__center > .cl-icon { width: 37px; height: 37px; color: #a6cbd5; margin-bottom: 8px; }
+.cl-consultation .cl-proof-slot__center > span { color: var(--cl-cream); font-size: 17px; }
+.cl-consultation .cl-proof-slot__center > small { font-family: var(--cl-mono); color: var(--cl-muted); font-size: 10px; }
+.cl-consultation .cl-proof-slot__corner { align-self: end; color: var(--cl-muted); font-family: var(--cl-mono); letter-spacing: .3em; font-size: 14px; }
+.cl-consultation .cl-proof-card__caption { padding: 24px; }
+.cl-consultation .cl-proof-card__caption > p { margin-top: 13px; font-size: 15px; }
+.cl-consultation .cl-proof-card__caption .cl-pending-label { color: var(--cl-amber); font-size: 12px; }
+.cl-consultation .cl-proof-fields { border-top: 1px solid var(--cl-line-soft); padding-top: 16px; margin-top: 18px; display: grid; gap: 10px; }
+.cl-consultation .cl-proof-fields > div { display: grid; grid-template-columns: 70px 1fr; gap: 16px; font-size: 13px; }
+.cl-consultation .cl-proof-fields dt { color: var(--cl-ice); }
+.cl-consultation .cl-proof-fields dd { color: var(--cl-muted); }
+.cl-consultation .cl-proof-image { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: contain; background: #071017; border-bottom: 1px solid var(--cl-line); }
+.cl-consultation .cl-proof-card .cl-text-button { margin-top: 16px; }
+/* D7 • Modest process and commercial distinction. */
+.cl-consultation .cl-steps { list-style: none; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 0; margin: 0; padding: 0; border: 1px solid var(--cl-line); border-radius: var(--cl-card-radius); background: #08141dc2; }
+.cl-consultation .cl-step { position: relative; min-width: 0; padding: 26px 23px; }
+.cl-consultation .cl-step + .cl-step { border-left: 1px solid var(--cl-line); }
+.cl-consultation .cl-step__number { display: block; margin-bottom: 20px; color: var(--cl-ice); font-family: var(--cl-mono); font-size: 28px; line-height: 1; font-weight: 300; }
+.cl-consultation .cl-step .cl-micro { display: block; color: var(--cl-lime); font-size: 11px; }
+.cl-consultation .cl-step h3 { font-size: 19px; margin: 12px 0; }
+.cl-consultation .cl-step p { font-size: 14px; color: var(--cl-text); }
+.cl-consultation .cl-step:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 26px; z-index: 1; width: 20px; height: 20px; background: #09151c; color: var(--cl-lime); text-align: center; line-height: 20px; }
+.cl-consultation .cl-boundary { display: flex; align-items: flex-start; gap: 22px; margin-top: 32px; }
+.cl-consultation .cl-boundary h3 { margin-bottom: 12px; font-size: 19px; }
+.cl-consultation .cl-boundary p { font-size: 15px; }
+.cl-consultation .cl-boundary p + p { margin-top: 12px; }
+.cl-consultation .cl-three-docs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-top: 28px; padding-block: 24px; border-top: 1px solid var(--cl-line); border-bottom: 1px solid var(--cl-line); }
+.cl-consultation .cl-three-docs dt { color: var(--cl-cream); font-size: 14px; margin-bottom: 6px; }
+.cl-consultation .cl-three-docs dd { font-size: 13px; color: var(--cl-muted); }
+.cl-consultation .cl-clarifications { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 32px; margin-top: 30px; }
+.cl-consultation .cl-clarifications h3 { font-size: 17px; line-height: 1.4; margin-bottom: 12px; }
+.cl-consultation .cl-clarifications p { font-size: 14px; line-height: 1.7; color: var(--cl-muted); }
+/* D8 • Contact choices are guarded until real destinations are supplied. */
+.cl-consultation .cl-contact { display: grid; grid-template-columns: .88fr 1.12fr; gap: 28px 54px; padding: var(--cl-panel-pad); background: radial-gradient(ellipse at 0 100%, #273e293b, transparent 64%), #071119e3; }
+.cl-consultation .cl-contact h2 { max-width: 14ch; margin-bottom: 24px; }
+.cl-consultation .cl-contact__intro > p:not(.cl-eyebrow) { font-size: 15px; }
+.cl-consultation .cl-contact__intro .cl-contact__free { margin-top: 18px; color: var(--cl-cream); }
+.cl-consultation .cl-location { display: grid; gap: 12px; margin: 26px 0 16px; font-size: 13px; color: var(--cl-ice); }
+.cl-consultation .cl-location > span { display: flex; gap: 10px; align-items: flex-start; }
+.cl-consultation .cl-location .cl-icon { width: 17px; height: 17px; margin-top: 2px; }
+.cl-consultation .cl-contact__intro .cl-caption { font-size: 12px !important; color: var(--cl-muted); }
+.cl-consultation .cl-contact__options { min-width: 0; }
+.cl-consultation .cl-contact__options .cl-reference-notice { padding: 10px 12px; }
+.cl-consultation .cl-message-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.cl-consultation .cl-channel { min-width: 0; border: 1px solid var(--cl-line); background: #0a1720; border-radius: var(--cl-card-radius); padding: 20px; }
+.cl-consultation .cl-channel h3 { margin: 18px 0 10px; font-size: 19px; }
+.cl-consultation .cl-channel > p { font-size: 13px; color: var(--cl-muted); }
+.cl-consultation .cl-channel .cl-button { width: 100%; font-size: 12px; padding: 12px 9px; gap: 7px; margin-top: 20px; }
+.cl-consultation .cl-channel .cl-button .cl-icon { width: 15px; height: 15px; }
+.cl-consultation .cl-email { margin-top: 14px; border: 1px solid var(--cl-line); border-radius: var(--cl-card-radius); padding: 20px; background: #0a1720; }
+.cl-consultation .cl-email__title { display: flex; align-items: center; gap: 12px; color: var(--cl-ice); }
+.cl-consultation .cl-email__title h3 { font-size: 19px; }
+.cl-consultation .cl-email__address { margin-top: 14px; overflow-wrap: anywhere; user-select: text; font-size: 14px; color: var(--cl-muted); }
+.cl-consultation .cl-email .cl-actions { margin-top: 14px; gap: 12px 24px; }
+.cl-consultation .cl-email .cl-button { min-height: 44px; padding: 10px 14px; font-size: 12px; }
+.cl-consultation .cl-copy-status { min-height: 20px; margin-top: 10px; color: var(--cl-ice); font-size: 12px; line-height: 1.5; }
+.cl-consultation .cl-contact__reassurance { margin-top: 20px; font-family: var(--cl-mono); font-size: 10px; color: var(--cl-muted); }
+/* H1 • Separate homepage component. No extra catalogue, process, or biography. */
+.cl-consultation .cl-home-invitation { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; padding: var(--cl-panel-pad); align-items: center; }
+.cl-consultation .cl-home-invitation h2 { font-size: clamp(38px, 4.1vw, 61px); max-width: 15ch; margin-bottom: 22px; }
+.cl-consultation .cl-home-invitation .cl-actions { margin-top: 28px; }
+.cl-consultation .cl-home-invitation .cl-lead { font-size: 17px; max-width: 58ch; }
+.cl-consultation .cl-home-invitation__caption { font-family: var(--cl-mono); font-size: 10px; letter-spacing: .06em; color: var(--cl-muted); margin-top: 28px; }
+.cl-consultation .cl-home-invitation__caption span { padding-inline: 8px; color: var(--cl-lime); }
+/* Review annotations are not customer-facing copy. */
+.cl-consultation .cl-build-note { display: none; gap: 16px; grid-column: 1 / -1; padding: 14px 18px; margin-top: 22px; border: 1px dashed #5a6543; border-radius: 7px; font: 12px/1.65 var(--cl-font); background: #182416; color: #d4dcbe; }
+.cl-consultation .cl-build-note strong { flex-shrink: 0; color: var(--cl-lime); font: 11px/1.8 var(--cl-mono); }
+.cl-consultation[data-cl-notes="true"] .cl-build-note { display: flex; }
+.cl-consultation[data-cl-notes="true"] [data-cl-section] { outline: 1px dashed #a5d04b66; outline-offset: 7px; }
+/* Native dialogs: still inside component scope, with visible close buttons. */
+.cl-consultation .cl-dialog { width: min(1320px, calc(100% - 40px)); max-height: calc(100dvh - 40px); overflow-y: auto; border: 1px solid #49616a; border-radius: 14px; padding: 28px; background: #050d14; color: var(--cl-text); box-shadow: 0 20px 90px #000c; }
+.cl-consultation .cl-dialog::backdrop { background: #020709e8; backdrop-filter: blur(6px); }
+.cl-consultation .cl-dialog__bar { display: flex; justify-content: space-between; gap: 25px; align-items: flex-start; margin-bottom: 24px; }
+.cl-consultation .cl-dialog__bar h2 { font-size: 24px; margin-top: 6px; }
+.cl-consultation .cl-icon-button { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--cl-line); width: 44px; height: 44px; background: #0e1b23; color: var(--cl-cream); }
+.cl-consultation .cl-icon-button:hover { border-color: var(--cl-lime); }
+.cl-consultation .cl-dialog > .cl-caption { margin-top: 16px; }
+.cl-consultation .cl-proof-dialog { max-width: 1060px; }
+.cl-consultation .cl-proof-dialog img { width: 100%; background: #071117; }
+.cl-consultation .cl-proof-dialog p { margin-top: 16px; }
+/* Tablet: no broken four-column layouts; decorative scene gets its own quiet row. */
+@media (max-width: 1100px) {
+ .cl-consultation .cl-hero { grid-template-columns: 1.2fr .8fr; }
+ .cl-consultation .cl-hero h1 { font-size: clamp(42px, 5.3vw, 60px); }
+ .cl-consultation .cl-hero .cl-actions { gap: 10px; }
+ .cl-consultation .cl-hero .cl-button { font-size: 13px; padding-inline: 15px; }
+ .cl-consultation .cl-hero .cl-lead { font-size: 16px; }
+ .cl-consultation .cl-hero__invitation { font-size: 15px; }
+ .cl-consultation .cl-person { gap: 28px 38px; }
+ .cl-consultation .cl-contact { gap: 32px; grid-template-columns: .82fr 1.18fr; }
+ .cl-consultation .cl-channel { padding: 16px; }
+ .cl-consultation .cl-channel .cl-button { font-size: 11px; }
+ .cl-consultation .cl-subject { padding: 23px; }
+ .cl-consultation .cl-subject h3 { font-size: 21px; }
+}
+@media (max-width: 900px) {
+ .cl-consultation .cl-hero { grid-template-columns: 1fr; }
+ .cl-consultation .cl-hero h1 { font-size: clamp(44px, 6.8vw, 59px); max-width: 19ch; }
+ .cl-consultation .cl-hero .cl-lead { max-width: 68ch; font-size: 17px; }
+ .cl-consultation .cl-hero__visual { grid-row: 3; max-width: 430px; width: 100%; justify-self: center; margin-top: 18px; }
+ .cl-consultation .cl-hero__meta { grid-row: 2; }
+ .cl-consultation .cl-orbit__footer { font-size: 8px; }
+ .cl-consultation .cl-heading-split, .cl-consultation .cl-approach-top { grid-template-columns: 1fr; gap: 22px; }
+ .cl-consultation .cl-heading-split .cl-section-intro { justify-self: start; max-width: 60ch; }
+ .cl-consultation .cl-heading-split .cl-section-intro br { display: none; }
+ .cl-consultation .cl-subject-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .cl-consultation .cl-contact { grid-template-columns: 1fr; }
+ .cl-consultation .cl-contact h2 { max-width: 19ch; }
+ .cl-consultation .cl-contact__intro > p { max-width: 64ch; }
+ .cl-consultation .cl-channel .cl-button { font-size: 13px; }
+ .cl-consultation .cl-steps { grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .cl-consultation .cl-step:nth-child(3) { border-left: 0; }
+ .cl-consultation .cl-step:nth-child(n+3) { border-top: 1px solid var(--cl-line); }
+ .cl-consultation .cl-step:nth-child(2)::after { content: none; }
+ .cl-consultation .cl-clarifications { gap: 24px; }
+ .cl-consultation .cl-home-invitation { grid-template-columns: 1fr; }
+ .cl-consultation .cl-home-invitation .cl-orbit { max-width: 370px; justify-self: center; }
+}
+@media (max-width: 620px) {
+ .cl-consultation { --cl-gutter: 20px; --cl-panel-pad: 24px; --cl-anchor-offset: 88px; font-size: 16px; }
+ .cl-consultation h1 { font-size: 42px; }
+ .cl-consultation h2 { font-size: 35px; }
+ .cl-consultation .cl-eyebrow { font-size: 10px; gap: 8px; letter-spacing: .075em; }
+ .cl-consultation .cl-hero { padding: 27px 23px 24px; }
+ .cl-consultation .cl-hero h1 { font-size: clamp(37px, 8.8vw, 47px); max-width: 16ch; }
+ .cl-consultation .cl-hero .cl-lead { font-size: 16px; }
+ .cl-consultation .cl-hero__invitation { font-size: 14px; }
+ .cl-consultation .cl-hero .cl-actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 24px; }
+ .cl-consultation .cl-hero .cl-button { font-size: 13px; padding: 12px; width: 100%; }
+ .cl-consultation .cl-hero__meta { display: grid; gap: 13px; margin-top: 24px; padding-top: 20px; }
+ .cl-consultation .cl-hero__visual { max-width: 275px; margin-top: 20px; }
+ .cl-consultation .cl-orbit__footer { font-size: 7px; letter-spacing: .075em; gap: 8px; }
+ .cl-consultation .cl-jump-links { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; padding-block: 16px; }
+ .cl-consultation .cl-jump-links > span { grid-column: 1 / -1; margin-bottom: 6px; font-size: 9px; }
+ .cl-consultation .cl-jump-links a { justify-content: space-between; font-size: 12px; }
+ .cl-consultation .cl-section-heading { margin-bottom: 25px; }
+ .cl-consultation .cl-section-intro { font-size: 16px; }
+ .cl-consultation .cl-audiences, .cl-consultation .cl-subject-grid, .cl-consultation .cl-proof-grid { grid-template-columns: 1fr; gap: 16px; }
+ .cl-consultation .cl-audience-card { padding: 24px; }
+ .cl-consultation .cl-audience-card .cl-card-top .cl-micro { font-size: 9px; text-align: right; max-width: 16ch; }
+ .cl-consultation .cl-audience-card h3 { font-size: 25px; }
+ .cl-consultation .cl-recognition__grid { grid-template-columns: 1fr; gap: 22px; }
+ .cl-consultation .cl-recognition { margin-top: 28px; }
+ .cl-consultation .cl-subject { padding: 25px; }
+ .cl-consultation .cl-subject h3 { font-size: 23px; margin-top: 20px; }
+ .cl-consultation .cl-subject p { font-size: 16px; }
+ .cl-consultation .cl-delivery-band { grid-template-columns: 1fr; gap: 20px; }
+ .cl-consultation .cl-scope-note { grid-template-columns: 1fr; gap: 14px; }
+ .cl-consultation .cl-person { grid-template-columns: 1fr; gap: 30px; padding-block: 30px; }
+ .cl-consultation .cl-person h2 { max-width: 17ch; }
+ .cl-consultation .cl-person__strands { margin-top: 26px; gap: 12px; }
+ .cl-consultation .cl-person__opening { font-size: 22px; }
+ .cl-consultation .cl-contrast { grid-template-columns: 1fr; padding: 24px; gap: 16px; }
+ .cl-consultation .cl-contrast__arrow { justify-content: flex-start; }
+ .cl-consultation .cl-contrast__arrow .cl-icon { transform: rotate(90deg); }
+ .cl-consultation .cl-contrast p { font-size: 20px; }
+ .cl-consultation .cl-readings-heading { display: block; }
+ .cl-consultation .cl-readings-heading p { margin-top: 7px; }
+ .cl-consultation .cl-reading > summary { grid-template-columns: 20px 1fr 20px; gap: 12px; padding: 20px 10px; }
+ .cl-consultation .cl-reading__label strong { font-size: 18px; }
+ .cl-consultation .cl-reading__label > span { font-size: 13px; }
+ .cl-consultation .cl-reading__body { padding: 0 18px 22px 42px; }
+ .cl-consultation .cl-reading__body > p { font-size: 15px; }
+ .cl-consultation .cl-proof-slot { min-height: 230px; }
+ .cl-consultation .cl-proof-card__caption { padding: 22px; }
+ .cl-consultation .cl-proof-fields > div { grid-template-columns: 54px 1fr; gap: 12px; }
+ .cl-consultation .cl-steps { grid-template-columns: 1fr; }
+ .cl-consultation .cl-step { padding: 25px; }
+ .cl-consultation .cl-step + .cl-step { border-left: none; border-top: 1px solid var(--cl-line); }
+ .cl-consultation .cl-step:not(:last-child)::after { content: "↓"; top: auto; right: 25px; bottom: -10px; }
+ .cl-consultation .cl-step__number { margin-bottom: 15px; }
+ .cl-consultation .cl-boundary { gap: 15px; }
+ .cl-consultation .cl-boundary .cl-icon-ring { width: 35px; height: 35px; }
+ .cl-consultation .cl-boundary .cl-icon-ring .cl-icon { width: 19px; height: 19px; }
+ .cl-consultation .cl-three-docs, .cl-consultation .cl-clarifications { grid-template-columns: 1fr; gap: 24px; }
+ .cl-consultation .cl-three-docs > div { padding-left: 14px; border-left: 1px solid #476047; }
+ .cl-consultation .cl-clarifications p { font-size: 15px; }
+ .cl-consultation .cl-contact { padding: 27px 22px; }
+ .cl-consultation .cl-contact h2 { font-size: 35px; }
+ .cl-consultation .cl-message-grid { grid-template-columns: 1fr; }
+ .cl-consultation .cl-channel { padding: 22px; }
+ .cl-consultation .cl-email { padding: 22px; }
+ .cl-consultation .cl-channel .cl-button { min-height: 48px; font-size: 14px; }
+ .cl-consultation .cl-home-invitation { padding: 25px; }
+ .cl-consultation .cl-home-invitation h2 { font-size: 40px; }
+ .cl-consultation .cl-home-invitation .cl-actions { display: grid; }
+ .cl-consultation .cl-home-invitation .cl-lead { font-size: 16px; }
+ .cl-consultation .cl-home-invitation .cl-button { font-size: 13px; }
+ .cl-consultation .cl-home-invitation .cl-orbit { max-width: 275px; }
+ .cl-consultation .cl-dialog { padding: 18px; width: calc(100% - 24px); max-height: calc(100dvh - 24px); }
+ .cl-consultation .cl-dialog__bar { gap: 15px; }
+ .cl-consultation .cl-dialog__bar h2 { font-size: 20px; }
+ .cl-consultation .cl-dialog .cl-home-invitation { padding: 22px 18px; }
+ .cl-consultation .cl-dialog .cl-home-invitation h2 { font-size: 36px; }
+ .cl-consultation .cl-build-note { flex-direction: column; gap: 6px; padding: 14px; }
+}
+@media (max-width: 359px) {
+ .cl-consultation { --cl-gutter: 14px; }
+ .cl-consultation .cl-hero, .cl-consultation .cl-contact { padding-inline: 18px; }
+ .cl-consultation .cl-hero h1 { font-size: 36px; }
+ .cl-consultation .cl-contact h2 { font-size: 32px; }
+ .cl-consultation .cl-hero .cl-button { font-size: 12px; gap: 9px; }
+ .cl-consultation .cl-keep { white-space: normal; }
+ .cl-consultation .cl-home-invitation__caption { font-size: 9px; }
+ .cl-consultation .cl-home-invitation .cl-button { font-size: 12px; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .cl-consultation *, .cl-consultation *::before, .cl-consultation *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media (forced-colors: active) {
+ .cl-consultation .cl-panel, .cl-consultation .cl-subject, .cl-consultation .cl-reading, .cl-consultation .cl-button { border: 1px solid CanvasText; }
+ .cl-consultation .cl-plus::before, .cl-consultation .cl-plus::after { background: ButtonText; }
+}
+
+</style>
+<style data-source="css/demo-shell.css">
+/* REFERENCE-SHELL ONLY. Never import this into the production app.
+   Replace this header/footer/background with the app’s existing shell. */
+html:has(body.cl-demo) { scroll-behavior: smooth; background: #03090e; }
+body.cl-demo { margin: 0; background: #03090e; }
+.cl-demo > .cl-consultation { position: relative; isolation: isolate; min-height: 100vh; padding-bottom: 22px; background: radial-gradient(ellipse 65% 900px at 87% 120px, #142e3b53, transparent), radial-gradient(ellipse 32% 1300px at 0 800px, #5c453021, transparent), radial-gradient(ellipse 55% 1200px at 80% 3100px, #193b4628, transparent); }
+.cl-demo > .cl-consultation::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .40; background-image: radial-gradient(1px 1px at 17px 93px, #bbd6e5 65%, transparent), radial-gradient(.8px .8px at 151px 49px, #9caeaa 65%, transparent), radial-gradient(1px 1px at 62px 19px, #90c3e7 65%, transparent), radial-gradient(.7px .7px at 38px 47px, #eee9d3 60%, transparent), radial-gradient(1.5px 1.5px at 397px 108px, #f0ead5 65%, transparent); background-size: 323px 379px, 439px 277px, 217px 409px, 191px 167px, 577px 683px; }
+.cl-consultation .cl-skip-link { position: fixed; top: 10px; left: 16px; z-index: 100; transform: translateY(-200%); background: var(--cl-lime); color: var(--cl-ink); padding: 12px 20px; border-radius: 6px; }
+.cl-consultation .cl-skip-link:focus { transform: none; }
+.cl-consultation .cl-demo-header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 28px; min-height: 73px; padding: 13px max(var(--cl-gutter), calc((100vw - var(--cl-max)) / 2)); background: #03090eec; backdrop-filter: blur(14px); border-bottom: 1px solid #789a342f; }
+.cl-consultation .cl-brand { display: inline-flex; align-items: center; gap: 11px; flex-shrink: 0; line-height: 1.1; }
+.cl-consultation .cl-brand strong { display: block; font-size: 17px; font-weight: 700; letter-spacing: -.035em; color: var(--cl-lime); }
+.cl-consultation .cl-brand small { display: block; margin-top: 5px; font-size: 9px; color: #bac2c5; letter-spacing: .095em; font-family: var(--cl-mono); }
+.cl-consultation .cl-brand-mark { position: relative; display: block; width: 25px; height: 25px; border-radius: 50%; background: radial-gradient(circle at 36% 34%, #9cffce, #456dd9 46%, #7a41c9 60%, #0b1f3c 75%); box-shadow: 0 0 18px #398d8145; }
+.cl-consultation .cl-brand-mark::before, .cl-consultation .cl-brand-mark::after, .cl-consultation .cl-brand-mark i { content: ""; position: absolute; border: 1px solid #aaf9d2; border-radius: 50%; inset: 5px; transform: rotate(-24deg); }
+.cl-consultation .cl-brand-mark::after { inset: 8px 8px 4px 5px; border-color: #4054cf; }
+.cl-consultation .cl-brand-mark i { inset: 9px 7px 7px; border-color: #91c6ec; }
+.cl-consultation .cl-header-status { display: flex; align-items: center; gap: 7px; border: 1px solid #466119; border-radius: 30px; padding: 5px 10px; font: 9px/1.5 var(--cl-mono); color: var(--cl-lime); letter-spacing: .035em; }
+.cl-consultation .cl-header-status i, .cl-consultation .cl-review-bar > span > i { width: 5px; height: 5px; background: var(--cl-lime); border-radius: 50%; }
+.cl-consultation .cl-demo-nav { display: flex; align-items: center; gap: 25px; margin-left: auto; }
+.cl-consultation .cl-demo-nav a { display: inline-flex; align-items: center; gap: 10px; font: 12px/1.5 var(--cl-mono); min-height: 44px; }
+.cl-consultation .cl-demo-nav a:hover { color: var(--cl-lime); }
+.cl-consultation .cl-demo-nav__contact { color: var(--cl-lime); }
+.cl-consultation .cl-demo-nav .cl-icon { width: 16px; height: 16px; }
+.cl-consultation .cl-review-bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: min(calc(100% - 2 * var(--cl-gutter)), var(--cl-max)); margin: 12px auto 18px; min-height: 28px; font: 9px/1.6 var(--cl-mono); color: var(--cl-muted); letter-spacing: .05em; }
+.cl-consultation .cl-review-bar > span { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.cl-consultation .cl-review-bar b { font-weight: 400; color: var(--cl-cream); }
+.cl-consultation .cl-review-bar > div { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+.cl-consultation .cl-review-control { display: flex; align-items: center; gap: 7px; background: none; border: none; color: var(--cl-ice); padding: 0; min-height: 44px; font: 11px/1.5 var(--cl-mono); }
+.cl-consultation .cl-review-control .cl-icon { width: 13px; height: 13px; }
+.cl-consultation .cl-review-control:hover, .cl-consultation .cl-review-control[aria-pressed="true"] { color: var(--cl-lime); }
+.cl-consultation .cl-demo-footer { display: flex; align-items: center; justify-content: space-between; gap: 28px; width: min(calc(100% - 2 * var(--cl-gutter)), var(--cl-max)); margin: 48px auto 0; padding: 26px 0; border-top: 1px solid var(--cl-line); }
+.cl-consultation .cl-demo-footer strong { display: block; color: var(--cl-lime); font-size: 16px; }
+.cl-consultation .cl-demo-footer span { display: block; margin-top: 4px; font-size: 12px; color: var(--cl-muted); }
+.cl-consultation .cl-demo-footer p { font: 10px/1.6 var(--cl-mono); color: var(--cl-muted); letter-spacing: .06em; }
+.cl-consultation .cl-demo-footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--cl-ice); font-size: 12px; }
+.cl-consultation .cl-reference-end { width: min(calc(100% - 2 * var(--cl-gutter)), var(--cl-max)); margin: 0 auto; display: flex; align-items: baseline; gap: 16px; color: var(--cl-muted); }
+.cl-consultation .cl-reference-end > span { font: 9px/1.6 var(--cl-mono); flex-shrink: 0; }
+.cl-consultation .cl-reference-end > p { font-size: 11px; max-width: 100ch; }
+.cl-consultation .cl-home-context { padding: 19px 24px; margin-block: 16px; border: 1px dashed var(--cl-line); border-radius: 7px; text-align: center; background: #061018; font: 11px/1.6 var(--cl-mono); color: var(--cl-muted); }
+.cl-consultation .cl-home-context--quiet { margin-top: 0; opacity: .8; }
+.cl-consultation.cl-home-preview { width: min(calc(100% - 2 * var(--cl-gutter)), var(--cl-max)); margin-inline: auto; }
+.cl-consultation .cl-home-review-header { padding: 50px 0 24px; }
+.cl-consultation .cl-home-review-header p:not(.cl-eyebrow) { margin: 22px 0 12px; max-width: 65ch; }
+@media (max-width: 1100px) {
+ .cl-consultation .cl-demo-header { gap: 18px; }
+ .cl-consultation .cl-demo-nav { gap: 20px; }
+ .cl-consultation .cl-demo-nav a { font-size: 11px; }
+ .cl-consultation .cl-header-status { display: none; }
+}
+@media (max-width: 750px) {
+ .cl-consultation .cl-demo-nav a:not(:last-child) { display: none; }
+ .cl-consultation .cl-review-bar__status { display: none; }
+ .cl-consultation .cl-review-bar > div { gap: 14px; }
+}
+@media (max-width: 620px) {
+ .cl-consultation .cl-demo-header { min-height: 68px; padding-block: 10px; gap: 10px; }
+ .cl-consultation .cl-brand { gap: 8px; }
+ .cl-consultation .cl-brand strong { font-size: 15px; }
+ .cl-consultation .cl-brand small { font-size: 8px; letter-spacing: .04em; }
+ .cl-consultation .cl-brand-mark { width: 23px; height: 23px; }
+ .cl-consultation .cl-demo-nav { gap: 0; }
+ .cl-consultation .cl-demo-nav a { font-size: 10px; }
+ .cl-consultation .cl-demo-nav .cl-icon { display: none; }
+ .cl-consultation .cl-review-bar { flex-wrap: wrap; gap: 0; margin-top: 10px; margin-bottom: 10px; }
+ .cl-consultation .cl-review-bar > span { font-size: 8px; }
+ .cl-consultation .cl-review-bar > div { margin-left: auto; }
+ .cl-consultation .cl-review-control { font-size: 9px; gap: 5px; }
+ .cl-consultation .cl-review-control .cl-icon { width: 12px; height: 12px; }
+ .cl-consultation .cl-demo-footer { display: grid; grid-template-columns: 1fr auto; gap: 16px; margin-top: 34px; }
+ .cl-consultation .cl-demo-footer p { grid-row: 2; grid-column: 1 / -1; font-size: 9px; }
+ .cl-consultation .cl-reference-end { display: block; }
+ .cl-consultation .cl-reference-end > p { margin-top: 7px; font-size: 10px; }
+ .cl-consultation .cl-home-context { font-size: 10px; padding-inline: 16px; }
+}
+@media (max-width: 359px) {
+ .cl-consultation .cl-demo-nav a { font-size: 9px; }
+ .cl-consultation .cl-review-bar > div { gap: 10px; }
+ .cl-consultation .cl-review-bar > span { letter-spacing: 0; gap: 5px; }
+}
+@media (prefers-reduced-motion: reduce) { html:has(body.cl-demo) { scroll-behavior: auto; } }
+/* Prevent the reference page moving beneath an open modal. */
+body.cl-demo:has(dialog[open]) { overflow: hidden; }
+
+</style>
+<script data-source="js/config.js">
+/**
+ * PUBLIC CONTENT CONFIG • No credentials or private client information belong here.
+ * Empty values are intentional. Never infer them from the mockup screenshots.
+ * Edit the modular package, not the generated one-file preview.
+ */
+window.CuriousLabsConsultationConfig = Object.freeze({
+  contactsApproved: false,
+  telegramUrl: "",       // Approved HTTPS t.me destination, after owner confirmation.
+  whatsappUrl: "",       // Approved HTTPS wa.me destination, after owner confirmation.
+  email: "",             // Approved public email address.
+  emailSubject: "AI integration consultation",
+
+  // Two reserved own-work artifacts. Do not turn an illustration into proof.
+  // Add records only when the asset AND public caption are approved.
+  // Example SCHEMA ONLY (not a usable example):
+  // {
+  //   id: "a", approved: true, title: "…",
+  //   origin: "…", purpose: "…", meaning: "…", limit: "…",
+  //   imageSrc: "assets/approved-planning-excerpt.webp", imageAlt: "…"
+  // }
+  evidence: []
+});
+
+</script>
+<script data-source="js/consultation.js">
+/**
+ * PROGRESSIVE ENHANCEMENT • CuriousLabs AI Consultation • v0.3
+ * Native anchors and <details> preserve the reading path without JavaScript.
+ * Dynamic configuration uses textContent and validated destinations, not HTML injection.
+ * No analytics, external requests, localStorage, scheduler, or submission backend.
+ *
+ * Integration: port these small behaviors to the host framework. Do not run this
+ * imperative demo initializer over DOM owned by a React component.
+ */
+(function () {
+  "use strict";
+  const instances = new WeakMap();
+  const asText = (value) => typeof value === "string" ? value.trim() : "";
+
+  function validContactURL(value, channel) {
+    try {
+      const url = new URL(asText(value));
+      if (url.protocol !== "https:" || url.username || url.password || url.port) return "";
+      if (channel === "telegram" && url.hostname === "t.me" && url.pathname.length > 1) return url.href;
+      if (channel === "whatsapp" && url.hostname === "wa.me" && /^\/[1-9][0-9]{6,14}\/?$/.test(url.pathname)) return url.href;
+    } catch (_) { /* Missing or malformed destination stays unconfigured. */ }
+    return "";
+  }
+
+  function validEmail(value) {
+    const email = asText(value);
+    return /^[^\s@<>\r\n]+@[^\s@<>\r\n]+\.[^\s@<>\r\n]+$/.test(email) ? email : "";
+  }
+
+  function validProof(record) {
+    if (!record || record.approved !== true || !["a", "b"].includes(record.id)) return false;
+    const fields = ["title", "origin", "purpose", "meaning", "limit", "imageSrc", "imageAlt"];
+    if (!fields.every((key) => asText(record[key]))) return false;
+    const src = asText(record.imageSrc);
+    return /^(\.\/)?assets\/[A-Za-z0-9_./-]+\.(png|jpe?g|webp|svg)$/i.test(src) && !src.split("/").includes("..");
+  }
+
+  /** @param {HTMLElement} root @param {Object} config @returns {() => void} */
+  function init(root, config = {}) {
+    if (!(root instanceof HTMLElement)) throw new TypeError("A consultation root element is required.");
+    if (instances.has(root)) return instances.get(root);
+    const abort = new AbortController();
+    const query = (selector) => root.querySelector(selector);
+    const all = (selector) => Array.from(root.querySelectorAll(selector));
+    const on = (node, type, callback) => node && node.addEventListener(type, callback, { signal: abort.signal });
+    const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Review controls are visible only when they can actually work.
+    const notesButton = query("[data-cl-notes-toggle]");
+    if (notesButton) {
+      notesButton.hidden = false;
+      on(notesButton, "click", () => {
+        const enabled = root.dataset.clNotes !== "true";
+        root.dataset.clNotes = String(enabled);
+        notesButton.setAttribute("aria-pressed", String(enabled));
+      });
+    }
+
+    const homeDialog = query("[data-cl-home-dialog]");
+    const homeButton = query("[data-cl-home-open]");
+    if (homeDialog && typeof homeDialog.showModal === "function" && homeButton) {
+      homeButton.hidden = false;
+      on(homeButton, "click", () => { if (!homeDialog.open) homeDialog.showModal(); });
+      on(query("[data-cl-home-close]"), "click", () => homeDialog.close());
+      // In the inline preview, route into this same document. In the separate
+      // homepage-preview.html, the fragment's index.html links remain unchanged.
+      all("[data-cl-home-target]").forEach((link) => {
+        const target = link.dataset.clHomeTarget;
+        if (target === "overview" || target === "contact") {
+          link.href = `#${target}`;
+          on(link, "click", () => homeDialog.close());
+        }
+      });
+    }
+
+    // Each row is independent. Opening one never forcibly closes another.
+    all("[data-cl-close-reading]").forEach((button) => {
+      button.hidden = false;
+      on(button, "click", () => {
+        const details = button.closest("details");
+        const summary = details.querySelector("summary");
+        details.open = false;
+        summary.focus({ preventScroll: true });
+        const top = summary.getBoundingClientRect().top;
+        if (top < 85 || top > window.innerHeight - 60) {
+          summary.scrollIntoView({ block: "start", behavior: reducedMotion() ? "auto" : "smooth" });
+        }
+      });
+    });
+    all("[data-cl-open-reading]").forEach((link) => {
+      on(link, "click", () => {
+        const target = document.getElementById(link.dataset.clOpenReading);
+        if (target && root.contains(target) && target.matches("details[data-cl-reading]")) {
+          target.open = true;
+          target.querySelector("summary").focus({ preventScroll: true });
+        }
+      });
+    });
+    function resolveReadingHash() {
+      let id;
+      try { id = decodeURIComponent(window.location.hash.slice(1)); } catch (_) { return; }
+      const target = document.getElementById(id);
+      if (target && root.contains(target) && target.matches("details[data-cl-reading]")) {
+        target.open = true;
+      }
+    }
+    on(window, "hashchange", resolveReadingHash);
+    resolveReadingHash();
+
+    // Fail-closed: no fake handles, example.com addresses, or javascript: URLs.
+    const approved = config.contactsApproved === true;
+    const destinations = {
+      telegram: approved ? validContactURL(config.telegramUrl, "telegram") : "",
+      whatsapp: approved ? validContactURL(config.whatsappUrl, "whatsapp") : ""
+    };
+    Object.entries(destinations).forEach(([channel, href]) => {
+      const link = query(`[data-cl-contact="${channel}"]`);
+      if (!link) return;
+      if (href) {
+        link.href = href;
+        link.removeAttribute("aria-disabled");
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        query(`[data-cl-channel-status="${channel}"]`).textContent = "Start a direct conversation. Opens in a new tab.";
+      }
+    });
+    const email = approved ? validEmail(config.email) : "";
+    const emailAddress = query("[data-cl-email]");
+    const emailButton = query("[data-cl-copy-email]");
+    const emailLink = query('[data-cl-contact="email"]');
+    const copyStatus = query("[data-cl-copy-status]");
+    if (email && emailAddress && emailButton && emailLink) {
+      emailAddress.textContent = email;
+      emailButton.disabled = false;
+      emailLink.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(asText(config.emailSubject) || "AI integration consultation")}`;
+      emailLink.removeAttribute("aria-disabled");
+      on(emailButton, "click", async () => {
+        try {
+          if (!navigator.clipboard || !window.isSecureContext) throw new Error("Clipboard unavailable");
+          await navigator.clipboard.writeText(email);
+          if (!abort.signal.aborted) copyStatus.textContent = "Email address copied.";
+        } catch (_) {
+          if (abort.signal.aborted) return;
+          const selection = window.getSelection();
+          if (selection) {
+            const range = document.createRange();
+            range.selectNodeContents(emailAddress);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+          copyStatus.textContent = "Copying is unavailable here. Select and copy the address above.";
+        }
+      });
+    }
+    const contactsReady = Boolean(destinations.telegram && destinations.whatsapp && email);
+    root.dataset.clContactsReady = String(contactsReady);
+    const contactNote = query("[data-cl-contact-pending]");
+    if (contactNote && contactsReady) contactNote.hidden = true;
+
+    // Genuine, approved evidence can populate a slot without a code rewrite.
+    // Until then the reference reserve remains explicitly labeled as a reserve.
+    const records = Array.isArray(config.evidence) ? config.evidence : [];
+    const proofDialog = query("[data-cl-proof-dialog]");
+    const proofDialogContent = query("[data-cl-proof-dialog-content]");
+    const proofDialogTitle = query("#cl-proof-dialog-title");
+    on(query("[data-cl-proof-close]"), "click", () => proofDialog.close());
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+    const approvedProof = new Set();
+    records.filter(validProof).forEach((record) => {
+      if (approvedProof.has(record.id)) return;
+      const slot = query(`[data-cl-proof="${record.id}"]`);
+      if (!slot) return;
+      approvedProof.add(record.id);
+      const image = el("img", "cl-proof-image");
+      image.src = record.imageSrc;
+      image.alt = record.imageAlt;
+      image.width = 1200;
+      image.height = 800;
+      image.loading = "lazy";
+      image.decoding = "async";
+      const caption = el("div", "cl-proof-card__caption");
+      caption.append(el("h3", "", record.title));
+      const fields = el("dl", "cl-proof-fields");
+      ["origin", "purpose", "meaning", "limit"].forEach((key) => {
+        const row = el("div");
+        row.append(el("dt", "", key[0].toUpperCase() + key.slice(1)), el("dd", "", record[key]));
+        fields.append(row);
+      });
+      caption.append(fields);
+      if (proofDialog && typeof proofDialog.showModal === "function") {
+        const openButton = el("button", "cl-text-button", "View larger excerpt ↗");
+        openButton.type = "button";
+        on(openButton, "click", () => {
+          proofDialogTitle.textContent = record.title;
+          const fullImage = el("img");
+          fullImage.src = record.imageSrc;
+          fullImage.alt = record.imageAlt;
+          proofDialogContent.replaceChildren(fullImage, el("p", "cl-caption", record.limit));
+          proofDialog.showModal();
+        });
+        on(image, "error", () => {
+          image.hidden = true;
+          openButton.hidden = true;
+          caption.prepend(el("p", "cl-pending-label", "The approved image is unavailable. Check the local asset path before publication."));
+        });
+        caption.append(openButton);
+      }
+      slot.replaceChildren(image, caption);
+    });
+    root.dataset.clApprovedProofCount = String(approvedProof.size);
+    if (approvedProof.size === 2) {
+      const evidenceNotice = query("[data-cl-evidence-section] .cl-reference-notice");
+      if (evidenceNotice) evidenceNotice.hidden = true;
+    }
+
+    function cleanup() {
+      abort.abort();
+      if (homeDialog && homeDialog.open) homeDialog.close();
+      if (proofDialog && proofDialog.open) proofDialog.close();
+      instances.delete(root);
+    }
+    instances.set(root, cleanup);
+    return cleanup;
+  }
+
+  window.CuriousLabsConsultation = Object.freeze({ init });
+  function start() {
+    document.querySelectorAll("[data-cl-root]").forEach((root) => {
+      init(root, window.CuriousLabsConsultationConfig || {});
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+  else start();
+})();
+
+</script>
+</head>
+<body class="cl-demo">
+<div class="cl-consultation" data-cl-root data-cl-notes="false">
+<svg xmlns="http://www.w3.org/2000/svg" class="cl-sprite" aria-hidden="true"><defs><symbol id="cl-i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol><symbol id="cl-i-diagonal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18 18 6M6 6h12v12"/></symbol><symbol id="cl-i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m20 0v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></symbol><symbol id="cl-i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-16-2 20"/></symbol><symbol id="cl-i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></symbol><symbol id="cl-i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 6-10 6L2 9Zm-10 12 10 6 10-6M2 15l10 6 10-6"/></symbol><symbol id="cl-i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H5v20h14V7Zm0 0v5h5M8 11h8m-8 4h8m-8 4h5"/></symbol><symbol id="cl-i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 6 9 10 9 10s9-4 9-10V6Zm-5 10 3 3 7-7"/></symbol><symbol id="cl-i-work" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12a20 20 0 0 0 18 0M12 10v6"/></symbol><symbol id="cl-i-learn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 11 6-11 6L1 9Zm-7 8v7c4 3 10 3 14 0v-7m4-2v8"/></symbol><symbol id="cl-i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/></symbol><symbol id="cl-i-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="4"/><path d="M12 7V3m-2 0h4M8 12v3m8-3v3m-7 3h6M0 11v6m24-6v6"/></symbol><symbol id="cl-i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11a9 9 0 0 1-9 9 10 10 0 0 1-4-.8L2 22l1.8-6A9 9 0 1 1 21 11Z"/><path d="M7 11h.01M12 11h.01M17 11h.01"/></symbol><symbol id="cl-i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7L22 6"/></symbol><symbol id="cl-i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol><symbol id="cl-i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></symbol><symbol id="cl-i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M6 18 18 6"/></symbol><symbol id="cl-i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol><symbol id="cl-i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><path d="M2 12h20"/></symbol><symbol id="cl-i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></symbol><symbol id="cl-i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6"/><rect x="15" y="3" width="6" height="6"/><rect x="3" y="15" width="6" height="6"/><rect x="15" y="15" width="6" height="6"/></symbol></defs></svg>
+<a class="cl-skip-link" href="#cl-main">Skip to consultation content</a>
+<header class="cl-demo-header" data-cl-demo-shell>
+ <a class="cl-brand" href="#overview" aria-label="CuriousLabs consultation overview"><span class="cl-brand-mark" aria-hidden="true"><i></i></span><span><strong>CuriousLabs</strong><small>MISSION CONTROL</small></span></a>
+ <span class="cl-header-status"><i></i> CONSULTATION</span>
+ <nav class="cl-demo-nav" aria-label="Consultation sections"><a href="#overview">Overview</a><a href="#contribution">What I help with</a><a href="#approach">The approach</a><a class="cl-demo-nav__contact" href="#contact">Start a conversation <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-diagonal"></use></svg></a></nav>
+</header>
+<aside class="cl-review-bar" aria-label="Design reference controls" data-cl-demo-shell><span><i></i> HTML REFERENCE <b>v0.3</b><span class="cl-review-bar__status">/ Copy &amp; assets pending approval</span></span><div><button type="button" class="cl-review-control" data-cl-home-open hidden><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-grid"></use></svg> Homepage panel</button><button type="button" class="cl-review-control" data-cl-notes-toggle aria-pressed="false" hidden><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-file"></use></svg> Build notes</button></div></aside>
+<!-- D1–D8 is the page component boundary. Reuse the app’s verified header/footer around it. -->
+<main id="cl-main" class="cl-main" tabindex="-1">
+<!-- D1 / THE OFFER -->
+<section id="overview" class="cl-hero cl-panel" aria-labelledby="cl-page-title" data-cl-section="D1">
+  <div class="cl-hero__copy">
+    <p class="cl-eyebrow"><span>//</span> AI INTEGRATION CONSULTATION</p>
+    <h1 id="cl-page-title">Work with AI in a way that fits your business.</h1>
+    <p class="cl-lead">I help technical teams and non-technical businesses understand, plan, and manage AI work. Consultation, materials, and training are tailored to your needs—not a fixed course.</p>
+    <p class="cl-hero__invitation">Bring one real situation from your business. We can discuss possible directions in a free first conversation.</p>
+    <div class="cl-actions"><a class="cl-button cl-button--primary" href="#contact">Start a free conversation <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a><a class="cl-button cl-button--secondary" href="#approach">See the approach <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-diagonal"></use></svg></a></div>
+  </div>
+  <div class="cl-hero__visual"><div class="cl-orbit" aria-hidden="true">
+      <svg viewBox="0 0 640 600" class="cl-orbit__svg" xmlns="http://www.w3.org/2000/svg" focusable="false">
+        <defs>
+          <radialGradient id="hero-haze"><stop stop-color="#286775" stop-opacity=".30"/><stop offset="1" stop-color="#0a1a20" stop-opacity="0"/></radialGradient>
+          <radialGradient id="hero-planet" cx="32%" cy="24%" r="77%"><stop stop-color="#587d89"/><stop offset=".32" stop-color="#24434e"/><stop offset=".67" stop-color="#10232e"/><stop offset=".91" stop-color="#040c13"/><stop offset="1" stop-color="#183744"/></radialGradient>
+          <radialGradient id="hero-shade" cx="68%" cy="72%" r="76%"><stop stop-color="#02070c" stop-opacity=".96"/><stop offset=".53" stop-color="#02070c" stop-opacity=".74"/><stop offset="1" stop-color="#02070c" stop-opacity="0"/></radialGradient>
+          <linearGradient id="hero-rim" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e1f7ff"/><stop offset=".28" stop-color="#b6e2ed"/><stop offset=".55" stop-color="#3a6877"/><stop offset="1" stop-color="#07202d"/></linearGradient>
+          <clipPath id="hero-disc"><circle cx="320" cy="320" r="113"/></clipPath>
+          <filter id="hero-surface" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".058" numOctaves="4" seed="21"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".33"/></feComponentTransfer></filter>
+          <filter id="hero-glow"><feGaussianBlur stdDeviation="5"/></filter>
+          <pattern id="hero-grid" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0H0V64" fill="none" stroke="#477480" stroke-opacity=".12" stroke-width=".7"/></pattern>
+        </defs>
+        <circle cx="320" cy="320" r="300" fill="url(#hero-haze)"/>
+        <rect x="56" y="60" width="528" height="510" fill="url(#hero-grid)"/><circle cx="105" cy="220" r="1" fill="#b1d5e1" opacity="0.46"/><circle cx="413" cy="344" r="0.8" fill="#b1d5e1" opacity="0.59"/><circle cx="381" cy="268" r="1.4" fill="#b1d5e1" opacity="0.19"/><circle cx="57" cy="257" r="1.4" fill="#b1d5e1" opacity="0.51"/><circle cx="487" cy="100" r="1" fill="#b1d5e1" opacity="0.16"/><circle cx="355" cy="48" r="1.4" fill="#b1d5e1" opacity="0.54"/><circle cx="305" cy="385" r="1" fill="#b1d5e1" opacity="0.23"/><circle cx="529" cy="284" r="1" fill="#b1d5e1" opacity="0.40"/><circle cx="219" cy="337" r="1.4" fill="#b1d5e1" opacity="0.55"/><circle cx="373" cy="187" r="1.4" fill="#b1d5e1" opacity="0.58"/><circle cx="251" cy="72" r="0.65" fill="#b1d5e1" opacity="0.28"/><circle cx="92" cy="416" r="0.65" fill="#b1d5e1" opacity="0.53"/><circle cx="180" cy="335" r="0.65" fill="#b1d5e1" opacity="0.58"/><circle cx="530" cy="72" r="1.4" fill="#b1d5e1" opacity="0.39"/><circle cx="431" cy="269" r="0.65" fill="#b1d5e1" opacity="0.50"/><circle cx="541" cy="602" r="0.65" fill="#b1d5e1" opacity="0.24"/><circle cx="371" cy="521" r="0.65" fill="#b1d5e1" opacity="0.16"/><circle cx="347" cy="400" r="0.8" fill="#b1d5e1" opacity="0.60"/><circle cx="225" cy="543" r="1" fill="#b1d5e1" opacity="0.55"/><circle cx="180" cy="132" r="1.4" fill="#b1d5e1" opacity="0.59"/><circle cx="43" cy="85" r="1.4" fill="#b1d5e1" opacity="0.22"/><circle cx="46" cy="355" r="0.8" fill="#b1d5e1" opacity="0.42"/><circle cx="247" cy="154" r="1" fill="#b1d5e1" opacity="0.52"/><circle cx="274" cy="392" r="0.8" fill="#b1d5e1" opacity="0.49"/><circle cx="573" cy="539" r="0.8" fill="#b1d5e1" opacity="0.30"/><circle cx="134" cy="373" r="1" fill="#b1d5e1" opacity="0.59"/><circle cx="610" cy="206" r="1" fill="#b1d5e1" opacity="0.13"/><circle cx="523" cy="200" r="1.4" fill="#b1d5e1" opacity="0.30"/><circle cx="61" cy="391" r="0.65" fill="#b1d5e1" opacity="0.59"/><circle cx="550" cy="607" r="1.4" fill="#b1d5e1" opacity="0.29"/><circle cx="66" cy="576" r="0.8" fill="#b1d5e1" opacity="0.41"/><circle cx="364" cy="60" r="1" fill="#b1d5e1" opacity="0.44"/><circle cx="94" cy="163" r="0.65" fill="#b1d5e1" opacity="0.32"/><circle cx="151" cy="62" r="1" fill="#b1d5e1" opacity="0.41"/><circle cx="580" cy="356" r="1" fill="#b1d5e1" opacity="0.47"/><circle cx="74" cy="571" r="0.8" fill="#b1d5e1" opacity="0.44"/><circle cx="243" cy="314" r="1.4" fill="#b1d5e1" opacity="0.15"/><circle cx="104" cy="338" r="0.8" fill="#b1d5e1" opacity="0.51"/><circle cx="56" cy="141" r="0.8" fill="#b1d5e1" opacity="0.27"/><circle cx="42" cy="591" r="1" fill="#b1d5e1" opacity="0.54"/><circle cx="123" cy="593" r="0.8" fill="#b1d5e1" opacity="0.34"/><circle cx="101" cy="280" r="1.4" fill="#b1d5e1" opacity="0.17"/><circle cx="135" cy="580" r="1.4" fill="#b1d5e1" opacity="0.39"/><circle cx="569" cy="335" r="1.4" fill="#b1d5e1" opacity="0.26"/><circle cx="158" cy="197" r="1.4" fill="#b1d5e1" opacity="0.18"/><circle cx="313" cy="560" r="1.4" fill="#b1d5e1" opacity="0.25"/><circle cx="344" cy="568" r="1.4" fill="#b1d5e1" opacity="0.52"/><circle cx="285" cy="551" r="0.65" fill="#b1d5e1" opacity="0.43"/><circle cx="105" cy="177" r="1.4" fill="#b1d5e1" opacity="0.31"/><circle cx="352" cy="67" r="1.4" fill="#b1d5e1" opacity="0.35"/><circle cx="122" cy="339" r="0.65" fill="#b1d5e1" opacity="0.25"/><circle cx="371" cy="572" r="0.65" fill="#b1d5e1" opacity="0.24"/><circle cx="439" cy="456" r="1" fill="#b1d5e1" opacity="0.56"/><circle cx="171" cy="549" r="0.8" fill="#b1d5e1" opacity="0.48"/><circle cx="553" cy="423" r="0.65" fill="#b1d5e1" opacity="0.34"/><circle cx="355" cy="525" r="0.8" fill="#b1d5e1" opacity="0.48"/><circle cx="190" cy="578" r="0.8" fill="#b1d5e1" opacity="0.37"/><circle cx="466" cy="315" r="0.65" fill="#b1d5e1" opacity="0.55"/><circle cx="287" cy="214" r="1.4" fill="#b1d5e1" opacity="0.36"/><circle cx="428" cy="532" r="0.65" fill="#b1d5e1" opacity="0.44"/><circle cx="184" cy="583" r="1" fill="#b1d5e1" opacity="0.19"/><circle cx="382" cy="256" r="0.8" fill="#b1d5e1" opacity="0.54"/><circle cx="530" cy="563" r="1.4" fill="#b1d5e1" opacity="0.47"/><circle cx="149" cy="145" r="0.8" fill="#b1d5e1" opacity="0.56"/><circle cx="121" cy="378" r="1.4" fill="#b1d5e1" opacity="0.31"/><circle cx="459" cy="277" r="1" fill="#b1d5e1" opacity="0.44"/><circle cx="105" cy="167" r="1.4" fill="#b1d5e1" opacity="0.45"/><circle cx="500" cy="155" r="0.8" fill="#b1d5e1" opacity="0.55"/><circle cx="177" cy="443" r="1.4" fill="#b1d5e1" opacity="0.53"/><circle cx="462" cy="345" r="1" fill="#b1d5e1" opacity="0.20"/><circle cx="587" cy="252" r="0.65" fill="#b1d5e1" opacity="0.54"/><circle cx="327" cy="234" r="0.8" fill="#b1d5e1" opacity="0.17"/><circle cx="356" cy="234" r="0.65" fill="#b1d5e1" opacity="0.44"/><circle cx="582" cy="50" r="1" fill="#b1d5e1" opacity="0.14"/><circle cx="257" cy="550" r="0.65" fill="#b1d5e1" opacity="0.41"/><circle cx="394" cy="246" r="1" fill="#b1d5e1" opacity="0.38"/><circle cx="443" cy="238" r="1.4" fill="#b1d5e1" opacity="0.42"/><circle cx="164" cy="130" r="1.4" fill="#b1d5e1" opacity="0.51"/><circle cx="448" cy="360" r="0.8" fill="#b1d5e1" opacity="0.49"/><circle cx="118" cy="160" r="0.8" fill="#b1d5e1" opacity="0.14"/><circle cx="131" cy="250" r="1.4" fill="#b1d5e1" opacity="0.46"/><circle cx="335" cy="312" r="1" fill="#b1d5e1" opacity="0.28"/><circle cx="116" cy="180" r="1.4" fill="#b1d5e1" opacity="0.56"/><circle cx="66" cy="425" r="1" fill="#b1d5e1" opacity="0.44"/><circle cx="294" cy="609" r="1.4" fill="#b1d5e1" opacity="0.17"/><circle cx="462" cy="459" r="0.8" fill="#b1d5e1" opacity="0.33"/><circle cx="476" cy="434" r="1.4" fill="#b1d5e1" opacity="0.15"/><circle cx="338" cy="71" r="0.65" fill="#b1d5e1" opacity="0.50"/><circle cx="125" cy="131" r="0.8" fill="#b1d5e1" opacity="0.56"/><circle cx="356" cy="199" r="1" fill="#b1d5e1" opacity="0.45"/><circle cx="594" cy="428" r="0.65" fill="#b1d5e1" opacity="0.21"/><circle cx="542" cy="581" r="0.65" fill="#b1d5e1" opacity="0.48"/><circle cx="577" cy="58" r="0.8" fill="#b1d5e1" opacity="0.32"/><circle cx="423" cy="314" r="1.4" fill="#b1d5e1" opacity="0.59"/><circle cx="328" cy="186" r="0.8" fill="#b1d5e1" opacity="0.60"/><circle cx="260" cy="237" r="1" fill="#b1d5e1" opacity="0.35"/><circle cx="205" cy="423" r="1.4" fill="#b1d5e1" opacity="0.53"/><circle cx="380" cy="35" r="0.65" fill="#b1d5e1" opacity="0.47"/><circle cx="489" cy="567" r="1" fill="#b1d5e1" opacity="0.52"/><circle cx="234" cy="126" r="1.4" fill="#b1d5e1" opacity="0.43"/><circle cx="505" cy="468" r="1.4" fill="#b1d5e1" opacity="0.34"/><circle cx="205" cy="308" r="1" fill="#b1d5e1" opacity="0.31"/><circle cx="154" cy="459" r="0.65" fill="#b1d5e1" opacity="0.49"/><circle cx="599" cy="54" r="1" fill="#b1d5e1" opacity="0.52"/><circle cx="369" cy="514" r="0.8" fill="#b1d5e1" opacity="0.54"/><circle cx="79" cy="408" r="1" fill="#b1d5e1" opacity="0.36"/><circle cx="228" cy="334" r="1" fill="#b1d5e1" opacity="0.40"/><circle cx="75" cy="266" r="0.65" fill="#b1d5e1" opacity="0.36"/><circle cx="250" cy="265" r="0.8" fill="#b1d5e1" opacity="0.12"/><circle cx="124" cy="376" r="0.65" fill="#b1d5e1" opacity="0.19"/><circle cx="67" cy="544" r="1.4" fill="#b1d5e1" opacity="0.20"/><circle cx="588" cy="580" r="1.4" fill="#b1d5e1" opacity="0.49"/><circle cx="197" cy="308" r="0.65" fill="#b1d5e1" opacity="0.24"/><circle cx="225" cy="295" r="0.8" fill="#b1d5e1" opacity="0.20"/><circle cx="505" cy="250" r="0.8" fill="#b1d5e1" opacity="0.49"/><circle cx="418" cy="579" r="0.65" fill="#b1d5e1" opacity="0.47"/><circle cx="58" cy="592" r="0.8" fill="#b1d5e1" opacity="0.14"/><circle cx="216" cy="381" r="1" fill="#b1d5e1" opacity="0.40"/><circle cx="455" cy="500" r="0.65" fill="#b1d5e1" opacity="0.31"/><circle cx="381" cy="588" r="0.8" fill="#b1d5e1" opacity="0.22"/><circle cx="338" cy="334" r="1" fill="#b1d5e1" opacity="0.20"/><circle cx="84" cy="599" r="1" fill="#b1d5e1" opacity="0.46"/><circle cx="280" cy="270" r="0.65" fill="#b1d5e1" opacity="0.50"/><circle cx="232" cy="205" r="0.65" fill="#b1d5e1" opacity="0.20"/><circle cx="571" cy="572" r="1.4" fill="#b1d5e1" opacity="0.54"/><circle cx="490" cy="275" r="1.4" fill="#b1d5e1" opacity="0.14"/><circle cx="239" cy="311" r="0.65" fill="#b1d5e1" opacity="0.30"/><circle cx="382" cy="124" r="0.65" fill="#b1d5e1" opacity="0.39"/><circle cx="155" cy="272" r="0.8" fill="#b1d5e1" opacity="0.40"/><circle cx="445" cy="225" r="1.4" fill="#b1d5e1" opacity="0.51"/>
+        <g fill="none" stroke="#63828b"><circle cx="320" cy="320" r="254" stroke-opacity=".14"/><circle cx="320" cy="320" r="209" stroke-opacity=".58"/><circle cx="320" cy="320" r="166" stroke-dasharray="2 5" stroke-opacity=".3"/><circle cx="320" cy="320" r="144" stroke-opacity=".20"/></g>
+        <g fill="none" stroke="#a1c8cb" stroke-opacity=".55" stroke-width="1"><path d="M320 320 320 111"/><path d="M320 320 504 245"/><path d="M320 320 434 462"/><path d="M320 320 206 462"/><path d="M320 320 136 245"/></g>
+        <circle cx="320" cy="320" r="115" fill="none" stroke="#8dd5e4" stroke-opacity=".65" stroke-width="3" filter="url(#hero-glow)"/>
+        <circle cx="320" cy="320" r="113" fill="url(#hero-planet)"/>
+        <g clip-path="url(#hero-disc)"><rect x="207" y="207" width="226" height="226" filter="url(#hero-surface)"/><circle cx="320" cy="320" r="113" fill="url(#hero-shade)"/><g stroke="#b2d7da" stroke-opacity=".10" fill="none"><ellipse cx="320" cy="320" rx="44" ry="113"/><ellipse cx="320" cy="320" rx="86" ry="113"/><ellipse cx="320" cy="320" rx="113" ry="40"/><ellipse cx="320" cy="320" rx="113" ry="81"/></g></g>
+        <circle cx="320" cy="320" r="113" fill="none" stroke="url(#hero-rim)" stroke-width="1.8"/>
+        <g transform="translate(320,111)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-people" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(504,245)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-file" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(434,462)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-bot" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(206,462)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-search" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(136,245)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-layers" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g>
+        <g fill="#e4f4d9"><circle cx="429" cy="142" r="3"/><circle cx="494" cy="436" r="2.5"/><circle cx="321" cy="529" r="2.5"/><circle cx="124" cy="393" r="2.5"/><circle cx="212" cy="141" r="2.5"/></g>
+        <g fill="#dcece7" font-family="ui-monospace, monospace" font-size="11" letter-spacing="1.6" text-anchor="middle">
+          <text x="320" y="56">PEOPLE</text><text x="530" y="199">CONTEXT</text><text x="459" y="518">AI TOOLS</text><text x="176" y="518">REVIEW</text><text x="107" y="199">WORKFLOW</text>
+          <text x="320" y="302" font-size="16" letter-spacing="2">AI</text><text x="320" y="327" font-size="16" letter-spacing="2">INTEGRATION</text>
+          <path d="M311 346h18" stroke="#c6f75b" stroke-width="2"/>
+          <text x="320" y="371" fill="#9bb2bc" font-size="10">HUMAN DIRECTION</text>
+        </g>
+        <path d="M60 114h16m-8-8v16M551 402h14m-7-7v14" stroke="#82acb6" stroke-opacity=".5"/>
+      </svg>
+      <div class="cl-orbit__footer"><span class="cl-cross">+</span> PEOPLE. PROCESSES. POSSIBILITIES.</div>
+    </div></div>
+  <div class="cl-hero__meta"><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-people"></use></svg> Personally delivered</span><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-pin"></use></svg> Phnom Penh / Online</span><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-chat"></use></svg> English &amp; Khmer</span></div>
+</section>
+<p class="cl-build-note"><strong>D1</strong><span>Opening copy is retained from v0.2. The globe is a supporting visual, not an operating framework. The main action leads to contact, not a scheduler. English & Khmer refers to discussion and training.</span></p>
+<nav class="cl-jump-links" aria-label="On this page"><span class="cl-micro">EXPLORE THE PAGE</span><a href="#contribution">What I help with <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a><a href="#person">About me <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a><a href="#approach">The approach <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a><a href="#contact">Contact <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a></nav>
+
+<!-- D2 / RECOGNITION -->
+<section id="audiences" class="cl-section" aria-labelledby="cl-audiences-title" data-cl-section="D2">
+ <header class="cl-section-heading cl-heading-split"><div><p class="cl-eyebrow"><span>01 /</span> WHO THIS IS FOR</p><h2 id="cl-audiences-title">Where could this help?</h2></div><p class="cl-section-intro">Different kinds of work.<br>A shared need for direction.</p></header>
+ <div class="cl-audiences">
+  <article class="cl-audience-card"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-code"></use></svg></span><span class="cl-micro">BUILDING WITH TECHNOLOGY</span></div><h3>Technical teams</h3><p>You already code, or have people building products. Learn to direct AI across more of the work, with planning, review, and control.</p><p class="cl-card-foot">Not programming instruction.</p></article>
+  <article class="cl-audience-card"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-work"></use></svg></span><span class="cl-micro">RUNNING A BUSINESS</span></div><h3>Businesses with non-coding needs</h3><p>Explore AI for management, assistance, creation, and other work. Possible settings include hotels, restaurants, and factories.</p><p class="cl-card-foot">Not a coding course in disguise.</p></article>
+ </div>
+ <div class="cl-recognition"><p class="cl-recognition__intro">Does any of this sound familiar?</p><div class="cl-recognition__grid">
+  <article><p class="cl-micro">TRUST</p><p>AI can do impressive things, but we do not know how to rely on it in real work.</p></article>
+  <article><p class="cl-micro">COMPLEXITY</p><p>As the work becomes more complicated, our way of working with AI stops holding together.</p></article>
+  <article><p class="cl-micro">SCOPE</p><p>We use AI for small changes, but do not know how to direct a larger body of work with it.</p></article>
+ </div></div>
+ <p class="cl-bridge"><span></span>The starting point is your situation. The scope comes after we understand it.</p>
+ <p class="cl-build-note"><strong>D2</strong><span>Both audiences remain visible; there is no forced selection. Trust, complexity, and scope are recognition prompts, not customer quotations. Sector names are possible settings, not industries-served claims.</span></p>
+</section>
+
+<!-- D3 / TAILORED CONTRIBUTION -->
+<section id="contribution" class="cl-section" aria-labelledby="cl-contribution-title" data-cl-section="D3">
+ <header class="cl-section-heading"><p class="cl-eyebrow"><span>02 /</span> WHAT WE COULD WORK ON</p><h2 id="cl-contribution-title">Start with the need.<br>Build the right approach.</h2><p class="cl-section-intro">We start with your situation, then choose the subjects and methods that fit. The consultation is shaped around your work and the people involved—not a fixed course or bundle.</p></header>
+ <div class="cl-subject-grid"><article class="cl-subject" data-cl-subject="S1"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-compass"></use></svg></span><span class="cl-micro">01</span></div><h3>Direction and solutions</h3><p>Understand the situation and identify a sensible approach to using AI.</p></article><article class="cl-subject" data-cl-subject="S2"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-layers"></use></svg></span><span class="cl-micro">02</span></div><h3>Workflow and harness planning</h3><p>Plan the prompts, context, stages, tools, handoffs, and checks around the work.</p></article><article class="cl-subject" data-cl-subject="S3"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-people"></use></svg></span><span class="cl-micro">03</span></div><h3>Coordinated AI work</h3><p>Understand how people can use AI together, and how AI agents can work under human direction.</p></article><article class="cl-subject" data-cl-subject="S4"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-shield"></use></svg></span><span class="cl-micro">04</span></div><h3>Planning and quality</h3><p>Manage AI work against the intended scope, architecture constraints, and review expectations.</p></article><article class="cl-subject" data-cl-subject="S5"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-work"></use></svg></span><span class="cl-micro">05</span></div><h3>Business use and adoption</h3><p>Connect the technology with management, operations, and the people doing the work.</p></article><article class="cl-subject" data-cl-subject="S6"><div class="cl-card-top"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-learn"></use></svg></span><span class="cl-micro">06</span></div><h3>Relevant training</h3><p>Teach the people involved what they need to understand and use in their own situation.</p></article></div>
+ <div class="cl-delivery-band"><div><p class="cl-micro">SHAPED AROUND YOUR WORK</p><h3>What the engagement can contain</h3></div><div><p>The starting expectation is a report and one-to-one sessions with the relevant people. The materials, training format, recipients, duration, support, and cost are agreed for your situation.</p><p>Workshops, weekly meetings, and continuing support can be considered where useful. They are possibilities, not automatic inclusions.</p></div></div>
+ <div class="cl-scope-note"><p>My focus is consultation, planning, and helping people manage AI work—not programming instruction or a standard product-development service.</p><a class="cl-text-link" href="#contact">Discuss your situation <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a></div>
+ <p class="cl-bridge"><span></span>The aim is useful new capabilities inside a functional workflow.</p>
+ <p class="cl-build-note"><strong>D3</strong><span>S1–S6 are subjects, not packages. Do not add rates, fixed duration, standard weekly meetings, or a seventh development service. The development/design exception remains in D7.</span></p>
+</section>
+
+<!-- D4 / PERSONAL INTRODUCTION: no fabricated portrait or unapproved public name -->
+<section id="person" class="cl-section cl-person" aria-labelledby="cl-person-title" data-cl-section="D4">
+ <div class="cl-person__heading"><p class="cl-eyebrow"><span>03 /</span> PERSONAL, NOT OFF-THE-SHELF</p><h2 id="cl-person-title">The person you would work with.</h2><div class="cl-person__strands"><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-compass"></use></svg> Hands-on AI practice</span><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-work"></use></svg> Business management</span><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-pin"></use></svg> Cambodia</span></div></div>
+ <div class="cl-person__body"><p class="cl-person__opening">I bring hands-on AI practice together with business-management experience in Cambodia.</p><p>My background includes hotels, restaurants, and an ongoing food-business interest. I work directly with clients to connect the technology with the work their business actually needs to do.</p><h3>AI practice</h3><p>My own system, website, planning artifacts, and methods for operating AI inform the way I approach the work.</p><h3>Cambodia and communication</h3><p>I have lived in Cambodia for 18 years. I explain the meaning behind the methods in English and Khmer, rather than simply hand over a manual.</p><a href="#experience" class="cl-text-link" data-cl-open-reading="experience">More about my experience <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a></div>
+ <p class="cl-build-note"><strong>D4</strong><span>Text-led layout until a real portrait is approved. Public name/title, affiliations, and biography need approval. “18 years” is the supplied residence statement, not years of AI experience; recheck before launch.</span></p>
+</section>
+
+<!-- D5 / APPROACH, WITH R1–R4 NATIVE INLINE DISCLOSURES -->
+<section id="approach" class="cl-section" aria-labelledby="cl-approach-title" data-cl-section="D5">
+ <div class="cl-approach-top"><header class="cl-section-heading"><p class="cl-eyebrow"><span>04 /</span> THE APPROACH</p><h2 id="cl-approach-title">Direct the work.<br>Keep checking it.</h2></header><div class="cl-approach-top__text"><p>Using AI across a larger undertaking takes more than individual prompts. I focus on how the work is directed: its context, stages, tools, handoffs, and review.</p><p>That means understanding where the technology is useful, where its output needs checking, and how people stay in control.</p></div></div>
+ <div class="cl-contrast"><div><span class="cl-micro">AN ISOLATED REQUEST</span><p>“Help me change this one thing.”</p></div><span class="cl-contrast__arrow" aria-hidden="true"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></span><div><span class="cl-micro">AN OPERATOR’S VIEW</span><p>“What is the wider task, what context is needed, and how will the work be directed and checked?”</p></div></div>
+ <p class="cl-caption">Illustrative wording—not a client case or a named method.</p>
+ <div class="cl-readings-heading"><h3>Go a little deeper.</h3><p>Open the subjects that interest you.</p></div>
+ <div class="cl-readings"><details id="method" class="cl-reading" data-cl-reading="R1"><summary><span class="cl-reading__number">01</span><span class="cl-reading__label"><strong>About the method</strong><span>How is the work organized, directed, and reviewed?</span></span><span class="cl-plus" aria-hidden="true"></span></summary><div class="cl-reading__body"><p>A prompt is only one part of the way AI work is organized. The surrounding harness includes context, stages, tools, handoffs, and checks. I help people think about how the work is directed, how AI roles are managed, and how results are reviewed, rather than treating each output as a finished answer.</p><p class="cl-build-note">Draft opening from v0.2. Full definitions of Maestro, Orchestrator mode, planning principles, and LEGIT remain reserved. Do not infer them.</p><button type="button" class="cl-text-button" data-cl-close-reading hidden>Close this topic <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-close"></use></svg></button></div></details><details id="concept" class="cl-reading" data-cl-reading="R2"><summary><span class="cl-reading__number">02</span><span class="cl-reading__label"><strong>About the concept</strong><span>What changes when you operate AI across a larger undertaking?</span></span><span class="cl-plus" aria-hidden="true"></span></summary><div class="cl-reading__body"><p>The shift is from asking AI for isolated small changes to directing it across a larger body of work. The operator’s view stays above the individual request: what is being attempted, how the pieces relate, and where direction and checking are needed. It is not simply a larger prompt or a longer unattended request.</p><p class="cl-build-note">Draft opening from v0.2. A concrete public example still needs approval. The contrast above is illustrative, not a client case.</p><button type="button" class="cl-text-button" data-cl-close-reading hidden>Close this topic <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-close"></use></svg></button></div></details><details id="technology" class="cl-reading" data-cl-reading="R3"><summary><span class="cl-reading__number">03</span><span class="cl-reading__label"><strong>About the technology</strong><span>Where can the capabilities help, and where should you not simply trust the output?</span></span><span class="cl-plus" aria-hidden="true"></span></summary><div class="cl-reading__body"><p>This conversation is about understanding the capabilities and their limits: where AI can help, where trust is appropriate, and why checking matters. The emphasis is on using and managing the technology in the work at hand—not on tool rankings, technical guarantees, or a how-to-code lesson.</p><p class="cl-build-note">Draft opening from v0.2. The owner’s explanatory model and selected examples remain to be supplied.</p><button type="button" class="cl-text-button" data-cl-close-reading hidden>Close this topic <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-close"></use></svg></button></div></details><details id="experience" class="cl-reading" data-cl-reading="R4"><summary><span class="cl-reading__number">04</span><span class="cl-reading__label"><strong>About the experience</strong><span>How do my AI practice and business experience connect?</span></span><span class="cl-plus" aria-hidden="true"></span></summary><div class="cl-reading__body"><p>My AI practice and business-management experience inform the same question: how can the technology be connected to the work a business actually needs to do? This space brings together context from my own projects, hospitality and food-and-beverage background, and experience living and working in Cambodia.</p><p class="cl-build-note">Draft opening from v0.2. Approve the public biography, roles, affiliations, project context, and related advisory wording before publication.</p><button type="button" class="cl-text-button" data-cl-close-reading hidden>Close this topic <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-close"></use></svg></button></div></details></div>
+ <p class="cl-build-note"><strong>D5 / R1–R4</strong><span>These are supported draft opening paragraphs from v0.2, not completed articles. Several rows can stay open. No proprietary names are defined. Essential service meaning stays visible outside the disclosures.</span></p>
+</section>
+
+<!-- D6 / EVIDENCE: slots are intentionally visible only in this design reference -->
+<section id="evidence" class="cl-section" aria-labelledby="cl-evidence-title" data-cl-section="D6" data-cl-evidence-section>
+ <header class="cl-section-heading cl-heading-split"><div><p class="cl-eyebrow"><span>05 /</span> SELECTED EVIDENCE</p><h2 id="cl-evidence-title">Examples from<br>my own work.</h2></div><p class="cl-section-intro">A small excerpt, with enough context to understand what it demonstrates.</p></header>
+ <p class="cl-reference-notice">DESIGN RESERVE <span>Two real excerpts still need selection and approval. The spaces below are layout placeholders, not case studies.</span></p>
+ <div class="cl-proof-grid"><article class="cl-proof-card" data-cl-proof="a">
+ <div class="cl-proof-slot"><span class="cl-micro">PROOF SLOT A / NOT YET SELECTED</span><div class="cl-proof-slot__center"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-file"></use></svg><span>Planning excerpt</span><small>Approved artifact goes here</small></div><span class="cl-proof-slot__corner">+&nbsp; +</span></div>
+ <div class="cl-proof-card__caption"><h3>Planning excerpt</h3><p>A selected artifact showing how a real piece of work was planned and organized.</p><p class="cl-pending-label">Reserved space · not evidence of delivered work.</p><dl class="cl-proof-fields"><div><dt>Origin</dt><dd>Own project and its context.</dd></div><div><dt>Purpose</dt><dd>What the selected excerpt was used for.</dd></div><div><dt>Meaning</dt><dd>The narrow point it demonstrates.</dd></div><div><dt>Limit</dt><dd>What is omitted or cannot be concluded.</dd></div></dl></div>
+ </article><article class="cl-proof-card" data-cl-proof="b">
+ <div class="cl-proof-slot"><span class="cl-micro">PROOF SLOT B / NOT YET SELECTED</span><div class="cl-proof-slot__center"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-shield"></use></svg><span>Review or system excerpt</span><small>Approved artifact goes here</small></div><span class="cl-proof-slot__corner">+&nbsp; +</span></div>
+ <div class="cl-proof-card__caption"><h3>Review or system excerpt</h3><p>A selected artifact showing how work was reviewed, checked, or put into context.</p><p class="cl-pending-label">Reserved space · not evidence of delivered work.</p><dl class="cl-proof-fields"><div><dt>Origin</dt><dd>Own project and its context.</dd></div><div><dt>Purpose</dt><dd>What the selected excerpt was used for.</dd></div><div><dt>Meaning</dt><dd>The narrow point it demonstrates.</dd></div><div><dt>Limit</dt><dd>What is omitted or cannot be concluded.</dd></div></dl></div>
+ </article></div>
+ <p class="cl-build-note"><strong>D6</strong><span>Never publish the empty slots. Select two own-work artifacts with Origin / Purpose / Meaning / Limit, approved redactions, and permitted larger views. If neither is ready, omit D6 at launch. No invented client results or trading-performance claims.</span></p>
+</section>
+
+<!-- D7 / ENGAGEMENT -->
+<section id="engagement" class="cl-section" aria-labelledby="cl-engagement-title" data-cl-section="D7">
+ <header class="cl-section-heading"><p class="cl-eyebrow"><span>06 /</span> FROM CONVERSATION TO AGREED WORK</p><h2 id="cl-engagement-title">A conversation first.<br>A tailored engagement after.</h2></header>
+ <ol class="cl-steps"><li class="cl-step"><span class="cl-step__number">01</span><span class="cl-micro">DISCUSS</span><h3>A free conversation</h3><p>Understand the situation and discuss possible directions.</p></li><li class="cl-step"><span class="cl-step__number">02</span><span class="cl-micro">PROPOSE</span><h3>A considered proposal</h3><p>I send a meeting summary, then develop a scoped proposal and quote.</p></li><li class="cl-step"><span class="cl-step__number">03</span><span class="cl-micro">AGREE</span><h3>Clear arrangements</h3><p>Confirm the proposal, then arrange the contract, payment, and agreed deposit.</p></li><li class="cl-step"><span class="cl-step__number">04</span><span class="cl-micro">DELIVER</span><h3>Tailored preparation & delivery</h3><p>Prepare the materials and timeframe, then deliver the agreed report, sessions, and support.</p></li></ol>
+ <div class="cl-boundary"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-shield"></use></svg></span><div><h3>Free discussion. Separately agreed work.</h3><p>The first conversation provides understanding and general direction. The email summary records the discussion; the proposal and quote follow after I have had time to develop the approach.</p><p>Full materials and delivery preparation begin only after the proposal is confirmed and the contract and payment arrangements are sorted.</p></div></div>
+ <dl class="cl-three-docs"><div><dt>Meeting summary</dt><dd>A record of the conversation.</dd></div><div><dt>Proposal and quote</dt><dd>The proposed scope and cost.</dd></div><div><dt>Paid report</dt><dd>An agreed detailed deliverable.</dd></div></dl>
+ <div class="cl-clarifications"><article><h3>Is this a standard AI course?</h3><p>No. The need, people, materials, training, support, timing, and cost are agreed for the business and the case.</p></article><article><h3>Do you teach coding or build products?</h3><p>I do not provide coding instruction or how-to-code advice. Consultation is the focus; product development and design are not a standard offer. Any exceptional work requires separate discussion and agreement.</p></article><article><h3>Who would you work with?</h3><p>We start with stakeholders who can agree direction and commitment. Then I work with the relevant people, which may include owners, managers, team members, or frontline staff.</p></article></div>
+ <p class="cl-build-note"><strong>D7</strong><span>Discuss → Propose → Agree → Deliver is the public engagement sequence, not a method diagram. Preserve the three distinct documents. Do not add a fixed response deadline, meeting length, rate, or deposit percentage.</span></p>
+</section>
+
+<!-- D8 / CONTACT: no destinations are invented. Configure only after approval. -->
+<section id="contact" class="cl-section cl-contact cl-panel" aria-labelledby="cl-contact-title" data-cl-section="D8">
+ <div class="cl-contact__intro"><p class="cl-eyebrow"><span>07 /</span> LET’S START A CONVERSATION</p><h2 id="cl-contact-title">Start with one real business situation.</h2><p>Tell me a little about your business and what you would like to do with AI. I will meet with you to understand the situation and discuss possible directions.</p><p class="cl-contact__free">The first consultation is free; any further work is proposed and agreed separately.</p><div class="cl-location"><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-pin"></use></svg> Phnom Penh and its vicinity, or online.</span><span><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-chat"></use></svg> English and Khmer discussion.</span></div><p class="cl-caption">Regional work and any travel arrangements are agreed separately.</p></div>
+ <div class="cl-contact__options"><p class="cl-reference-notice" data-cl-contact-pending>CONTACT SETUP <span>Destinations are intentionally unconfigured in this reference.</span></p><div class="cl-message-grid">
+ <article class="cl-channel"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-diagonal"></use></svg></span><h3>Telegram</h3><p data-cl-channel-status="telegram">Direct message link awaiting confirmation.</p><a class="cl-button cl-button--secondary" data-cl-contact="telegram" aria-disabled="true">Message on Telegram <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-diagonal"></use></svg></a></article>
+ <article class="cl-channel"><span class="cl-icon-ring"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-chat"></use></svg></span><h3>WhatsApp</h3><p data-cl-channel-status="whatsapp">Direct message link awaiting confirmation.</p><a class="cl-button cl-button--secondary" data-cl-contact="whatsapp" aria-disabled="true">Message on WhatsApp <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-diagonal"></use></svg></a></article>
+ </div><article class="cl-email"><div class="cl-email__title"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-mail"></use></svg><h3>Email</h3></div><p class="cl-email__address" data-cl-email>Email address awaiting confirmation.</p><div class="cl-actions"><button class="cl-button cl-button--secondary" type="button" data-cl-copy-email disabled>Copy email <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-copy"></use></svg></button><a class="cl-text-link" data-cl-contact="email" aria-disabled="true">Send email <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a></div><p class="cl-copy-status" role="status" aria-live="polite" data-cl-copy-status></p></article>
+ <p class="cl-contact__reassurance">No form. No account. Just a conversation.</p>
+ </div>
+ <p class="cl-build-note"><strong>D8</strong><span>Add verified Telegram / WhatsApp destinations and the approved email in js/config.js. Set contactsApproved only after approval. No fake QR codes: add verified local QR assets only later; direct links stay primary. No Facebook link before its page exists.</span></p>
+</section>
+</main><footer class="cl-demo-footer" data-cl-demo-shell><div><strong>CuriousLabs</strong><span>AI integration consultation</span></div><p>A more capable tomorrow. Together.</p><a href="#overview">Back to top ↑</a></footer>
+<aside class="cl-reference-end" data-cl-demo-shell><span>REFERENCE ONLY</span><p>This shell is for review. In the project, retain the existing site navigation and footer. Contact details, public identity, final copy, and evidence need approval before launch.</p></aside><dialog class="cl-dialog cl-home-dialog" data-cl-home-dialog aria-labelledby="cl-home-dialog-title"><div class="cl-dialog__bar"><div><span class="cl-micro">HOMEPAGE / H1 INSERTION STUDY</span><h2 id="cl-home-dialog-title">One invitation. Not a replacement homepage.</h2></div><button type="button" class="cl-icon-button" data-cl-home-close aria-label="Close homepage preview"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-close"></use></svg></button></div><div class="cl-home-context">Existing moon-led opening · preserved</div><!-- H1: insert immediately before the existing MoonSignal promotional panel.
+     Keep the existing moon-led opening. Change index.html URLs to the verified app route. -->
+<section class="cl-home-invitation cl-panel" aria-labelledby="cl-home-title" data-cl-section="H1">
+  <div class="cl-home-invitation__copy">
+    <p class="cl-eyebrow"><span>//</span> AI INTEGRATION CONSULTATION</p>
+    <h2 id="cl-home-title">A better way to <span class="cl-keep">work with AI.</span></h2>
+    <p class="cl-lead">I help technical teams and businesses plan and use AI through consultation tailored to their work, people, and goals.</p>
+    <div class="cl-actions">
+      <a class="cl-button cl-button--primary" href="#overview" data-cl-home-target="overview">Explore consultation <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-arrow"></use></svg></a>
+      <a class="cl-button cl-button--secondary" href="#contact" data-cl-home-target="contact">Free first conversation <svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-diagonal"></use></svg></a>
+    </div>
+    <p class="cl-home-invitation__caption">PERSONAL GUIDANCE <span>·</span> PRACTICAL AI WORK</p>
+  </div>
+  <div class="cl-orbit" aria-hidden="true">
+      <svg viewBox="0 0 640 600" class="cl-orbit__svg" xmlns="http://www.w3.org/2000/svg" focusable="false">
+        <defs>
+          <radialGradient id="home-haze"><stop stop-color="#286775" stop-opacity=".30"/><stop offset="1" stop-color="#0a1a20" stop-opacity="0"/></radialGradient>
+          <radialGradient id="home-planet" cx="32%" cy="24%" r="77%"><stop stop-color="#587d89"/><stop offset=".32" stop-color="#24434e"/><stop offset=".67" stop-color="#10232e"/><stop offset=".91" stop-color="#040c13"/><stop offset="1" stop-color="#183744"/></radialGradient>
+          <radialGradient id="home-shade" cx="68%" cy="72%" r="76%"><stop stop-color="#02070c" stop-opacity=".96"/><stop offset=".53" stop-color="#02070c" stop-opacity=".74"/><stop offset="1" stop-color="#02070c" stop-opacity="0"/></radialGradient>
+          <linearGradient id="home-rim" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e1f7ff"/><stop offset=".28" stop-color="#b6e2ed"/><stop offset=".55" stop-color="#3a6877"/><stop offset="1" stop-color="#07202d"/></linearGradient>
+          <clipPath id="home-disc"><circle cx="320" cy="320" r="113"/></clipPath>
+          <filter id="home-surface" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".058" numOctaves="4" seed="21"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".33"/></feComponentTransfer></filter>
+          <filter id="home-glow"><feGaussianBlur stdDeviation="5"/></filter>
+          <pattern id="home-grid" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0H0V64" fill="none" stroke="#477480" stroke-opacity=".12" stroke-width=".7"/></pattern>
+        </defs>
+        <circle cx="320" cy="320" r="300" fill="url(#home-haze)"/>
+        <rect x="56" y="60" width="528" height="510" fill="url(#home-grid)"/><circle cx="105" cy="220" r="1" fill="#b1d5e1" opacity="0.46"/><circle cx="413" cy="344" r="0.8" fill="#b1d5e1" opacity="0.59"/><circle cx="381" cy="268" r="1.4" fill="#b1d5e1" opacity="0.19"/><circle cx="57" cy="257" r="1.4" fill="#b1d5e1" opacity="0.51"/><circle cx="487" cy="100" r="1" fill="#b1d5e1" opacity="0.16"/><circle cx="355" cy="48" r="1.4" fill="#b1d5e1" opacity="0.54"/><circle cx="305" cy="385" r="1" fill="#b1d5e1" opacity="0.23"/><circle cx="529" cy="284" r="1" fill="#b1d5e1" opacity="0.40"/><circle cx="219" cy="337" r="1.4" fill="#b1d5e1" opacity="0.55"/><circle cx="373" cy="187" r="1.4" fill="#b1d5e1" opacity="0.58"/><circle cx="251" cy="72" r="0.65" fill="#b1d5e1" opacity="0.28"/><circle cx="92" cy="416" r="0.65" fill="#b1d5e1" opacity="0.53"/><circle cx="180" cy="335" r="0.65" fill="#b1d5e1" opacity="0.58"/><circle cx="530" cy="72" r="1.4" fill="#b1d5e1" opacity="0.39"/><circle cx="431" cy="269" r="0.65" fill="#b1d5e1" opacity="0.50"/><circle cx="541" cy="602" r="0.65" fill="#b1d5e1" opacity="0.24"/><circle cx="371" cy="521" r="0.65" fill="#b1d5e1" opacity="0.16"/><circle cx="347" cy="400" r="0.8" fill="#b1d5e1" opacity="0.60"/><circle cx="225" cy="543" r="1" fill="#b1d5e1" opacity="0.55"/><circle cx="180" cy="132" r="1.4" fill="#b1d5e1" opacity="0.59"/><circle cx="43" cy="85" r="1.4" fill="#b1d5e1" opacity="0.22"/><circle cx="46" cy="355" r="0.8" fill="#b1d5e1" opacity="0.42"/><circle cx="247" cy="154" r="1" fill="#b1d5e1" opacity="0.52"/><circle cx="274" cy="392" r="0.8" fill="#b1d5e1" opacity="0.49"/><circle cx="573" cy="539" r="0.8" fill="#b1d5e1" opacity="0.30"/><circle cx="134" cy="373" r="1" fill="#b1d5e1" opacity="0.59"/><circle cx="610" cy="206" r="1" fill="#b1d5e1" opacity="0.13"/><circle cx="523" cy="200" r="1.4" fill="#b1d5e1" opacity="0.30"/><circle cx="61" cy="391" r="0.65" fill="#b1d5e1" opacity="0.59"/><circle cx="550" cy="607" r="1.4" fill="#b1d5e1" opacity="0.29"/><circle cx="66" cy="576" r="0.8" fill="#b1d5e1" opacity="0.41"/><circle cx="364" cy="60" r="1" fill="#b1d5e1" opacity="0.44"/><circle cx="94" cy="163" r="0.65" fill="#b1d5e1" opacity="0.32"/><circle cx="151" cy="62" r="1" fill="#b1d5e1" opacity="0.41"/><circle cx="580" cy="356" r="1" fill="#b1d5e1" opacity="0.47"/><circle cx="74" cy="571" r="0.8" fill="#b1d5e1" opacity="0.44"/><circle cx="243" cy="314" r="1.4" fill="#b1d5e1" opacity="0.15"/><circle cx="104" cy="338" r="0.8" fill="#b1d5e1" opacity="0.51"/><circle cx="56" cy="141" r="0.8" fill="#b1d5e1" opacity="0.27"/><circle cx="42" cy="591" r="1" fill="#b1d5e1" opacity="0.54"/><circle cx="123" cy="593" r="0.8" fill="#b1d5e1" opacity="0.34"/><circle cx="101" cy="280" r="1.4" fill="#b1d5e1" opacity="0.17"/><circle cx="135" cy="580" r="1.4" fill="#b1d5e1" opacity="0.39"/><circle cx="569" cy="335" r="1.4" fill="#b1d5e1" opacity="0.26"/><circle cx="158" cy="197" r="1.4" fill="#b1d5e1" opacity="0.18"/><circle cx="313" cy="560" r="1.4" fill="#b1d5e1" opacity="0.25"/><circle cx="344" cy="568" r="1.4" fill="#b1d5e1" opacity="0.52"/><circle cx="285" cy="551" r="0.65" fill="#b1d5e1" opacity="0.43"/><circle cx="105" cy="177" r="1.4" fill="#b1d5e1" opacity="0.31"/><circle cx="352" cy="67" r="1.4" fill="#b1d5e1" opacity="0.35"/><circle cx="122" cy="339" r="0.65" fill="#b1d5e1" opacity="0.25"/><circle cx="371" cy="572" r="0.65" fill="#b1d5e1" opacity="0.24"/><circle cx="439" cy="456" r="1" fill="#b1d5e1" opacity="0.56"/><circle cx="171" cy="549" r="0.8" fill="#b1d5e1" opacity="0.48"/><circle cx="553" cy="423" r="0.65" fill="#b1d5e1" opacity="0.34"/><circle cx="355" cy="525" r="0.8" fill="#b1d5e1" opacity="0.48"/><circle cx="190" cy="578" r="0.8" fill="#b1d5e1" opacity="0.37"/><circle cx="466" cy="315" r="0.65" fill="#b1d5e1" opacity="0.55"/><circle cx="287" cy="214" r="1.4" fill="#b1d5e1" opacity="0.36"/><circle cx="428" cy="532" r="0.65" fill="#b1d5e1" opacity="0.44"/><circle cx="184" cy="583" r="1" fill="#b1d5e1" opacity="0.19"/><circle cx="382" cy="256" r="0.8" fill="#b1d5e1" opacity="0.54"/><circle cx="530" cy="563" r="1.4" fill="#b1d5e1" opacity="0.47"/><circle cx="149" cy="145" r="0.8" fill="#b1d5e1" opacity="0.56"/><circle cx="121" cy="378" r="1.4" fill="#b1d5e1" opacity="0.31"/><circle cx="459" cy="277" r="1" fill="#b1d5e1" opacity="0.44"/><circle cx="105" cy="167" r="1.4" fill="#b1d5e1" opacity="0.45"/><circle cx="500" cy="155" r="0.8" fill="#b1d5e1" opacity="0.55"/><circle cx="177" cy="443" r="1.4" fill="#b1d5e1" opacity="0.53"/><circle cx="462" cy="345" r="1" fill="#b1d5e1" opacity="0.20"/><circle cx="587" cy="252" r="0.65" fill="#b1d5e1" opacity="0.54"/><circle cx="327" cy="234" r="0.8" fill="#b1d5e1" opacity="0.17"/><circle cx="356" cy="234" r="0.65" fill="#b1d5e1" opacity="0.44"/><circle cx="582" cy="50" r="1" fill="#b1d5e1" opacity="0.14"/><circle cx="257" cy="550" r="0.65" fill="#b1d5e1" opacity="0.41"/><circle cx="394" cy="246" r="1" fill="#b1d5e1" opacity="0.38"/><circle cx="443" cy="238" r="1.4" fill="#b1d5e1" opacity="0.42"/><circle cx="164" cy="130" r="1.4" fill="#b1d5e1" opacity="0.51"/><circle cx="448" cy="360" r="0.8" fill="#b1d5e1" opacity="0.49"/><circle cx="118" cy="160" r="0.8" fill="#b1d5e1" opacity="0.14"/><circle cx="131" cy="250" r="1.4" fill="#b1d5e1" opacity="0.46"/><circle cx="335" cy="312" r="1" fill="#b1d5e1" opacity="0.28"/><circle cx="116" cy="180" r="1.4" fill="#b1d5e1" opacity="0.56"/><circle cx="66" cy="425" r="1" fill="#b1d5e1" opacity="0.44"/><circle cx="294" cy="609" r="1.4" fill="#b1d5e1" opacity="0.17"/><circle cx="462" cy="459" r="0.8" fill="#b1d5e1" opacity="0.33"/><circle cx="476" cy="434" r="1.4" fill="#b1d5e1" opacity="0.15"/><circle cx="338" cy="71" r="0.65" fill="#b1d5e1" opacity="0.50"/><circle cx="125" cy="131" r="0.8" fill="#b1d5e1" opacity="0.56"/><circle cx="356" cy="199" r="1" fill="#b1d5e1" opacity="0.45"/><circle cx="594" cy="428" r="0.65" fill="#b1d5e1" opacity="0.21"/><circle cx="542" cy="581" r="0.65" fill="#b1d5e1" opacity="0.48"/><circle cx="577" cy="58" r="0.8" fill="#b1d5e1" opacity="0.32"/><circle cx="423" cy="314" r="1.4" fill="#b1d5e1" opacity="0.59"/><circle cx="328" cy="186" r="0.8" fill="#b1d5e1" opacity="0.60"/><circle cx="260" cy="237" r="1" fill="#b1d5e1" opacity="0.35"/><circle cx="205" cy="423" r="1.4" fill="#b1d5e1" opacity="0.53"/><circle cx="380" cy="35" r="0.65" fill="#b1d5e1" opacity="0.47"/><circle cx="489" cy="567" r="1" fill="#b1d5e1" opacity="0.52"/><circle cx="234" cy="126" r="1.4" fill="#b1d5e1" opacity="0.43"/><circle cx="505" cy="468" r="1.4" fill="#b1d5e1" opacity="0.34"/><circle cx="205" cy="308" r="1" fill="#b1d5e1" opacity="0.31"/><circle cx="154" cy="459" r="0.65" fill="#b1d5e1" opacity="0.49"/><circle cx="599" cy="54" r="1" fill="#b1d5e1" opacity="0.52"/><circle cx="369" cy="514" r="0.8" fill="#b1d5e1" opacity="0.54"/><circle cx="79" cy="408" r="1" fill="#b1d5e1" opacity="0.36"/><circle cx="228" cy="334" r="1" fill="#b1d5e1" opacity="0.40"/><circle cx="75" cy="266" r="0.65" fill="#b1d5e1" opacity="0.36"/><circle cx="250" cy="265" r="0.8" fill="#b1d5e1" opacity="0.12"/><circle cx="124" cy="376" r="0.65" fill="#b1d5e1" opacity="0.19"/><circle cx="67" cy="544" r="1.4" fill="#b1d5e1" opacity="0.20"/><circle cx="588" cy="580" r="1.4" fill="#b1d5e1" opacity="0.49"/><circle cx="197" cy="308" r="0.65" fill="#b1d5e1" opacity="0.24"/><circle cx="225" cy="295" r="0.8" fill="#b1d5e1" opacity="0.20"/><circle cx="505" cy="250" r="0.8" fill="#b1d5e1" opacity="0.49"/><circle cx="418" cy="579" r="0.65" fill="#b1d5e1" opacity="0.47"/><circle cx="58" cy="592" r="0.8" fill="#b1d5e1" opacity="0.14"/><circle cx="216" cy="381" r="1" fill="#b1d5e1" opacity="0.40"/><circle cx="455" cy="500" r="0.65" fill="#b1d5e1" opacity="0.31"/><circle cx="381" cy="588" r="0.8" fill="#b1d5e1" opacity="0.22"/><circle cx="338" cy="334" r="1" fill="#b1d5e1" opacity="0.20"/><circle cx="84" cy="599" r="1" fill="#b1d5e1" opacity="0.46"/><circle cx="280" cy="270" r="0.65" fill="#b1d5e1" opacity="0.50"/><circle cx="232" cy="205" r="0.65" fill="#b1d5e1" opacity="0.20"/><circle cx="571" cy="572" r="1.4" fill="#b1d5e1" opacity="0.54"/><circle cx="490" cy="275" r="1.4" fill="#b1d5e1" opacity="0.14"/><circle cx="239" cy="311" r="0.65" fill="#b1d5e1" opacity="0.30"/><circle cx="382" cy="124" r="0.65" fill="#b1d5e1" opacity="0.39"/><circle cx="155" cy="272" r="0.8" fill="#b1d5e1" opacity="0.40"/><circle cx="445" cy="225" r="1.4" fill="#b1d5e1" opacity="0.51"/>
+        <g fill="none" stroke="#63828b"><circle cx="320" cy="320" r="254" stroke-opacity=".14"/><circle cx="320" cy="320" r="209" stroke-opacity=".58"/><circle cx="320" cy="320" r="166" stroke-dasharray="2 5" stroke-opacity=".3"/><circle cx="320" cy="320" r="144" stroke-opacity=".20"/></g>
+        <g fill="none" stroke="#a1c8cb" stroke-opacity=".55" stroke-width="1"><path d="M320 320 320 111"/><path d="M320 320 504 245"/><path d="M320 320 434 462"/><path d="M320 320 206 462"/><path d="M320 320 136 245"/></g>
+        <circle cx="320" cy="320" r="115" fill="none" stroke="#8dd5e4" stroke-opacity=".65" stroke-width="3" filter="url(#home-glow)"/>
+        <circle cx="320" cy="320" r="113" fill="url(#home-planet)"/>
+        <g clip-path="url(#home-disc)"><rect x="207" y="207" width="226" height="226" filter="url(#home-surface)"/><circle cx="320" cy="320" r="113" fill="url(#home-shade)"/><g stroke="#b2d7da" stroke-opacity=".10" fill="none"><ellipse cx="320" cy="320" rx="44" ry="113"/><ellipse cx="320" cy="320" rx="86" ry="113"/><ellipse cx="320" cy="320" rx="113" ry="40"/><ellipse cx="320" cy="320" rx="113" ry="81"/></g></g>
+        <circle cx="320" cy="320" r="113" fill="none" stroke="url(#home-rim)" stroke-width="1.8"/>
+        <g transform="translate(320,111)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-people" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(504,245)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-file" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(434,462)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-bot" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(206,462)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-search" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g><g transform="translate(136,245)"><circle r="30" fill="#071319" stroke="#94b8c1" stroke-width="1.2"/><circle r="35" fill="none" stroke="#49696e" stroke-opacity=".28"/><use href="#cl-i-layers" x="-12" y="-12" width="24" height="24" color="#dfede8"/></g>
+        <g fill="#e4f4d9"><circle cx="429" cy="142" r="3"/><circle cx="494" cy="436" r="2.5"/><circle cx="321" cy="529" r="2.5"/><circle cx="124" cy="393" r="2.5"/><circle cx="212" cy="141" r="2.5"/></g>
+        <g fill="#dcece7" font-family="ui-monospace, monospace" font-size="11" letter-spacing="1.6" text-anchor="middle">
+          <text x="320" y="56">PEOPLE</text><text x="530" y="199">CONTEXT</text><text x="459" y="518">AI TOOLS</text><text x="176" y="518">REVIEW</text><text x="107" y="199">WORKFLOW</text>
+          <text x="320" y="302" font-size="16" letter-spacing="2">AI</text><text x="320" y="327" font-size="16" letter-spacing="2">INTEGRATION</text>
+          <path d="M311 346h18" stroke="#c6f75b" stroke-width="2"/>
+          <text x="320" y="371" fill="#9bb2bc" font-size="10">HUMAN DIRECTION</text>
+        </g>
+        <path d="M60 114h16m-8-8v16M551 402h14m-7-7v14" stroke="#82acb6" stroke-opacity=".5"/>
+      </svg>
+      <div class="cl-orbit__footer"><span class="cl-cross">+</span> PEOPLE. PROCESSES. POSSIBILITIES.</div>
+    </div>
+</section><div class="cl-home-context">Existing MoonSignal promotional panel · preserved</div><div class="cl-home-context cl-home-context--quiet">Existing AEGIS content · preserved</div><p class="cl-caption">Only the invitation panel is new. Buttons below the headline open the consultation page or its contact section.</p></dialog><dialog class="cl-dialog cl-proof-dialog" data-cl-proof-dialog aria-labelledby="cl-proof-dialog-title"><div class="cl-dialog__bar"><h2 id="cl-proof-dialog-title">Selected example</h2><button type="button" class="cl-icon-button" data-cl-proof-close aria-label="Close example"><svg class="cl-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#cl-i-close"></use></svg></button></div><div data-cl-proof-dialog-content></div></dialog>
+</div>
+</body>
+</html>

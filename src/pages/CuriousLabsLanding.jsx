@@ -13,6 +13,7 @@ const ContactTerminalAtomic = lazy(() => import('../components/atomic/ContactTer
 const AegisMachine = lazy(() => import('../components/landing/AegisMachine'));
 const MoonSignalShowcase = lazy(() => import('../components/landing/MoonSignalShowcase'));
 const ArticlesSection = lazy(() => import('../components/landing/ArticlesSection'));
+const HomeInvitation = lazy(() => import('../components/consultation/HomeInvitation'));
 
 const MoonSignalRevealSection = () => {
   const frameRef = useRef(null);
@@ -377,6 +378,13 @@ export default function CuriousLabsLanding() {
         <MoonSignalRevealSection />
 
         {/* ───────────────────────── MOON SIGNAL ─────────────────────── */}
+        {/* H1 · AI consultation invitation — a single calm panel that
+            routes into /ai-consultation. Sits between the moon-led reveal
+            and the MoonSignal showcase; MoonSignal and AEGIS are untouched. */}
+        <LazySection label="Loading consultation invitation" rootMargin="600px">
+          <HomeInvitation />
+        </LazySection>
+
         <LazySection label="Loading Moon Signal" rootMargin="600px">
           <MoonSignalShowcase />
         </LazySection>

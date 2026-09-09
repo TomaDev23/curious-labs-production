@@ -75,11 +75,11 @@ const MissionControlNavbar = ({
       id: 'engineering',
       label: 'Engineering Bay',
       icon: '⚡',
-      description: 'Advanced development laboratories and experimental technology research facilities.',
+      description: 'AI integration consultation — direct the work, keep it checked, and fit AI to your business.',
       coordinates: 'ENG-002',
       status: 'ACTIVE',
-      original: 'CodeLab',
-      route: '/codelab'
+      original: 'AI Consultation',
+      route: '/ai-consultation'
     },
     {
       id: 'arsenal',

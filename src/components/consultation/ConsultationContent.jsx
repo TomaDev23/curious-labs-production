@@ -1,66 +1,35 @@
 import React from 'react';
 import ConsultationIcons, { ClIcon } from './ConsultationIcons';
 import ConsultationOrbit from './ConsultationOrbit';
-import {
-  FigureAudiences,
-  FigureSubjects,
-  FigureStrands,
-  FigureDirection,
-  FigureEngagement
-} from './ConsultationFigures';
-import { Reveal, Stagger, KineticHeading, Parallax, ScrollRail } from './ConsultationMotion';
+import { StatTrio, OperatorView, HarnessGraph, TrustSpectrum, FlowGraph } from './ConsultationGraphs';
+import { Reveal, Stagger, KineticHeading, ScrollRail } from './ConsultationMotion';
 import useConsultationPage, { openReading, closeReading } from './useConsultationPage';
 
+/* Three consolidated themes (T1–T3). Source subjects folded in:
+   T1 ← S1 · T2 ← S2/S3/S4 (the core) · T3 ← S5/S6. These are areas the
+   work draws from, never a menu to buy from. */
 const SUBJECTS = [
   {
     id: 'S1',
-    icon: 'compass',
+    icon: 'search',
     number: '01',
-    title: 'Direction and solutions',
-    text: 'Understand the situation and identify a sensible approach to using AI.'
+    title: 'Find where AI is actually worth it.',
+    text: 'Not every problem needs AI. I help you see where it genuinely earns its place in your business — and where it doesn’t.'
   },
   {
     id: 'S2',
     icon: 'layers',
     number: '02',
-    title: 'Workflow and harness planning',
-    text: 'Plan the prompts, context, stages, tools, handoffs, and checks around the work.'
+    title: 'Build the harness and the methods.',
+    text: 'The setup that keeps AI dependable — the harness, the checks, the way of working — so it holds up when the work gets real, instead of collapsing under its own weight.'
   },
   {
     id: 'S3',
     icon: 'people',
     number: '03',
-    title: 'Coordinated AI work',
-    text: 'Understand how people can use AI together, and how AI agents can work under human direction.'
-  },
-  {
-    id: 'S4',
-    icon: 'shield',
-    number: '04',
-    title: 'Planning and quality',
-    text: 'Manage AI work against the intended scope, architecture constraints, and review expectations.'
-  },
-  {
-    id: 'S5',
-    icon: 'work',
-    number: '05',
-    title: 'Business use and adoption',
-    text: 'Connect the technology with management, operations, and the people doing the work.'
-  },
-  {
-    id: 'S6',
-    icon: 'learn',
-    number: '06',
-    title: 'Relevant training',
-    text: 'Teach the people involved what they need to understand and use in their own situation.'
+    title: 'Plan it, and train your people.',
+    text: 'Plan the systems properly and teach the people who’ll use them, so what we put in place takes hold and keeps working — in English or Khmer.'
   }
-];
-
-const STEPS = [
-  { number: '01', label: 'DISCUSS', cost: 'FREE', title: 'A free conversation', text: 'Understand the situation and discuss possible directions.' },
-  { number: '02', label: 'PROPOSE', cost: 'NO COMMITMENT', title: 'A considered proposal', text: 'An email straight after the meeting, then a few days to develop a scoped proposal and quote.' },
-  { number: '03', label: 'AGREE', cost: 'AGREED TERMS', title: 'Clear arrangements', text: 'Confirm the proposal, then arrange the contract, payment, and agreed deposit.' },
-  { number: '04', label: 'DELIVER', cost: 'AGREED SCOPE', title: 'Preparation & delivery', text: 'Prepare the materials and timeframe, then deliver the agreed report, sessions, and support.' }
 ];
 
 const READINGS = [
@@ -70,7 +39,7 @@ const READINGS = [
     number: '01',
     title: 'About the method',
     question: 'How is the work organized, directed, and reviewed?',
-    text: 'A prompt is only one part of the way AI work is organized. The surrounding harness includes context, stages, tools, handoffs, and checks. I help people think about how the work is directed, how AI roles are managed, and how results are reviewed, rather than treating each output as a finished answer.'
+    text: 'A prompt is only one part of how AI work is organized. The harness around it — context, stages, tools, handoffs, checks — is where the direction actually happens. I help you think about how the work is steered and how results are reviewed, instead of treating each output as a finished answer.'
   },
   {
     id: 'concept',
@@ -78,7 +47,7 @@ const READINGS = [
     number: '02',
     title: 'About the concept',
     question: 'What changes when you operate AI across a larger undertaking?',
-    text: 'The shift is from asking AI for isolated small changes to directing it across a larger body of work. The operator’s view stays above the individual request: what is being attempted, how the pieces relate, and where direction and checking are needed. It is not simply a larger prompt or a longer unattended request.'
+    text: 'The shift is from asking AI for isolated changes to directing it across a whole body of work. The operator’s view stays above the single request: what’s being attempted, how the pieces relate, and where direction and checking are needed. It isn’t just a bigger prompt.'
   },
   {
     id: 'technology',
@@ -86,15 +55,15 @@ const READINGS = [
     number: '03',
     title: 'About the technology',
     question: 'Where can the capabilities help, and where should you not simply trust the output?',
-    text: 'This conversation is about understanding the capabilities and their limits: where AI can help, where trust is appropriate, and why checking matters. The emphasis is on using and managing the technology in the work at hand—not on tool rankings, technical guarantees, or a how-to-code lesson.'
+    text: 'This is about the capabilities and their limits: where AI helps, where trust is warranted, and why checking matters. The focus is using and managing the technology in the work at hand — not tool rankings, not guarantees, not a how-to-code lesson.'
   },
   {
     id: 'experience',
     key: 'R4',
     number: '04',
     title: 'About the experience',
-    question: 'How do my AI practice and business experience connect?',
-    text: 'My AI practice and business-management experience inform the same question: how can the technology be connected to the work a business actually needs to do? This space brings together context from my own projects, hospitality and food-and-beverage background, and experience living and working in Cambodia.'
+    question: 'How do business experience and AI practice connect?',
+    text: 'Running businesses and operating AI point at the same question: how do you connect the technology to the work a company actually has to do? This draws on my own projects, a hospitality and food-and-beverage background, and years living and working in Cambodia.'
   }
 ];
 
@@ -110,6 +79,10 @@ const QUESTION_GROUPS = [
     note: 'The shape of the service, and its edges.',
     items: [
       {
+        q: 'Is this AI consulting, or business consulting?',
+        a: 'Both — it’s business consultation with AI at the centre. For a technical company, that’s advising on how to use the technology better. For a company that isn’t technical, it’s helping you find where AI fits and designing the setup to match. Same focus, two different starting points.'
+      },
+      {
         q: 'Is this a standard AI course?',
         a: 'No. I am not offering AI training as a general thing. I am offering a tailored solution built around understanding what your business needs and answering that. There is no fixed syllabus, no bundle, no set duration, and no fixed cost.'
       },
@@ -123,7 +96,7 @@ const QUESTION_GROUPS = [
       },
       {
         q: 'We already use AI. What would this add?',
-        a: 'Most use of AI is small steps and isolated changes. The operator’s view sits above that: how prompts are designed, where the output can be trusted and where it cannot, how to put a harness around the capabilities, how to keep auditing the work, and how to break it across a team of agents so it does not collapse as it grows.'
+        a: 'Most use of AI is small steps and isolated changes. The operator’s view sits above that: how prompts are designed, where the output can be trusted and where it can’t, how to put a harness around the capabilities, how to keep auditing the work, and how to spread it across a team of agents so it doesn’t collapse as it grows.'
       }
     ]
   },
@@ -195,19 +168,19 @@ function ChapterMark({ n, label }) {
 }
 
 /**
- * Editorial two-column row. `flip` puts the figure on the left at desktop
- * width; on narrow screens the copy always comes first regardless of `flip`.
+ * Editorial two-column row kept for reference; the modern pass moves the
+ * figure plates out in favour of the graph components, so this helper is
+ * retained but currently unused.
  */
 function FigureRow({ figure, flip = false, children, className = '' }) {
   return (
     <div className={`cl-figure-row${flip ? ' cl-figure-row--flip' : ''} ${className}`.trim()}>
       <div className="cl-figure-row__copy">{children}</div>
-      <div className="cl-figure-row__art">
-        <Parallax>{figure}</Parallax>
-      </div>
+      <div className="cl-figure-row__art">{figure}</div>
     </div>
   );
 }
+void FigureRow;
 
 function ConsultationContent() {
   useConsultationPage();
@@ -225,26 +198,26 @@ function ConsultationContent() {
           <span className="cl-panel__corner cl-panel__corner--tr" aria-hidden="true"></span>
           <span className="cl-panel__corner cl-panel__corner--bl" aria-hidden="true"></span>
           <span className="cl-panel__corner cl-panel__corner--br" aria-hidden="true"></span>
-          <span className="cl-hero__vmeta" aria-hidden="true">SYSTEMS · PEOPLE · POSSIBILITIES</span>
+          <span className="cl-hero__vmeta" aria-hidden="true">STRATEGY · MANAGEMENT · AI</span>
           <div className="cl-hero__copy">
-            <Reveal as="p" className="cl-eyebrow" y={12}><span>//</span> AI INTEGRATION CONSULTATION</Reveal>
+            <Reveal as="p" className="cl-eyebrow" y={12}><span>//</span> BUSINESS CONSULTATION IN THE AGE OF AI</Reveal>
             <KineticHeading
               id="cl-page-title"
               level="h1"
-              lines={['Work with AI in', 'a way that fits', 'your business.']}
+              lines={['Business consultation,', 'in the age of AI.']}
             />
             <Reveal as="p" className="cl-lead" delay={0.25}>
-              I help technical teams and non-technical businesses understand, plan, and manage AI work. Consultation, materials, and training are tailored to your needs—not a fixed course.
+              I’m a business advisor who now operates AI hands-on, every day. If you’re trying to bring AI into your business — whether you’ve already started or don’t know where to begin — I help you work out what you actually need, and turn it into something you can act on. Business consultancy first, with a real AI focus on top.
             </Reveal>
             <Reveal as="p" className="cl-hero__invitation" delay={0.33}>
-              Bring one real situation from your business. We can discuss possible directions in a free first conversation.
+              Bring one real situation from your business. The first conversation is free.
             </Reveal>
             <Reveal className="cl-actions" delay={0.41}>
               <a className="cl-button cl-button--primary" href="#contact">
                 Start a free conversation <ClIcon name="arrow" />
               </a>
               <a className="cl-button cl-button--secondary" href="#approach">
-                See the approach <ClIcon name="diagonal" />
+                See how it works <ClIcon name="diagonal" />
               </a>
             </Reveal>
           </div>
@@ -256,7 +229,7 @@ function ConsultationContent() {
             <span><ClIcon name="people" /> Personally delivered</span>
             <span><ClIcon name="pin" /> Phnom Penh / Online</span>
             <span><ClIcon name="chat" /> English &amp; Khmer</span>
-            <span className="cl-hero__meta-label">CURIOUSLABS // AI INTEGRATION CONSULTATION</span>
+            <span className="cl-hero__meta-label">CURIOUSLABS // BUSINESS CONSULTATION · AI</span>
           </Reveal>
         </section>
 
@@ -275,10 +248,10 @@ function ConsultationContent() {
           <header className="cl-section-heading cl-heading-split">
             <div>
               <Reveal as="p" className="cl-eyebrow" y={12}><span>01 /</span> WHO THIS IS FOR</Reveal>
-              <KineticHeading id="cl-audiences-title" level="h2" lines={['Where could this help?']} />
+              <KineticHeading id="cl-audiences-title" level="h2" lines={['Two kinds of company.', 'Two ways in.']} />
             </div>
             <Reveal as="p" className="cl-section-intro" delay={0.2}>
-              Different kinds of work.<br />A shared need for direction.
+              The focus is the same — getting genuine value from AI.<br />Where we begin depends on what kind of company you are.
             </Reveal>
           </header>
 
@@ -286,62 +259,43 @@ function ConsultationContent() {
             <Reveal as="article" className="cl-audience-card">
               <div className="cl-card-top">
                 <span className="cl-icon-ring"><ClIcon name="code" /></span>
-                <span className="cl-micro">BUILDING WITH TECHNOLOGY</span>
+                <span className="cl-micro">INTEGRATING AI AT SCALE</span>
               </div>
-              <h3>Technical teams</h3>
-              <p>You already code, or have people building products. Learn to direct AI across more of the work, with planning, review, and control.</p>
-              <p className="cl-card-foot">Not programming instruction.</p>
+              <h3>Technical companies</h3>
+              <p>You already build tech products, and you want AI integrated into how the team works — but doing that at scale is a problem of its own. I help with the coordination and the harnessing rules that stop the AI sabotaging itself as you hand more of the work to it.</p>
+              <p className="cl-card-foot">Business advisory. Not programming instruction.</p>
             </Reveal>
             <Reveal as="article" className="cl-audience-card cl-audience-card--biz">
               <div className="cl-card-top">
                 <span className="cl-icon-ring"><ClIcon name="work" /></span>
-                <span className="cl-micro">RUNNING A BUSINESS</span>
+                <span className="cl-micro">LEVERAGING AI</span>
               </div>
-              <h3>Businesses with non-coding needs</h3>
-              <p>Explore AI for management, assistance, creation, and other work. Possible settings include hotels, restaurants, and factories.</p>
-              <p className="cl-card-foot">Not a coding course in disguise.</p>
+              <h3>Companies new to AI</h3>
+              <p>You want to leverage AI but you’re not technical. I help you see where it genuinely helps — the real use cases — and design the harness that fits how your business actually works. Settings like hotels, restaurants, and factories are where I’ve done it.</p>
+              <p className="cl-card-foot">Business consultation. No code required.</p>
             </Reveal>
           </Stagger>
 
-          <FigureRow figure={<FigureAudiences />} flip className="cl-figure-row--tight">
-            <div className="cl-recognition">
-              <Reveal as="p" className="cl-recognition__intro" y={14}>Does any of this sound familiar?</Reveal>
-              <Stagger className="cl-recognition__list" step={0.1}>
-                <Reveal as="article">
-                  <p className="cl-micro">TRUST</p>
-                  <p>AI does impressive things, but it behaves like brute force and the occasional miracle. We cannot rely on it the way we rely on someone in the team.</p>
-                </Reveal>
-                <Reveal as="article">
-                  <p className="cl-micro">COMPLEXITY</p>
-                  <p>It holds up for small steps. As soon as the work gets complicated, the way we use it collapses under its own weight.</p>
-                </Reveal>
-                <Reveal as="article">
-                  <p className="cl-micro">SCOPE</p>
-                  <p>We can change one thing at a time. We do not know how to direct a whole body of work with it and have the result come out reliably.</p>
-                </Reveal>
-              </Stagger>
-            </div>
-          </FigureRow>
+          <Reveal as="p" className="cl-recognition__intro" y={14}>Whichever side you’re on, using AI well runs into the same three walls.</Reveal>
+          <StatTrio />
 
-          <Reveal as="p" className="cl-bridge" y={14}><span></span>The starting point is your situation. The scope comes after we understand it.</Reveal>
+          <Reveal as="p" className="cl-bridge" y={14}><span></span>It starts with your situation. We shape the work around it.</Reveal>
         </section>
 
         {/* ── D3 · Contribution ────────────────────────────────────── */}
-        <ChapterMark n="02" label="WHAT WE COULD WORK ON" />
+        <ChapterMark n="02" label="WHAT I ACTUALLY DO" />
         <section id="contribution" className="cl-section" aria-labelledby="cl-contribution-title" data-cl-section="D3">
-          <FigureRow figure={<FigureSubjects />}>
-            <header className="cl-section-heading">
-              <Reveal as="p" className="cl-eyebrow" y={12}><span>02 /</span> WHAT WE COULD WORK ON</Reveal>
-              <KineticHeading
-                id="cl-contribution-title"
-                level="h2"
-                lines={['Start with the need.', 'Build the right approach.']}
-              />
-              <Reveal as="p" className="cl-section-intro" delay={0.2}>
-                We start with your situation, then choose the subjects and methods that fit. The consultation is shaped around your work and the people involved—not a fixed course or bundle.
-              </Reveal>
-            </header>
-          </FigureRow>
+          <header className="cl-section-heading">
+            <Reveal as="p" className="cl-eyebrow" y={12}><span>02 /</span> WHAT I ACTUALLY DO</Reveal>
+            <KineticHeading
+              id="cl-contribution-title"
+              level="h2"
+              lines={['Bring me the problem.', 'Leave with real clarity.']}
+            />
+            <Reveal as="p" className="cl-section-intro" delay={0.2}>
+              This isn’t technical work — it’s business consultancy, from someone who operates AI hands-on every day. I sit down with you, work out what you actually need — whether you’re already using AI or just want to start — and give it back as clarity: solutions and ideas you can turn into a strategy of your own.
+            </Reveal>
+          </header>
 
           <Stagger className="cl-subject-grid" step={0.075}>
             {SUBJECTS.map((subject) => (
@@ -359,76 +313,79 @@ function ConsultationContent() {
           <Reveal className="cl-delivery-band" y={22}>
             <div>
               <p className="cl-micro">SHAPED AROUND YOUR WORK</p>
-              <h3>What the engagement can contain</h3>
+              <h3>What an engagement can hold</h3>
             </div>
             <div>
-              <p>The starting expectation is a report and one-to-one sessions with the relevant people. The materials, training format, recipients, duration, support, and cost are agreed for your situation.</p>
-              <p>Workshops, weekly meetings, and continuing support can be considered where useful. They are possibilities, not automatic inclusions.</p>
+              <p>At its core, a report and one-to-one sessions with the people it’s for. Everything around that — the materials, the format, who’s trained, how long it runs, what support follows — is set for your situation.</p>
+              <p>Workshops, weekly meetings, ongoing support: all possible where they earn their place. None of them automatic.</p>
             </div>
           </Reveal>
           <Reveal className="cl-scope-note" y={18}>
-            <p>My focus is consultation, planning, and helping people manage AI work—not programming instruction or a standard product-development service.</p>
+            <p>This is business advisory, not engineering. I help you understand, decide, and plan — I don’t write your code or build your product.</p>
             <a className="cl-text-link" href="#contact">Discuss your situation <ClIcon name="arrow" /></a>
           </Reveal>
-          <Reveal as="p" className="cl-bridge" y={14}><span></span>The aim is useful new capabilities inside a functional workflow.</Reveal>
+          <Reveal as="p" className="cl-bridge" y={14}><span></span>The aim is simple: new capability that actually lands inside a working business.</Reveal>
         </section>
 
         {/* ── D4 · The person ──────────────────────────────────────── */}
         <ChapterMark n="03" label="PERSONAL, NOT OFF-THE-SHELF" />
         <section id="person" className="cl-section" aria-labelledby="cl-person-title" data-cl-section="D4">
-          <FigureRow figure={<FigureStrands />} flip>
-            <div className="cl-person">
+          <div className="cl-person">
               <Reveal as="p" className="cl-eyebrow" y={12}><span>03 /</span> PERSONAL, NOT OFF-THE-SHELF</Reveal>
               <KineticHeading id="cl-person-title" level="h2" lines={['The person you', 'would work with.']} />
               <Stagger className="cl-person__strands" step={0.09} delay={0.15}>
+                <Reveal as="span" y={12}><ClIcon name="work" /> Business advisory</Reveal>
                 <Reveal as="span" y={12}><ClIcon name="compass" /> Hands-on AI practice</Reveal>
-                <Reveal as="span" y={12}><ClIcon name="work" /> Business management</Reveal>
-                <Reveal as="span" y={12}><ClIcon name="pin" /> Cambodia</Reveal>
+                <Reveal as="span" y={12}><ClIcon name="pin" /> This market</Reveal>
               </Stagger>
               <Reveal as="p" className="cl-person__opening" y={18}>
-                I bring hands-on AI practice together with real business-management experience in Cambodia.
+                I’m a business advisor first — eighteen years in the Khmer market, and hands-on with AI every day. I sit where the two meet, which is exactly where a lot of businesses now find themselves.
               </Reveal>
               <Reveal as="p" y={16} delay={0.08}>
-                There is no team behind this. I meet you, work out what the situation actually is, propose a direction, and then do the work myself.
+                There’s no team behind this. I meet you, work out what’s really going on, propose a direction, and do the work myself.
               </Reveal>
               <Stagger step={0.12}>
                 <Reveal className="cl-person__detail">
                   <h3>AI practice</h3>
-                  <p>My own system, website, and planning artifacts are built with the methods I teach. Operating AI across a large body of my own work is what informs the advice.</p>
+                  <p>My own system, website, and planning artifacts are built with the methods I use with clients. I don’t advise on AI from the outside — I operate it across a large body of my own work.</p>
                 </Reveal>
                 <Reveal className="cl-person__detail">
-                  <h3>Business management</h3>
-                  <p>I have led hotels and restaurants, and I hold a share in a prominent local food business. This sits alongside business consultancy and F&amp;B advisory, because the questions overlap more than people expect.</p>
+                  <h3>Business, and this market</h3>
+                  <p>Eighteen years in the Khmer market — food and beverage, real estate, hotels and restaurants I’ve helped lead, and a share in a well-known local food business. I know how these places actually run, and I know this market. That’s the part generic AI advice can’t fake.</p>
                 </Reveal>
                 <Reveal className="cl-person__detail">
                   <h3>Cambodia and language</h3>
-                  <p>I have lived in Cambodia for 18 years. I explain the reasoning in English and Khmer myself, rather than passing it through a translator or handing over a manual to follow.</p>
+                  <p>English and Khmer, in my own words — not through a translator who strips out the nuance, and not by handing over a manual to follow. I teach the reasoning, so your team can actually use it.</p>
                 </Reveal>
               </Stagger>
+              <Reveal as="p" y={14}>
+                One package: business consultancy and advisory, with a real AI focus on top — from someone who has actually done both sides.
+              </Reveal>
               <Reveal y={14}>
                 <a href="#experience" className="cl-text-link" onClick={() => openReading('experience')}>
                   More about my experience <ClIcon name="arrow" />
                 </a>
               </Reveal>
-            </div>
-          </FigureRow>
+          </div>
         </section>
 
         {/* ── D5 · The approach ────────────────────────────────────── */}
         <ChapterMark n="04" label="THE APPROACH" />
         <section id="approach" className="cl-section" aria-labelledby="cl-approach-title" data-cl-section="D5">
-          <FigureRow figure={<FigureDirection />}>
-            <header className="cl-section-heading">
-              <Reveal as="p" className="cl-eyebrow" y={12}><span>04 /</span> THE APPROACH</Reveal>
-              <KineticHeading id="cl-approach-title" level="h2" lines={['Direct the work.', 'Keep checking it.']} />
-              <Reveal as="p" className="cl-section-intro" delay={0.18}>
-                Using AI across a larger undertaking takes more than individual prompts. I focus on how the work is directed: its context, stages, tools, handoffs, and review.
-              </Reveal>
-              <Reveal as="p" className="cl-section-intro" delay={0.26}>
-                That means understanding where the technology is useful, where its output needs checking, and how people stay in control.
-              </Reveal>
-            </header>
-          </FigureRow>
+          <header className="cl-section-heading">
+            <Reveal as="p" className="cl-eyebrow" y={12}><span>04 /</span> THE APPROACH</Reveal>
+            <KineticHeading id="cl-approach-title" level="h2" lines={['Direct the work.', 'Keep checking it.']} />
+            <Reveal as="p" className="cl-section-intro" delay={0.18}>
+              Bringing AI into a business only works if the AI itself is dependable. This is how I make it dependable: I operate it the way you’d run a good team — clear direction, the right context, and checking where it matters — instead of trusting a single prompt to get it right.
+            </Reveal>
+            <Reveal as="p" className="cl-section-intro" delay={0.26}>
+              That’s the difference between asking AI for one thing and running a whole body of work through it — knowing where to trust the output, and where to check it.
+            </Reveal>
+          </header>
+
+          <Reveal className="cl-opview-wrap" y={20}>
+            <OperatorView />
+          </Reveal>
 
           <Reveal className="cl-contrast" y={24}>
             <div>
@@ -461,6 +418,12 @@ function ConsultationContent() {
                   </summary>
                   <div className="cl-reading__body">
                     <p>{reading.text}</p>
+                    {reading.key === 'R1' && (
+                      <div className="cl-reading__graph"><HarnessGraph /></div>
+                    )}
+                    {reading.key === 'R3' && (
+                      <div className="cl-reading__graph"><TrustSpectrum /></div>
+                    )}
                     <button type="button" className="cl-text-button" onClick={closeReading}>
                       Close this topic <ClIcon name="close" />
                     </button>
@@ -474,54 +437,24 @@ function ConsultationContent() {
         {/* ── D7 · Engagement ──────────────────────────────────────── */}
         <ChapterMark n="05" label="FROM CONVERSATION TO AGREED WORK" />
         <section id="engagement" className="cl-section" aria-labelledby="cl-engagement-title" data-cl-section="D7">
-          <FigureRow figure={<FigureEngagement />} flip>
-            <header className="cl-section-heading">
-              <Reveal as="p" className="cl-eyebrow" y={12}><span>05 /</span> FROM CONVERSATION TO AGREED WORK</Reveal>
-              <KineticHeading id="cl-engagement-title" level="h2" lines={['A conversation first.', 'A tailored engagement after.']} />
-              <Reveal as="p" className="cl-section-intro" delay={0.18}>
-                The first conversation provides understanding and general direction. Everything beyond it is proposed, confirmed, and agreed before the work begins.
-              </Reveal>
-            </header>
-          </FigureRow>
+          <header className="cl-section-heading">
+            <Reveal as="p" className="cl-eyebrow" y={12}><span>05 /</span> FROM CONVERSATION TO AGREED WORK</Reveal>
+            <KineticHeading id="cl-engagement-title" level="h2" lines={['A conversation first.', 'A tailored engagement after.']} />
+            <Reveal as="p" className="cl-section-intro" delay={0.18}>
+              The first conversation gives you understanding and a direction, free. Everything past it is proposed, confirmed, and agreed before any work starts.
+            </Reveal>
+          </header>
 
-          <Stagger className="cl-steps" as="ol" step={0.1}>
-            {STEPS.map((step) => (
-              <Reveal as="li" key={step.number} className="cl-step">
-                <span className="cl-step__rail" aria-hidden="true"><i /></span>
-                <div className="cl-step__head">
-                  <span className="cl-step__number">{step.number}</span>
-                  <span className="cl-micro">{step.label}</span>
-                  <span className="cl-step__cost">{step.cost}</span>
-                </div>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </Reveal>
-            ))}
-          </Stagger>
+          <FlowGraph />
 
           <Reveal className="cl-boundary" y={22}>
             <span className="cl-icon-ring"><ClIcon name="shield" /></span>
             <div>
               <h3>Free discussion. Separately agreed work.</h3>
-              <p>The first conversation provides understanding and general direction. The email summary records the discussion; the proposal and quote follow after I have had time to develop the approach.</p>
-              <p>Full materials and delivery preparation begin only after the proposal is confirmed and the contract and payment arrangements are sorted.</p>
+              <p>The first conversation gives you understanding and a direction. The email summary records what we discussed; the proposal and quote follow once I’ve had time to develop the approach.</p>
+              <p>Materials and delivery only begin after the proposal is confirmed and the arrangements are settled.</p>
             </div>
           </Reveal>
-
-          <Stagger className="cl-three-docs" as="dl" step={0.1}>
-            <Reveal as="div">
-              <dt>Meeting summary</dt>
-              <dd>A record of the conversation.</dd>
-            </Reveal>
-            <Reveal as="div">
-              <dt>Proposal and quote</dt>
-              <dd>The proposed scope and cost.</dd>
-            </Reveal>
-            <Reveal as="div">
-              <dt>Paid report</dt>
-              <dd>An agreed detailed deliverable.</dd>
-            </Reveal>
-          </Stagger>
         </section>
 
         {/* ── D9 · Questions ───────────────────────────────────────── */}
@@ -565,15 +498,11 @@ function ConsultationContent() {
         {/* ── D8 · Contact ─────────────────────────────────────────── */}
         <ChapterMark n="07" label="LET’S START A CONVERSATION" />
         <section id="contact" className="cl-section cl-contact cl-panel" aria-labelledby="cl-contact-title" data-cl-section="D8">
-          <span className="cl-panel__corner cl-panel__corner--tl" aria-hidden="true"></span>
-          <span className="cl-panel__corner cl-panel__corner--tr" aria-hidden="true"></span>
-          <span className="cl-panel__corner cl-panel__corner--bl" aria-hidden="true"></span>
-          <span className="cl-panel__corner cl-panel__corner--br" aria-hidden="true"></span>
           <div className="cl-contact__intro">
             <Reveal as="p" className="cl-eyebrow" y={12}><span>07 /</span> LET’S START A CONVERSATION</Reveal>
             <KineticHeading id="cl-contact-title" level="h2" lines={['Start with one real', 'business situation.']} />
             <Reveal as="p" delay={0.2}>
-              Tell me a little about your business and what you would like to do with AI. I will meet with you to understand the situation and discuss possible directions.
+              Tell me a little about your company and what you’d like to do with AI. I’ll meet you, understand the situation, and talk through the directions worth taking.
             </Reveal>
             <Reveal as="p" className="cl-contact__free" delay={0.28}>
               The first consultation is free; any further work is proposed and agreed separately.

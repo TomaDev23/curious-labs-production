@@ -1,0 +1,1406 @@
+﻿
+
+
+
+01 / 15    WRITTEN WIREFRAME
+
+
+Flow & shape
+
+
+Written page wireframe • v0.1 • Companion to the discovery dossier
+
+
+Basis: Discovery Dossier v0.3, sections 01–10; the supplied site screenshots and liked mockup; your request for a document-only layout round.
+
+A clear invitation on the homepage. A discovery-led consultation page. More depth only when the visitor asks for it.
+This document translates your answers into proposed page spaces, section order, content placement, and reading behavior. The discovery dossier remains unchanged and is the authority for the service. This is not final copy, a live site, or a Codex implementation brief.
+
+
+What is settled; what is being proposed
+
+
+Status
+
+
+How to read this document
+
+
+CAPTURED
+
+
+Your decisions: tailored consultation, personal delivery, two audiences, operator-level AI guidance, local/online first meetings, and the free-to-paid process.
+
+
+PROPOSED
+
+
+The eight-section page, proportions, spacing, section labels, expandable reading, and sample wording. These are the layout ideas for this round.
+
+
+OPEN / RESERVED
+
+
+Public identity details, selected proof, method definitions, actual contact destinations, and later Khmer copy. Reserved spaces are editorial notes, not text to publish.
+
+
+
+
+The main direction
+Lead with tailored help for the business, then explain the method that makes the offer distinctive. Introduce you before asking visitors to absorb deeper theory. Show a small amount of real work, describe the engagement simply, and make contact easy.
+The core remains consultation and solutions: understanding the need, planning an approach, explaining the technology, and teaching the relevant people. Training is part of the tailored response, not a standard course. Development/design is outside the main offer; any exception requires separate agreement.
+
+
+Reading map
+
+
+Pages
+
+
+What you will see
+
+
+2–3
+
+
+The whole journey and the new homepage panel.
+
+
+4–8
+
+
+The dedicated page: opening, audiences, scope, you, and the approach.
+
+
+9–12
+
+
+Optional depth, proof, engagement, and contact.
+
+
+13–15
+
+
+Spacing and mobile shape, content custody, and decisions for the next round.
+
+
+
+
+
+All wireframes are editable text and tables. Blank visual spaces reserve a role in the page; no new artwork or mockup images are included.
+
+
+
+02 / 15    WRITTEN WIREFRAME
+
+
+The whole visitor journey
+
+
+One main reading path, with four optional deeper-reading branches
+
+
+Source: Dossier sections 03, 07–08; Q4, Q8–Q17. The sequence below develops the dossier’s proposed narrative; it is not yet approved.
+
+
+TWO ENTRY ROUTES
+
+
+Existing homepage → new H1 consultation panel → dedicated page D1
+
+
+Direct consultation-page visit → D1, with no need to understand MoonSignal first
+
+
+
+
+Order
+
+
+Space and visitor question
+
+
+What happens there
+
+
+D1
+
+
+Opening
+“What is this, and can it help me?”
+
+
+Tailored consultation, a first-person introduction, and a free-conversation invitation.
+
+
+D2
+
+
+Recognition
+“Does this include my kind of work?”
+
+
+Two equal audience panels, followed by three short problem statements.
+
+
+D3
+
+
+The tailored contribution
+“What could we work on?”
+
+
+Six subject families, the custom-delivery principle, and a clear scope boundary.
+
+
+D4
+
+
+The person
+“Who would I be working with?”
+
+
+You, your AI practice, business experience, Cambodia, and direct communication.
+
+
+D5
+
+
+The approach
+“What is different about this?”
+
+
+Operator perspective and four optional branches: method, concept, technology, experience.
+
+
+D6
+
+
+Evidence
+“Can I see some substance?”
+
+
+Two selected examples from your own work, each with context and a disclosure boundary.
+
+
+D7
+
+
+The engagement
+“What happens after we talk?”
+
+
+Four public steps; the free discussion and paid preparation remain distinct.
+
+
+D8
+
+
+Contact
+“How do I arrange a conversation?”
+
+
+Telegram, WhatsApp, email, and the local/online meeting information.
+
+
+A ready visitor can go from D1 straight to D8. A curious visitor can read D1–D8 without opening anything. A detail-oriented visitor can open R1–R4 within D5, then return to the same place in the main page.
+
+
+
+No forced audience selection, no compulsory theory tour, and no requirement to visit the product pages first. Direct entry also supports your later Facebook link without designing an ad campaign now.
+
+
+
+03 / 15    WRITTEN WIREFRAME
+
+
+H1 · The homepage invitation
+
+
+One new panel above the MoonSignal promotional panel
+
+
+Source: Dossier section 08; Q15–Q17; your “above MoonSignal” instruction. Exact insertion relative to the existing moon hero is a proposed interpretation.
+For this round, keep the existing moon-led opening and insert H1 immediately before the MoonSignal “Coming Soon” panel. The existing hero, MoonSignal, and AEGIS sections otherwise remain unchanged. Moving consultation above the current hero would be a separate placement decision.
+
+
+HOMEPAGE STACK — NOT A REPLACEMENT HOMEPAGE
+
+
+EXISTING SITE HEADER
+
+
+EXISTING MOON-LED OPENING  •  retained
+
+
+NEW H1  •  AI integration consultation  •  one self-contained invitation
+
+
+EXISTING MOONSIGNAL PANEL  •  retained
+
+
+EXISTING AEGIS CONTENT  •  retained
+
+
+
+
+INSIDE H1 — APPROXIMATE DESKTOP WIDTHS
+
+
+MESSAGE  •  60%
+
+
+Service label
+
+
+Short headline
+
+
+Two or three lines of explanation
+
+
+Explore consultation → D1
+
+
+Free first conversation → D8
+
+
+VISUAL RESERVE  •  40%
+
+
+One later illustration of directed AI work.
+
+
+It supports the message; it does not contain essential text.
+
+
+
+
+Working wording to test the space
+Eyebrow: AI INTEGRATION CONSULTATION
+Headline: A better way to work with AI.
+Support: I help technical teams and businesses plan and use AI through consultation tailored to their work, people, and goals.
+Use “Explore consultation” as the main action into the dedicated page. The secondary text link can go directly to its contact section. “Free first conversation” describes the entry offer; it does not reserve an appointment.
+
+
+Size and restraint
+Treat H1 as a generous feature panel, not another full-screen landing sequence. Reserve roughly 400–520 px of desktop height as a starting study, with automatic growth for text. On mobile, put the message and link before the smaller optional visual. Do not use a fixed mobile height.
+
+
+
+Keep the subject catalogue, biography, pricing process, and method details off this panel. Its job is to open the consultation page, not reproduce it.
+
+
+
+04 / 15    WRITTEN WIREFRAME
+
+
+D1 · A clear opening
+
+
+The first screen explains the offer before it asks for attention
+
+
+Source: Dossier sections 01, 06–08; Q4, Q7–Q8, Q11–Q12, Q15. Copy and proportions below are proposed.
+
+
+DEDICATED-PAGE OPENING
+
+
+EXISTING SITE NAVIGATION  •  no wider navigation redesign assumed
+
+
+MESSAGE  •  60%
+
+
+AI integration consultation
+
+
+Headline: tailored help for your business
+
+
+Short explanation in “I” voice
+
+
+Start a free consultation → D8
+
+
+See the approach → D5
+
+
+VISUAL RESERVE  •  40%
+
+
+A restrained illustration of people directing and checking AI work.
+
+
+No product demo or performance claim.
+
+
+PERSONALLY DELIVERED  •  PHNOM PENH / ONLINE  •  ENGLISH & KHMER
+
+
+
+
+Working wording
+Eyebrow: AI INTEGRATION CONSULTATION
+Headline: Work with AI in a way that fits your business.
+Support: I help technical teams and non-technical businesses understand, plan, and manage AI work. The consultation, materials, and training are tailored to your needs—not a fixed course.
+Supporting line: Bring one real situation from your business. We can discuss possible directions in a free first conversation.
+Here “we” means you and the client, not a consultancy delivery team.
+
+
+What must be visible without opening anything
+Tailored help; both audiences; you personally; the free first conversation; and a clear way to contact you. “English & Khmer” describes discussion and training, not a claim that the launch page is already bilingual.
+
+
+Space and movement
+Give the headline and paragraph most of the visual weight. Aim for about two headline lines and three or four support lines on desktop, not an entire screen of title. Let the next section be discoverable without a long decorative scroll. Exact wrapping remains responsive.
+A short, non-sticky row of local links may sit below the hero: What I help with → D3; About me → D4; The approach → D5; Contact → D8. This is optional and distinct from the existing global navigation.
+
+
+
+The primary action leads to contact options, not to an assumed booking calendar. Do not add fixed meeting length, time slots, rates, or a scheduling system.
+
+
+
+05 / 15    WRITTEN WIREFRAME
+
+
+D2 · Two audiences, shared problems
+
+
+Let both groups recognize themselves without choosing a separate product
+
+
+Source: Dossier section 03; section 09 Q1/P1–P3, Q2, Q7, Q14. P1–P3 remain draft formulations, not documented client results.
+
+
+RECOGNITION SECTION
+
+
+SECTION TITLE  •  Where could this help?
+
+
+TECHNICAL TEAMS
+
+
+You already code, or have people building products.
+
+
+The need: direct AI across more of the work, with planning, review, and control.
+
+
+Not programming instruction.
+
+
+BUSINESSES WITH NON-CODING NEEDS
+
+
+You want help with management, assistance, creation, or other work.
+
+
+Possible settings include hotels, restaurants, and factories.
+
+
+Not a coding course in disguise.
+
+
+SHARED FOUNDATION  •  a way to direct the capabilities and keep checking the work
+
+
+
+
+Three short recognition statements below the panels
+
+
+Reference
+
+
+Working visitor language
+
+
+P1 · Trust
+
+
+“AI can do impressive things, but we do not know how to rely on it in real work.”
+
+
+P2 · Complexity
+
+
+“As the work becomes more complicated, our way of working with AI stops holding together.”
+
+
+P3 · Scope
+
+
+“We use AI for small changes, but do not know how to direct a larger body of work with it.”
+
+
+These are doorways into a discussion, not claims that every company has all three problems. P3 is the dossier’s synthesis of your meeting account, not a third case you separately supplied.
+
+
+Space and behavior
+Use two side-by-side panels with comparable emphasis, then a compact three-item strip. On a phone, stack the two panels and the three statements in reading order. Avoid a tab that hides one audience or asks a visitor to classify themselves before continuing.
+Keep the sector names as examples of possible settings, not a logo wall or “industries served” claim. Add no customer names or delivered results here.
+
+
+
+Bridge into D3: “The starting point is your situation. The scope comes after we understand it.” This keeps breadth without turning the page into a generic list of everything AI can do.
+
+
+
+06 / 15    WRITTEN WIREFRAME
+
+
+D3 · The tailored contribution
+
+
+Show the breadth as subjects to draw from, never as packages
+
+
+Source: Dossier section 04 S1–S6; Q4, Q7, Q9–Q10. Subject organization is retained from v0.3 and remains an editorial proposal.
+
+Start with the need. Select the relevant methods. Agree the work.
+
+
+SECTION SHAPE
+
+
+Short introduction: no fixed course, bundle, duration, or price
+
+
+Six compact subject spaces in a 3 × 2 desktop grid; one column on mobile
+
+
+What the engagement can contain: report + relevant sessions + agreed support
+
+
+Brief scope clarification, then a quiet path to contact
+
+
+
+
+Subject
+
+
+Main-page summary
+
+
+S1 · Direction and solutions
+
+
+Understand the situation and identify a sensible approach to AI use.
+
+
+S2 · Workflow and harness planning
+
+
+Plan the prompts, context, stages, tools, handoffs, and checks around the work.
+
+
+S3 · Coordinated AI work
+
+
+Understand people using AI together and AI agents working under human direction.
+
+
+S4 · Planning and quality
+
+
+Manage AI work against the intended scope, architecture constraints, and review expectations.
+
+
+S5 · Business use and adoption
+
+
+Connect the technology with management, operations, and the people doing the work.
+
+
+S6 · Relevant training
+
+
+Teach the people involved what they need to understand and use in their own situation.
+
+
+
+
+Delivery note below the subject spaces
+A report and one-on-one sessions with the relevant people are your current starting expectation. The actual materials, training format, recipients, duration, support, and cost are agreed for the client. Weekly meetings, workshops, and continuing support are possibilities—not automatic inclusions.
+
+
+Public scope note — draft
+“My focus is consultation, planning, and helping people manage AI work—not programming instruction or a standard product-development service.”
+Keep the separately agreed development/design exception in the detailed scope clarification at D7, not as an advertised seventh service. Do not rewrite this note into an absolute prohibition, either.
+
+
+
+The section should end on the intended result: useful new capabilities inside a functional workflow. It should not end on a price tier, package selector, or guaranteed result.
+
+
+
+07 / 15    WRITTEN WIREFRAME
+
+
+D4 · The person behind the work
+
+
+Introduce your experience before the visitor is asked to read the deeper theory
+
+
+Source: Dossier section 06; Q4, Q8, Q11–Q12. Background is supplied by you; exact public biography, title, names, and portrait remain open.
+
+
+PERSONAL INTRODUCTION — DESKTOP
+
+
+IDENTITY SPACE  •  35%
+
+
+[Public name]
+
+
+[Approved professional title]
+
+
+Optional real portrait
+
+
+Or text-led introduction with no portrait
+
+
+EXPERIENCE SPACE  •  65%
+
+
+One short first-person biography
+
+
+AI practice
+
+
+Business and hospitality management
+
+
+Cambodia and direct communication
+
+
+More about my experience → R4
+
+
+
+
+The three strands to connect
+
+
+Strand
+
+
+What the dossier supports
+
+
+Hands-on AI practice
+
+
+Your own system, website, planning artifacts, and methods for operating AI. Do not convert this into 18 years of AI experience.
+
+
+Business-management experience
+
+
+You describe leading hotels and restaurants and holding shares in a prominent local food business. Names, roles, dates, and publishable detail still need your wording.
+
+
+Cambodia and communication
+
+
+18 years living in Cambodia, local-market understanding, and direct English/Khmer explanation and training to the practical degree you described.
+
+
+
+
+Working opening paragraph
+“I bring hands-on AI practice together with business-management experience in Cambodia. My background includes hotels, restaurants, and an ongoing food-business interest. I work directly with clients to connect the technology with the work their business actually needs to do.”
+A separate short line can explain that you teach the meaning behind the methods in English and Khmer, rather than simply hand over a manual. Avoid academic-fluency claims or a promise that every written deliverable is bilingual.
+
+
+What belongs here—and what does not
+Use “I” for personal delivery. Reserve a modest line for the connection with business consultancy and food-and-beverage advisory; do not launch a second service catalogue inside this section. R4 can carry the fuller relationship once you choose the public wording.
+
+
+
+No invented team, customer endorsements, numeric achievements, stock portrait, or named business affiliation. Without a chosen portrait, let the biography use the available width instead of leaving a visible empty box.
+
+
+
+08 / 15    WRITTEN WIREFRAME
+
+
+D5 · Explain the approach
+
+
+A brief main-page explanation, followed by optional depth
+
+
+Source: Dossier sections 01, 05, 08; Q1–Q3, Q6–Q7, Q16. The four subjects are captured; the expandable format is proposed.
+
+The difference is not simply a bigger prompt. It is how the work is directed, structured, and checked.
+
+
+APPROACH SECTION
+
+
+SHORT EXPLANATION
+
+
+Operator perspective
+
+
+Harnesses and context
+
+
+Ongoing checking
+
+
+Human direction stays visible
+
+
+RESERVED EXPLANATORY SPACE
+
+
+A short text example now.
+
+
+One later diagram only if it explains the approved method.
+
+
+No decorative agent swarm.
+
+
+FOUR OPTIONAL READING ROWS  •  closed summaries remain useful
+
+
+
+
+Read more
+
+
+Question visible while closed
+
+
+R1 · About the method
+
+
+How is the work organized, directed, and reviewed?
+
+
+R2 · About the concept
+
+
+What changes when you operate AI across a larger undertaking?
+
+
+R3 · About the technology
+
+
+Where can the capabilities help, and where should you not simply trust the output?
+
+
+R4 · About the experience
+
+
+How do my AI practice and business experience connect?
+
+
+
+
+A calm way to reveal more
+Propose four full-width expandable rows beneath the introductory block. Each has a title, a one-sentence preview, and an explicit open/close control. Opening a row reveals its text and any selected visual directly underneath. Several rows may remain open; closing one keeps the reader at that subject.
+Main-page meaning must not depend on opening a row. Use short paragraphs, headings, and at most one contextual example per branch initially. Further artifacts can link to the proof space rather than creating an endless gallery.
+
+
+Method names are not yet explanations
+Maestro, Orchestrator mode, your planning principles, LEGIT, and your theory are reserved for your specification. Do not infer definitions, present the earlier generic cycle as your framework, or publish empty “coming soon” method cards.
+
+
+
+If a branch is not ready at publication, keep its supported short explanation and omit the unfilled expansion. The layout can be reviewed now without fabricating its substance.
+
+
+
+09 / 15    WRITTEN WIREFRAME
+
+
+R1–R4 · The deeper-reading spaces
+
+
+These are content outlines, not invented method descriptions
+
+
+Source: Dossier sections 05–06, 08, 10; Q3, Q6–Q8, Q11, Q16. Text length and disclosure behavior are proposals.
+
+
+Branch
+
+
+What can be explained
+
+
+What is still required
+
+
+R1 · Method
+
+
+The role of a harness; prompting, context, handoffs, auditing, and managing AI roles. Explain how the work is kept organized.
+
+
+Your definitions of Maestro, Orchestrator mode, planning principles, and LEGIT; one public-safe example.
+
+
+R2 · Concept
+
+
+The zoomed-out operator perspective versus isolated small edits. Explain directing longer, broader work rather than merely issuing larger unattended requests.
+
+
+Your preferred explanation and a concrete illustration. A hypothetical example must be labeled.
+
+
+R3 · Technology
+
+
+Your view of strengths, limitations, where trust is appropriate, and why checking and management matter. Stay at the operating level.
+
+
+Your explanatory model and selected examples. No tool rankings, technical guarantees, or how-to-code lesson added here.
+
+
+R4 · Experience
+
+
+How your own AI work, business management, hospitality/F&B background, and Cambodia experience inform this consultation.
+
+
+Approved public biography, disclosable affiliations, selected project context, and how to mention related advisory work.
+
+
+
+
+Shape of one expanded row
+
+
+EDITABLE READING TEMPLATE
+
+
+Title + the practical question this topic answers
+
+
+Short explanation in your voice  •  proposed target: 150–250 words
+
+
+One example or selected visual + a caption explaining its purpose
+
+
+Boundary: what this demonstrates, and what it does not promise
+
+
+Close this topic  •  continue in the same main-page position
+
+
+For this version, use in-page reading rather than launching four new subpages. A later standalone article remains possible if the real material needs more room. Do not lock that future choice into the website build now.
+
+
+Public explanation versus the paid materials
+Let visitors understand the reasoning and see that the practice is substantial. Do not publish the complete connected method, client-specific plans, or the internal commercial wording about withholding usable detail. A contextual excerpt is different from an unexplained wall of complexity.
+
+
+
+R4 adds depth to D4; it does not replace the visible introduction. R1–R3 support D5; they do not conceal the basic offer, delivery boundary, or free-consultation terms.
+
+
+
+10 / 15    WRITTEN WIREFRAME
+
+
+D6 · Show selected evidence
+
+
+Two meaningful examples, with context—not a wall of complexity
+
+
+Source: Dossier section 05; section 08 V1–V4; Q6, Q9, Q16. Own work is approved as proof in principle; individual files are not selected.
+
+
+EVIDENCE SECTION — TWO SPACES
+
+
+EXAMPLE A
+
+
+One selected planning artifact from your own work
+
+
+Purpose
+
+
+What it demonstrates
+
+
+Public-safe excerpt
+
+
+EXAMPLE B
+
+
+One selected review/audit artifact, or a contextualized system/website example
+
+
+Purpose
+
+
+What it demonstrates
+
+
+Public-safe excerpt
+
+
+Short captions are visible. Opening an example reveals the approved detail, not the complete proprietary method.
+
+
+
+
+Every example needs four pieces of context
+
+
+Caption field
+
+
+What to put in the space
+
+
+Origin
+
+
+Your own project and the relevant context. Do not label it a client case study.
+
+
+Purpose
+
+
+What the planning, review, or system excerpt was used to do.
+
+
+Meaning
+
+
+What this particular excerpt demonstrates about your way of working.
+
+
+Limit
+
+
+What has been omitted and what cannot be concluded from the excerpt alone.
+
+
+
+
+Working framing
+“Examples from my own work” is a more accurate heading than “Client success stories.” A small excerpt plus an explanation can communicate the method without transferring the entire system or implying a measured consulting outcome.
+If MoonSignal appears, give only the context needed to understand the practice. Do not introduce trading-performance numbers, product-promotional claims, or any implication that a visitor must be interested in trading to benefit from consultation.
+
+
+Reserve visual space, not unsupported claims
+The later visual can be an approved artifact crop, a redrawn public-safe explanation, or a selected website/system view. V1–V3 are possible explanatory subjects; V4 is direct evidence. A newly drawn illustration is not itself evidence of delivered work.
+On mobile, stack the examples and place each caption directly beneath its visual. Give an explicit open/close path to a larger view. No auto-rotating carousel, hidden caption, or diagram that must be deciphered before continuing.
+
+
+
+The consultation remains the subject. These examples support the service; they do not create a second MoonSignal or AEGIS landing page inside it.
+
+
+
+11 / 15    WRITTEN WIREFRAME
+
+
+D7 · From conversation to engagement
+
+
+A simple public process, preserving the real free-to-paid boundary
+
+
+Source: Dossier section 07; Q4–Q5, Q10, Q13–Q14. Four public steps summarize the seven captured operational stages.
+
+
+FOUR PUBLIC STEPS — HORIZONTAL ON DESKTOP, STACKED ON MOBILE
+
+
+1  DISCUSS
+
+
+Free conversation
+
+
+Understand the situation
+
+
+General direction
+
+
+2  PROPOSE
+
+
+Email summary
+
+
+Scoped proposal
+
+
+Planned cost
+
+
+3  AGREE
+
+
+Confirm proposal
+
+
+Contract and payment
+
+
+Agreed deposit
+
+
+4  DELIVER
+
+
+Prepare materials and timeframe
+
+
+Report and sessions
+
+
+Agreed support
+
+
+Keep this a modest process strip rather than a large infographic. Step 4 includes preparation, then delivery; it begins only after the arrangements in Step 3 are sorted.
+
+
+What the short explanation must preserve
+The free meeting provides understanding and general direction. The immediate email is a record of the discussion. A proposal and quote follow after time to develop the approach; your stated intention is a few days, not a fixed automated deadline. The client confirms before contract/payment arrangements. Full materials and delivery preparation begin once those arrangements are sorted.
+The meeting summary, proposal/quote, and paid report are three separate things. No fixed price, deposit percentage, standard duration, or automatic email service is implied.
+
+
+Three compact clarifications under the strip
+
+
+Question
+
+
+Supported answer direction
+
+
+Is this a standard AI course?
+
+
+No. The need, people, materials, training, support, and cost are agreed for the business and case.
+
+
+Do you teach coding or build products?
+
+
+No coding instruction or how-to-code advice. Consultation is the focus; product development/design is not a standard offer. Any exceptional work requires separate discussion and agreement.
+
+
+Who would you work with?
+
+
+Start with stakeholders who can agree direction and commitment. Then work with the relevant recipients, including managers, owners, team members, or frontline staff.
+
+
+
+
+
+Use short answers visible beneath the flow, not another deep-reading obstacle. Legal wording and commercial terms belong in the actual proposal and agreement, not in this layout document.
+
+
+
+12 / 15    WRITTEN WIREFRAME
+
+
+D8 · Make the conversation easy to start
+
+
+Contact options, not an invented booking system
+
+
+Source: Dossier sections 07–08; Q11–Q12, Q15–Q16. QR/contact channels are captured; exact destinations and channel emphasis remain open.
+
+
+CONTACT SECTION — DESKTOP
+
+
+INVITATION  •  40%
+
+
+Start with one real business situation.
+
+
+Free first consultation in Phnom Penh and its vicinity, or online.
+
+
+Regional work by arrangement.
+
+
+English and Khmer discussion.
+
+
+CONTACT OPTIONS  •  60%
+
+
+Telegram: message link + labeled QR
+
+
+WhatsApp: message link + labeled QR
+
+
+Email: visible address + Copy + Send email
+
+
+Facebook: only once the page exists
+
+
+
+
+Working invitation
+“Tell me a little about your business and what you would like to do with AI. I will meet with you to understand the situation and discuss possible directions. The first consultation is free; any further work is proposed and agreed separately.”
+A short supporting note distinguishes regional availability from free travel: services can be arranged throughout the region; travel and related arrangements are agreed for the case.
+
+
+The actions and their states
+
+
+Action
+
+
+Proposed behavior
+
+
+Main page invitation
+
+
+Scroll to D8. It does not confirm a meeting or imply a calendar appointment.
+
+
+Telegram / WhatsApp
+
+
+Offer direct contact links as well as QR codes. On mobile, lead with the links; show the QR only as an optional aid.
+
+
+Copy email
+
+
+Copy the supplied address and show nearby confirmation. If copying is unavailable, keep the address selectable.
+
+
+Send email
+
+
+Open a new email addressed to the supplied contact. Do not imply it was sent automatically.
+
+
+Facebook
+
+
+Omit the live link until the page is created and the destination is confirmed. No dead button or fake handle.
+
+
+
+
+No new friction added
+Do not add a compulsory form, account, document upload, or request for sensitive company information. A visitor should not need to scan a QR displayed on the same phone. Until a preferred channel is chosen, treat Telegram and WhatsApp equally.
+
+
+
+The final footer returns to the existing CuriousLabs site structure. Do not add a pricing checkout, mailing-list funnel, or traction dashboard to this side activity.
+
+
+
+13 / 15    WRITTEN WIREFRAME
+
+
+Spacing, rhythm, and mobile shape
+
+
+Proposed proportions for the next mockup—not fixed build contracts
+
+
+Source: Dossier section 08; Q16–Q17 and the supplied visual references. All dimensions and interaction choices here are design proposals, not externally verified requirements.
+
+
+A small spacing system
+
+
+Element
+
+
+Desktop starting point
+
+
+Mobile starting point
+
+
+Main content width
+
+
+About 1,160–1,240 px, centered
+
+
+Available width, with 20–24 px side gutters
+
+
+Major section spacing
+
+
+88–112 px between sections
+
+
+48–64 px between sections
+
+
+Inside a feature panel
+
+
+32–48 px padding
+
+
+20–24 px padding
+
+
+Related items / columns
+
+
+24–32 px gap
+
+
+16–24 px gap after stacking
+
+
+Body text
+
+
+17–18 px; keep reading columns comfortable
+
+
+16–18 px; do not shrink to preserve a desktop grid
+
+
+Headlines
+
+
+Scale with width; avoid decorative multi-screen titles
+
+
+Wrap naturally; avoid forced desktop line breaks
+
+
+
+
+Vary the section shapes
+D1 is open and spacious. D2 uses two equal panels. D3 has a compact subject grid. D4 is personal and editorial. D5 uses quiet reading rows. D6 gives the evidence room. D7 is a small process band. D8 ends with practical contact choices. Avoid eight identical boxed grids.
+
+
+What remains on the phone
+Keep the same section order and all essential content. The text comes before decorative visuals; audience panels, subject tiles, proof, and process steps stack vertically. The four reading subjects open inline. Contact uses direct messaging/email links, with QRs as secondary options.
+Use visible tap/keyboard controls for deeper reading and evidence. Do not make essential information depend on hover, horizontal scrolling, or animation. A large visual must not bury the free-conversation action several screens below its explanation.
+
+
+Carry the brand without copying its clutter
+Retain the liked dark cosmic palette, cream type, lime accents, and restrained panel borders in the later visual pass. Let nebula, globe, and technical decoration recede behind reading areas. Localized evidence may be detailed; the entire page should not look like a trading terminal.
+
+
+
+No fixed overall page height. Text growth, English-to-Khmer additions, open reading sections, and device width will change the scroll length. Use content-led sections, not eight full-screen panels.
+
+
+
+14 / 15    WRITTEN WIREFRAME
+
+
+Content ownership and reserved assets
+
+
+Keep real decisions, draft wording, and missing material separate
+
+
+Source: Dossier sections 02/C1–C18, 05/V1–V4, 10; Q3, Q6, Q8, Q11, Q15–Q18. These are preparation notes, not client-facing requirements.
+
+
+Area
+
+
+What is already supported
+
+
+What is not yet supplied
+
+
+H1 / D1–D3
+
+
+Tailored service, two audiences, operator perspective, core delivery boundary, and subject breadth.
+
+
+Final headline and copy approval; exact homepage insertion choice.
+
+
+D4 / R4
+
+
+Personal delivery; AI practice; business/F&B background; 18 years in Cambodia; practical Khmer explanation.
+
+
+Public name/title treatment, exact biography, disclosable businesses/roles, optional real portrait.
+
+
+D5 / R1–R3
+
+
+Prompting, harnesses, auditing, strengths/limitations, planning, and agent coordination.
+
+
+Your actual method definitions and approved public demonstrations.
+
+
+D6
+
+
+Own system, website, and planning artifacts can be used in principle.
+
+
+Two exact examples, captions, redactions, and the material you permit visitors to open.
+
+
+D7
+
+
+Free discussion, summary, proposal, confirmation, commercial arrangements, then full preparation.
+
+
+Any exact timing or commercial terms; not needed to invent a standard package.
+
+
+D8
+
+
+Telegram, WhatsApp, email, and possibly a later Facebook page.
+
+
+Actual destinations, chosen emphasis, and verified QR payloads after the destinations exist.
+
+
+
+
+A small visual reserve for later
+One supporting homepage/hero motif, two selected evidence spaces, and an optional real portrait are sufficient for the first visual pass. Each deeper-reading topic may add one relevant example. These are proposed allocations, not a demand to create art for every section.
+
+
+Publication boundary
+Do not publish bracketed placeholders, draft captions as evidence, internal commercial intent, fake testimonials, or inferred definitions. A pending asset should lead to a simpler supported presentation, not invented content.
+
+
+Language and method custody
+Keep English as the first version and prepare the page to grow when Khmer is added. Training in Khmer does not automatically make the written page or every paid material bilingual. Keep the named methods intact and unexpanded until you supply their substance.
+
+
+
+Q18 remains deprioritized. No required analytics exercise, campaign performance target, or fixed launch KPI has been introduced.
+
+
+
+15 / 15    WRITTEN WIREFRAME
+
+
+What this round asks you to review
+
+
+Page decisions only; your eighteen discovery answers remain intact
+
+
+Source: Dossier section 10; this companion proposes the next page-structure layer without changing the original C, S, V, P, or Q records.
+
+
+Decision
+
+
+Proposed default for this draft
+
+
+F1 · Home placement
+
+
+Keep the current moon hero. Insert H1 before the MoonSignal promotional panel.
+
+
+F2 · Story order
+
+
+Offer → audiences → tailored subjects → you → approach → proof → engagement → contact.
+
+
+F3 · Your introduction
+
+
+Make you visible early, with the fuller personal section before method depth. Keep related F&B/business advisory subordinate to this page’s AI focus.
+
+
+F4 · Deeper reading
+
+
+Four in-page expandable subjects, not four separate new pages at this stage.
+
+
+F5 · Proof weight
+
+
+Two contextual examples from your own work, not a large gallery or invented client-results section.
+
+
+F6 · First action
+
+
+A free-conversation invitation leading to messaging/email choices, not a scheduler or fixed package purchase.
+
+
+
+
+What remains deliberately unapproved
+Headlines, public biography, exact wording, method content, proof selection, contact addresses, pixel values, and optional local navigation. The liked visual direction is retained, but generated mockup copy never overrides the tailored service or scope boundary.
+
+
+How the documents now relate
+
+
+EDITABLE CONTINUITY
+
+
+Discovery dossier v0.3  •  your answers and service authority
+
+
+Page flow & wireframe v0.1  •  this proposed spatial and reading structure
+
+
+Next, after your review  •  approved outline and section-by-section copy
+
+
+Later  •  visual mockup, selected assets, then the Codex build brief
+
+
+This companion uses H1, D1–D8, R1–R4, and F1–F6 so changes can be precise: move D4, shorten D3, split R1, or revise H1. Source references point back to the unchanged discovery dossier. No live website, repository, contacts, or accounts were modified.
+
+
+
+First review: pages 2–4 show the placement and opening. Then read the D1–D8 headings in order. The useful question is whether that sequence feels like the conversation you would naturally have with a potential client.
+
+

@@ -884,3 +884,270 @@
   font-size: 15px;
   color: var(--cl-cream);
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   MODERN EDITORIAL PASS — de-HUD + graph components
+   The figure plates are retired in favour of real data-viz. Corner
+   brackets stay only on the hero; chapter numerals and eyebrows quiet down.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* De-HUD: hide corner brackets everywhere except the hero panel. */
+.cl-consultation .cl-section.cl-panel .cl-panel__corner,
+.cl-consultation .cl-contact .cl-panel__corner { display: none; }
+
+/* Soften the chapter numerals into a quiet editorial mark. */
+.cl-consultation .cl-chapter { gap: 14px; opacity: .9; }
+.cl-consultation .cl-chapter__num {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  color: var(--cl-accent);
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  opacity: .85;
+}
+.cl-consultation .cl-chapter__rule { height: 1px; background: var(--cl-line); opacity: .6; }
+.cl-consultation .cl-chapter__label { font-size: 12px; letter-spacing: .22em; color: var(--cl-muted); }
+
+/* Quieter eyebrows: drop the // HUD prefix to a thin dash. */
+.cl-consultation .cl-eyebrow { letter-spacing: .2em; }
+.cl-consultation .cl-eyebrow > span:first-child {
+  color: var(--cl-accent);
+  opacity: .7;
+  margin-right: .55em;
+  font-family: var(--cl-body-font);
+}
+
+/* ── StatTrio · the three problems ─────────────────────────────── */
+.cl-consultation .cl-stat-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 26px);
+  margin: clamp(28px, 4vw, 44px) 0 8px;
+}
+.cl-consultation .cl-stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(22px, 2.4vw, 30px);
+  border: 1px solid var(--cl-line);
+  border-radius: var(--cl-card-radius);
+  background: var(--cl-glass);
+  box-shadow: var(--cl-hi);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+.cl-consultation .cl-stat::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 80% at 100% 0%, var(--stat-soft), transparent 55%);
+  opacity: .7;
+  pointer-events: none;
+}
+.cl-consultation .cl-stat__head { display: flex; align-items: baseline; gap: 12px; }
+.cl-consultation .cl-stat__n {
+  font-family: var(--cl-font);
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--stat-accent);
+}
+.cl-consultation .cl-stat__label {
+  font-family: var(--cl-mono);
+  font-size: 11px;
+  letter-spacing: .2em;
+  color: var(--cl-muted);
+}
+.cl-consultation .cl-stat__title {
+  font-family: var(--cl-font);
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+  color: var(--cl-cream);
+}
+.cl-consultation .cl-stat__text {
+  font-family: var(--cl-body-font);
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--cl-muted);
+}
+.cl-consultation .cl-stat__bar {
+  margin-top: auto;
+  height: 3px;
+  border-radius: 99px;
+  background: var(--cl-line-soft);
+  overflow: hidden;
+}
+.cl-consultation .cl-stat__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--stat-accent), color-mix(in srgb, var(--stat-accent) 30%, transparent));
+}
+
+/* ── OperatorView · the D5 centrepiece ─────────────────────────── */
+.cl-consultation .cl-opview-wrap {
+  margin: clamp(28px, 4vw, 44px) auto;
+  max-width: 760px;
+}
+.cl-consultation .cl-opview {
+  position: relative;
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid var(--cl-line);
+  border-radius: var(--cl-card-radius);
+  background: var(--cl-glass);
+  box-shadow: var(--cl-hi), 0 0 60px -34px var(--cl-accent-soft);
+  backdrop-filter: blur(6px);
+}
+.cl-consultation .cl-opview__stage { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.cl-consultation .cl-opview__svg { width: 100%; max-width: 460px; height: auto; }
+.cl-consultation .cl-opview__legend {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center;
+  font-family: var(--cl-body-font); font-size: 13px; color: var(--cl-muted);
+}
+.cl-consultation .cl-opview__legend-item { display: inline-flex; align-items: center; gap: 8px; }
+.cl-consultation .cl-opview__dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.cl-consultation .cl-opview__dot--scattered { background: #9fb4bd; opacity: .6; }
+.cl-consultation .cl-opview__dot--aligned { background: var(--cl-accent); box-shadow: 0 0 8px var(--cl-accent-soft); }
+.cl-consultation .cl-opview__legend-arrow { color: var(--cl-accent); opacity: .7; }
+
+/* ── HarnessGraph · R1 / the method ─────────────────────────────── */
+.cl-consultation .cl-reading__graph { margin: 18px 0 6px; }
+.cl-consultation .cl-harness { display: flex; justify-content: center; }
+.cl-consultation .cl-harness__svg { width: 100%; max-width: 300px; height: auto; }
+
+/* ── TrustSpectrum · R3 / the technology ───────────────────────── */
+.cl-consultation .cl-trust { position: relative; margin: 18px 0 6px; padding-top: 26px; }
+.cl-consultation .cl-trust__bar {
+  position: relative;
+  height: 10px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--cl-accent) 70%, transparent), color-mix(in srgb, var(--cl-amber) 70%, transparent) 70%, #b9506e);
+  opacity: .85;
+  overflow: hidden;
+}
+.cl-consultation .cl-trust__fill {
+  position: absolute; inset: 0;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--cl-accent), color-mix(in srgb, var(--cl-accent) 40%, transparent));
+  box-shadow: 0 0 16px var(--cl-accent-soft);
+}
+.cl-consultation .cl-trust__axis {
+  display: flex; justify-content: space-between;
+  margin-top: 10px;
+  font-family: var(--cl-body-font); font-size: 12.5px; color: var(--cl-muted);
+}
+.cl-consultation .cl-trust__end--trust { color: var(--cl-accent); }
+.cl-consultation .cl-trust__end--check { color: #d89aa9; }
+.cl-consultation .cl-trust__marker {
+  position: absolute; top: 0;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.cl-consultation .cl-trust__marker-line { width: 2px; height: 36px; background: var(--cl-cream); border-radius: 2px; box-shadow: 0 0 8px #ffffff55; }
+.cl-consultation .cl-trust__marker-label {
+  font-family: var(--cl-mono); font-size: 10.5px; letter-spacing: .12em;
+  color: var(--cl-cream); white-space: nowrap;
+  padding: 3px 8px; border: 1px solid var(--cl-line); border-radius: 99px;
+  background: #07121acc; backdrop-filter: blur(4px);
+}
+
+/* ── FlowGraph · D7 / engagement ───────────────────────────────── */
+.cl-consultation .cl-flow {
+  position: relative;
+  margin: clamp(28px, 4vw, 44px) 0 8px;
+}
+.cl-consultation .cl-flow__rail {
+  position: absolute;
+  top: 22px; left: 0; right: 0;
+  height: 2px;
+  background: var(--cl-line-soft);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.cl-consultation .cl-flow__rail-fill {
+  display: block; height: 100%; width: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--cl-accent), color-mix(in srgb, var(--cl-accent) 30%, transparent));
+}
+.cl-consultation .cl-flow__steps {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2vw, 28px);
+  position: relative;
+}
+.cl-consultation .cl-flow__step { display: flex; flex-direction: column; gap: 12px; }
+.cl-consultation .cl-flow__node {
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px;
+  font-family: var(--cl-font); font-size: 16px; font-weight: 600; color: var(--cl-cream);
+  border-radius: 50%;
+  background: #07121a;
+  border: 1.6px solid var(--cl-accent);
+  box-shadow: 0 0 18px -6px var(--cl-accent-soft);
+}
+.cl-consultation .cl-flow__body { display: flex; flex-direction: column; gap: 6px; }
+.cl-consultation .cl-flow__label {
+  font-family: var(--cl-mono); font-size: 11px; letter-spacing: .2em; color: var(--cl-accent);
+}
+.cl-consultation .cl-flow__body h3 {
+  font-family: var(--cl-font); font-size: 16.5px; font-weight: 600; letter-spacing: -.01em; color: var(--cl-cream);
+}
+.cl-consultation .cl-flow__body p {
+  font-family: var(--cl-body-font); font-size: 14px; line-height: 1.55; color: var(--cl-muted);
+}
+.cl-consultation .cl-flow__cost {
+  font-family: var(--cl-mono); font-size: 10.5px; letter-spacing: .14em; color: var(--cl-muted);
+  padding: 3px 8px; border: 1px solid var(--cl-line); border-radius: 99px; width: fit-content;
+}
+.cl-consultation .cl-flow__doc {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 4px;
+  font-family: var(--cl-body-font); font-size: 12.5px; color: var(--cl-cream);
+  padding: 7px 11px; border: 1px solid var(--cl-line); border-radius: 8px;
+  background: var(--cl-glass-raised); box-shadow: var(--cl-hi);
+  width: fit-content;
+}
+.cl-consultation .cl-flow__doc-icon {
+  width: 12px; height: 14px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--cl-accent), color-mix(in srgb, var(--cl-accent) 30%, transparent));
+  display: inline-block; flex: none;
+}
+
+/* ── Layout adjustments for the figure-less sections ──────────── */
+/* D3 header now stands alone (no figure row); keep it spacious. */
+.cl-consultation [data-cl-section="D3"] > .cl-section-heading { margin-bottom: clamp(24px, 3vw, 36px); }
+/* D4 person block is now a self-contained editorial split. */
+.cl-consultation .cl-person {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+.cl-consultation .cl-person > .cl-person__detail { padding-top: 4px; }
+/* The recognition intro now leads the StatTrio directly. */
+.cl-consultation .cl-recognition__intro {
+  font-family: var(--cl-font);
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 500;
+  letter-spacing: -.01em;
+  color: var(--cl-cream);
+  margin: clamp(24px, 3vw, 36px) 0 0;
+  max-width: 620px;
+}
+
+/* ── Responsive: keep the new graphs functional on narrow screens ── */
+@media (max-width: 900px) {
+  .cl-consultation .cl-stat-trio { grid-template-columns: 1fr; }
+  .cl-consultation .cl-flow__steps { grid-template-columns: repeat(2, 1fr); gap: 28px 20px; }
+  .cl-consultation .cl-flow__rail { display: none; }
+  .cl-consultation .cl-person { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 620px) {
+  .cl-consultation .cl-flow__steps { grid-template-columns: 1fr; }
+  .cl-consultation .cl-flow__step { flex-direction: row; align-items: flex-start; gap: 14px; }
+  .cl-consultation .cl-flow__node { flex: none; }
+  .cl-consultation .cl-opview__svg { max-width: 100%; }
+  .cl-consultation .cl-trust__marker-label { font-size: 9.5px; }
+}

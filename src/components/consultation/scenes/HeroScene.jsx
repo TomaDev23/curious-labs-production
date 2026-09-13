@@ -38,14 +38,9 @@ function HeroScene() {
     >
       <div className="h-grid">
         <div className="h-copy">
-          <Eyebrow>Business consultation in the age of AI</Eyebrow>
-          <Display as="h1" id="cl-page-title" size="hero" lines={['Business consultation,', 'in the age of AI.']} />
-          <Lead className="h-lead">
-            I’m a business advisor who now operates AI hands-on, every day. If you’re trying to bring AI into
-            your business — whether you’ve already started or don’t know where to begin — I help you work out
-            what you actually need, and turn it into something you can act on. Business consultancy first, with
-            a real AI focus on top.
-          </Lead>
+          <Eyebrow>{heroCopy.eyebrow.text}</Eyebrow>
+          <Display as="h1" id="cl-page-title" size="hero" lines={heroCopy.h1.lines} />
+          <Lead className="h-lead">{heroCopy.lead.text}</Lead>
           <p className="h-invite">
             Bring one real situation from your business. The first conversation is free.
           </p>

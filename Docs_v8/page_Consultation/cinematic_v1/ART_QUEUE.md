@@ -32,3 +32,13 @@ Generate in priority order; interleave with X-01/X-02 build work (e.g. while wai
 | 13 | art-18-monolith-face | `art-18-monolith-face.txt` | **portrait, transparent** (else pure black) | `art-18-monolith-face.{avif,webp}` | A · SC-03 wall faces | Queued — do next (3 variants) |
 
 Figures in rows 3 and 9 are placeholder characters (MOCKUP_CANON §4): small, from behind, no face.
+
+### Batch 4 — walker poses for DR-10 (same character as `art-09-figure-walker`)
+Prompt file `art-19-walker-turnaround.txt`; replace `{POSE}` per row; pass `public/consultation/art-09-figure-walker.webp` (or `tools/art/_raw/art-09-figure-walker-final-*.png`) as the **reference image** so all poses are the same person. Portrait, transparent. 2 variants each.
+
+| Pri | ID | {POSE} | Target | Status |
+|---|---|---|---|---|
+| 14 | art-19a-walker-three-quarter-left | standing, body turned three-quarters to the viewer's left, head looking left, arms relaxed | `art-19a-walker-three-quarter-left` | Queued |
+| 15 | art-19b-walker-profile-left-stride-1 | full side profile facing the viewer's left, mid-stride walking, left leg forward, right arm forward | `art-19b-walker-profile-left-stride-1` | Queued |
+| 16 | art-19c-walker-profile-left-stride-2 | full side profile facing the viewer's left, mid-stride walking, right leg forward, left arm forward | `art-19c-walker-profile-left-stride-2` | Queued |
+| 17 | art-19d-walker-profile-left-passing | full side profile facing the viewer's left, legs passing under the body between strides, one arm slightly raised behind as if pulling a line | `art-19d-walker-profile-left-passing` | Queued |

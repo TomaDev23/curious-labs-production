@@ -29,3 +29,10 @@ readings, generated people or silhouettes, generated "Phnom Penh", fake stats/ba
 (the hero follows MOCK-D0: headline + quote block + globe) and becomes the SC-04 harness centrepiece (MOCK-D2);
 the headline sheen stays. **DR-02** doors stand open on desktop per MOCK-D1 (hover/focus opens further); on phone the
 cards stack with no doors (MOCK-M1). **DR-05** no swipe track for the doors on phone; walls and engagement keep it.
+
+## Owner additions — 2026-09-13 (these override DEC-02/INT-01 where they conflict; owner decision)
+
+| ID | Scene | The move | Guardrails |
+|---|---|---|---|
+| **DR-10** | SC-03 → SC-04 seam (lane A) | **The walker leaves and pulls the next scene in, driven by scroll.** As the visitor scrolls past the walls, the figure turns from its back view to profile, walks toward the **left** edge and out of frame; a thin violet light thread runs from the figure back to the right edge, and the SC-04 header ("What I actually do / From conversation to practical outcomes.") slides in from the right, as if dragged by the walker. Scroll position scrubs everything (no autoplay, no time-based animation). | Desktop ≥1100px only: a sticky seam stage (~160–180vh) — this is the page's one scroll-lock beat. Phone/tablet: no pin, no figure; SC-04 header just slides in on enter. Reduced motion: static, no pin. Text is never hidden behind the pin; SC-04 content is fully readable once settled. Direction flips are one constant. |
+| **DR-11** | SC-01 hero entry (lane C) | **Choreographed entrance.** "Business consultation" ignites like neon (flicker, glow settles), then "in the age of AI." types in with a lime caret, and only then the rest of the hero (eyebrow, lead, invitation, buttons, quote, meta / stat strip) rises in and the globe brightens. Total ≈ 3s. | Plays once per session; instantly completes on scroll/key/click/touch; skipped entirely for `prefers-reduced-motion` and for deep links (URL hash). The h1 keeps its full real text for assistive tech (animated glyph spans are `aria-hidden`, h1 has the full text). Buttons become usable by ~3s at most. No new deps. |

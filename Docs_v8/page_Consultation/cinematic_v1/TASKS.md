@@ -14,6 +14,7 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | A-03 | SC-03 three walls to MOCK-D1 (`WallsScene.jsx`) — takes over v1 B-07 | A-01 | Queued |
 | A-04 | SC-04 contribution + HarnessSystem to MOCK-D2 | A-01 | Queued |
 | A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | Later |
+| A-06 | **DR-10 walker transition** SC-03 → SC-04 (scroll-scrubbed; card below) | A-04, ART-19 poses | Queued after A-04 |
 
 ## Lane B — AI consultation builder B (Codex) · person + approach
 
@@ -29,6 +30,7 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 |---|---|---|---|
 | C-00 | Park v1 B-06 WIP: `git restore` your uncommitted `AudienceScene.jsx` + `consultation-scenes.css` edits; commit `visuals/DoorVisual.jsx` alone as "parked for lane A"; ACK protocol v2 | — | Queued — first |
 | C-01 | SC-01 hero to canon (= v1 **B-05R** card, archived below) using `scenes/copy/hero.copy.js` + `scenes/css/sc-01-hero.css` (after A-00); adopt kit primitives once A-01 lands | A-00 | Queued |
+| C-01b | **DR-11 hero entry choreography** (card below) — do before C-02 | C-01, #MGR-023 fix | Queued — next |
 | C-02 | SC-07 engagement to MOCK-D4/M1 | A-01 | Queued |
 | C-03 | SC-08 questions to MOCK-D4 | A-01 | Queued |
 | C-04 | SC-09 final horizon + pending contact + footer band to MOCK-D4/M1 | A-01 | Queued |
@@ -54,6 +56,27 @@ Coming: `art-06-earth-sunrise`, `art-07-reading-method`, `art-08-reading-concept
 `art-11-reading-experience`, `art-12-harness-core`, `art-13-tile-city-lights`, `art-14-tile-summit`,
 `art-15-horizon-mountains`, `art-16-galaxy-band`, `art-17-final-horizon-{desktop,mobile}`.
 All under `/consultation/`, each as `.avif` + `.webp`.
+
+---
+
+
+## Owner-requested motion cards (2026-09-13)
+
+### A-06 · DR-10 — the walker leaves and pulls "What I actually do" in
+Desktop ≥1100px only; phone/tablet and reduced motion get no pin and no walker.
+- **Structure:** wrap the end of `WallsScene` (the figure + light pool + closer) and the start of `ContributionScene` (its header: eyebrow + H2 + lead) in a seam stage: an outer block ~170vh tall containing a `position: sticky; top: 0; height: 100vh` layer. Scroll progress `p` 0→1 over the outer block via framer `useScroll({ target, offset: ['start start', 'end end'] })` → `useTransform`. Nothing animates on a timer.
+- **Walker frames** (transparent, same character; manager delivers from ART_QUEUE rows 14–17): back `art-09-figure-walker`, `art-19a-walker-three-quarter-left`, `art-19b-…stride-1`, `art-19c-…stride-2`, `art-19d-…passing`. Stack them as `<img>`s and show exactly one by progress (opacity 0/1, no crossfade blur).
+- **Timeline:** p 0–0.12 back view holds, walls' paths begin to fade · p 0.12–0.2 three-quarter-left frame · p 0.2–0.9 profile walk: frames cycle stride-1 → passing → stride-2 → passing every ~0.05 of progress while `translateX` moves the figure from its convergence point to -60vw (exits the left edge by 0.9); its light pool travels with it and dims · p 0.25–0.9 a 1.5px violet light **thread** (SVG path) runs from the figure's trailing hand to the right edge, slightly sagging · p 0.3–0.9 the SC-04 header block `translateX(+100vw → 0)` and opacity .0 → 1, attached to the thread's right end · p 0.9–1 thread fades, header settles, the pin releases into the rest of SC-04.
+- **Rules:** the walls text is scrolled past before the pin starts (no text under the pin); SC-04 header is in the DOM and readable when settled; keyboard/anchor jumps (#contribution) land on the settled state; `prefers-reduced-motion` → no sticky wrapper at all.
+- Direction is one constant (`WALK = 'left'`) so the owner can flip it.
+- DONE evidence: captures at p≈0.1, 0.4, 0.7, 1.0 at 1440 (scroll positions noted), plus confirmation of no pin on phone.
+
+### C-01b · DR-11 — hero entry choreography
+- **Sequence (≈3s):** t 0–0.15 dark sky, globe art at 35% · t 0.15–1.05 "Business consultation" **neon ignition** (both words at once): irregular flicker keyframes on opacity + text-shadow (e.g. 0 → 1 → .15 → .9 → .3 → 1 with a cream/lime bloom that settles to the normal gradient text) · t 1.1–2.1 "in the age of AI." **types** ~55ms/character with a lime block caret that blinks twice after the last character and fades · t 2.2–3.0 the rest rises in, staggered 80ms: eyebrow, lead, invitation, buttons, quote block, meta line (desktop) / stat strip + arrow (phone); globe brightens 35% → 100% over 1.2s; the existing sheen runs once at t≈2.2.
+- **Skips:** `prefers-reduced-motion` → final state immediately · URL has a hash → final state · plays once per session (`sessionStorage` key, read/write in try/catch) · any scroll, wheel, key, pointer or touch during the sequence → jump to final state.
+- **A11y:** `<h1 id="cl-page-title">` keeps the full sentence as real text (visually-hidden span) while the animated glyph spans are `aria-hidden`; nothing focusable is `visibility:hidden` longer than 3s; no layout shift — reserve the headline's final size from the start (render the typed line's characters invisible, reveal them).
+- **Implementation:** a small hook/component in lane C (`scenes/HeroEntry.jsx` or inside `HeroScene.jsx`) + CSS in `sc-01-hero.css`; no deps. Kit primitives unchanged.
+- DONE evidence: a capture at ~0.6s (flicker), ~1.6s (typing mid-line), ~3.2s (final) at 1440 and phone, plus confirmation of each skip path.
 
 ---
 

@@ -600,3 +600,15 @@ A-09 phone pass additions: besides your own notes (SC-04 closer/NEXT cue spacing
 
 #MGR-050  STEER  [BLD-C]  2026-09-13T16:45
 C-05 additions: (1) **phone hero quote sits on the globe's city lights** (from #A-015) — move it below the buttons over dark space or give it a dark backing gradient; (2) trim phone hero to ≤ 1 screen + stat strip; (3) questions phone: already 6 visible — fine; engagement phone rows fine. Report hero phone height.
+
+#A-016  DONE  [BLD-A]  2026-09-13T16:47
+**A-09 phone fidelity pass (lane A scenes vs MOCK-M1) — `c8f230e` (pushed).** Compared each p390 band from A-08 side by side with M1 (`C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/A08/_a09_contribution_walls.png`, `_a09_contact.png`), then fixed:
+- **SC-02 doors:** already matched M1 (short titles/bodies, chips, circle arrows, cyan phone closer) — no change.
+- **SC-03 walls:** not in M1 (INT-03 swipe track) — no change; index, prev/next, rock faces and painted path read correctly at 390.
+- **SC-04:** header **left-aligned on phone** (the centred composition stays desktop); card tags cyan as in M1 (were lime); the featured core card loses its inner hairline on phone (M1 has a single border); the bottom-left closer is hidden on phone so the NEXT cue sits alone over the ridge.
+- **SC-09:** the card follows M1's short order — READY TO TALK? → title (now 26–30px, was 22) → short body → free line → pending status → a **"How the first contact goes" toggle** (button, aria-expanded/controls, +/− icon) that opens location, language, caption, the three steps and the reassurance in place. The horizon tag gets M1's short dash. The footer on phone ends with M1's "SAME CURIOSITY. / A MORE USEFUL TOMORROW." under the brand and links. Desktop unchanged (toggle not displayed, steps always shown — verified).
+Evidence: `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/cap/A-09_phone.png` (SC-04 top · SC-04 ridge cue · SC-09 horizon + card · card + footer · card with details open). No overflow at 390.
+Remaining phone deltas (intentional): SC-04 keeps the COPY_CANON lead (M1 has none); the SC-09 card has no lime button or channel icons, because contact destinations are still pending (M1 shows "Get in touch" + Email/LinkedIn/WhatsApp/Book).
+
+#MGR-051  ACK  [BLD-A]  2026-09-13T16:47
+Audit A-09 (#A-016, c8f230e): **accepted** — SC-04 left-aligned phone header, cyan tags, single-border core card, closer hidden; SC-09 phone card in M1 order with a "How the first contact goes" disclosure (that alone should save a lot of height). Intentional deltas accepted (lead kept; no lime button/channel icons while contacts are pending). Still to do from #MGR-049: SC-04 phone cards collapse their icon rows behind the arrow, plus before/after phone heights for SC-02/03/04/09. When lanes B and C post their phone passes, please re-run A-08 (p390 only is enough) so we can read the new docH.

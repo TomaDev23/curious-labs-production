@@ -19,6 +19,7 @@ export const engagementCopy = {
         icon: 'chat',
         title: 'Free conversation',
         text: 'Bring one real situation. I listen, ask, and give you my reading and a general direction.',
+        phoneText: 'Bring one real situation. I listen and give you my reading.',
         tag: 'OPEN. PRACTICAL. NO PRESSURE.'
       },
       {
@@ -26,6 +27,7 @@ export const engagementCopy = {
         icon: 'file',
         title: 'Proposal',
         text: "An email summary straight after, then a scoped proposal and quote once I've thought it through.",
+        phoneText: 'An email summary, then a scoped proposal and quote.',
         tag: 'CLEAR. RELEVANT. NO GENERIC PLANS.'
       },
       {
@@ -33,6 +35,7 @@ export const engagementCopy = {
         icon: 'shield',
         title: 'Agreed work',
         text: 'You confirm the proposal; we settle the contract and payment, and the work is scheduled.',
+        phoneText: 'You confirm; we settle the contract and payment.',
         tag: 'FOCUSED. AGREED. CLEAR NEXT STEPS.'
       },
       {
@@ -40,6 +43,7 @@ export const engagementCopy = {
         icon: 'handoff',
         title: 'Delivery & support',
         text: 'I prepare the materials and deliver the report, the sessions and any support we agreed.',
+        phoneText: 'I deliver the report, sessions and support we agreed.',
         tag: 'PRACTICAL. HANDS-ON. REAL CAPABILITY.'
       }
     ],

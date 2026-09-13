@@ -93,7 +93,7 @@ function EngagementScene() {
             n={step.n}
             icon={step.icon}
             title={step.title}
-            text={step.text}
+            text={step.phoneText}
             action={null}
           />
         ))}

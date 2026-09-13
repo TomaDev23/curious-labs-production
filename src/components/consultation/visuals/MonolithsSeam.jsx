@@ -21,12 +21,12 @@ const FRAMES = {
   back: { avif: '/consultation/art-09-figure-walker.avif', webp: '/consultation/art-09-figure-walker.webp' },
   threeQuarter: { avif: '/consultation/art-19a-walker-three-quarter-left.avif', webp: '/consultation/art-19a-walker-three-quarter-left.webp' },
   stride1: { avif: '/consultation/art-19b-walker-profile-left-stride-1.avif', webp: '/consultation/art-19b-walker-profile-left-stride-1.webp' },
-  stride2: { avif: '/consultation/art-19c-walker-profile-left-stride-2.avif', webp: '/consultation/art-19c-walker-profile-left-stride-2.webp' },
-  passing: { avif: '/consultation/art-19d-walker-profile-left-passing.avif', webp: '/consultation/art-19d-walker-profile-left-passing.webp' }
+  stride2: { avif: '/consultation/art-19c-walker-profile-left-stride-2.avif', webp: '/consultation/art-19c-walker-profile-left-stride-2.webp' }
+  // passing (art-19d) rejected in #MGR-046 (lost the backpack); re-add here and in CYCLE when a new one lands.
 };
 const FRAME_KEYS = Object.keys(FRAMES);
 const GROUND = { avif: '/consultation/art-04-walls-terrain-desktop.avif', webp: '/consultation/art-04-walls-terrain-desktop.webp' };
-const CYCLE = ['stride1', 'passing', 'stride2', 'passing'];
+const CYCLE = ['stride1', 'stride2'];
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const ramp = (p, a, b) => clamp01((p - a) / (b - a));
@@ -214,7 +214,7 @@ export function WalkerSeam({ children }) {
 
       // Pose: back → three-quarter → profile walk cycle.
       let pose = 'back';
-      if (p >= 0.2) pose = CYCLE[Math.floor((p - 0.2) / 0.05) % CYCLE.length];
+      if (p >= 0.2) pose = CYCLE[Math.floor((p - 0.2) / 0.06) % CYCLE.length];
       else if (p >= 0.12) pose = 'threeQuarter';
       FRAME_KEYS.forEach((k) => { const el = frameRefs.current[k]; if (el) el.style.opacity = k === pose ? '1' : '0'; });
 

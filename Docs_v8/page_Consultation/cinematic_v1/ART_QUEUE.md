@@ -29,7 +29,7 @@ Generate in priority order; interleave with X-01/X-02 build work (e.g. while wai
 | 10 | art-16-galaxy-band | `art-16-galaxy-band.txt` | landscape (wide) | `art-16-galaxy-band` | C · SC-07 | Done |
 | 11 | art-17-final-horizon-desktop | `art-17-final-horizon-desktop.txt` | landscape | `art-17-final-horizon-desktop` | C · SC-09 | Done |
 | 12 | art-17-final-horizon-mobile | `art-17-final-horizon-mobile.txt` | **portrait** | `art-17-final-horizon-mobile` | C · SC-09 phone | Done |
-| 13 | art-18-monolith-face | `art-18-monolith-face.txt` | **portrait, transparent** (else pure black) | `art-18-monolith-face.{avif,webp}` | A · SC-03 wall faces | Queued — do next (3 variants) |
+| 13 | art-18-monolith-face | `art-18-monolith-face.txt` | **portrait, transparent** (else pure black) | `art-18-monolith-face.{avif,webp}` | A · SC-03 wall faces | Done (v1, real alpha) |
 
 Figures in rows 3 and 9 are placeholder characters (MOCKUP_CANON §4): small, from behind, no face.
 

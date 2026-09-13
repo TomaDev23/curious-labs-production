@@ -349,12 +349,55 @@
   .cl-consultation .sc06__path-mobile .k-body { margin: 0; }
   .cl-consultation .sc06__readings-header { display: block; }
   .cl-consultation .sc06__readings-header > .k-body { margin-top: 16px; }
-  .cl-consultation .sc06__reading-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 28px; }
-  .cl-consultation .sc06 .b-reading-card__summary { min-height: 0; padding: 18px; }
-  .cl-consultation .sc06 .b-reading-card__image { margin: 14px -18px 18px; }
+  .cl-consultation .sc06__reading-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 28px; }
+  .cl-consultation .sc06 .b-reading-card__summary {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 14px;
+    align-items: center;
+    min-height: 116px;
+    padding: 14px;
+  }
+  .cl-consultation .sc06 .b-reading-card__image {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    width: 88px;
+    height: 88px;
+    margin: 0;
+    aspect-ratio: 1;
+    border-radius: 8px;
+  }
+  .cl-consultation .sc06 .b-reading-card__topline,
   .cl-consultation .sc06 .b-reading-card__title,
-  .cl-consultation .sc06 .b-reading-card__question { min-height: 0; }
-  .cl-consultation .sc06 .b-reading-card__question { margin-bottom: 14px; }
+  .cl-consultation .sc06 .b-reading-card__chips { grid-column: 2; }
+  .cl-consultation .sc06 .b-reading-card__topline {
+    grid-row: 1;
+    min-height: 26px;
+  }
+  .cl-consultation .sc06 .b-reading-card__number { font-size: 15px; }
+  .cl-consultation .sc06 .b-reading-card__arrow {
+    width: 28px;
+    height: 28px;
+  }
+  .cl-consultation .sc06 .b-reading-card__title {
+    grid-row: 2;
+    min-height: 0;
+    margin: 4px 0 6px;
+    font-size: 20px;
+    line-height: 1.08;
+  }
+  .cl-consultation .sc06 .b-reading-card__question { display: none; }
+  .cl-consultation .sc06 .b-reading-card__chips {
+    grid-row: 3;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+  }
+  .cl-consultation .sc06 .b-reading-card__chips .k-chip {
+    padding: 3px 7px;
+    font-size: 8.5px;
+  }
   .cl-consultation .sc06__closing { padding-block: 20px 56px; }
   .cl-consultation .sc06__closing-card { padding: 22px; gap: 24px; }
   .cl-consultation .sc06__closing-points { grid-template-columns: 1fr; }

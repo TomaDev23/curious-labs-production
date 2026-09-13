@@ -14,7 +14,10 @@
 }
 
 .cl-consultation .sc06__hero .cl-art::after {
-  background: linear-gradient(90deg, #020308 0%, rgb(2 3 8 / .95) 34%, rgb(2 3 8 / .42) 59%, transparent 78%);
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(270deg, #020308 0%, rgb(2 3 8 / .96) 36%, rgb(2 3 8 / .46) 62%, transparent 82%);
 }
 
 .cl-consultation .sc06__hero-grid {
@@ -25,7 +28,8 @@
 }
 
 .cl-consultation .sc06__hero-copy {
-  grid-column: 1 / span 6;
+  grid-column: 6 / span 7;
+  text-align: right;
 }
 
 .cl-consultation .sc06__hero-eyebrow--mobile {
@@ -40,6 +44,7 @@
 
 .cl-consultation .sc06__hero-copy .k-lead {
   max-width: 47ch;
+  margin-left: auto;
 }
 
 .cl-consultation .sc06__hero-copy .k-body {
@@ -50,13 +55,9 @@
 .cl-consultation .sc06__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 12px;
   margin-top: 28px;
-}
-
-.cl-consultation .sc06__hero-quote {
-  grid-column: 8 / span 3;
-  margin-top: 30px;
 }
 
 .cl-consultation .sc06__hero-tagline {
@@ -328,6 +329,8 @@
     background: linear-gradient(180deg, #020308 0%, rgb(2 3 8 / .96) 68%, rgb(2 3 8 / .7));
   }
   .cl-consultation .sc06__hero-grid { display: block; }
+  .cl-consultation .sc06__hero-copy { text-align: left; }
+  .cl-consultation .sc06__hero-copy .k-lead { margin-left: 0; }
   .cl-consultation .sc06__hero-eyebrow--desktop { display: none; }
   .cl-consultation .sc06__hero-eyebrow--mobile { display: flex; }
   .cl-consultation .sc06__hero-copy .k-display {
@@ -336,7 +339,6 @@
   }
   .cl-consultation .sc06__hero-copy .k-body { display: none; }
   .cl-consultation .sc06__actions { display: none; }
-  .cl-consultation .sc06__hero-quote,
   .cl-consultation .sc06__hero-tagline { display: none; }
   .cl-consultation .sc06__path { min-height: 0; }
   .cl-consultation .sc06__path-header { display: block; }

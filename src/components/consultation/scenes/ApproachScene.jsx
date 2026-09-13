@@ -1,5 +1,5 @@
 import React from 'react';
-import { Band, Body, Display, Eyebrow, GhostButton, IconRow, Lead, NeonCard, NumberedRow, PrimaryButton, QuoteBlock, Tagline } from '../kit';
+import { Band, Body, Display, Eyebrow, GhostButton, IconRow, Lead, NeonCard, NumberedRow, PrimaryButton, Tagline } from '../kit';
 import { HarnessGraph, TrustSpectrum } from '../ConsultationGraphs';
 import { closeReading } from '../useConsultationPage';
 import OperatorPath from '../visuals/b-OperatorPath';
@@ -28,14 +28,14 @@ const READINGS = [
 
 const READING_ART = [
   { avif: '/consultation/art-07-reading-method.avif', webp: '/consultation/art-07-reading-method.webp', width: 800, height: 600 },
-  { avif: '/consultation/art-08-reading-concept.avif', webp: '/consultation/art-08-reading-concept.webp', width: 800, height: 600 },
+  { avif: '/consultation/art-23-reading-converging-roads.avif', webp: '/consultation/art-23-reading-converging-roads.webp', width: 800, height: 600 },
   { avif: '/consultation/art-10-reading-technology.avif', webp: '/consultation/art-10-reading-technology.webp', width: 800, height: 600 },
-  { avif: '/consultation/art-11-reading-experience.avif', webp: '/consultation/art-11-reading-experience.webp', width: 800, height: 600 }
+  { avif: '/consultation/art-24-reading-valley-overlook.avif', webp: '/consultation/art-24-reading-valley-overlook.webp', width: 800, height: 600 }
 ];
 
-const ART_06 = {
-  avif: '/consultation/art-06-earth-sunrise.avif',
-  webp: '/consultation/art-06-earth-sunrise.webp',
+const ART_21 = {
+  avif: '/consultation/art-21-first-light-ridges.avif',
+  webp: '/consultation/art-21-first-light-ridges.webp',
   width: 1664,
   height: 936
 };
@@ -57,7 +57,7 @@ function ApproachScene() {
         sectionKey="D5"
         labelledBy="cl-approach-title"
         className="sc06__hero"
-        art={{ desktop: ART_06, position: '78% 48%', scrim: 'left', parallax: 18 }}
+        art={{ desktop: ART_21, position: '24% 52%', scrim: 'right', parallax: 18 }}
       >
         <div className="sc06__hero-grid">
           <div className="sc06__hero-copy">
@@ -70,12 +70,11 @@ function ApproachScene() {
               <GhostButton href="#approach-path">{text(APPROACH_COPY.secondaryAction)}</GhostButton>
             </div>
           </div>
-          <QuoteBlock className="sc06__hero-quote" quote={text(APPROACH_COPY.quote)} label={text(APPROACH_COPY.quoteLabel)} />
           <Tagline className="sc06__hero-tagline" align="right" lines={texts(APPROACH_COPY.tagline)} />
         </div>
       </Band>
 
-      <Band id="approach-path" className="sc06__path" hairline="bottom">
+      <Band id="approach-path" className="sc06__path">
         <div className="sc06__path-header">
           <div>
             <Eyebrow>{text(APPROACH_COPY.pathEyebrow)}</Eyebrow>
@@ -93,7 +92,7 @@ function ApproachScene() {
         </div>
       </Band>
 
-      <Band id="perspectives" className="sc06__readings" hairline="bottom">
+      <Band id="perspectives" className="sc06__readings">
         <div className="sc06__readings-header">
           <div>
             <Eyebrow>{text(APPROACH_COPY.readingsEyebrow)}</Eyebrow>

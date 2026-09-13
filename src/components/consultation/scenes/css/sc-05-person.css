@@ -249,8 +249,8 @@
 
 .cl-consultation .sc05__cambodia-marker {
   position: absolute;
-  left: 54%;
-  top: 48%;
+  right: 10%;
+  top: 68%;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -261,10 +261,11 @@
 }
 
 .cl-consultation .sc05__cambodia-pin {
-  width: 2px;
-  height: 96px;
-  background: linear-gradient(180deg, var(--k-lime), transparent);
+  width: clamp(150px, 19vw, 270px);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--k-cyan) 35%, var(--k-lime) 72%, transparent);
   box-shadow: 0 0 16px var(--k-lime);
+  transform: rotate(-6deg);
 }
 
 @media (max-width: 1020px) {

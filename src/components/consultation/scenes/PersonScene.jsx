@@ -40,11 +40,11 @@ const ART_05_RIVERSIDE = {
   height: 1200
 };
 
-const ART_01_EARTH = {
-  avif: '/consultation/art-01-earth-horizon-desktop.avif',
-  webp: '/consultation/art-01-earth-horizon-desktop.webp',
-  width: 2560,
-  height: 1440
+const ART_20_RIVER = {
+  avif: '/consultation/art-20-river-predawn.avif',
+  webp: '/consultation/art-20-river-predawn.webp',
+  width: 1916,
+  height: 821
 };
 
 const text = (slot) => slot.text;
@@ -86,7 +86,7 @@ function PersonScene() {
         </div>
       </Band>
 
-      <Band className="sc05__credibility" hairline="bottom">
+      <Band className="sc05__credibility">
         <ul className="sc05__credibility-cards">
           {PERSON_COPY.credibility.map((item, index) => (
             <NeonCard as="li" key={text(item.title)} accent={index === 3 ? 'violet' : 'cyan'}>
@@ -113,7 +113,7 @@ function PersonScene() {
         </div>
       </Band>
 
-      <Band className="sc05__rooted" hairline="bottom">
+      <Band className="sc05__rooted">
         <div className="sc05__rooted-grid">
           <div className="sc05__local-quote">
             <WordStack words={texts(PERSON_COPY.localWordStack)} />
@@ -141,8 +141,7 @@ function PersonScene() {
 
       <Band
         className="sc05__tomorrow"
-        art={{ desktop: ART_01_EARTH, position: '60% 100%', scrim: 'left', parallax: 12 }}
-        hairline="bottom"
+        art={{ desktop: ART_20_RIVER, position: '50% 58%', scrim: 'left', parallax: 12 }}
       >
         <div className="sc05__tomorrow-copy">
           <Eyebrow>{text(PERSON_COPY.tomorrowEyebrow)}</Eyebrow>

@@ -28,7 +28,7 @@ function computeInitialPhase() {
 /**
  * DR-11 hero entry choreography gate. The timeline itself is pure CSS
  * (`.he-playing` rules in sc-01-hero.css); this hook only decides whether to
- * play it at all, and cuts it short to the final state on any user input.
+ * play it at all, and cuts it short to the final state on any real input.
  */
 export function useHeroEntry() {
   const [phase, setPhase] = useState(computeInitialPhase);
@@ -37,14 +37,35 @@ export function useHeroEntry() {
     if (phase !== 'entry') return undefined;
 
     const finish = () => setPhase('final');
-    const events = ['scroll', 'wheel', 'keydown', 'pointerdown', 'touchstart'];
-    events.forEach((type) => window.addEventListener(type, finish, { passive: true, once: true }));
-    const timer = setTimeout(finish, 3200);
-    markPlayed();
+    const fallbackTimer = setTimeout(finish, 3200);
+
+    // #MGR-033: two bugs, both around "too eager, too early". (1) An
+    // unconditional, immediately-attached scroll listener tripped on a
+    // load-time scroll (restoration / layout shift) with no real input.
+    // (2) Marking `markPlayed()` synchronously at mount poisoned the flag
+    // for React StrictMode's dev-only mount→unmount→remount cycle: mount 1
+    // marks it played, mount 2 reads that and starts straight in 'final'.
+    // Fixing both by deferring everything — the played-flag write included —
+    // to a delayed attach point, whose timer a throwaway mount's cleanup
+    // cancels before it can fire.
+    let scrollBaseline = 0;
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - scrollBaseline) > 40) finish();
+    };
+    const intentEvents = ['wheel', 'touchmove', 'keydown', 'pointerdown'];
+
+    const attachTimer = setTimeout(() => {
+      markPlayed();
+      scrollBaseline = window.scrollY;
+      window.addEventListener('scroll', onScroll, { passive: true });
+      intentEvents.forEach((type) => window.addEventListener(type, finish, { passive: true, once: true }));
+    }, 300);
 
     return () => {
-      events.forEach((type) => window.removeEventListener(type, finish));
-      clearTimeout(timer);
+      clearTimeout(attachTimer);
+      clearTimeout(fallbackTimer);
+      window.removeEventListener('scroll', onScroll);
+      intentEvents.forEach((type) => window.removeEventListener(type, finish));
     };
   }, [phase]);
 

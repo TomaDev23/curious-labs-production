@@ -1,7 +1,9 @@
 /* SC-01 hero (lane C). Rebuilt on the canon kit for MOCKUP_CANON (C-01, was
    B-05R): full-bleed art via Band, orbital removed (moves to SC-04), quote
    block, canon scale, phone stat strip + down arrow. Selectors stay under
-   .cl-consultation; scene classes are prefixed `h-`. */
+   .cl-consultation; scene classes are prefixed `h-`. DR-11 entry choreography
+   (C-01b) is prefixed `he-` and gated on the `.he-playing` class HeroEntry.jsx
+   adds while the sequence should play; its absence is the final/skip state. */
 
 /* DR-01 sheen: a second background layer clipped to the glyphs, not a box
    over the open sky (#L-027) — kept verbatim per DRAMA_LAYER's amendment
@@ -24,15 +26,19 @@
   from { background-position: -100% 0, 0 0; }
   to { background-position: 200% 0, 0 0; }
 }
+/* DR-11: the sheen is part of the choreography's final beat, not the opener. */
+.cl-consultation .h-band.he-playing #cl-page-title { animation-delay: 2.2s; }
 
 .cl-consultation .h-band {
   min-height: clamp(640px, 88vh, 820px);
   display: flex;
   align-items: center;
 }
-/* Pull the art up behind the navbar (page shell's pt-24) so it reaches the
-   true top of the viewport instead of starting below the nav gap. */
-.cl-consultation .h-band .cl-art { top: -96px; }
+/* Pull the art's clipping layer up behind the navbar (page shell's pt-24) so
+   it reaches the true top of the viewport. Must be on `.k-band__art` (the
+   layer that clips) — putting it on the inner `.cl-art` instead just gets
+   clipped by the still-at-top-0 parent, leaving a hard edge at y≈96 (#A-009). */
+.cl-consultation .h-band .k-band__art { top: -96px; }
 
 .cl-consultation .h-grid {
   display: grid;
@@ -75,8 +81,7 @@
      copy); an edge-to-edge art layer would have to cover that whole height,
      stretching the globe into a thin sliver. Cap the art to a hero-height
      band and fade it into the page background instead. */
-  .cl-consultation .h-band .k-band__art { bottom: auto; height: 760px; }
-  .cl-consultation .h-band .cl-art { top: 0; }
+  .cl-consultation .h-band .k-band__art { top: 0; bottom: auto; height: 760px; }
   .cl-consultation .h-band .cl-art img { object-position: 100% 40%; }
   .cl-consultation .h-band .cl-art--scrim-left::after {
     background: linear-gradient(180deg, #020308 0%, #020308 42%, transparent 58%, transparent 78%, #020308 100%);
@@ -89,4 +94,94 @@
     gap: 28px;
     margin-top: 36px;
   }
+}
+
+/* ── DR-11 · hero entry choreography (C-01b, ~3s, plays once) ───────────
+   Skip/interrupt/reduced-motion/session logic lives in HeroEntry.jsx — it
+   only ever adds `.he-playing` when the sequence should actually run, so
+   every rule below is additive: the default (no `.he-playing` ancestor) is
+   already the finished look. `he-char`/`he-line1` reserve their layout space
+   from the start (opacity only, never `display`/`width`), so there is no
+   layout shift whichever path runs. */
+.cl-consultation .he-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.cl-consultation .he-caret { opacity: 0; }
+
+.cl-consultation .h-band.he-playing .he-line1 {
+  opacity: 0;
+  animation: he-ignite .9s steps(1, end) .15s both;
+}
+.cl-consultation .h-band.he-playing .he-char {
+  opacity: 0;
+  animation: he-char-in 90ms linear both;
+  animation-delay: calc(1.1s + var(--i) * 55ms);
+}
+.cl-consultation .h-band.he-playing .he-caret {
+  display: inline-block;
+  width: .5em;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--k-lime);
+  vertical-align: -.15em;
+  animation: he-caret 1.2s steps(1, end) 1.1s both;
+}
+
+.cl-consultation .h-band.he-playing .k-eyebrow,
+.cl-consultation .h-band.he-playing .h-lead,
+.cl-consultation .h-band.he-playing .h-invite,
+.cl-consultation .h-band.he-playing .h-actions,
+.cl-consultation .h-band.he-playing .h-quote,
+.cl-consultation .h-band.he-playing .h-meta,
+.cl-consultation .h-band.he-playing .h-phone-stats {
+  opacity: 0;
+  animation: he-rise .5s ease both;
+}
+.cl-consultation .h-band.he-playing .k-eyebrow { animation-delay: 2.20s; }
+.cl-consultation .h-band.he-playing .h-lead { animation-delay: 2.28s; }
+.cl-consultation .h-band.he-playing .h-invite { animation-delay: 2.36s; }
+.cl-consultation .h-band.he-playing .h-actions { animation-delay: 2.44s; }
+.cl-consultation .h-band.he-playing .h-quote { animation-delay: 2.52s; }
+.cl-consultation .h-band.he-playing .h-meta,
+.cl-consultation .h-band.he-playing .h-phone-stats { animation-delay: 2.60s; }
+
+.cl-consultation .h-band.he-playing .cl-art img {
+  animation: he-globe-bright 1.2s ease 2.2s both;
+}
+
+@keyframes he-ignite {
+  0% { opacity: 0; text-shadow: none; }
+  20% { opacity: 1; text-shadow: 0 0 4px #fff, 0 0 22px var(--k-lime), 0 0 46px var(--k-cream); }
+  40% { opacity: .15; text-shadow: none; }
+  60% { opacity: .9; text-shadow: 0 0 3px #fff, 0 0 16px var(--k-lime); }
+  80% { opacity: .3; text-shadow: none; }
+  100% { opacity: 1; text-shadow: none; }
+}
+@keyframes he-char-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes he-caret {
+  0% { opacity: 0; }
+  6% { opacity: 1; }
+  83% { opacity: 1; }
+  88% { opacity: 0; }
+  93% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes he-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes he-globe-bright {
+  from { filter: brightness(.35); }
+  to { filter: brightness(1); }
 }

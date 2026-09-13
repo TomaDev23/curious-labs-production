@@ -5,6 +5,7 @@ import {
   PrimaryButton, GhostButton, CircleArrow
 } from '../kit';
 import heroCopy from './copy/hero.copy';
+import { useHeroEntry } from './HeroEntry';
 import './css/sc-01-hero.css';
 
 const ART_01_DESKTOP = {
@@ -20,13 +21,19 @@ const ART_01_MOBILE = {
   height: 1600
 };
 
+const NBSP = String.fromCharCode(160);
+
 function HeroScene() {
+  const entryPhase = useHeroEntry();
+  const [line1, line2] = heroCopy.h1.lines;
+  const line2Chars = [...line2];
+
   return (
     <Band
       id="overview"
       sectionKey="D1"
       labelledBy="cl-page-title"
-      className="h-band"
+      className={`h-band${entryPhase === 'entry' ? ' he-playing' : ''}`}
       art={{
         priority: true,
         scrim: 'left',
@@ -39,7 +46,21 @@ function HeroScene() {
       <div className="h-grid">
         <div className="h-copy">
           <Eyebrow>{heroCopy.eyebrow.text}</Eyebrow>
-          <Display as="h1" id="cl-page-title" size="hero" lines={heroCopy.h1.lines} />
+          <Display as="h1" id="cl-page-title" size="hero">
+            <span className="he-sr">{heroCopy.h1.lines.join(' ')}</span>
+            <span aria-hidden="true">
+              <span className="he-line1">{line1}</span>
+              <br />
+              <span className="he-line2">
+                {line2Chars.map((ch, i) => (
+                  <span key={i} className="he-char" style={{ '--i': i }}>
+                    {ch === ' ' ? NBSP : ch}
+                  </span>
+                ))}
+                <span className="he-caret" />
+              </span>
+            </span>
+          </Display>
           <Lead className="h-lead">{heroCopy.lead.text}</Lead>
           <p className="h-invite">
             Bring one real situation from your business. The first conversation is free.

@@ -21,10 +21,10 @@ Generate in priority order; interleave with X-01/X-02 build work (e.g. while wai
 | 2 | art-13-tile-city-lights | `art-13-tile-city-lights.txt` | landscape | `art-13-tile-city-lights` | A · SC-04 left tile | Done (v1) |
 | 3 | art-14-tile-summit | `art-14-tile-summit.txt` | landscape | `art-14-tile-summit` | A · SC-04 right tile (placeholder figure) | Done (v2) |
 | 4 | art-15-horizon-mountains | `art-15-horizon-mountains.txt` | landscape (wide) | `art-15-horizon-mountains` | A · SC-04 bottom band | Done (v1) |
-| 5 | art-06-earth-sunrise | `art-06-earth-sunrise.txt` | landscape | `art-06-earth-sunrise` | B · SC-06 band 1 | Queued |
-| 6 | art-07-reading-method | `art-07-reading-method.txt` | landscape | `art-07-reading-method` | B · SC-06 R1 card | Queued |
-| 7 | art-08-reading-concept | `art-08-reading-concept.txt` | landscape | `art-08-reading-concept` | B · SC-06 R2 card | Queued |
-| 8 | art-10-reading-technology | `art-10-reading-technology.txt` | landscape | `art-10-reading-technology` | B · SC-06 R3 card | Queued |
+| 5 | art-06-earth-sunrise | `art-06-earth-sunrise.txt` | landscape | `art-06-earth-sunrise` | B · SC-06 band 1 | Done |
+| 6 | art-07-reading-method | `art-07-reading-method.txt` | landscape | `art-07-reading-method` | B · SC-06 R1 card | Done |
+| 7 | art-08-reading-concept | `art-08-reading-concept.txt` | landscape | `art-08-reading-concept` | B · SC-06 R2 card | Done |
+| 8 | art-10-reading-technology | `art-10-reading-technology.txt` | landscape | `art-10-reading-technology` | B · SC-06 R3 card | Done |
 | 9 | art-11-reading-experience | `art-11-reading-experience.txt` | landscape | `art-11-reading-experience` | B · SC-06 R4 card (placeholder figure) | Queued |
 | 10 | art-16-galaxy-band | `art-16-galaxy-band.txt` | landscape (wide) | `art-16-galaxy-band` | C · SC-07 | Queued |
 | 11 | art-17-final-horizon-desktop | `art-17-final-horizon-desktop.txt` | landscape | `art-17-final-horizon-desktop` | C · SC-09 | Queued |

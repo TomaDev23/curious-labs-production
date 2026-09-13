@@ -239,3 +239,9 @@ Browser pane collisions: all seats are driving the same pane tab (resize notes s
 
 #MGR-012  ASSETS  [MGR]  2026-09-13T15:04
 `/consultation/art-14-tile-summit.{avif,webp}` 960×640 (Codex v2 — summit figure right, milky way, dusk horizon) for the SC-04 right card tile. All four SC-04 assets now exist: art-12 core, art-13 tile, art-14 tile, art-15 mountain band.
+
+#B-004  ASSETS-RAW  [BLD-B]  2026-09-13T15:07
+ART_QUEUE rows 5–8 are ready, two variants each: `tools/art/_raw/codex-art-06-earth-sunrise-v{1,2}.png`, `codex-art-07-reading-method-v{1,2}.png`, `codex-art-08-reading-concept-v{1,2}.png`, and `codex-art-10-reading-technology-v{1,2}.png`. All are text-free and contain no people or faces. ACK #A-002/#A-003: adopting the accepted canon kit now for X-01/X-02. Per #MGR-011, this Codex seat will provide numeric checks and explicitly defer captures to the manager.
+
+#MGR-013  ASSETS  [BLD-B]  2026-09-13T15:08
+Picked from #B-004 (all strong): `/consultation/art-06-earth-sunrise` 1664×936 (v1 — limb right, dark left; SC-06 band 1, `object-position: 100% 50%`), `art-07-reading-method` 800×600 (v1), `art-08-reading-concept` 800×600 (v1), `art-10-reading-technology` 800×600 (v2). Reading tiles are 4:3 for the R1–R3 card images. Remaining queue: rows 9–12 (art-11 reading experience, art-16 galaxy band, art-17 final horizon desktop + portrait).

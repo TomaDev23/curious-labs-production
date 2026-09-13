@@ -1,1 +1,109 @@
-/* SC-07 engagement (lane C). Every selector stays under .cl-consultation. */
+/* SC-07 engagement (lane C). MOTIF_PROGRESSION: momentum/dawn sky (art-22,
+   replaces the galaxy band), no QuoteBlock, compact header left + word-stack
+   right, the rail carries the light-line thread (DR-09: fills node to node
+   once in view). Every selector stays under .cl-consultation, prefixed `e-`. */
+
+.cl-consultation .e-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  align-items: start;
+}
+.cl-consultation .e-head__copy { grid-column: 1 / 9; }
+.cl-consultation .e-head__lead { margin-top: 20px; }
+.cl-consultation .e-head__stack { grid-column: 10 / 13; justify-self: end; margin-top: 10px; }
+
+/* ── Desktop rail (DR-09) ─────────────────────────────────────────────── */
+.cl-consultation .e-rail { position: relative; margin-top: 72px; padding-top: 44px; }
+.cl-consultation .e-rail__line {
+  position: absolute;
+  top: 0;
+  left: 12.5%;
+  right: 12.5%;
+  height: 2px;
+  background: var(--k-hairline);
+}
+.cl-consultation .e-rail__fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--k-cyan), var(--k-violet) 55%, var(--k-lime));
+  box-shadow: 0 0 12px 1px rgb(94 230 245 / .45);
+}
+.cl-consultation .e-rail__node {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--k-cream);
+  box-shadow: 0 0 0 3px rgb(198 247 91 / .18), 0 0 10px rgb(198 247 91 / .8);
+}
+
+.cl-consultation .e-rail__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cl-consultation .e-step { position: relative; }
+.cl-consultation .e-step__card { height: 100%; }
+.cl-consultation .e-step__n {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  font-family: var(--k-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--k-ink-muted);
+}
+.cl-consultation .e-step__ring { margin-bottom: 18px; }
+.cl-consultation .e-step__title { margin-top: 2px; }
+.cl-consultation .e-step__body { margin-top: 12px; }
+.cl-consultation .e-step__tag {
+  display: block;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--k-hairline);
+}
+.cl-consultation .e-step__arrow {
+  position: absolute;
+  top: 50%;
+  right: -28px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  transform: translateY(-50%);
+  color: var(--k-lime);
+}
+.cl-consultation .e-step__arrow svg { width: 100%; height: 100%; }
+
+.cl-consultation .e-phone-steps { display: none; }
+
+.cl-consultation .e-boundary {
+  margin: 56px 0 0;
+  max-width: 62ch;
+  font-family: var(--k-font-serif);
+  font-size: 15px;
+  color: var(--k-ink-muted);
+}
+
+@media (max-width: 899px) {
+  .cl-consultation .e-head__stack { display: none; }
+  .cl-consultation .e-head__copy { grid-column: 1 / -1; }
+  .cl-consultation .e-rail { display: none; }
+  .cl-consultation .e-phone-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 32px;
+    list-style: none;
+    padding: 0;
+  }
+  .cl-consultation .e-boundary { margin-top: 32px; font-size: 14px; }
+}

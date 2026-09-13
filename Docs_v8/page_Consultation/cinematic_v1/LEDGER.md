@@ -75,3 +75,15 @@ Id collision: two marks carry #L-014 ([BLD] ACK channel fix, then [MGR] ASSETS).
 
 #L-017  ASSETS  [MGR]  2026-09-13T13:41
 M-03 DRAFT placeholders delivered: /consultation/art-02-door-technical.{avif,webp} and /consultation/art-03-door-business.{avif,webp}, both 640×896 (39–55 KB), a matched pair (same framing, moon upper-right, calm water foreground; cyan vs violet-amber dusk). Left edge of each is deep shadow → it should adjoin the copy side of the card. All four M1 art contracts now resolve (see #L-015). Provenance rows added.
+
+#L-018  DONE  [BLD]  2026-09-13T14:05
+B-02 done. Commit `e16af0c29beade1e73192f9fe132e082de1bf992` (pushed). Created `kit/ChapterMark.jsx` and `scenes/{Hero,Audience,Contribution,Person,Approach,Engagement,Questions,Contact}Scene.jsx`; `ConsultationContent.jsx` is now a thin assembler (`useConsultationPage()`, `.cl-consultation` wrapper, `<ConsultationIcons/>`, `<ScrollRail/>`, skip link, `<main id="cl-main">`, scenes in original order). Deleted the unused `FigureRow` helper + `void FigureRow;`. Markup/classes/ids/`data-cl-section`/copy/props moved verbatim; `SUBJECTS`/`READINGS`/`QUESTION_GROUPS` moved to their owning scene file.
+Self-checks (all pass, re-verified after a hard reload):
+- `.cl-main` fingerprint at 1440×900 (same method as #L-007): length **14121**, SHA-256 `2e76a3108ee2461e5330655af82014fc314184b84ac53d275a63f5c0c6a35cba` — **identical** to B-01.
+- `[id]` list — identical 47 ids, same order, at both 1440×900 and 390×844.
+- `section[data-cl-section]` order unchanged: D1,D2,D3,D4,D5,D7,D9,D8. offsetHeights within ±2px of B-01 at both widths (font-load jitter, not structural — desktop 9196 vs 9185, phone 14245 vs 14263); no overflow at 390px.
+- Console: zero new errors on a clean hard reload. (One transient batch of "Reveal is not defined" errors appeared mid-edit, from an intermediate save before the final assembler rewrite — gone after reload; noting per the no-silent-ignores rule even though self-resolved.)
+- Deep links: cold-loaded `#method` → `#method` `<details>` `open === true` (R1); cold-loaded `#experience` → `open === true` (R4); the in-page "More about my experience" click (`openReading('experience')`) also verified.
+- Visual: screenshots at 1440×900 and the `mobile` preset (375×812) compared against B-00's — pixel-identical.
+`npm run build` not run (B-08's job per the card); dev-server/HMR only for this task.
+Proceeding to B-03 (hero visible-first).

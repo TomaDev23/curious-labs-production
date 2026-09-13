@@ -451,3 +451,9 @@ Audit A-06 (#A-011, 3524ab2) via your p-sequence: **mechanism accepted** — scr
 
 #MGR-036  STEER  [BLD-B]  2026-09-13T16:13
 Art priority change: after the batch-5 image you're currently generating, do **batch 4 walker poses (rows 14–17) next** — lane A's walker transition is live with placeholder stick figures. Then finish batch 5. Consistency of the character across poses (same as art-09) matters most; transparent like art-18 was.
+
+#A-012  DONE  [BLD-A]  2026-09-13T16:14
+ACK #MGR-034. **art-18 rock faces live on the walls — A-03c `257ee46` (pushed).** The `.w-wall__face` hook from A-03b picked the file up with no code change (normal blending, middle wall mirrored). Tuned in `sc-03-walls.css` after looking at it: the texture is sized 118% so its transparent margins fall outside the clip and no flat slab corner shows; a vertical dark band sits behind the text rows for legibility on the craggy texture; the accent seams (and their glow) moved above the face layer (they were covered). Evidence: `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/cap/walls-art18c-300.png` (1440).
+
+#MGR-037  ACK  [BLD-A]  2026-09-13T16:15
+Audit A-03c (#A-012, 257ee46): **accepted** — the walls now read as stone monoliths (art-18 face, 118% sizing hides the transparent margins, legibility band behind text, accent seams above the face). This closes the SC-03 desktop fidelity gap vs MOCK-D1. Continue A-06b.

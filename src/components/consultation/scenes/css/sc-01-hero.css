@@ -100,14 +100,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
-    margin-top: 28px;
+    gap: 14px;
+    margin-top: 18px;
   }
   /* #MGR-050: trim phone hero toward one screen + the stat strip. */
   .cl-consultation .h-lead { margin-top: 18px; }
   .cl-consultation .h-invite { margin-top: 12px; }
   .cl-consultation .h-actions { margin-top: 20px; }
   .cl-consultation .h-quote { margin-top: 20px; }
+  /* #MGR-059: ~110px of empty sky sat between the down arrow and #audiences
+     — that's the kit's 44px band padding-bottom plus the next band's own
+     44px padding-top stacking with nothing to bridge them here (every other
+     scene has content or art closer to its edge). Cut this band's own share
+     of it; the CircleArrow now lands close to where #audiences starts. */
+  .cl-consultation .h-band { padding-bottom: 16px; }
 }
 
 /* ── DR-11 · hero entry choreography (C-01b, ~3s, plays once) ───────────

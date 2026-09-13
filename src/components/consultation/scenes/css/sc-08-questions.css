@@ -35,8 +35,10 @@
 }
 
 @media (max-width: 767px) {
-  .cl-consultation .q-grid { grid-template-columns: 1fr; margin-top: 32px; }
-  .cl-consultation .q-grid[data-expanded='false'] .q-item:nth-of-type(n+7) { display: none; }
+  .cl-consultation .q-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 24px; }
+  /* #MGR-059: 5 visible on phone (was 6), View all reveals the rest. */
+  .cl-consultation .q-grid[data-expanded='false'] .q-item:nth-of-type(n+6) { display: none; }
+  .cl-consultation .q-bridge { margin-top: 24px; }
 }
 
 /* Desktop/tablet: first 8 visible until expanded (phone rule above narrows

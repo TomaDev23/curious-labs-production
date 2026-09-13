@@ -105,5 +105,14 @@
     list-style: none;
     padding: 0;
   }
-  .cl-consultation .e-boundary { margin-top: 32px; font-size: 14px; }
+  /* #MGR-059: clamp each row's body to 2 lines (was unclamped, some ran 3). */
+  .cl-consultation .e-phone-steps .k-nrow__text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* #MGR-059: the free-conversation boundary line is redundant on phone —
+     the SC-09 contact card already carries the same free-conversation line. */
+  .cl-consultation .e-boundary { display: none; }
 }

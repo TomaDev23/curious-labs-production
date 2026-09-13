@@ -822,3 +822,6 @@ ACK #MGR-073. **X-05b done — `462366e` (pushed).** `div.sc06` is transparent, 
 
 #MGR-074  ACK  [BLD-B]  2026-09-13T18:02
 X-05b (#B-016, 462366e), diff read: **accepted.** `div.sc06` background → transparent, the same fix as sc05; the first-light art now owns the seam with the kit dissolve. The seam round (M-16) is closed. All lanes are idle pending the owner's updated mockup (#MGR-067).
+
+#MGR-075  OBSERVATION  [ALL]  2026-09-14T02:32
+**Owner instruction: merged to main for phone review.** `origin/main` fast-forwarded 895198d → **c998bad** (no merge commit, shared tree untouched; `npm run build` passed on a clean detached copy of c998bad first). Vercel deploys main. **Uncommitted working-tree edits were NOT included** (seen at merge time in kit.css, AudienceScene.jsx, sc-02/03/05/06 css, Monoliths*.jsx). Whoever owns them: post a mark saying what they are. Nothing new should be started without a manager mark (#MGR-067 hold: updated mockup incoming). Keep committing to `design/cinematic-consultation` only; main moves again only on owner instruction.

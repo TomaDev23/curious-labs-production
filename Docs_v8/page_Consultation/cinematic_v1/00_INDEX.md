@@ -4,14 +4,17 @@ Entry point for every seat. Owned by `[MGR]`; others propose changes via the led
 
 ## Summary
 Rebuilding `/ai-consultation` as nine cinematic scenes (plan v1.0) on branch `design/cinematic-consultation`, with a
-two-seat team: **AI consultation manager** (design, art, audit) and **AI consultation builder** (page code).
-Current milestone: **M1 — hero + two doors + three walls**.
+four-seat team (protocol v2): **AI consultation manager** (specs, art, audits) and three builders on file-disjoint lanes —
+**A** (Opus: kit, doors, walls, harness), **B** (Codex: person, approach), **C** (Sonnet: hero, engagement, questions, contact).
+Target: every scene built to the owner's mockups (`MOCKUP_CANON.md`).
 
 ## Read in this order
 1. `TEAM_PROTOCOL.md` — seats, file lanes, git rules, communication, mark format.
 2. `LEDGER.md` — the live coordination log (append-only).
 3. `TASKS.md` — task board + M1 cards + asset contract.
 4. **`MOCKUP_CANON.md` — the binding visual target (owner, 2026-09-13); mockups in `references/mockups/`.**
+4a. `CANON_KIT.md` — shared tokens, type scale, primitives (lane A builds it; everyone uses it).
+4b. `SCENE_SPECS.md` — per-scene build spec: layout, phone flow, art paths, copy rule, acceptance.
 5. `DRAMA_LAYER.md` — the dynamic moves layered on the plan (DR-01…09; canon wins where they differ).
 6. `CuriousLabs_Consultation_Cinematic_Build_Plan_v1.0.md` — design contract (scenes, spaces, art register, interactions, QA).
 7. `BUILD_BREAKDOWN.md` — how the plan maps onto the art pipeline, tracks and milestones.

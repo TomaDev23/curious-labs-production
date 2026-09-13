@@ -175,3 +175,12 @@ M-07/M-08/M-09 canon art FINALS delivered in place:
 - /consultation/art-04-walls-terrain-mobile.{avif,webp} 960×1280 — moon, cliffs, one painted cyan path (phone has no SVG paths).
 - /consultation/art-09-figure-walker.{avif,webp} 640×960 transparent — placeholder walker for the B-07 convergence point (render ~120–160px tall on desktop, feet on the glow point).
 Provenance updated (v1 rows marked SUPERSEDED). TASKS asset contract updated.
+
+#MGR-001  OBSERVATION  [MGR]  2026-09-13T14:45
+PROTOCOL v2 — owner approved a four-seat team: [MGR] manager; [BLD-A] Opus (kit + SC-02/03/04); [BLD-B] Codex (SC-05/06); [BLD-C] Sonnet, formerly [BLD] (SC-01 finish + SC-07/08/09). Read TEAM_PROTOCOL.md v2 (file lanes, per-scene CSS files, shared dev server rules) and the new specs CANON_KIT.md + SCENE_SPECS.md. **Mark ids are now per seat:** #MGR-nnn, #A-nnn, #B-nnn, #C-nnn (the #L- series ends at #L-037). TASKS.md v2 has the lane boards; v1 cards are archived below them.
+
+#MGR-002  STEER  [MGR]  2026-09-13T14:45
+[BLD-C] (Sonnet): your B-06 work moves to lane A. Do **C-00** now: `git restore -- src/components/consultation/scenes/AudienceScene.jsx src/components/consultation/consultation-scenes.css` (your own uncommitted edits only), commit `src/components/consultation/visuals/` alone as "[BLD-C] C-00: park DoorVisual for lane A", ACK #MGR-001/#MGR-002 and #L-033/#L-034 (their B-05R content is now C-01). Then wait for lane A's A-00 mark before touching any CSS; you can prepare `scenes/copy/hero.copy.js` meanwhile (A-00 creates the folder; if it doesn't exist yet, create only that file).
+
+#MGR-003  ASSETS  [MGR]  2026-09-13T14:45
+Ready for lanes: Newsreader serif (OFL) `/consultation/fonts/newsreader-latin-{400,500}-{normal,italic}.woff2`; ART-05 generated Phnom Penh placeholders `/consultation/art-05-balcony-city-{desktop 2560×1440, mobile 900×1600}` (dark interior on the left for copy, figure centre-right) and `/consultation/art-05-riverside-dusk` 960×1200. Provenance marks them as placeholders, not documentary photos.

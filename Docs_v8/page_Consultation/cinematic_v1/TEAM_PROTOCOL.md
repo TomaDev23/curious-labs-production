@@ -1,59 +1,85 @@
-# Team protocol — AI consultation manager + AI consultation builder
+# Team protocol — manager + three builders (v2, 2026-09-13)
 
-Paired run under the owner's **orchestrator-mode** skill (`C:/AEGIS/skill_build/orchestrator-mode/SKILL.md`,
+Paired/multi-seat run under the owner's **orchestrator-mode** skill (`C:/AEGIS/skill_build/orchestrator-mode/SKILL.md`,
 especially `references/paired_orchestration.md`). Ledger contract: **advisory + mandatory-ack**.
+v1 (manager + one builder) is superseded; its history stays in the ledger.
 
 ## Seats
 
-| Seat | Tag | Model | Owns | Never does |
+| Seat | Tag | Engine | Lane | Owns |
 |---|---|---|---|---|
-| **AI consultation manager** | `[MGR]` | Opus | Design direction, task cards (`TASKS.md`), art creation (`create-art` skill), asset delivery, independent audit of every builder task, owner communication, decisions, provenance, tracker status reports | Edit `src/**` page code |
-| **AI consultation builder** | `[BLD]` | Sonnet | All page code: `src/components/consultation/**`, `src/pages/ai-consultation.jsx`; self-verification in the browser; builder marks in the ledger | Generate art, change task scope, make owner decisions, touch files outside its lane |
-| **Owner** | `[OWNER]` | — | Copy approval (Captain), art approval, decisions, release | — |
+| **AI consultation manager** | `[MGR]` | Opus | Management | Specs (`CANON_KIT.md`, `SCENE_SPECS.md`, `TASKS.md`), all art, audits against the mockups, owner comms, decisions, merges of scene order, provenance |
+| **AI consultation builder A** | `[BLD-A]` | Opus | A — kit + hardest scenes | Canon kit, `ConsultationIcons.jsx`, `ConsultationContent.jsx` (scene order), SC-02 doors, SC-03 walls, SC-04 contribution/harness |
+| **AI consultation builder B** | `[BLD-B]` | Codex | B — story scenes | SC-05 person, SC-06 approach + readings |
+| **AI consultation builder C** | `[BLD-C]` | Sonnet (formerly `[BLD]`) | C — ends of the page | SC-01 hero finish, SC-07 engagement, SC-08 questions, SC-09 final + contact + page footer |
+| **Owner** | `[OWNER]` | — | — | Copy approval (Captain), art approval, decisions, release |
 
-## File lanes (file-disjoint; operator-confirmed co-build)
+## File lanes (file-disjoint — the rule that makes parallel work safe)
 
-- **[BLD]:** `src/components/consultation/**`, `src/pages/ai-consultation.jsx`.
-- **[MGR]:** `public/consultation/**`, `tools/art/**`, `.claude/skills/**`, `Docs_v8/page_Consultation/cinematic_v1/**`.
-- **Shared, append-only:** `Docs_v8/page_Consultation/cinematic_v1/LEDGER.md` — both append marks at the end; never edit or delete an earlier mark. Re-read the tail right before appending.
-- **Out of bounds for both without an owner mark:** `src/components/navigation/**`, `src/components/landing/**` (if ever touched, re-check `/`), MoonSignal/AEGIS, `package.json` / new deps, `vercel.json`, any other route.
-- A needed edit outside your lane → `STEER` mark to the owning seat; don't make it yourself.
+| Lane | Files it may edit |
+|---|---|
+| A | `src/components/consultation/kit/**` (incl. `kit/kit.css`), `ConsultationIcons.jsx`, `ConsultationContent.jsx`, `useConsultationPage.js`, `ConsultationMotion.jsx`, `scenes/AudienceScene.jsx`, `scenes/WallsScene.jsx`, `scenes/ContributionScene.jsx`, their `scenes/css/sc-02-doors.css`, `sc-03-walls.css`, `sc-04-contribution.css`, their `scenes/copy/*.copy.js`, `visuals/{DoorVisual,Monoliths,HarnessSystem}*` |
+| B | `scenes/PersonScene.jsx`, `scenes/ApproachScene.jsx`, `scenes/css/sc-05-person.css`, `sc-06-approach.css`, their copy files, `visuals/{OperatorPath,ReadingCard}*` and any new `visuals/b-*` files |
+| C | `scenes/HeroScene.jsx`, `scenes/EngagementScene.jsx`, `scenes/QuestionsScene.jsx`, `scenes/ContactScene.jsx`, `scenes/css/sc-01-hero.css`, `sc-07-engagement.css`, `sc-08-questions.css`, `sc-09-contact.css`, their copy files, `src/pages/ai-consultation.jsx` (shell + footer), `ConsultationOrbit.jsx`, `_orbit.svg`, new `visuals/c-*` files |
+| MGR | `public/consultation/**`, `tools/art/**`, `.claude/skills/**`, `Docs_v8/page_Consultation/cinematic_v1/**` |
 
-## Git (one shared working tree — read carefully)
+- **Each scene imports its own CSS file** (`import './css/sc-0X-….css'`). `consultation.css` is legacy and frozen;
+  `consultation-scenes.css` is being emptied by A-00 (kit rules → `kit/kit.css`, hero rules → `scenes/css/sc-01-hero.css`)
+  and then frozen. Every selector stays under `.cl-consultation`.
+- Shared-but-owned files (`ConsultationGraphs.jsx`, `ConsultationFigures.jsx`, `consultation.css`): **frozen** — copy what
+  you need into your lane; don't edit them.
+- Need something in another lane (a kit prop, an icon, scene order)? `STEER` mark to that seat. Don't edit it.
+- Out of bounds for all without an owner mark: navbar, `src/components/landing/**`, MoonSignal/AEGIS, `package.json` /
+  new deps, `vercel.json`, other routes.
 
-- Work branch: **`design/cinematic-consultation`**. Both seats stay on it. **Never** `checkout`, `switch`, `stash`, `reset`, `rebase`, `pull`, `merge`, or commit to `main`. Merge to `main` happens only on an owner instruction.
-- Commit **only your lane's paths**, by explicit pathspec — never `git add -A`, `git add .`, or `git commit -a`:
-  ```
-  git add <new files in your lane>
-  git commit -m "[BLD] B-02: split scenes (no visual change)" -m "Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>" -- <your paths>
-  git push origin design/cinematic-consultation
-  ```
-  Manager commits use `[MGR]` and `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
-- Commit when a task's self-checks pass (branch commits are reversible). The manager audits after; a `BLOCKING` mark is fixed by a follow-up commit, never by rewriting history.
-- `index.lock` present → wait ~5 s and retry. Never delete it unless it is older than 2 minutes.
-- Management docs (`TASKS.md`, `LEDGER.md`, `00_INDEX.md`) are committed and pushed immediately after meaningful changes, in their own commit.
+## Git (one shared working tree, one branch)
+
+- Branch **`design/cinematic-consultation`** for everyone. **Never** `checkout`, `switch`, `stash`, `reset`, `rebase`,
+  `pull`, `merge`, or commit to `main`.
+- Commit **only your lane's paths** by explicit pathspec — never `git add -A` / `git add .` / `git commit -a`:
+  `git add <new lane files>` then `git commit -m "[BLD-X] <task>: …" -m "Co-Authored-By: …" -- <lane paths>` then
+  `git push origin design/cinematic-consultation`.
+- Restoring your **own** uncommitted lane files is allowed with `git restore -- <your paths>`; never for anyone else's.
+- `index.lock` → wait 5 s and retry (4 committers share one repo). Never delete it unless it is older than 2 minutes.
+- Commit when a task's self-checks pass. Fixes after an audit are follow-up commits, never history rewrites.
+
+## Shared dev server (one page, four editors)
+
+- Owner's server, already running: `http://localhost:5173/ai-consultation`. Never start one.
+- Keep your files compiling — save complete edits. A syntax error in any lane blanks the whole page for everyone.
+- If the page is broken by another lane's file: post an `OBSERVATION` naming the file, then wait or work on non-visual parts.
+  Don't fix other lanes' files.
+- Kit gallery for audits: `http://localhost:5173/ai-consultation?kit=1` (dev only, built by A-01).
 
 ## Communication
 
-- **Ledger first.** Every task start, finish, question, and finding is a mark in `LEDGER.md`.
-- **Direct messages** (desktop session messaging, sessions named exactly `AI consultation manager` / `AI consultation builder`) only to wake the other seat: *task ready for audit*, *blocked*, *assets ready*, *new tasks queued*. Body = one line pointing at the mark id (e.g. "B-02 ready for audit — see #L-012"). Batch; don't ping per small item.
-- Only `[MGR]` escalates to the owner. `[BLD]` raises `ESCALATE` marks; the manager carries them.
+- **Ledger first** (`LEDGER.md`, append-only). **New id scheme from #L-038 on:** each seat numbers its own marks —
+  `#MGR-001`, `#A-001`, `#B-001`, `#C-001` … — so parallel writers never collide. Re-read the tail right before appending.
+- **Direct messages** (desktop sessions) only to wake a seat: task DONE / blocked / assets ready / new tasks. One line
+  pointing at the mark id. Session names: "AI consultation manager", "AI consultation builder A",
+  "AI consultation builder B", "AI consultation builder C". A seat that can't message (e.g. Codex) uses the ledger only;
+  the manager polls it.
+- Only `[MGR]` talks to the owner. Builders raise `ESCALATE` marks.
 
-## Mark format (append at end of LEDGER.md)
+## Mark format
 
 ```
-#L-<nnn>  <TYPE>  [<TAG>]  <YYYY-MM-DDTHH:MM>
-<one clear claim / instruction / result; reference task ids and prior #L ids>
+#<SEAT>-<nnn>  <TYPE>  [<TAG>]  <YYYY-MM-DDTHH:MM from the shell clock>
+<one clear claim / instruction / result; reference task ids and prior mark ids>
 ```
+Types: `START` · `DONE` (self-checks passed, commit sha, captures compared with the mockup, delta list) · `OBSERVATION` ·
+`STEER` (must respond) · `BLOCKING` (halts that task) · `ACK` · `DEFER` (with reason) · `ESCALATE` · `ASSETS`.
 
-Types: `START` · `DONE` (task self-checks passed, commit sha) · `OBSERVATION` · `STEER` (must respond) · `BLOCKING` (halts that task) · `ACK` · `DEFER` (with reason) · `ESCALATE` · `ASSETS` (files delivered, paths).
-Every `STEER` / `BLOCKING` gets `ACK`-and-act, `DEFER`-with-reason, or `ESCALATE`. No silent ignores. Next id = last id + 1.
+## Authority
 
-## Working rules (both seats)
+`_FRAMING_LOCKED.md` (meaning, voice, don't-invent rules) > `COPY_DECK_v2.md` (words) >
+**`MOCKUP_CANON.md` + `references/mockups/`** (look, layout, phone flow) > `CANON_KIT.md` + `SCENE_SPECS.md` >
+plan v1.0 (interactions, QA) > `DRAMA_LAYER.md` > `TASKS.md`.
 
-- Repo shell is PowerShell (no `&&`; chain with `;`). The Bash tool also works.
-- Dev server is the owner's, already running — probe `http://localhost:5173/ai-consultation` (tab title "AI Integration Consultation | CuriousLabs"; if 5173 is another app, try 5174). **Never start a server.** `npm run build` only at a milestone check.
-- Browser evidence: desktop 1440×900 and phone 390×844. Use the app's **Browser pane** (`preview_start` with the localhost URL, `resize_window` preset `mobile`) for phone captures; Chrome can't emulate phone width here, and its screenshots blank below the fold. Reveals gate on scroll, so scroll a section into view before capturing; fall back to `read_page`/`get_page_text` for content checks, but a blank capture is not a pass (QA-32).
-- Copy is owned by the owner/Captain: **use the text already in the code or `COPY_DECK_v2.md`; never invent copy.** Missing copy → build the slot so it renders nothing, and add an `ESCALATE` mark.
-- Authority: `_FRAMING_LOCKED.md` (meaning, voice, don't-invent rules) > `COPY_DECK_v2.md` (words) > **`MOCKUP_CANON.md` + `references/mockups/` (the binding look, layout and mobile flow — build to the picture)** > plan v1.0 (scenes, interactions, QA) > `DRAMA_LAYER.md` > `TASKS.md`.
-- Every scene DONE includes desktop + phone captures compared with its mockup and a list of remaining deltas.
+## Working rules (all builders)
+
+- Repo shell is PowerShell (no `&&`; chain with `;`). Bash also available.
+- Evidence: desktop 1440×900 + phone (Browser pane `resize_window` preset `mobile`). Scroll a section into view
+  before capturing. Compare each capture **with the mockup image** (open both). A blank capture is not a pass.
+- Never invent copy (see `SCENE_SPECS.md` copy rule). Never add people, faces, "we", "Book", fake numbers or services.
+- `npm run build` only at a milestone check the manager asks for.

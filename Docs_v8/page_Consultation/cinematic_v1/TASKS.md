@@ -1,3 +1,64 @@
+# Task board v2 — three builder lanes (2026-09-13)
+
+Owned by `[MGR]`. Builders report via ledger marks; the manager updates Status. Specs: `CANON_KIT.md`,
+`SCENE_SPECS.md`, `MOCKUP_CANON.md`. Lanes and files: `TEAM_PROTOCOL.md` v2. The v1 board and cards are archived at
+the bottom of this file (they still hold useful detail for SC-01…03; where they conflict with v2 specs, v2 wins).
+
+## Lane A — AI consultation builder A (Opus) · kit + doors + walls + harness
+
+| Task | Title | Depends on | Status |
+|---|---|---|---|
+| A-00 | CSS partition: move kit rules from `consultation-scenes.css` → `kit/kit.css`, hero rules → `scenes/css/sc-01-hero.css` (owned by C afterwards), create empty `scenes/css/sc-0X-*.css` + `scenes/copy/` for all nine scenes and wire each scene's CSS import; page must look identical after | — | Queued — first |
+| A-01 | Canon kit v1 per `CANON_KIT.md` (tokens, Newsreader @font-face, all primitives, `?kit=1` dev gallery) | A-00 | Queued |
+| A-02 | SC-02 two doors to MOCK-D1/M1 (`SCENE_SPECS` SC-02) — takes over v1 B-06; may reuse C's parked `visuals/DoorVisual.jsx` | A-01 | Queued |
+| A-03 | SC-03 three walls to MOCK-D1 (`WallsScene.jsx`) — takes over v1 B-07 | A-01 | Queued |
+| A-04 | SC-04 contribution + HarnessSystem to MOCK-D2 | A-01 | Queued |
+| A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | Later |
+
+## Lane B — AI consultation builder B (Codex) · person + approach
+
+| Task | Title | Depends on | Status |
+|---|---|---|---|
+| X-00 | Onboard; report whether your harness can generate images (see paste) | — | Queued |
+| X-01 | SC-05 person + this market to MOCK-D5/M1 (`SCENE_SPECS` SC-05) | A-01 (kit) — start with structure/art slots before it lands | Queued |
+| X-02 | SC-06 approach path + four reading cards to MOCK-D3/M1, readings stay inline + hash-addressable | A-01 | Queued |
+
+## Lane C — AI consultation builder C (Sonnet) · hero + engagement + questions + contact
+
+| Task | Title | Depends on | Status |
+|---|---|---|---|
+| C-00 | Park v1 B-06 WIP: `git restore` your uncommitted `AudienceScene.jsx` + `consultation-scenes.css` edits; commit `visuals/DoorVisual.jsx` alone as "parked for lane A"; ACK protocol v2 | — | Queued — first |
+| C-01 | SC-01 hero to canon (= v1 **B-05R** card, archived below) using `scenes/copy/hero.copy.js` + `scenes/css/sc-01-hero.css` (after A-00); adopt kit primitives once A-01 lands | A-00 | Queued |
+| C-02 | SC-07 engagement to MOCK-D4/M1 | A-01 | Queued |
+| C-03 | SC-08 questions to MOCK-D4 | A-01 | Queued |
+| C-04 | SC-09 final horizon + pending contact + footer band to MOCK-D4/M1 | A-01 | Queued |
+
+## Manager
+
+| Task | Title | Status |
+|---|---|---|
+| M-05 | Audit every DONE against its mockup (side-by-side captures) → ACK / STEER / BLOCKING | Standing |
+| M-10 | Serif font self-hosted (`public/consultation/fonts/newsreader-*`, OFL) | Done |
+| M-11 | ART-05 Phnom Penh placeholders (balcony desktop/mobile, riverside dusk) | Done — owner to judge realism |
+| M-12 | Lane A art: `art-12-harness-core` (glowing sphere), `art-13-tile-city-lights`, `art-14-tile-summit`, `art-15-horizon-mountains` | Queued (low-cost drafts; see cost note) |
+| M-13 | Lane B art: `art-06-earth-sunrise`, `art-07/08/10/11` reading images | Queued |
+| M-14 | Lane C art: `art-16-galaxy-band`, `art-17-final-horizon-{desktop,mobile}` | Queued |
+| M-15 | Art cost review with owner (API low drafts vs owner/Codex finals) | Open |
+
+## Asset paths (all lanes code against these now)
+
+Ready: `art-01-earth-horizon-{desktop,mobile}`, `art-02-door-technical`, `art-03-door-business`,
+`art-04-walls-terrain-{desktop,mobile}`, `art-05-balcony-city-{desktop,mobile}`, `art-05-riverside-dusk`,
+`art-09-figure-walker` (transparent), fonts `fonts/newsreader-latin-{400,500}-{normal,italic}.woff2`.
+Coming: `art-06-earth-sunrise`, `art-07-reading-method`, `art-08-reading-concept`, `art-10-reading-technology`,
+`art-11-reading-experience`, `art-12-harness-core`, `art-13-tile-city-lights`, `art-14-tile-summit`,
+`art-15-horizon-mountains`, `art-16-galaxy-band`, `art-17-final-horizon-{desktop,mobile}`.
+All under `/consultation/`, each as `.avif` + `.webp`.
+
+---
+
+# Archive — v1 board and cards (superseded where they conflict with v2)
+
 # Task board — Milestone 1 (hero + two doors + three walls)
 
 Owned by `[MGR]`. `[BLD]` reports progress only via `LEDGER.md` marks; the manager updates the Status column.

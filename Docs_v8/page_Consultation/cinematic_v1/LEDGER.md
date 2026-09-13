@@ -552,3 +552,20 @@ Audit C-02 (#C-004→#C-005, b08b586) on structure + checks: **accepted pending 
 
 #MGR-044  OBSERVATION  [BLD-B]  2026-09-13T16:34
 From #C-005: the running page shows a console error from `<ApproachScene>` involving `QuoteBlock` (likely from your #MGR-031 revision removing SC-06's QuoteBlock — a leftover import/usage). Please fix and confirm zero console errors on a fresh load; the shared page needs to be clean for full-page captures (A-08).
+
+#C-006  DONE  [BLD-C]  2026-09-13T16:39
+ACK #MGR-042/#MGR-043 (visual confirmation deferred to A-08, understood).
+
+**C-03 done (SC-08 questions to MOTIF_PROGRESSION) — `7f49471`, pushed.** `QuestionsScene.jsx` rebuilt on the kit (`Band, Eyebrow, Display, Body, GhostButton, NumberedRow`); dropped `ChapterMark`. `QUESTION_GROUPS` (all 15 Q&As, deck-sourced) stays in the scene file verbatim, per SCENE_SPECS "all retained" — only the header slots (eyebrow, H2, side text, button label) moved to new `scenes/copy/questions.copy.js`, `source: 'COPY_CANON'`.
+- **No `art` prop on Band at all** — confirmed via DOM query (`k-band__art` doesn't exist in this scene), so it's genuinely the page starfield showing through, not a disguised fallback gradient. Header: eyebrow+H2 left (cols 1–6), side text + `GhostButton` "View all questions" right (cols 8–12).
+- **List:** all 15 questions flattened (group labels/notes dropped — the spec's "two columns of numbered pill rows" reads as one continuous numbered sequence, not three sub-headed groups) into one `<ul>` in a 2-col CSS grid, each `NumberedRow` **in its built-in disclosure mode** (`children` = the answer) instead of hand-rolling `<details>` — gets aria-expanded/hidden-panel/focus behaviour for free.
+- **Reveal, CSS-only (no viewport JS):** a `data-expanded` attribute plus `:nth-of-type(n+9)` hides questions 9–15 by default; a phone-only media query additionally hides `:nth-of-type(n+7)`, so the same markup shows 8 on desktop/tablet and 6 on phone without any JS breakpoint check. One `useState` toggles the attribute; the button unmounts once expanded (one-way reveal, matches "View all" rather than a collapse/expand toggle).
+
+Self-checks, all via DOM query on genuinely fresh loads (see note below on why "genuinely fresh" needed emphasis): 15 total items; **8 visible collapsed at 1440** → clicking "View all" → **15 visible**, button gone; **6 visible collapsed at 390**; no overflow at 320 (321/321) · 390 (390/390) · 1440 (1430/1440); clicked question 1's row directly — `aria-expanded` flips to `true`, panel `hidden` attribute removed, correct answer text present. No console errors from this file.
+
+Testing note, not a code issue: navigating to the *same* URL (`#questions` twice in a row) didn't actually reload the page, so my phone check first ran against a component still holding `expanded=true` from an earlier desktop click on the same tab (showed 15, not 6) — caught it, forced a real reload via an intermediate navigation, got the correct 6. Flagging in case anyone else re-navigates to an identical URL expecting a fresh mount in this pane.
+
+That's my full slate under the current split (C-01/C-01b/C-02/C-03; SC-09 moved to A-07). Standing by — let me know if there's a C-05/lane-C follow-up pass, or if I should start picking up review/polish work on another lane's flagged item.
+
+#MGR-045  ACK  [BLD-C]  2026-09-13T16:40
+Audit C-03 (#C-006, 7f49471) on structure + checks: **accepted pending visual** (A-08 captures) — kit rebuild, no scene art (verified no art layer), 15 deck Q&As retained as one numbered 2-col list with NumberedRow disclosures, CSS-only 8/6 visibility with a one-way View all, header copy from COPY_CANON. Your lane's scene list is now complete. Next: **C-05 lane-C QA pass** (new row in TASKS: phone fidelity vs MOCK-M1, keyboard/focus, reduced motion, 320/768/1024).

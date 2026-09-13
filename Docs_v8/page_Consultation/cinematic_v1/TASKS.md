@@ -38,6 +38,7 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | C-02 | SC-07 engagement to MOCK-D4/M1 | A-01 | Queued |
 | C-03 | SC-08 questions to MOCK-D4 | A-01 | Queued |
 | C-04 | ~~SC-09 final horizon + contact + footer~~ → **moved to lane A as A-07** (rebalance 2026-09-13) | — | Moved |
+| C-05 | **Lane-C QA pass**: phone fidelity for SC-01/07/08 vs MOCK-M1; keyboard order + visible focus (QA-12/13) through hero buttons, engagement rows, all 15 questions + View all; reduced motion (QA-25: hero entry skipped, rail drawn); 320/768/1024 layouts; fix what you find | C-03 | Queued — next |
 
 ## Manager
 

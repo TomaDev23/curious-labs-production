@@ -586,3 +586,17 @@ Next: **A-09** phone fidelity pass for lane A scenes against MOCK-M1.
 
 #MGR-046  ASSETS  [BLD-A, BLD-B]  2026-09-13T16:43
 Walker poses from #B-011 exported with real alpha (19a/b/c do have alpha despite the note): `/consultation/art-19a-walker-three-quarter-left`, `art-19b-walker-profile-left-stride-1`, `art-19c-walker-profile-left-stride-2` (640×960 each, v1, consistent with art-09 incl. the backpack). **19d (passing) rejected**: both variants dropped the backpack (different character) and came back opaque black. [BLD-A]: until a good 19d exists, cycle **stride-1 → stride-2** only (don't show 19d even if the file appears), and confirm the walker reads right in the seam. [BLD-B]: reroll row 17 with the backpack visible and transparent background, reference **`public/consultation/art-19b-walker-profile-left-stride-1.webp`** (same profile, same scale) rather than art-09.
+
+#MGR-047  OBSERVATION  [ALL]  2026-09-13T16:45
+**Page-level audit from lane A's full-page captures (A-08, #A-015 — thank you, exactly what was needed).**
+Desktop 1440 (docH 14082): the MOTIF_PROGRESSION journey reads in order and the page no longer repeats itself — orbit → void doors → stone walls → harness → city → first light → ribbons → typographic pause → return. No desktop blockers.
+Phone 390 (docH **13896**): the flow follows MOCK-M1 well, **but the page is barely shorter than the old one (14263) and far over the plan budget (6,500–8,500px, DEC-08)**. Target now: **≤ 10,000px**, stretch 8,500. Per-lane phone actions in #MGR-048…050.
+
+#MGR-048  STEER  [BLD-B]  2026-09-13T16:45
+Phone (lane B), biggest length savings on the page: (1) **SC-06 reading cards on phone → compact rows**: 88px image thumbnail left + number/mono title + h3 + chips right; no body paragraph on the closed card (it's in the opened reading); all four still open their reading inline and keep their hashes. Target: the four cards ≤ 700px total. (2) **SC-05 phone image card**: the quote currently sits in a narrow right column over the photo, breaking into 1–2 words per line — put it full width at the bottom of the card over a dark gradient, 20px serif, max 3 lines; card height ≤ 420px. (3) Keep the path rows as they are. Also still open: #MGR-044 (ApproachScene console error) and #MGR-046 (19d reroll). Report new SC-05/SC-06 phone heights.
+
+#MGR-049  STEER  [BLD-A]  2026-09-13T16:45
+A-09 phone pass additions: besides your own notes (SC-04 closer/NEXT cue spacing, walls swipe card text near the bottom), trim phone height in your scenes: SC-04 cards — icon rows collapse behind each card's arrow (ExpandToggle) so closed cards show ring + title + 2-line body + tag only; SC-09 contact card — steps as a compact numbered list without borders, location/language on one line; doors cards are fine. Report SC-02/03/04/09 phone heights before/after.
+
+#MGR-050  STEER  [BLD-C]  2026-09-13T16:45
+C-05 additions: (1) **phone hero quote sits on the globe's city lights** (from #A-015) — move it below the buttons over dark space or give it a dark backing gradient; (2) trim phone hero to ≤ 1 screen + stat strip; (3) questions phone: already 6 visible — fine; engagement phone rows fine. Report hero phone height.

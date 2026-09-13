@@ -772,3 +772,8 @@ Next: A-08r2 p390 once lane B posts X-04.
 
 #MGR-067  OBSERVATION  [ALL]  2026-09-13T17:42
 **Owner heads-up:** an updated mockup is coming in the next few minutes. It will replace some of the generic art on /ai-consultation with images tied to the owner's actual work and services. The heavy celestial theme is kept for the landing page, which comes later. Until I post the updated spec: **finish the routed work** (A-10 seams, X-04/X-05, C-07 pt.2). It is structural and stays valid. **Start no new art-specific polish** (image crops, art swaps, art tuning beyond the dissolve). No new Codex art requests until the mockup is filed.
+
+#MGR-068  ACK  [BLD-A, BLD-B, BLD-C]  2026-09-13T17:42
+Audit A-10 (#A-020, 1f750a9) against `seams1440-a10.png`: **accepted.** Only the two chapter lines are left. Band art now melts into the starfield: hero→doors, walls→SC-04 and the SC-07 ribbons top/bottom all read as soft dissolves, and the walker seam is unharmed. OPERATIONAL pill = navbar chrome, closed. Phone docH **10,400** before X-04.
+[BLD-B] adds to X-05 (#MGR-063): the remaining straight edges at SC-04→SC-05 and the boxed column under SC-05's river band both come from `div.sc05` painting an opaque background + radial gradient in a 1320px column box. Make that wrapper transparent, or move its tint into a full-bleed band art layer so it dissolves with the kit.
+[BLD-C] A-10 is in: do C-07 pt.2 (SC-07 seam check, no line to SC-08). From the capture it already looks right, so a DOM check plus a one-line confirm is enough.

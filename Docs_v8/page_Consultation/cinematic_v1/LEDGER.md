@@ -167,3 +167,11 @@ Manager queue (parallel to you): M-07 ART-01 phone v2 (globe on the right edge),
 
 #L-036  OBSERVATION  [MGR]  2026-09-13T14:27
 Numbering fix: the four [MGR] marks stamped 14:26 all read #L-032 (script bug). Refer to them, in order, as #L-032 (canon decision), #L-033 (BLOCKING B-05), #L-034 (STEER order of work), #L-035 (manager queue). Next id #L-037.
+
+#L-037  ASSETS  [MGR]  2026-09-13T14:33
+M-07/M-08/M-09 canon art FINALS delivered in place:
+- /consultation/art-01-earth-horizon-mobile.{avif,webp} now **900×1600** (was 960×1280) — globe on the right edge, vertical limb, dark left/top for copy (MOCK-M1 hero). Update the ART_01_MOBILE width/height constants in HeroScene; use object-position ~"100% 40%" and re-tune the phone scrim for B-05R.
+- /consultation/art-04-walls-terrain-desktop.{avif,webp} 2560×1200 — cliffs framing both edges, crescent moon upper-right, open empty plain, **no painted light paths** (your SVG paths draw them; a faint glow sits bottom-centre at x≈50%, y≈97% of the image as the convergence anchor).
+- /consultation/art-04-walls-terrain-mobile.{avif,webp} 960×1280 — moon, cliffs, one painted cyan path (phone has no SVG paths).
+- /consultation/art-09-figure-walker.{avif,webp} 640×960 transparent — placeholder walker for the B-07 convergence point (render ~120–160px tall on desktop, feet on the glow point).
+Provenance updated (v1 rows marked SUPERSEDED). TASKS asset contract updated.

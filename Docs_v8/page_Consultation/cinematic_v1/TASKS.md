@@ -23,9 +23,9 @@ Read before starting: `TEAM_PROTOCOL.md`, `DRAMA_LAYER.md`, plan sections SC-01�
 | M-04 | MGR | Copy asks → owner/Captain: wall responses, card B title, hero lead (CP-01/03) | — | Asked owner 2026-09-13 |
 | M-05 | MGR | Audit every B task (independent read + browser check) → ACK / STEER / BLOCKING | each DONE | Standing |
 | M-06 | MGR | M1 owner review package (desktop + phone captures, open gates) | B-08 | Queued |
-| M-07 | MGR | ART-01 phone v2: globe on the right edge, vertical limb (MOCK-M1 hero) | — | Queued |
-| M-08 | MGR | ART-04 v2 terrain to MOCK-D1: rock framing, moon upper-right, paths converge bottom-centre, no figure | — | Queued |
-| M-09 | MGR | Placeholder figure cutout (from behind, transparent) → `/consultation/art-09-figure-walker.webp` | — | Queued |
+| M-07 | MGR | ART-01 phone v2: globe on the right edge, vertical limb (MOCK-M1 hero) | — | FINAL delivered |
+| M-08 | MGR | ART-04 v2 terrain to MOCK-D1: rock framing, moon upper-right, paths converge bottom-centre, no figure | — | FINAL delivered |
+| M-09 | MGR | Placeholder figure cutout (from behind, transparent) → `/consultation/art-09-figure-walker.webp` | — | FINAL delivered |
 | M-10 | MGR | Serif font: owner OK + self-hosted woff2 | owner | Asked |
 
 ---
@@ -117,7 +117,8 @@ place under the same names.
 
 | Art | Desktop | Phone |
 |---|---|---|
-| ART-01 Earth horizon | `/consultation/art-01-earth-horizon-desktop.avif` + `.webp` — 2560×1440 | `/consultation/art-01-earth-horizon-mobile.avif` + `.webp` — 960×1280 |
+| ART-01 Earth horizon | `/consultation/art-01-earth-horizon-desktop.avif` + `.webp` — 2560×1440 | `/consultation/art-01-earth-horizon-mobile.avif` + `.webp` — **900×1600** (v2, globe on right edge) |
+| ART-09 Placeholder walker (SC-03, later SC-09) | `/consultation/art-09-figure-walker.avif` + `.webp` — 640×960, transparent | same file |
 | ART-02 Technical doorway vista | `/consultation/art-02-door-technical.avif` + `.webp` — 640×896 (used both widths) | same file |
 | ART-03 Business doorway vista | `/consultation/art-03-door-business.avif` + `.webp` — 640×896 | same file |
 | ART-04 Three-walls terrain | `/consultation/art-04-walls-terrain-desktop.avif` + `.webp` — 2560×1200 | `/consultation/art-04-walls-terrain-mobile.avif` + `.webp` — 960×1280 |

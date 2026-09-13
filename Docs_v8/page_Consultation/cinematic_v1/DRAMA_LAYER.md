@@ -23,3 +23,9 @@ plan default. No new npm deps (framer-motion + CSS only). No WebGL/3D models.
 
 **Not in the drama layer (plan wins):** scroll hijacking outside DR-04, pinned stacks on phone, bottom-sheet
 readings, generated people or silhouettes, generated "Phnom Penh", fake stats/bars, booking buttons.
+
+## Amendment 2026-09-13 — mockup canon
+`MOCKUP_CANON.md` now outranks this file on composition. Changes: **DR-01** the orbital instrument leaves the hero
+(the hero follows MOCK-D0: headline + quote block + globe) and becomes the SC-04 harness centrepiece (MOCK-D2);
+the headline sheen stays. **DR-02** doors stand open on desktop per MOCK-D1 (hover/focus opens further); on phone the
+cards stack with no doors (MOCK-M1). **DR-05** no swipe track for the doors on phone; walls and engagement keep it.

@@ -11,10 +11,11 @@ Current milestone: **M1 — hero + two doors + three walls**.
 1. `TEAM_PROTOCOL.md` — seats, file lanes, git rules, communication, mark format.
 2. `LEDGER.md` — the live coordination log (append-only).
 3. `TASKS.md` — task board + M1 cards + asset contract.
-4. `DRAMA_LAYER.md` — the dynamic moves layered on the plan (DR-01…09).
-5. `CuriousLabs_Consultation_Cinematic_Build_Plan_v1.0.md` — design contract (scenes, spaces, art register, interactions, QA).
-6. `BUILD_BREAKDOWN.md` — how the plan maps onto the art pipeline, tracks and milestones.
-7. Higher authority, unchanged: `../_FRAMING_LOCKED.md` → `../COPY_DECK_v2.md`.
+4. **`MOCKUP_CANON.md` — the binding visual target (owner, 2026-09-13); mockups in `references/mockups/`.**
+5. `DRAMA_LAYER.md` — the dynamic moves layered on the plan (DR-01…09; canon wins where they differ).
+6. `CuriousLabs_Consultation_Cinematic_Build_Plan_v1.0.md` — design contract (scenes, spaces, art register, interactions, QA).
+7. `BUILD_BREAKDOWN.md` — how the plan maps onto the art pipeline, tracks and milestones.
+8. Higher authority, unchanged: `../_FRAMING_LOCKED.md` → `../COPY_DECK_v2.md`.
 
 ## Artifacts
 | File | What |
@@ -23,6 +24,8 @@ Current milestone: **M1 — hero + two doors + three walls**.
 | `CuriousLabs_Consultation_Design_Tracker_v1.0.xlsx` | Owner's live status workbook (owner updates from ledger reports) |
 | `references/scene-crops/SC-*.jpg` | Composition references per scene (extracted from the docx) |
 | `references/thumbnails/REF-*.jpg` | Low-res REF-00…05 thumbnails (full PNGs pending from owner) |
+| `references/mockups/MOCK-*.png` | **Binding design mockups** D1–D5 desktop + M1 phone flow (see MOCKUP_CANON.md) |
+| `MOCKUP_CANON.md` | What must match per scene, what is not taken from the mockups, placeholder-copy and character rules |
 | `BUILD_BREAKDOWN.md` | Plan ↔ art pipeline alignment, tracks, milestones, decisions |
 | `DRAMA_LAYER.md` | DR-01…09 progressive-enhancement moves |
 | `TEAM_PROTOCOL.md` | Two-seat operating contract |

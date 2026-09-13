@@ -149,3 +149,18 @@ Proceeding to B-06 (SC-02 two doors) — ART-02/03 finals are in from #L-028/#L-
 
 #L-031  START  [BLD]  2026-09-13T15:34
 Starting B-06 (two doors, WP-08/DR-02/DR-05), in `AudienceScene.jsx` (doors part only — StatTrio/intro/bridge stay for B-07), new `visuals/DoorVisual.jsx`, + `consultation-scenes.css`.
+
+#L-032  OBSERVATION  [MGR]  2026-09-13T14:26
+OWNER DECISION — MOCKUP CANON. The owner made the six mockups the binding design ("I like this design… achieve this design across its different steps… mobile version as a constant reference"). New rules file `MOCKUP_CANON.md`; files in `references/mockups/` (MOCK-D1 doors+walls, D2 what I do, D3 approach, D4 engagement/FAQ/contact, D5 person, M1 phone flow; hero = `scene-crops/SC-01a`). Authority now: framing > copy deck > MOCKUP_CANON > plan > DRAMA_LAYER > TASKS (TEAM_PROTOCOL updated). Characters in the mockups are placeholders the owner will replace (from-behind/silhouette only, separate layer, no face as the owner). Placeholder copy allowed only through `copySlots.js`.
+
+#L-032  BLOCKING  [MGR]  2026-09-13T14:26
+Audit B-05 (#L-030, 6a136c0 + 2d86e27): NOT accepted yet — reopened as TASKS B-05R. Verified in the Browser pane at 1440×900 and 375×812:
+(1) DEFECT: the art is not full-bleed. `.cl-hero-stage { overflow: hidden }` sits inside `.cl-main` (1320px column), so the 100vw art and its `top:-96px` are clipped to the section box → visible box edges on desktop (right side, under the navbar) and ~20px inset margins on phone. `scrollWidth === innerWidth` cannot detect clipping; the TASKS visual check rule now covers it. Your `left:50%` reasoning is correct — the clip is the problem, not the offset.
+(2) CANON: the hero must match MOCK-D0/M1 — orbital out, quote block top-right, bigger headline, stat strip on phone, jump-links removed, phone scrim so text never sits on city lights.
+Accepted parts of B-05 that stay: SceneArt/SceneSeam usage, STEER #L-027 fixes (glyph-clipped sheen verified good, oversized parallax img), fetchpriority fix, orbital SVG label edits (kept for SC-04).
+
+#L-032  STEER  [MGR]  2026-09-13T14:26
+Order of work now: B-CS (copySlots.js) + B-05R together → DONE with captures beside the mockup → then B-06 and B-07 using the **Canon amendments** section in TASKS.md (it replaces the conflicting layout lines in the old cards: phone doors = stacked cards, no SwipeTrack, no doors; desktop doors stand open and overhang the card; walls get converging light paths + figure slot + closer). If B-06 code already exists uncommitted, reshape it to the amendment rather than committing the old layout. Please ACK.
+
+#L-032  OBSERVATION  [MGR]  2026-09-13T14:26
+Manager queue (parallel to you): M-07 ART-01 phone v2 (globe on the right edge), M-08 ART-04 v2 terrain to MOCK-D1 (rock framing, moon, converging paths, open midground), M-09 placeholder walker cutout at `/consultation/art-09-figure-walker.webp`. Your code should render the figure slot only if the image loads, and keep using current ART-01/04 paths — v2 files will replace them in place.

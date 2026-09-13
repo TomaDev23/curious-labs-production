@@ -11,9 +11,11 @@ Read before starting: `TEAM_PROTOCOL.md`, `DRAMA_LAYER.md`, plan sections SC-01�
 | B-02 | BLD | Split `ConsultationContent.jsx` into scene files — **no visual change** (WP-06) | B-01 | Done (#L-018, ACK #L-024) |
 | B-03 | BLD | Hero visible-first (INT-01) | B-02 | Done (#L-020, ACK #L-025) |
 | B-04 | BLD | Scene kit: `SceneArt`, `SceneSeam`, `SwipeTrack`, `ExpandToggle` | B-02 | Done (#L-022, ACK #L-026) |
-| B-05 | BLD | SC-01 Earth hero stage + orbital instrument (WP-07, DR-01) | B-03, B-04 | In progress · STEER #L-027 |
-| B-06 | BLD | SC-02 two doors (WP-08, DR-02, DR-05) | B-04 | Queued |
-| B-07 | BLD | SC-03 three walls (WP-08, DR-03, DR-05) | B-04 | Queued |
+| B-05 | BLD | SC-01 Earth hero stage + orbital instrument (WP-07, DR-01) | B-03, B-04 | Done #L-030 → reopened as B-05R |
+| B-05R | BLD | **Hero to canon**: full-bleed fix, orbital out, quote block, stat strip, scale (MOCK-D0/M1) | B-05 | Queued — do first |
+| B-CS | BLD | `copySlots.js` placeholder-copy registry (MOCKUP_CANON §4) | — | Queued — with B-05R |
+| B-06 | BLD | SC-02 two doors — **to canon MOCK-D1 / M1** (see amendments) | B-05R | Hold until B-05R |
+| B-07 | BLD | SC-03 three walls — **to canon MOCK-D1** (see amendments) | B-06 | Queued |
 | B-08 | BLD | M1 seams + motion + QA evidence (DR-06) | B-05…B-07 | Queued |
 | M-01 | MGR | ART-01 Earth horizon drafts → owner sheet → placeholder export | — | FINAL delivered (#L-028) |
 | M-02 | MGR | ART-04 terrain drafts → owner sheet → placeholder export | — | FINAL delivered (#L-028) |
@@ -21,8 +23,91 @@ Read before starting: `TEAM_PROTOCOL.md`, `DRAMA_LAYER.md`, plan sections SC-01�
 | M-04 | MGR | Copy asks → owner/Captain: wall responses, card B title, hero lead (CP-01/03) | — | Asked owner 2026-09-13 |
 | M-05 | MGR | Audit every B task (independent read + browser check) → ACK / STEER / BLOCKING | each DONE | Standing |
 | M-06 | MGR | M1 owner review package (desktop + phone captures, open gates) | B-08 | Queued |
+| M-07 | MGR | ART-01 phone v2: globe on the right edge, vertical limb (MOCK-M1 hero) | — | Queued |
+| M-08 | MGR | ART-04 v2 terrain to MOCK-D1: rock framing, moon upper-right, paths converge bottom-centre, no figure | — | Queued |
+| M-09 | MGR | Placeholder figure cutout (from behind, transparent) → `/consultation/art-09-figure-walker.webp` | — | Queued |
+| M-10 | MGR | Serif font: owner OK + self-hosted woff2 | owner | Asked |
 
 ---
+
+## Canon amendments — 2026-09-13 (supersede any conflicting line in B-05…B-08 below)
+
+The owner made the mockups binding (`MOCKUP_CANON.md`, files in `references/mockups/`). Build **to the picture**:
+compare your capture side by side with the named mockup region before posting DONE, and say in the DONE mark what
+still differs and why. Words: headings/body stay from the code/copy deck; taglines, quote lines, chips and stat
+labels come from `copySlots.js` placeholders (B-CS). Nothing from MOCKUP_CANON §4 "Don't take".
+
+**Visual check rule (all tasks):** `scrollWidth === innerWidth` is not a layout check. Every scene DONE needs a
+1440×900 and a phone capture compared against its mockup, and full-bleed art must show **no visible box edge**
+(the art element's `getBoundingClientRect().width` equals the viewport width, and no ancestor with
+`overflow: hidden/clip` is narrower than the viewport).
+
+### B-CS · `src/components/consultation/copySlots.js`
+Export one object; every entry `{ text, placeholder: true, source: 'MOCK-xx' }`. The copy pass edits only this file.
+
+| Key | Placeholder text | Source |
+|---|---|---|
+| `hero.quote` | Same curiosity. More real-world problems. | MOCK-D0 |
+| `hero.quoteLabel` | CURIOUSLABS | MOCK-D0 |
+| `hero.stats` | `[{big:'18', label:'YEARS IN CAMBODIA', note:'Real market experience'}, {big:'AI', label:'HANDS-ON OPERATOR', note:'Not just theory'}, {big:'REAL', label:'BUSINESSES', note:'Hospitality, F&B, Real estate'}]` | MOCK-M1 |
+| `doors.eyebrow` | TWO AUDIENCES. ONE CONVERSATION. | MOCK-D1 |
+| `doors.quote` | Two paths. A wider horizon. | MOCK-D1 |
+| `doors.closerLeft` | SAME CURIOSITY. / MORE POSSIBILITIES. | MOCK-D1 |
+| `doors.closerRight` | SAME DESTINATION. / A MORE USEFUL TOMORROW. | MOCK-D1 |
+| `doors.technical.chips` | Team coordination · Harnessing rules · AI at scale | deck card A body |
+| `doors.business.chips` | Real use cases · Harness design · How your business works | deck card B body |
+| `walls.eyebrow` | THREE WALLS. REAL PROBLEMS. | MOCK-D1 |
+| `walls.closer` | SAME BARRIERS. BRIGHTER PATHS. | MOCK-D1 |
+| `walls.wordStack` | CLARITY · DIRECTION · PRACTICAL OUTCOMES | MOCK-D1 |
+
+No wall quote lines (they read as client testimonials). No "18+".
+
+### B-05R · Hero to canon (MOCK-D0 desktop, MOCK-M1 phone)
+1. **Full-bleed fix (defect in B-05):** `.cl-hero-stage` must not clip the art. Remove `overflow: hidden` from the
+   section; the page root already has `overflow-x-clip`. The art layer extends up under the navbar (`top: -96px`,
+   desktop and phone) and edge to edge. If another ancestor inside `.cl-main` clips, fix it at the art element
+   (not by widening `.cl-main`). Prove it with the visual check rule.
+2. **Orbital out of the hero** — it moves to SC-04 later. Keep `ConsultationOrbit.jsx` / `_orbit.svg` as they are; stop
+   rendering them in `HeroScene` and remove the `.cl-hero-stage__orbit` column.
+3. **Quote block top-right** (desktop ≥1100px): `hero.quote` in cream (`font-family: var(--cl-serif, var(--cl-body-font))`,
+   ~26–30px, 3–4 short lines), short lime rule, `● CURIOUSLABS` mono lime label; columns 10–12, top-aligned with the
+   eyebrow, over dark space above the globe limb. Real text, not aria-hidden.
+4. **Scale:** h1 `font-size: clamp(44px, 5.6vw, 88px)`, `line-height: .98`, max ~11ch so it reads
+   "Business / consultation, / in the age of AI." as in the mockup. Eyebrow: lime short dash + spaced mono label (drop `//`).
+   Lead max 46ch.
+5. **Meta:** desktop keeps a quiet low meta line (plan SP-01-05) without the right-hand label. **Phone replaces it with
+   the 3-column stat strip** (`hero.stats`: big accent word, mono label, small note, 1px dividers) followed by a 44px
+   circular down-arrow link to `#audiences`.
+6. **Phone art + contrast:** until ART-01 phone v2 lands (M-07) use `position="85% 60%"` and a stronger top scrim
+   (page colour solid 0–58%, transparent by 80%) so text never sits on city lights; body contrast ≥ 4.5:1.
+7. **Remove the "EXPLORE THE PAGE" jump-link block** (not in canon). Hash anchors are unchanged.
+DONE evidence: 1440×900 + phone captures beside MOCK-D0 / MOCK-M1 top, full-bleed proof, phone hero height.
+
+### B-06 · Two doors — canon (replaces the B-06 card's layout lines)
+- Drop `ChapterMark 01` for this scene; eyebrow = `doors.eyebrow` in canon style. Keep the deck headline and intro.
+- Desktop: headline/intro left, `doors.quote` block top-right; two equal neon-edged cards (technical cyan,
+  business violet/magenta). Card = icon ring + mono micro + big title + body + chips (`doors.*.chips`) +
+  **lime button inside the card**: "Discuss your situation →" to `#contact`; deck foot line small.
+  **DoorVisual on the outer third, standing open:** neon-edged frame, vista image (ART-02/03), leaf swung outward so
+  it projects beyond the card's outer edge (resting `rotateY(-58deg)`, hover/focus `-72deg`), floor glow under the
+  frame. Reduced motion: static at resting angle. Closer taglines bottom-left/right under the cards.
+- **Phone: stacked cards, no SwipeTrack, no doors.** Card = icon ring + title + 36px circular arrow link (`#contact`),
+  body, wrapping chips. Closer tagline centred below.
+- Desktop globe top-right: reuse ART-01 desktop via `SceneArt` in a shallow faded band (`position="100% 0%"`) until a
+  dedicated crop exists; no globe on phone.
+
+### B-07 · Three walls — canon (replaces the B-07 card's layout lines)
+- Drop `ChapterMark`; eyebrow = `walls.eyebrow`; keep the deck intro sentence as the lead. Headline slot: there is no
+  approved short wall headline yet — render the intro sentence large (h3 scale) and flag it in DONE for the copy pass.
+- Desktop, per MOCK-D1 bottom: ART-04 behind (v2 via M-08), three tall monolith faces with irregular stone tops;
+  each: accent number + neon icon (closest existing ids, e.g. `shield`, `layers`, `people`), title, body.
+  **Light paths:** three glowing SVG paths (cyan / violet / lime) from the base of each wall to one convergence point at
+  bottom-centre (scroll-drawn, DR-03). At that point a figure slot renders `/consultation/art-09-figure-walker.webp`
+  **only if it loads** (M-09; nothing until then). `walls.wordStack` vertical at the right edge; `walls.closer` and a
+  44px circular down-arrow centred at the bottom.
+- Phone: SwipeTrack of the three walls (plan INT-03), same monolith surface; paths hidden.
+
+B-08 unchanged except: compare every M1 capture with its mockup and list remaining deltas.
 
 ## Asset contract (builder codes against these paths before the files exist)
 

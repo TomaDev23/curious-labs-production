@@ -405,7 +405,11 @@
 @media (max-width: 767px) {
   .cl-consultation .c-band { padding-bottom: 260px; }
   .cl-consultation .c-backdrop__mountains { height: 300px; }
-  .cl-consultation .c-head__lead { margin-top: 14px; }
+  /* M1: the phone header is left-aligned (the centred composition is a desktop move). */
+  .cl-consultation .c-head { justify-items: start; text-align: left; margin-inline: 0; }
+  .cl-consultation .c-head .k-eyebrow { justify-content: flex-start; }
+  .cl-consultation .c-head .k-eyebrow::after { display: none; }
+  .cl-consultation .c-head__lead { margin: 14px 0 0; }
   .cl-consultation .c-triptych { gap: 14px; margin-top: 28px; }
   .cl-consultation .c-card,
   .cl-consultation .c-card--core { padding: 20px; }
@@ -430,8 +434,10 @@
     font-size: 10px;
     letter-spacing: .24em;
     text-transform: uppercase;
-    color: var(--k-lime);
+    color: var(--k-cyan);
   }
+  .cl-consultation .c-card--featured::before,
+  .cl-consultation .c-card.k-card--featured::before { display: none; } /* M1: no doubled border on phone */
   .cl-consultation .c-card__details { display: none; margin-top: 18px; }
   .cl-consultation .c-card[data-open='true'] .c-card__details { display: flex; }
   /* Screen blend has no painted backdrop inside the phone expander: mask to the sphere itself. */
@@ -453,7 +459,8 @@
   .cl-consultation .c-packages { padding: 22px; }
   .cl-consultation .c-packages__lead { gap: 14px; }
   .cl-consultation .c-packages__title { font-size: 22px; }
-  .cl-consultation .c-foot { bottom: -200px; flex-direction: column; align-items: flex-start; }
+  .cl-consultation .c-foot { bottom: -196px; flex-direction: column; align-items: flex-start; }
+  .cl-consultation .c-foot__closer { display: none; } /* M1 moves straight on; keep only the NEXT cue over the ridge */
   .cl-consultation .c-next { margin-right: 0; }
 }
 

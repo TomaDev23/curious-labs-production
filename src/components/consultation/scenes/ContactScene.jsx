@@ -44,6 +44,7 @@ function HorizonArt() {
 
 function ContactScene() {
   const { card } = copy;
+  const [detailsOpen, setDetailsOpen] = useState(false);
   return (
     <Band id="contact" sectionKey="D8" labelledBy="cl-contact-title" hairline="none" className="f-band">
       <div className="f-stage">
@@ -82,7 +83,14 @@ function ContactScene() {
         <p className="f-stage__phone-tag" aria-hidden="true">{copy.footer.tagline.text}</p>
       </div>
 
-      <NeonCard as="section" accent="lime" id="contact-card" className="f-card" aria-labelledby="f-card-title">
+      <NeonCard
+        as="section"
+        accent="lime"
+        id="contact-card"
+        className="f-card"
+        aria-labelledby="f-card-title"
+        data-open={detailsOpen ? 'true' : undefined}
+      >
         <div className="f-card__intro">
           <Eyebrow as="p" className="f-card__eyebrow">{card.eyebrow.text}</Eyebrow>
           {/* Desktop keeps the deck's first-contact heading; phone shows COPY_CANON's short card. Only one pair is displayed. */}
@@ -91,23 +99,34 @@ function ContactScene() {
           <Body className="f-card__body f-card__body--desk">{card.intro.text}</Body>
           <Body className="f-card__body f-card__body--phone">{card.phoneBody.text}</Body>
           <p className="f-card__free">{card.free.text}</p>
-          <div className="f-card__where">
+          {/* Phone only (MOCK-M1 keeps the card short): the first-contact detail opens in place. */}
+          <button
+            type="button"
+            className="f-card__toggle"
+            aria-expanded={detailsOpen}
+            aria-controls="f-card-details"
+            onClick={() => setDetailsOpen((v) => !v)}
+          >
+            <span>{card.stepsLabel.text}</span>
+            <span className="f-card__toggle-icon" aria-hidden="true" />
+          </button>
+          <div className="f-card__where f-card__detail">
             <IconRow icon="pin" title={card.location.text} bare accent="lime" />
             <IconRow icon="chat" title={card.language.text} bare accent="lime" />
           </div>
-          <p className="f-card__caption">{card.caption.text}</p>
+          <p className="f-card__caption f-card__detail">{card.caption.text}</p>
         </div>
 
-        <div className="f-card__next">
-          <MicroLabel as="p" className="f-card__steps-label">{card.stepsLabel.text}</MicroLabel>
-          <ol className="f-steps">
+        <div className="f-card__next" id="f-card-details">
+          <MicroLabel as="p" className="f-card__steps-label f-card__detail">{card.stepsLabel.text}</MicroLabel>
+          <ol className="f-steps f-card__detail">
             {card.steps.items.map((step, i) => (
               <li key={step.title}>
                 <NumberedRow n={`0${i + 1}`} title={step.title} text={step.text} action={null} accent="lime" />
               </li>
             ))}
           </ol>
-          <p className="f-card__reassurance">{card.reassurance.text}</p>
+          <p className="f-card__reassurance f-card__detail">{card.reassurance.text}</p>
           <div className="f-pending" role="status">
             <span className="f-pending__status"><span className="f-pending__dot" aria-hidden="true" />{card.pending.status}</span>
             <p className="f-pending__text">{card.pending.text}</p>
@@ -140,6 +159,7 @@ export function ConsultationFooter() {
           </ul>
           <p className="f-footer__tagline">{footer.tagline.text}</p>
         </nav>
+        <Tagline lines={copy.tagline.lines} align="center" className="f-footer__closer" />
       </div>
     </footer>
   );

@@ -149,6 +149,8 @@
   scroll-margin-top: calc(var(--cl-anchor-offset, 96px) + 24px);
 }
 .cl-consultation .f-card__eyebrow { margin-bottom: 16px; }
+.cl-consultation .f-card__toggle,
+.cl-consultation .f-footer__closer { display: none; }
 .cl-consultation .f-card__title--phone,
 .cl-consultation .f-card__body--phone { display: none; }
 .cl-consultation .f-card__body { margin-top: 16px; }
@@ -269,15 +271,62 @@
   .cl-consultation .f-head,
   .cl-consultation .f-points { display: none; }
   .cl-consultation .f-stage__phone-tag {
-    display: block;
-    margin: 0 0 28px;
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    margin: 0 0 22px;
     font-family: var(--k-font-mono);
     font-size: 10px;
     letter-spacing: .3em;
     text-transform: uppercase;
     color: var(--k-cyan);
   }
-  .cl-consultation .f-card { margin-top: 24px; padding: 22px; gap: 24px; }
+  .cl-consultation .f-stage__phone-tag::after { content: ''; width: 24px; height: 1px; background: rgb(94 230 245 / .6); }
+  /* Card flows as one column in M1's order: title, body, free line, pending, then the toggle for the rest. */
+  .cl-consultation .f-card { display: flex; flex-direction: column; margin-top: 24px; padding: 24px 22px; gap: 0; }
+  .cl-consultation .f-card__intro,
+  .cl-consultation .f-card__next { display: contents; }
+  .cl-consultation .f-card__eyebrow { order: 1; margin-bottom: 12px; }
+  .cl-consultation .f-card__title { order: 2; font-size: clamp(26px, 7.6vw, 30px); }
+  .cl-consultation .f-card__body { order: 3; }
+  .cl-consultation .f-card__free { order: 4; }
+  .cl-consultation .f-pending { order: 5; }
+  .cl-consultation .f-card__toggle {
+    order: 6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    margin-top: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--k-hairline);
+    border-radius: 12px;
+    background: rgb(6 13 20 / .6);
+    color: var(--k-cream);
+    font-family: var(--k-font-mono);
+    font-size: 10.5px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    text-align: left;
+    cursor: pointer;
+  }
+  .cl-consultation .f-card__toggle:focus-visible { outline: 2px solid var(--k-lime); outline-offset: 3px; }
+  .cl-consultation .f-card__toggle-icon { position: relative; width: 14px; height: 14px; flex: none; }
+  .cl-consultation .f-card__toggle-icon::before,
+  .cl-consultation .f-card__toggle-icon::after { content: ''; position: absolute; left: 0; top: 6px; width: 14px; height: 1.5px; background: var(--k-lime); transition: transform .2s ease; }
+  .cl-consultation .f-card__toggle-icon::after { transform: rotate(90deg); }
+  .cl-consultation .f-card__toggle[aria-expanded='true'] .f-card__toggle-icon::after { transform: rotate(0deg); }
+  .cl-consultation .f-card__where { order: 7; }
+  .cl-consultation .f-card__caption { order: 8; }
+  .cl-consultation .f-card__steps-label { order: 9; margin-top: 20px; }
+  .cl-consultation .f-steps { order: 10; }
+  .cl-consultation .f-card__reassurance { order: 11; }
+  .cl-consultation .f-card__detail { display: none; }
+  .cl-consultation .f-card[data-open='true'] .f-card__detail { display: grid; }
+  .cl-consultation .f-card[data-open='true'] p.f-card__detail { display: block; }
+  .cl-consultation .f-footer__closer { display: block; margin-top: 4px; color: rgb(244 239 220 / .75); }
+  .cl-consultation .f-card[data-open='true'] .f-card__steps-label { display: none; } /* the toggle already names the list */
   .cl-consultation .f-card__title--desk,
   .cl-consultation .f-card__body--desk { display: none; }
   .cl-consultation .f-card__title--phone,

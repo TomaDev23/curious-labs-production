@@ -130,11 +130,24 @@
 .cl-consultation .hx__sweep-dot { fill: #f1e9ff; filter: drop-shadow(0 0 5px #b085ff) drop-shadow(0 0 12px #b085ff); }
 @keyframes hx-sweep { to { transform: rotate(360deg); } }
 
+/* Bloom behind the core: the harness is the scene's light source. */
+.cl-consultation .hx__bloom {
+  position: absolute;
+  left: 50%;
+  top: 47.6%;
+  width: 92%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(210 180 255 / .34) 0%, rgb(176 133 255 / .22) 26%, rgb(94 230 245 / .08) 48%, transparent 68%);
+  filter: blur(6px);
+  pointer-events: none;
+}
 .cl-consultation .hx__core {
   position: absolute;
   left: 50%;
   top: 47.6%;
-  width: 56%;
+  width: 70%; /* +25% (was 56%) */
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   mix-blend-mode: screen;
@@ -159,6 +172,11 @@
   filter: saturate(.4);
 }
 .cl-consultation .hx--lit .hx__node { opacity: 1; filter: none; }
+/* Top node: labels above its icon, so the larger core never sits under the text. */
+.cl-consultation .hx__node--1 { transform: translate(-50%, calc(-100% + 27px)); }
+.cl-consultation .hx__node--1 .hx__label { order: 1; margin: 0; }
+.cl-consultation .hx__node--1 .hx__sub { order: 2; margin: 3px 0 8px; }
+.cl-consultation .hx__node--1 .hx__icon { order: 3; }
 .cl-consultation .hx__icon {
   display: grid;
   place-items: center;
@@ -416,8 +434,17 @@
   }
   .cl-consultation .c-card__details { display: none; margin-top: 18px; }
   .cl-consultation .c-card[data-open='true'] .c-card__details { display: flex; }
-  .cl-consultation .hx__core { width: 44%; top: 50%; }
+  /* Screen blend has no painted backdrop inside the phone expander: mask to the sphere itself. */
+  .cl-consultation .hx__core {
+    width: 55%;
+    top: 50%;
+    -webkit-mask-image: radial-gradient(circle, #000 36%, transparent 47%);
+    mask-image: radial-gradient(circle, #000 36%, transparent 47%);
+  }
+  .cl-consultation .c-card--core .hx { margin-top: 56px; }
+  .cl-consultation .hx__bloom { width: 80%; top: 50%; }
   .cl-consultation .hx__node { width: 96px; transform: translate(-50%, -21px); }
+  .cl-consultation .hx__node--1 { transform: translate(-50%, calc(-100% + 21px)); }
   .cl-consultation .hx__icon { width: 42px; height: 42px; }
   .cl-consultation .hx__icon svg { width: 20px; height: 20px; }
   .cl-consultation .hx__label { font-size: 9.5px; letter-spacing: .12em; }

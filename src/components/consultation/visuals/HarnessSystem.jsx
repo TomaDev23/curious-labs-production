@@ -55,6 +55,7 @@ function HarnessSystem({ nodes, formula, className = '' }) {
           </g>
         </svg>
 
+        <span className="hx__bloom" aria-hidden="true" />
         <picture className="hx__core" aria-hidden="true">
           <source type="image/avif" srcSet={CORE.avif} />
           <img src={CORE.webp} width="900" height="900" alt="" loading="lazy" decoding="async" />

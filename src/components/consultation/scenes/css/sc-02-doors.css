@@ -3,6 +3,45 @@
 
 /* ── Backdrop: orbit arc across the void (desktop) — no planet (MOTIF_PROGRESSION) ─ */
 .cl-consultation .d-backdrop { position: absolute; inset: 0; }
+/* Deep-space haze in the upper right (cyan → violet), soft enough to stay behind the headline. */
+.cl-consultation .d-backdrop__nebula {
+  position: absolute;
+  top: -80px;
+  right: -8vw;
+  width: min(1250px, 86vw);
+  height: 760px;
+  background:
+    radial-gradient(34% 30% at 62% 34%, rgb(94 230 245 / .16) 0%, transparent 72%),
+    radial-gradient(40% 36% at 78% 48%, rgb(176 133 255 / .18) 0%, transparent 74%),
+    radial-gradient(26% 22% at 48% 58%, rgb(226 123 255 / .09) 0%, transparent 70%),
+    radial-gradient(60% 50% at 70% 42%, rgb(40 70 120 / .22) 0%, transparent 80%);
+  filter: blur(8px);
+  -webkit-mask-image: linear-gradient(to left, #000 45%, transparent 100%), linear-gradient(to bottom, #000 55%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to left, #000 45%, transparent 100%), linear-gradient(to bottom, #000 55%, transparent 100%);
+  mask-composite: intersect;
+  pointer-events: none;
+}
+/* A handful of brighter stars (single element, box-shadow points). */
+.cl-consultation .d-backdrop__stars {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow:
+    -140px 70px 0 1px rgb(232 251 255 / .95), -140px 70px 10px 2px rgb(94 230 245 / .5),
+    -330px 190px 0 .5px rgb(255 255 255 / .8),
+    -520px 60px 0 1px rgb(240 230 255 / .9), -520px 60px 10px 2px rgb(176 133 255 / .45),
+    -610px 260px 0 .5px rgb(255 255 255 / .7),
+    -260px 330px 0 1px rgb(232 251 255 / .85), -260px 330px 8px 2px rgb(94 230 245 / .35),
+    -760px 150px 0 .5px rgb(255 255 255 / .6),
+    -90px 250px 0 .5px rgb(255 255 255 / .7),
+    -430px 380px 0 .5px rgb(226 210 255 / .7);
+  pointer-events: none;
+}
 .cl-consultation .d-backdrop__orbit {
   position: absolute;
   top: 30px;
@@ -15,7 +54,7 @@
   -webkit-mask-image: linear-gradient(to left, #000 50%, transparent 100%);
   mask-image: linear-gradient(to left, #000 50%, transparent 100%);
 }
-.cl-consultation .d-backdrop__orbit ellipse { stroke: rgb(94 230 245 / .5); stroke-width: 1.2px; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 6px rgb(94 230 245 / .35)); }
+.cl-consultation .d-backdrop__orbit ellipse { stroke: rgb(94 230 245 / .68); stroke-width: 1.4px; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 6px rgb(94 230 245 / .5)) drop-shadow(0 0 14px rgb(94 230 245 / .25)); }
 .cl-consultation .d-backdrop__orbit-dot { fill: #e8fbff; filter: drop-shadow(0 0 6px #5ee6f5) drop-shadow(0 0 14px #5ee6f5); }
 
 /* ── Header: copy left, quote right ──────────────────────────────────── */
@@ -236,7 +275,7 @@
 
 /* ── Phone (MOCK-M1): stacked cards, no doors, no globe ──────────────── */
 @media (max-width: 767px) {
-  .cl-consultation .d-backdrop { display: none; }
+  .cl-consultation .d-backdrop { display: none; } /* void atmosphere is desktop-only */
   .cl-consultation .d-head__lead { margin-top: 16px; }
   .cl-consultation .d-doors { gap: 16px; margin-top: 32px; }
   .cl-consultation .d-floor { display: none; }

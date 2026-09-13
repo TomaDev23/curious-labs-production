@@ -17,6 +17,8 @@ const DOORS = [
 function DoorsBackdrop() {
   return (
     <div className="d-backdrop">
+      <span className="d-backdrop__nebula" />
+      <span className="d-backdrop__stars" />
       <svg className="d-backdrop__orbit" viewBox="0 0 1000 400" preserveAspectRatio="none" focusable="false">
         <ellipse cx="560" cy="210" rx="470" ry="118" />
         <circle className="d-backdrop__orbit-dot" cx="1016" cy="182" r="4" />

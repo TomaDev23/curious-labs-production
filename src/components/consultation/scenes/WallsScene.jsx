@@ -31,6 +31,7 @@ function WallFace({ wall, index }) {
       viewport={{ once: true, margin: '-10% 0px' }}
       transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: index * 0.12 }}
     >
+      <span className="w-wall__face" aria-hidden="true" />
       <div className="w-wall__head">
         <span className="w-wall__n" aria-hidden="true">{wall.n}</span>
         <span className="w-wall__icon" aria-hidden="true"><ClIcon name={wall.icon} /></span>
@@ -42,6 +43,25 @@ function WallFace({ wall, index }) {
   );
 }
 
+const ROCK_EDGE = 'M0,70 L40,52 L78,64 L120,30 L168,58 L214,44 L262,72 L300,50 L352,62 L398,36 L446,66 L492,56 L540,74 L590,48 L636,68 L688,58 L720,76 L752,58 L806,70 L850,46 L902,66 L950,54 L996,72 L1044,40 L1092,62 L1140,50 L1188,70 L1236,34 L1284,60 L1330,48 L1380,66 L1440,44';
+
+/** Dark jagged rock silhouettes along the wall bases, so the slabs stand in the terrain (desktop). */
+function ForegroundRocks() {
+  return (
+    <svg className="w-rocks" viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="w-rocks-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="#070b10" />
+          <stop offset="40%" stopColor="#05080c" stopOpacity=".75" />
+          <stop offset="100%" stopColor="#05080c" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={`${ROCK_EDGE} L1440,180 L0,180 Z`} fill="url(#w-rocks-fill)" />
+      <path d={ROCK_EDGE} className="w-rocks__rim" />
+    </svg>
+  );
+}
+
 function WallsBackdrop() {
   return (
     <div className="w-backdrop">
@@ -50,6 +70,12 @@ function WallsBackdrop() {
         <source media="(max-width: 767px)" type="image/webp" srcSet={ART_04.mobile.webp} />
         <source type="image/avif" srcSet={ART_04.desktop.avif} />
         <img src={ART_04.desktop.webp} width={ART_04.desktop.width} height={ART_04.desktop.height} alt="" loading="lazy" decoding="async" />
+      </picture>
+      {/* Desktop only: the same terrain again, bottom-anchored, so rock ground continues under the walls and the figure. */}
+      <picture className="w-backdrop__ground">
+        <source media="(min-width: 1100px)" type="image/avif" srcSet={ART_04.desktop.avif} />
+        <source media="(min-width: 1100px)" type="image/webp" srcSet={ART_04.desktop.webp} />
+        <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" loading="lazy" decoding="async" />
       </picture>
     </div>
   );
@@ -72,6 +98,7 @@ function WallsScene() {
 
       <div className="w-stage" ref={stageRef}>
         <SwipeTrack label="The three walls" items={items} desktopFrom={1100} />
+        <ForegroundRocks />
         <LightPaths stageRef={stageRef} wallSelector=".cl-track__item" accents={PATH_ACCENTS} />
         <ConvergenceFigure />
       </div>

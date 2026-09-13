@@ -32,7 +32,7 @@ export function LightPaths({ stageRef, wallSelector, accents }) {
       setGeo({
         w: s.width,
         h: s.height,
-        starts: walls.map((r) => ({ x: r.left - s.left + r.width / 2, y: r.bottom - s.top - 36 })),
+        starts: walls.map((r) => ({ x: r.left - s.left + r.width / 2, y: r.bottom - s.top - 8 })),
         end: { x: s.width / 2, y: s.height - 6 }
       });
     };
@@ -58,11 +58,12 @@ export function LightPaths({ stageRef, wallSelector, accents }) {
     <svg className="w-paths" viewBox={`0 0 ${w} ${h}`} width={w} height={h} aria-hidden="true" focusable="false">
       <defs>
         <filter id="w-glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="6" />
+          <feGaussianBlur stdDeviation="7" />
         </filter>
         <radialGradient id="w-pool">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity=".9" />
-          <stop offset="35%" stopColor="#bfe9ff" stopOpacity=".45" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity=".95" />
+          <stop offset="30%" stopColor="#c9b8ff" stopOpacity=".55" />
+          <stop offset="65%" stopColor="#5ee6f5" stopOpacity=".18" />
           <stop offset="100%" stopColor="#5ee6f5" stopOpacity="0" />
         </radialGradient>
       </defs>
@@ -82,7 +83,7 @@ export function LightPaths({ stageRef, wallSelector, accents }) {
           </g>
         );
       })}
-      <ellipse cx={end.x} cy={end.y} rx="90" ry="16" fill="url(#w-pool)" className="w-paths__pool" />
+      <ellipse cx={end.x} cy={end.y} rx="120" ry="22" fill="url(#w-pool)" className="w-paths__pool" />
     </svg>
   );
 }

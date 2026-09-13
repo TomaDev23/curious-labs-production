@@ -10,9 +10,10 @@
   width: var(--w-art-width, max(100%, 2100px));
   aspect-ratio: 2560 / 1200;
   transform: translateX(var(--w-art-shift, -50%));
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 86%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 86%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 90%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 90%, transparent 100%);
 }
+.cl-consultation .w-backdrop__ground { display: none; }
 .cl-consultation .w-backdrop__art img {
   display: block;
   width: 100%;
@@ -51,8 +52,22 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .7 0 0 0 0 .8 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"),
     linear-gradient(172deg, #161d24 0%, #0e141a 40%, #080c11 100%);
   clip-path: polygon(0 7%, 9% 3%, 22% 5%, 37% 0, 52% 4%, 66% 1.5%, 81% 5%, 100% 2%, 100% 98%, 88% 100%, 60% 98.5%, 34% 100%, 12% 98%, 0 99.5%);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .04);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / .04),
+    inset calc(var(--w-rim-dir, -1) * 22px) 0 30px -18px color-mix(in srgb, var(--k-acc) 55%, transparent);
 }
+/* Rock-face texture (art-18, queued): cover, mirrored on the middle wall, darker centre for text.
+   Until the file exists the image layer doesn't paint and the stone surface shows. */
+.cl-consultation .w-wall__face {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 55% at 50% 45%, rgb(5 8 12 / .55) 0%, transparent 75%),
+    image-set(url('/consultation/art-18-monolith-face.avif') type('image/avif'), url('/consultation/art-18-monolith-face.webp') type('image/webp')) center / cover no-repeat;
+}
+.cl-consultation .w-wall--2 .w-wall__face { transform: scaleX(-1); }
+.cl-consultation .w-wall > :not(.w-wall__face) { position: relative; }
 .cl-consultation .w-wall.k-acc-violet { --k-acc: var(--k-violet); }
 .cl-consultation .w-wall.k-acc-lime { --k-acc: var(--k-lime); }
 /* Light seam: 2px accent line on the edge that faces the centre, plus a faint rim. */
@@ -64,9 +79,9 @@
   background: linear-gradient(180deg, transparent 10%, color-mix(in srgb, var(--k-acc) 85%, #fff) 60%, color-mix(in srgb, var(--k-acc) 50%, transparent) 100%) var(--w-seam-x, right) / 2px 100% no-repeat;
   filter: drop-shadow(0 0 6px var(--k-acc));
 }
-.cl-consultation .w-wall--1 { --w-seam-x: right; }
-.cl-consultation .w-wall--2 { --w-seam-x: left; }
-.cl-consultation .w-wall--3 { --w-seam-x: left; }
+.cl-consultation .w-wall--1 { --w-seam-x: right; --w-rim-dir: -1; }
+.cl-consultation .w-wall--2 { --w-seam-x: left; --w-rim-dir: 1; }
+.cl-consultation .w-wall--3 { --w-seam-x: left; --w-rim-dir: 1; }
 
 .cl-consultation .w-wall__head { display: flex; align-items: center; gap: 22px; }
 .cl-consultation .w-wall__n {
@@ -89,9 +104,10 @@
 .cl-consultation .w-wall__title { margin-top: 10px; font-size: 26px; }
 .cl-consultation .w-wall__text { margin-top: 14px; font-size: 16.5px; }
 
-/* Light paths + figure are desktop-only decoration. */
+/* Light paths, figure and foreground rocks are desktop-only decoration. */
 .cl-consultation .w-paths,
-.cl-consultation .w-figure { display: none; }
+.cl-consultation .w-figure,
+.cl-consultation .w-rocks { display: none; }
 
 /* ── Foot: closer, down arrow ────────────────────────────────────────── */
 .cl-consultation .w-foot {
@@ -114,46 +130,95 @@
 
 /* ── Desktop stage (≥1100): monoliths across, paths converge on the figure ─ */
 @media (min-width: 1100px) {
-  .cl-consultation .w-stage { padding-bottom: 210px; }
+  /* The figure's head sits ~40px under the wall line; feet on the stage floor. */
+  .cl-consultation .w-stage { --w-rail-h: 600px; padding-bottom: 236px; }
   .cl-consultation .w-stage .cl-track__rail {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: 3.2%;
     align-items: end;
-    padding-inline: 1%;
+    padding-inline: 1.5%;
   }
-  .cl-consultation .w-stage .cl-track__item { height: 450px; }
-  .cl-consultation .w-stage .cl-track__item:nth-child(2) { height: 476px; }
-  .cl-consultation .w-wall--1 { rotate: -.6deg; }
-  .cl-consultation .w-wall--3 { rotate: .5deg; }
-  .cl-consultation .w-backdrop__art { --w-art-bottom: 250px; --w-art-shift: -57%; }
+  .cl-consultation .w-stage .cl-track__item:nth-child(1) { height: 560px; }
+  .cl-consultation .w-stage .cl-track__item:nth-child(2) { height: var(--w-rail-h); }
+  .cl-consultation .w-stage .cl-track__item:nth-child(3) { height: 548px; }
+  .cl-consultation .w-wall { transform-origin: 50% 100%; padding-bottom: 96px; }
+  .cl-consultation .w-wall--1 { rotate: -1.4deg; }
+  .cl-consultation .w-wall--3 { rotate: 1.2deg; }
+
+  /* ART-04 larger, placed so the moon sits big above/behind wall 03 and the cliffs frame both sides. */
+  .cl-consultation .w-backdrop__art {
+    --w-art-width: max(100%, 2000px);
+    --w-art-shift: -55%;
+    top: 40px;
+    bottom: auto;
+    filter: brightness(1.12);
+  }
+
+  .cl-consultation .w-backdrop__ground {
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: max(100%, 1800px);
+    aspect-ratio: 2560 / 1200;
+    transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 42%, #000 62%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, transparent 42%, #000 62%, #000 88%, transparent 100%);
+  }
+  .cl-consultation .w-backdrop__ground img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+
+  .cl-consultation .w-rocks {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: calc(var(--w-rail-h) - 78px);
+    width: 100vw;
+    height: 190px;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .cl-consultation .w-rocks__rim { fill: none; stroke: rgb(150 190 220 / .16); stroke-width: 1.2px; vector-effect: non-scaling-stroke; }
 
   .cl-consultation .w-paths {
     display: block;
     position: absolute;
-    z-index: 1;
+    z-index: 4;
     inset: 0;
     overflow: visible;
     pointer-events: none;
   }
   .cl-consultation .w-paths__trace path { fill: none; stroke: currentColor; stroke-linecap: round; }
-  .cl-consultation .w-paths__core { stroke-width: 2.2; }
-  .cl-consultation .w-paths__glow { stroke-width: 10; opacity: .55; }
+  .cl-consultation .w-paths__core { stroke-width: 2.5; }
+  .cl-consultation .w-paths__glow { stroke-width: 18; opacity: .75; }
 
   .cl-consultation .w-figure {
     display: block;
     position: absolute;
-    z-index: 3;
+    z-index: 5;
     left: 50%;
-    bottom: 0;
-    width: 104px;
-    height: 156px;
+    bottom: 2px;
+    width: 127px;
+    height: 190px;
     transform: translateX(-50%);
     opacity: 0;
     transition: opacity .6s ease;
   }
+  /* Faint backlight bloom behind the figure. */
+  .cl-consultation .w-figure::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: -90%;
+    right: -90%;
+    top: 10%;
+    bottom: -12%;
+    background: radial-gradient(45% 55% at 50% 70%, rgb(176 133 255 / .32) 0%, rgb(94 230 245 / .12) 45%, transparent 75%);
+    filter: blur(6px);
+  }
   .cl-consultation .w-figure--ready { opacity: 1; }
   .cl-consultation .w-figure img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; }
-  .cl-consultation .w-foot { margin-top: 34px; }
+  .cl-consultation .w-foot { margin-top: 10px; }
 }
 
 /* ── Tablet + phone: swipe track of wall faces ───────────────────────── */

@@ -309,14 +309,8 @@
     0 0 60px -6px color-mix(in srgb, var(--k-acc) calc(55% * var(--k-edge-boost)), transparent),
     inset 0 0 64px color-mix(in srgb, var(--k-acc) 10%, transparent);
 }
-.cl-consultation .k-card--featured::before {
-  content: '';
-  position: absolute;
-  inset: 10px;
-  border: 1px solid var(--k-hairline);
-  border-radius: calc(var(--k-radius-card) - 6px);
-  pointer-events: none;
-}
+/* #MGR-refine: the inset hairline frame below was reading as a doubled box against
+   the neon edge (MOCK-D2 shows a single stronger glow, no inner border). Removed. */
 
 /* IconRing */
 .cl-consultation .k-ring {

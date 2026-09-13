@@ -207,7 +207,9 @@
 }
 
 .cl-consultation .sc05__tomorrow .cl-art::after {
-  background: linear-gradient(90deg, #020308 0%, rgb(2 3 8 / .9) 30%, rgb(2 3 8 / .2) 62%, transparent 78%);
+  background:
+    linear-gradient(0deg, #020308 0%, rgb(2 3 8 / .9) 32%, transparent 58%),
+    linear-gradient(90deg, #020308 0%, rgb(2 3 8 / .9) 30%, rgb(2 3 8 / .2) 62%, transparent 78%);
 }
 
 .cl-consultation .sc05__tomorrow-copy {

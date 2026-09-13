@@ -210,12 +210,12 @@
     content: '';
     position: absolute;
     z-index: -1;
-    left: -90%;
-    right: -90%;
-    top: 10%;
-    bottom: -12%;
-    background: radial-gradient(45% 55% at 50% 70%, rgb(176 133 255 / .32) 0%, rgb(94 230 245 / .12) 45%, transparent 75%);
-    filter: blur(6px);
+    left: -110%;
+    right: -110%;
+    top: 6%;
+    bottom: -16%;
+    background: radial-gradient(50% 60% at 50% 68%, rgb(176 133 255 / .42) 0%, rgb(94 230 245 / .16) 42%, transparent 78%);
+    filter: blur(8px);
   }
   .cl-consultation .w-figure--ready { opacity: 1; }
   .cl-consultation .w-figure img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; }

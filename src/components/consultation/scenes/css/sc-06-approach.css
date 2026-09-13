@@ -15,7 +15,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(270deg, #020308 0%, rgb(2 3 8 / .96) 36%, rgb(2 3 8 / .46) 62%, transparent 82%);
+  background:
+    linear-gradient(180deg, #020308 0%, rgb(2 3 8 / .72) 20%, transparent 42%),
+    linear-gradient(270deg, #020308 0%, rgb(2 3 8 / .96) 36%, rgb(2 3 8 / .46) 62%, transparent 82%);
 }
 
 .cl-consultation .sc06__hero-grid {

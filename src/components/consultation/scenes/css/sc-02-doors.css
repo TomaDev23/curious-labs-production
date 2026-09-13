@@ -57,6 +57,17 @@
 .cl-consultation .d-backdrop__orbit ellipse { stroke: rgb(94 230 245 / .68); stroke-width: 1.4px; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 6px rgb(94 230 245 / .5)) drop-shadow(0 0 14px rgb(94 230 245 / .25)); }
 .cl-consultation .d-backdrop__orbit-dot { fill: #e8fbff; filter: drop-shadow(0 0 6px #5ee6f5) drop-shadow(0 0 14px #5ee6f5); }
 
+/* #MGR-refine: bottom dissolve into the page starfield (bridges the doors void → walls terrain seam). */
+.cl-consultation .d-backdrop__dissolve {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background: linear-gradient(180deg, transparent 0%, rgb(2 3 8 / .55) 55%, #020308 100%);
+  pointer-events: none;
+}
+
 /* ── Header: copy left, quote right ──────────────────────────────────── */
 .cl-consultation .d-head {
   display: grid;

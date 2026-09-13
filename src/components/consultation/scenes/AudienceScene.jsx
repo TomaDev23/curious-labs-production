@@ -23,6 +23,9 @@ function DoorsBackdrop() {
         <ellipse cx="560" cy="210" rx="470" ry="118" />
         <circle className="d-backdrop__orbit-dot" cx="1016" cy="182" r="4" />
       </svg>
+      {/* #MGR-refine: dissolve the doors void into the page starfield at the bottom so the
+          hand-off into the walls' terrain reads as one continuous space, not a hard band edge. */}
+      <span className="d-backdrop__dissolve" aria-hidden="true" />
     </div>
   );
 }

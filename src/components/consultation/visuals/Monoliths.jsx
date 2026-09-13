@@ -61,9 +61,9 @@ export function LightPaths({ stageRef, wallSelector, accents }) {
           <feGaussianBlur stdDeviation="7" />
         </filter>
         <radialGradient id="w-pool">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity=".95" />
-          <stop offset="30%" stopColor="#c9b8ff" stopOpacity=".55" />
-          <stop offset="65%" stopColor="#5ee6f5" stopOpacity=".18" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+          <stop offset="28%" stopColor="#c9b8ff" stopOpacity=".62" />
+          <stop offset="62%" stopColor="#5ee6f5" stopOpacity=".22" />
           <stop offset="100%" stopColor="#5ee6f5" stopOpacity="0" />
         </radialGradient>
       </defs>
@@ -83,7 +83,7 @@ export function LightPaths({ stageRef, wallSelector, accents }) {
           </g>
         );
       })}
-      <ellipse cx={end.x} cy={end.y} rx="120" ry="22" fill="url(#w-pool)" className="w-paths__pool" />
+      <ellipse cx={end.x} cy={end.y} rx="145" ry="26" fill="url(#w-pool)" className="w-paths__pool" />
     </svg>
   );
 }

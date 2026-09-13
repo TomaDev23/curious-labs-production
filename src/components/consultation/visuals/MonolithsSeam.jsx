@@ -188,7 +188,7 @@ export function WalkerSeam({ children }) {
     return () => {
       ro.disconnect();
       window.removeEventListener('load', measure);
-      document.querySelectorAll('#walls .w-paths, #walls .w-foot').forEach((el) => { el.style.opacity = ''; });
+      document.querySelectorAll('#walls .w-paths, #walls .w-foot, #walls .w-backdrop').forEach((el) => { el.style.opacity = ''; });
     };
   }, []);
 
@@ -211,6 +211,11 @@ export function WalkerSeam({ children }) {
       const wallsOpacity = String(1 - ramp(p, 0, 0.14));
       // Looked up per frame: the walls' path SVG mounts only after its own measurement.
       document.querySelectorAll('#walls .w-paths, #walls .w-foot').forEach((el) => { el.style.opacity = wallsOpacity; });
+      // #MGR-refine: fade the walls' own terrain backdrop out fast at the start of the pin,
+      // otherwise it stays painted under the seam's ws-ground (same ART-04 file) and the two
+      // terrain layers overlap as a jagged double surface while the walker is pinned.
+      const wallsBackdropOpacity = String(1 - ramp(p, 0, 0.08));
+      document.querySelectorAll('#walls .w-backdrop').forEach((el) => { el.style.opacity = wallsBackdropOpacity; });
 
       // Pose: back → three-quarter → profile walk cycle.
       let pose = 'back';

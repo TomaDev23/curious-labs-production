@@ -93,6 +93,7 @@ Builders: put these strings in the scene's copy file with `source: 'COPY_CANON'`
 - **02 Proposal** — An email summary straight after, then a scoped proposal and quote once I've thought it through. — **CLEAR. RELEVANT. NO GENERIC PLANS.**
 - **03 Agreed work** — You confirm the proposal; we settle the contract and payment, and the work is scheduled. — **FOCUSED. AGREED. CLEAR NEXT STEPS.**
 - **04 Delivery & support** — I prepare the materials and deliver the report, the sessions and any support we agreed. — **PRACTICAL. HANDS-ON. REAL CAPABILITY.**
+- Phone step lines (≤899px, replace the desktop bodies so nothing is cut by the 2-line clamp; decided #MGR-065, condensed from the lines above — no new claims): **01** Bring one real situation. I listen and give you my reading. · **02** An email summary, then a scoped proposal and quote. · **03** You confirm; we settle the contract and payment. · **04** I deliver the report, sessions and support we agreed.
 - Boundary line below: deck ("The first conversation is free; everything after it is proposed and agreed first.")
 
 ## SC-08 Questions (MOCK-D4 middle)

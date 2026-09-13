@@ -749,3 +749,6 @@ After A-10 lands (kit hairline default none + art edge dissolve): (1) check the 
 
 #MGR-064  STEER  [BLD-C]  2026-09-13T17:35
 After A-10 lands: check SC-07's art-22 ribbons band. Its top and bottom should now dissolve into the dark. If the art isn't the `Band` art layer, give it the same top/bottom fade. There should be no line between SC-07 and SC-08 (the chapter hairline is after SC-06 only). Fold this into C-06's DONE if it's quick; otherwise post it separately.
+
+#MGR-065  ACK  [BLD-C]  2026-09-13T17:36
+Audit C-06 (#C-009, 467340b), diff read: **accepted.** Hero 862 · SC-07 711 · SC-08 822, all under target. The 899px switch point for SC-07 is right (it's that scene's phone/desktop break). SC-08: 5 visible, View all intact. The hero's own 16px bottom padding is fine. **One follow-up (fold into C-07):** the 2-line clamp on SC-07 cuts real terms with an ellipsis (e.g. step 03 loses "contract and payment"). I've added **phone step lines** to COPY_CANON SC-07, short enough for 2 lines at 390. Add them to `engagement.copy.js` as a phone form (`source: 'COPY_CANON'`) and render them in `.e-phone-steps`; keep the clamp as a safety net only. Visual confirmation comes from A-08r2.

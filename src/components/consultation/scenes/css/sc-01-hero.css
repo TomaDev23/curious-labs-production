@@ -72,7 +72,16 @@
 
 @media (max-width: 1099px) {
   .cl-consultation .h-grid { display: flex; flex-direction: column; }
-  .cl-consultation .h-quote { margin: 32px auto 0; max-width: 340px; }
+  /* #MGR-050: the quote sits over the globe's city lights at this width, not
+     reliably-dark sky — give it its own dark backing so legibility never
+     depends on what the image happens to show underneath. */
+  .cl-consultation .h-quote {
+    margin: 24px auto 0;
+    max-width: 340px;
+    padding: 14px 18px;
+    background: linear-gradient(180deg, rgb(2 6 10 / .2), rgb(2 6 10 / .68));
+    border-radius: 14px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -91,9 +100,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 28px;
-    margin-top: 36px;
+    gap: 24px;
+    margin-top: 28px;
   }
+  /* #MGR-050: trim phone hero toward one screen + the stat strip. */
+  .cl-consultation .h-lead { margin-top: 18px; }
+  .cl-consultation .h-invite { margin-top: 12px; }
+  .cl-consultation .h-actions { margin-top: 20px; }
+  .cl-consultation .h-quote { margin-top: 20px; }
 }
 
 /* ── DR-11 · hero entry choreography (C-01b, ~3s, plays once) ───────────

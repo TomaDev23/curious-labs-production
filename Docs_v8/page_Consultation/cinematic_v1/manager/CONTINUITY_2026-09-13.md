@@ -62,10 +62,11 @@ don't trust copies.
 - The owner reviews on their own browser; owner-only visual checks (e.g. DR-11 hero entry) are called out explicitly.
 - Don't build/commit per tiny tweak on the live main; work happens on the branch; ask before any merge/release.
 
-## §4 · LIVE PIN — last-verified 2026-09-13T17:25 — RE-DERIVE ON RESUME, do not trust this line
-- Branch `design/cinematic-consultation`, HEAD `071cda6`; main at `895198d` (start point, pushed).
-- Ledger: last manager mark `#MGR-055`; last builder marks `#A-017`, `#B-014`, `#C-007` (all audited).
-- Phone page height at 390: 13,896 (A-08) → 11,219 (lanes A+B trims) → A-08r pending (after C-05); target ≤ 10,000, stretch 8,500.
+## §4 · LIVE PIN — last-verified 2026-09-13T17:28 — RE-DERIVE ON RESUME, do not trust this line
+- Branch `design/cinematic-consultation`, HEAD `001c7d4`+ (this pin commit); main at `895198d` (start point, pushed).
+- Ledger: last manager mark `#MGR-059`; last builder marks `#A-018` (audited → #MGR-056), `#B-014`, `#C-007` (all audited).
+- Phone page height at 390: 13,896 (A-08) → 11,219 → **11,211** (#A-018, after C-05). Round-2 cuts routed: A-09c (#MGR-058),
+  X-04 (#MGR-057, Codex — poll ledger), C-06 (#MGR-059); per-band budget in #MGR-056 ⇒ ≈ 9,900. Then A-08r2 p390.
 - Dev server: owner's, `http://localhost:5173/ai-consultation` (never start one).
 
 ## §5 · DONE MAP (pointers — don't redo)
@@ -81,8 +82,7 @@ don't trust copies.
 
 ## §6 · STANDING QUEUE (in order)
 1. ~~Audit `#C-007`~~ — ACK `#MGR-054`.
-2. **A-08r requested from [BLD-A]** (`#MGR-055`, p390 + d1440; A-05 queued after it) → read new total docH + strip. Done-test: phone docH ≤ 10,000;
-   if not, route the next cuts (largest bands first) to the owning lanes.
+2. **Phone budget round 2** — cuts routed (#MGR-056…059); audit X-04 / A-09c / C-06 DONEs, then read A-08r2 p390. Done-test: phone docH ≤ 10,000.
 3. **A-05 (lane A): retire any remaining ChapterMark rows + final scene order** once all lanes' phone passes are accepted.
 4. **Seams/continuity pass** vs `MOTIF_PROGRESSION §2` (light-line thread visible per scene; soft dissolves; hairlines only
    after SC-03 and SC-06) using the fresh desktop strip; route deltas per lane.

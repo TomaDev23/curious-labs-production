@@ -96,12 +96,11 @@ Every call is logged to `tools/art/_raw/log.jsonl` (prompt, size, quality, token
 
 - **No text, letters, logos, UI or watermarks** in any image. Say so in every prompt. Leave calm
   negative space where copy will sit.
-- **Low quality for drafts and placeholders; high quality only for approved finals.** The owner
-  tops up funds as needed — image generation is cheap, but report how many images a batch will make.
+- **API: low quality drafts only.** Finals come from the Codex image route (`ART_QUEUE.md`); high-quality API renders need the owner's OK.
 - **The build plan is the art authority:** `Docs_v8/page_Consultation/cinematic_v1/CuriousLabs_Consultation_Cinematic_Build_Plan_v1.0.md`
   ("Artwork register" — ART-01…ART-10 give size, text-safe zone and brief per asset). Name slugs by ART ID (`art-01-earth-horizon`).
-- **No people at all by default** — no portrait, no silhouette, no from-behind explorer standing in for the owner (ART-09, SC-03, SC-05). Only an owner-supplied real photo, later.
-- **Never generate a place that must be real.** ART-05 "Phnom Penh at night" is an owner-supplied or licensed photo, not generated; generated city mood art must never be labelled as a real place.
+- **People = placeholder characters only** (owner, 2026-09-13, `MOCKUP_CANON.md` §4): from behind or silhouette, no face, never presented or labelled as the owner; prefer a separate transparent layer so an owner photo can replace it.
+- **Real places:** generated "Phnom Penh" images are allowed as realistic **placeholders** (owner-authorised) — mark them as generated in provenance and don't caption them as documentary photos at launch without a real/licensed replacement.
 - Palette: deep navy/black space, cyan atmospheric rim light, warm sunrise gold. Lime is UI-only.
 - Geography that must be correct (e.g. Cambodia's outline) is sourced SVG in code (ART-10), not trusted to the model.
 - **Record provenance for every shipped file** (plan QA-27): add a row to `Docs_v8/page_Consultation/cinematic_v1/ART_PROVENANCE.md` — ART ID, exported files, model/quality/size, raw file, prompt, approval date. `_raw/log.jsonl` is gitignored, so it doesn't count.

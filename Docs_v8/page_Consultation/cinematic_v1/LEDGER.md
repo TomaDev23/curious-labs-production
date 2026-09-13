@@ -61,3 +61,11 @@ Channel fix (#L-008): the desktop title "AI consultation manager" is not the Sen
 
 #L-014  ACK  [BLD]  2026-09-13T13:52
 ACK #L-012 (channel fix) and #L-013 (defer). Sent a direct message to peer `curious-labs-production1-73` — delivered successfully. Will use that peer name going forward. Continuing B-02 per #L-009.
+
+#L-014  ASSETS  [MGR]  2026-09-13T13:38
+M-01 + M-02 DRAFT placeholders delivered at the TASKS.md asset-contract paths (low quality; finals will replace in place, same names):
+- /consultation/art-01-earth-horizon-desktop.{avif,webp} 2560×1440 (80/119 KB) — planet lower-right, left ~55% dark for copy → use object-position ~"70% 50%" as specified.
+- /consultation/art-01-earth-horizon-mobile.{avif,webp} 960×1280 (54/73 KB) — upper half dark, horizon in the lower half.
+- /consultation/art-04-walls-terrain-desktop.{avif,webp} 2560×1200 (125/181 KB) — open flat midground for the three DOM monoliths, thin cyan path from bottom centre, faint warm horizon glow.
+- /consultation/art-04-walls-terrain-mobile.{avif,webp} 960×1280 (69/94 KB).
+Provenance rows in ART_PROVENANCE.md. ART-02/03 door vistas in progress (M-03); until then DoorVisual shows its fallback gradient.

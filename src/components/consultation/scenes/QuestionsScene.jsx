@@ -1,6 +1,6 @@
-import React from 'react';
-import ChapterMark from '../kit/ChapterMark';
-import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import React, { useState } from 'react';
+import { Band, Eyebrow, Display, Body, GhostButton, NumberedRow } from '../kit';
+import questionsCopy from './copy/questions.copy';
 import './css/sc-08-questions.css';
 
 /* Answers written from the owner's own discovery answers Q1–Q18 — see
@@ -92,47 +92,43 @@ const QUESTION_GROUPS = [
   }
 ];
 
+const ALL_QUESTIONS = QUESTION_GROUPS.flatMap((group) => group.items);
+
 function QuestionsScene() {
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <>
-      {/* ── D9 · Questions ───────────────────────────────────────── */}
-      <ChapterMark n="06" label="QUESTIONS PEOPLE ASK" />
-      <section id="questions" className="cl-section cl-faq" aria-labelledby="cl-questions-title" data-cl-section="D9">
-        <header className="cl-section-heading cl-heading-split">
-          <div>
-            <Reveal as="p" className="cl-eyebrow" y={12}><span>06 /</span> QUESTIONS PEOPLE ASK</Reveal>
-            <KineticHeading id="cl-questions-title" level="h2" lines={['Before we talk.']} />
-          </div>
-          <Reveal as="p" className="cl-section-intro" delay={0.2}>
-            The things worth knowing in advance—so the first conversation can be about your business instead.
-          </Reveal>
-        </header>
+    <Band id="questions" sectionKey="D9" labelledBy="cl-questions-title" className="q-band">
+      <header className="q-head">
+        <div className="q-head__copy">
+          <Eyebrow>{questionsCopy.eyebrow.text}</Eyebrow>
+          <Display id="cl-questions-title" lines={questionsCopy.h2.lines} />
+        </div>
+        <div className="q-head__side">
+          <Body>{questionsCopy.side.text}</Body>
+          {!expanded && (
+            <GhostButton onClick={() => setExpanded(true)}>{questionsCopy.viewAll.text}</GhostButton>
+          )}
+        </div>
+      </header>
 
-        {QUESTION_GROUPS.map((group) => (
-          <div key={group.id} className={`cl-faq__group cl-faq__group--${group.id}`}>
-            <Reveal className="cl-faq__label" y={16}>
-              <p className="cl-micro">{group.label}</p>
-              <p className="cl-faq__note">{group.note}</p>
-            </Reveal>
-            <Stagger className="cl-faq__items" step={0.07}>
-              {group.items.map((item) => (
-                <Reveal as="div" key={item.q} y={14}>
-                  <details className="cl-qa">
-                    <summary>
-                      <span className="cl-qa__q">{item.q}</span>
-                      <span className="cl-plus cl-plus--sm" aria-hidden="true"></span>
-                    </summary>
-                    <p>{item.a}</p>
-                  </details>
-                </Reveal>
-              ))}
-            </Stagger>
-          </div>
+      <ul className="q-grid" data-expanded={expanded}>
+        {ALL_QUESTIONS.map((item, i) => (
+          <NumberedRow
+            key={item.q}
+            as="li"
+            className="q-item"
+            n={String(i + 1).padStart(2, '0')}
+            title={item.q}
+            headingLevel={3}
+          >
+            <p>{item.a}</p>
+          </NumberedRow>
         ))}
+      </ul>
 
-        <Reveal as="p" className="cl-bridge" y={14}><span></span>Anything not answered here is a good place to start the conversation.</Reveal>
-      </section>
-    </>
+      <p className="q-bridge">Anything not answered here is a good place to start the conversation.</p>
+    </Band>
   );
 }
 

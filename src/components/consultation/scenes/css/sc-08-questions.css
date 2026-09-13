@@ -1,1 +1,44 @@
-/* SC-08 questions (lane C). Every selector stays under .cl-consultation. */
+/* SC-08 questions (lane C). MOTIF_PROGRESSION: no scene art — page starfield
+   + typography only. Editorial two-column. Every selector stays under
+   .cl-consultation, prefixed `q-`. */
+
+.cl-consultation .q-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  align-items: start;
+}
+.cl-consultation .q-head__copy { grid-column: 1 / 7; }
+.cl-consultation .q-head__side { grid-column: 8 / 13; display: flex; flex-direction: column; gap: 20px; align-items: start; }
+
+.cl-consultation .q-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+  list-style: none;
+  margin: 56px 0 0;
+  padding: 0;
+}
+.cl-consultation .q-item .k-nrow__panel { font-size: 15px; }
+
+.cl-consultation .q-bridge {
+  margin: 40px 0 0;
+  font-family: var(--k-font-mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--k-ink-muted);
+}
+
+@media (max-width: 1099px) {
+  .cl-consultation .q-head__copy { grid-column: 1 / -1; }
+  .cl-consultation .q-head__side { grid-column: 1 / -1; margin-top: 24px; }
+}
+
+@media (max-width: 767px) {
+  .cl-consultation .q-grid { grid-template-columns: 1fr; margin-top: 32px; }
+  .cl-consultation .q-grid[data-expanded='false'] .q-item:nth-of-type(n+7) { display: none; }
+}
+
+/* Desktop/tablet: first 8 visible until expanded (phone rule above narrows
+   that further to 6 by additionally hiding items 7–8). */
+.cl-consultation .q-grid[data-expanded='false'] .q-item:nth-of-type(n+9) { display: none; }

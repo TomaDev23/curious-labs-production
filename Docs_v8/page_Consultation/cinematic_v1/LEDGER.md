@@ -668,3 +668,32 @@ Audit C-05 (#C-007, dfffe8a): **accepted.** Diff read: ≤1099px quote gets a so
 
 #MGR-055  STEER  [BLD-A]  2026-09-13T17:22
 All three lanes' phone passes are in and accepted (#MGR-052/053/054). Please run **A-08r** at current HEAD: **p390** (reduced motion) → post total docH + band heights + strip path; **and d1440** (reduced motion) → strip path (I'll do the seams/continuity pass M-16 on it). Then start **A-05** (retire any remaining ChapterMark rows page-wide + confirm final scene order in `ConsultationContent.jsx`). Answer to your #A-017 question: **yes — phone meta line becomes one row "Phnom Penh or online · English & Khmer"** (≤767px only; same wording as the deck's hero meta; desktop keeps the full deck strings). Added to COPY_CANON SC-09; please sync `contact.copy.js` with a phone short form, `source: 'COPY_CANON'`.
+
+#A-018  DONE  [BLD-A]  2026-09-13T17:23
+ACK #MGR-053, #MGR-054, #MGR-055. **A-08r at p390 (reduced motion) — part 1 of #MGR-055.** After C-05 the whole page is **docH 11211** (was 11219 at #A-017; A-08 baseline 13896). Tree at `3ae35b6`, no code changes.
+| Band | px |
+|---|---|
+| hero (overview) | 922 |
+| SC-02 audiences | 954 |
+| SC-03 walls | 855 |
+| SC-04 contribution | 1503 |
+| SC-05 | 1316 |
+| SC-06 | 2429 |
+| SC-07 engagement | 900 |
+| SC-08 questions | 980 |
+| SC-09 contact | 963 |
+| footer | 293 |
+Still **1211px over** the 10,000 target. Biggest bands: SC-06 (2429), SC-04 (1503), SC-05 (1316). Strip: `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/A08/out/p390-c05_strip.png`; full page and per-band crops are in the same folder (`p390-c05_page.png`, `p390-c05_NN_<band>.png`). Every band renders; none are blank.
+ACK #MGR-055 (it landed while this capture ran): the d1440 strip, the SC-09 phone meta short form and A-05 are next, in #A-019.
+
+#MGR-056  OBSERVATION  [ALL]  2026-09-13T17:25
+Read #A-018 (p390 after C-05, docH **11,211**; strip + page in lane A scratch) side by side with MOCK-M1 col 3. Hero quote backing reads clean (C-05 visually confirmed). Still **1,211px over** the ≤10,000 target. MOCK-M1 is much tighter in exactly our tallest places: SC-06 on phone is header + 4 rows only (no closing quote band), engagement rows carry one short line each. Cuts routed by lane below, each with a band target; after all three land, lane A re-runs p390 (A-08r2). Budget: hero 922→**870** · SC-02 954→**920** · SC-03 855 · SC-04 1503→**1300** · SC-05 1316→**1150** · SC-06 2429→**1950** · SC-07 900→**760** · SC-08 980→**880** · SC-09 963→**930** · footer 293 ⇒ ≈ **9,900**.
+
+#MGR-057  STEER  [BLD-B]  2026-09-13T17:25
+X-04 phone cuts (≤767px only; desktop unchanged): (1) **SC-06 closing statement band ("It's not about AI for its own sake…" + 3 icon points) is hidden on phone** — MOCK-M1 has no such band and MOTIF_PROGRESSION §3 keeps quote blocks to SC-01/05/09 (desktop treatment is reviewed in my seams pass, leave it for now). (2) Tighten SC-06 phone spacing between the path rows and the "Four perspectives" header. Target SC-06 ≤ **1,950**. (3) **SC-05 image card**: ~250px of the 420px card is empty dark sky above the city — 340px card with the photo anchored to the bottom (city + figure + quote stay in frame); tighten the four icon rows' vertical rhythm. Target SC-05 ≤ **1,150**. Report both heights; no overflow at 320/390; zero console errors.
+
+#MGR-058  STEER  [BLD-A]  2026-09-13T17:25
+Supersedes the order in #MGR-055 (your #A-018 crossed it): p390 is done, thanks. Now: (1) **A-09c** phone cuts: kit phone `.k-band` padding-block 56 → **44px** (one lever, all bands; check the hairlines and art bleed still sit right); SC-04 "No fixed packages" card on phone → title + a 2-line clamped body + the lime button (full paragraph on desktop / behind the card's arrow), ridge cue ≤ 110px; SC-04 ≤ **1,300**. (2) **A-05** (retire remaining ChapterMark rows + confirm final scene order). (3) Then **d1440 reduced-motion capture** for my seams pass, and **A-08r2 p390** once lanes B (#MGR-057) and C (#MGR-059) post. Your #A-017 questions: location/language → one-row phone meta, answered in #MGR-055; SC-09 tagline in the dark upper-left was accepted in #MGR-042 (keep); footer "Home" link stays removed until the owner asks for it (open owner item). Observation to confirm, not a fix: the p390 page shows a "≡" glyph at the hero stat strip's right edge (y≈775) — I read it as the site's floating menu button caught in frame 1 of the stitch; confirm it isn't page content.
+
+#MGR-059  STEER  [BLD-C]  2026-09-13T17:25
+C-06 phone cuts (≤767px only): (1) **SC-07 engagement rows**: clamp each step's body to **2 lines** (MOCK-M1 shows one short line per step), and hide the trailing "The first conversation is free; everything after it is proposed and agreed first." note on phone (SC-09's card already carries the free line). Target ≤ **760**. (2) **SC-08 questions**: show **5** visible on phone (View all reveals the rest), tighten row gap. Target ≤ **880**. (3) **Hero**: the space between the down-arrow and the next band is ~110px of empty sky — trim to fit ≤ **870** total. Report the three heights; keep focus outlines, disclosure behaviour and no overflow at 320/390.

@@ -340,13 +340,14 @@
   .cl-consultation .sc06__hero-copy .k-body { display: none; }
   .cl-consultation .sc06__actions { display: none; }
   .cl-consultation .sc06__hero-tagline { display: none; }
-  .cl-consultation .sc06__path { min-height: 0; }
+  .cl-consultation .sc06__path { min-height: 0; padding-bottom: 24px; }
   .cl-consultation .sc06__path-header { display: block; }
   .cl-consultation .sc06__path-header .k-display { font-size: 30px; margin-bottom: 16px; }
   .cl-consultation .sc06__path-header > .k-body { display: none; }
   .cl-consultation .sc06__path-desktop { display: none; }
   .cl-consultation .sc06__path-mobile { display: grid; gap: 8px; margin-top: 24px; }
   .cl-consultation .sc06__path-mobile .k-body { margin: 0; }
+  .cl-consultation .sc06__readings { padding-top: 28px; }
   .cl-consultation .sc06__readings-header { display: block; }
   .cl-consultation .sc06__readings-header > .k-body { margin-top: 16px; }
   .cl-consultation .sc06__reading-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 28px; }
@@ -398,7 +399,7 @@
     padding: 3px 7px;
     font-size: 8.5px;
   }
-  .cl-consultation .sc06__closing { padding-block: 20px 56px; }
+  .cl-consultation .sc06__closing { display: none; }
   .cl-consultation .sc06__closing-card { padding: 22px; gap: 24px; }
   .cl-consultation .sc06__closing-points { grid-template-columns: 1fr; }
 }

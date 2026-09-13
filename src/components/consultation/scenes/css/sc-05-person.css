@@ -337,8 +337,11 @@
     margin-top: 20px;
   }
   .cl-consultation .sc05__mobile-image .k-tile {
-    height: min(420px, 108vw);
+    height: min(340px, 108vw);
     aspect-ratio: auto !important;
+  }
+  .cl-consultation .sc05__mobile-image .k-tile img {
+    object-position: 52% 100% !important;
   }
   .cl-consultation .sc05__mobile-image::after {
     content: '';
@@ -364,10 +367,10 @@
     color: var(--k-cream);
     text-shadow: 0 2px 18px #020308;
   }
-  .cl-consultation .sc05__credibility { padding-block: 20px 48px; }
+  .cl-consultation .sc05__credibility { padding-block: 8px 24px; }
   .cl-consultation .sc05__credibility-cards { display: none; }
   .cl-consultation .sc05__credibility-rows { display: grid; gap: 4px; }
-  .cl-consultation .sc05__credibility-rows .k-irow { padding-block: 12px; }
+  .cl-consultation .sc05__credibility-rows .k-irow { padding-block: 6px; }
   .cl-consultation .sc05__rooted,
   .cl-consultation .sc05__tomorrow { display: none; }
 }

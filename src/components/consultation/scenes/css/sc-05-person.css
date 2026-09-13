@@ -2,9 +2,7 @@
 
 .cl-consultation .sc05 {
   position: relative;
-  background:
-    radial-gradient(circle at 12% 14%, rgb(18 79 108 / .16), transparent 34%),
-    #020308;
+  background: transparent;
 }
 
 .cl-consultation .sc05__hero {

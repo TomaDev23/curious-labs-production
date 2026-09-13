@@ -122,7 +122,7 @@ function ApproachScene() {
 
       <Band className="sc06__closing" hairline="bottom">
         <NeonCard accent="cyan" className="sc06__closing-card">
-          <blockquote>{text(APPROACH_COPY.closingQuote)}</blockquote>
+          <p className="sc06__closing-statement">{text(APPROACH_COPY.closingQuote)}</p>
           <div className="sc06__closing-points">
             {APPROACH_COPY.closingPoints.map((point) => (
               <IconRow

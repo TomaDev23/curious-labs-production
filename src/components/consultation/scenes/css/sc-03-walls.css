@@ -1,1 +1,185 @@
-/* SC-03 three walls (lane A). Every selector stays under .cl-consultation. */
+/* SC-03 three walls (lane A) — MOCK-D1 bottom (desktop); phone = swipe track (plan INT-03).
+   Every selector stays under .cl-consultation; scene classes are prefixed `w-`. */
+
+/* ── Backdrop: ART-04 terrain, moon top-right, cliffs framing the plain ─ */
+.cl-consultation .w-backdrop { position: absolute; inset: 0; }
+.cl-consultation .w-backdrop__art {
+  position: absolute;
+  left: 50%;
+  bottom: var(--w-art-bottom, 40px);
+  width: var(--w-art-width, max(100%, 2100px));
+  aspect-ratio: 2560 / 1200;
+  transform: translateX(var(--w-art-shift, -50%));
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 86%, transparent 100%);
+}
+.cl-consultation .w-backdrop__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.cl-consultation .w-head {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px;
+  align-items: start;
+}
+.cl-consultation .w-head__lead { margin-top: 18px; max-width: 56ch; }
+.cl-consultation .w-head__stack { margin-top: 120px; margin-right: 4px; }
+
+/* ── Stage: walls + light paths + figure ─────────────────────────────── */
+.cl-consultation .w-stage {
+  position: relative;
+  margin-top: 64px;
+}
+.cl-consultation .w-stage .cl-track { position: relative; z-index: 2; }
+
+/* Wall face — dark stone with an irregular top and a light seam. */
+.cl-consultation .w-wall {
+  --k-acc: var(--k-cyan);
+  position: relative;
+  height: 100%;
+  padding: 58px 34px 40px;
+  background:
+    radial-gradient(80% 26% at 50% 104%, color-mix(in srgb, var(--k-acc) 16%, transparent) 0%, transparent 70%),
+    radial-gradient(120% 60% at 30% 0%, rgb(255 255 255 / .05) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .7 0 0 0 0 .8 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(172deg, #161d24 0%, #0e141a 40%, #080c11 100%);
+  clip-path: polygon(0 7%, 9% 3%, 22% 5%, 37% 0, 52% 4%, 66% 1.5%, 81% 5%, 100% 2%, 100% 98%, 88% 100%, 60% 98.5%, 34% 100%, 12% 98%, 0 99.5%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .04);
+}
+.cl-consultation .w-wall.k-acc-violet { --k-acc: var(--k-violet); }
+.cl-consultation .w-wall.k-acc-lime { --k-acc: var(--k-lime); }
+/* Light seam: 2px accent line on the edge that faces the centre, plus a faint rim. */
+.cl-consultation .w-wall::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 10%, color-mix(in srgb, var(--k-acc) 85%, #fff) 60%, color-mix(in srgb, var(--k-acc) 50%, transparent) 100%) var(--w-seam-x, right) / 2px 100% no-repeat;
+  filter: drop-shadow(0 0 6px var(--k-acc));
+}
+.cl-consultation .w-wall--1 { --w-seam-x: right; }
+.cl-consultation .w-wall--2 { --w-seam-x: left; }
+.cl-consultation .w-wall--3 { --w-seam-x: left; }
+
+.cl-consultation .w-wall__head { display: flex; align-items: center; gap: 22px; }
+.cl-consultation .w-wall__n {
+  font-family: var(--k-font-sans);
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--k-acc);
+}
+.cl-consultation .w-wall__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: var(--k-acc);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--k-acc) 70%, transparent));
+}
+.cl-consultation .w-wall__icon svg { width: 40px; height: 40px; stroke-width: 1.3; }
+.cl-consultation .w-wall__label { display: block; margin-top: 22px; }
+.cl-consultation .w-wall__title { margin-top: 10px; font-size: 26px; }
+.cl-consultation .w-wall__text { margin-top: 14px; font-size: 16.5px; }
+
+/* Light paths + figure are desktop-only decoration. */
+.cl-consultation .w-paths,
+.cl-consultation .w-figure { display: none; }
+
+/* ── Foot: closer, down arrow ────────────────────────────────────────── */
+.cl-consultation .w-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  text-align: center;
+}
+.cl-consultation .w-foot__closer { color: var(--k-cyan); }
+.cl-consultation .w-foot__line {
+  display: block;
+  width: 1px;
+  height: 36px;
+  margin: 14px 0 0;
+  background: linear-gradient(180deg, transparent, rgb(244 239 220 / .4));
+}
+
+/* ── Desktop stage (≥1100): monoliths across, paths converge on the figure ─ */
+@media (min-width: 1100px) {
+  .cl-consultation .w-stage { padding-bottom: 210px; }
+  .cl-consultation .w-stage .cl-track__rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 3.2%;
+    align-items: end;
+    padding-inline: 1%;
+  }
+  .cl-consultation .w-stage .cl-track__item { height: 450px; }
+  .cl-consultation .w-stage .cl-track__item:nth-child(2) { height: 476px; }
+  .cl-consultation .w-wall--1 { rotate: -.6deg; }
+  .cl-consultation .w-wall--3 { rotate: .5deg; }
+  .cl-consultation .w-backdrop__art { --w-art-bottom: 250px; --w-art-shift: -57%; }
+
+  .cl-consultation .w-paths {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .cl-consultation .w-paths__trace path { fill: none; stroke: currentColor; stroke-linecap: round; }
+  .cl-consultation .w-paths__core { stroke-width: 2.2; }
+  .cl-consultation .w-paths__glow { stroke-width: 10; opacity: .55; }
+
+  .cl-consultation .w-figure {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    bottom: 0;
+    width: 104px;
+    height: 156px;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity .6s ease;
+  }
+  .cl-consultation .w-figure--ready { opacity: 1; }
+  .cl-consultation .w-figure img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; }
+  .cl-consultation .w-foot { margin-top: 34px; }
+}
+
+/* ── Tablet + phone: swipe track of wall faces ───────────────────────── */
+@media (max-width: 1099px) {
+  .cl-consultation .w-stage { margin-top: 40px; }
+  .cl-consultation .w-wall { min-height: 360px; padding: 48px 26px 32px; }
+  .cl-consultation .w-backdrop__art { --w-art-width: max(100%, 1600px); --w-art-bottom: 0px; }
+}
+@media (max-width: 767px) {
+  .cl-consultation .w-backdrop__art {
+    --w-art-width: 100%;
+    --w-art-bottom: 0px;
+    aspect-ratio: auto;
+    top: 0;
+    height: 100%;
+    opacity: .85;
+  }
+  .cl-consultation .w-head { grid-template-columns: minmax(0, 1fr); }
+  .cl-consultation .w-wall { min-height: 340px; padding: 44px 22px 28px; }
+  .cl-consultation .w-wall__n { font-size: 32px; }
+  .cl-consultation .w-wall__icon,
+  .cl-consultation .w-wall__icon svg { width: 32px; height: 32px; }
+  .cl-consultation .w-wall__title { font-size: 21px; }
+  .cl-consultation .w-wall__text { font-size: 15.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-consultation .w-figure { transition: none; }
+}

@@ -151,19 +151,22 @@ export function NumberedRow({
 }
 
 /**
- * Rounded image with a bottom gradient and a mono caption. Renders the
- * gradient fallback alone until the art file exists (or if it 404s).
+ * Rounded image with a bottom gradient and a mono caption. If `src` fails
+ * (e.g. art not delivered yet) it tries `fallbackSrc` once, then shows the
+ * gradient alone.
  */
-export function ImageTile({ src, caption, alt = '', ratio = '16 / 10', position, className = '' }) {
-  const [failed, setFailed] = useState(false);
+export function ImageTile({ src: primary, fallbackSrc, caption, alt = '', ratio = '16 / 10', position, className = '' }) {
+  const [attempt, setAttempt] = useState(0);
+  const src = attempt === 0 ? primary : fallbackSrc;
+  const failed = !src || attempt > (fallbackSrc ? 1 : 0);
 
   return (
     <figure
       className={`k-tile ${className}`.trim()}
       style={{ aspectRatio: ratio, ...(position ? { '--k-tile-pos': position } : null) }}
     >
-      {src && !failed && (
-        <picture>
+      {!failed && (
+        <picture key={attempt}>
           {src.avif && <source type="image/avif" srcSet={src.avif} />}
           <img
             src={src.webp}
@@ -172,7 +175,7 @@ export function ImageTile({ src, caption, alt = '', ratio = '16 / 10', position,
             alt={alt}
             loading="lazy"
             decoding="async"
-            onError={() => setFailed(true)}
+            onError={() => setAttempt((a) => a + 1)}
           />
         </picture>
       )}

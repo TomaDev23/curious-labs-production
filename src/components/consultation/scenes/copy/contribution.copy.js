@@ -7,7 +7,8 @@ export const contributionCopy = {
     text: 'I help business leaders move from curiosity to real results — finding where AI is worth it, defining the harness and methods, and planning the work so it takes hold.',
     source: 'COPY_CANON'
   },
-  quote: { lines: ['Same curiosity.', 'More real-world', 'outcomes.'], source: 'COPY_CANON' },
+  // Unused since MOTIF_PROGRESSION (quote blocks only in SC-01/05/09); kept so COPY_CANON stays in sync.
+  quote: { lines: ['Same curiosity.', 'More real-world', 'outcomes.'], source: 'COPY_CANON', unused: true },
   quoteLabel: { text: 'CuriousLabs', source: 'COPY_CANON' },
   wordStack: { words: ['Ideas', 'People', 'Real world'], source: 'COPY_CANON' },
   cards: {

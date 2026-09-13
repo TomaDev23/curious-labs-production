@@ -1,16 +1,11 @@
 import React from 'react';
 import {
-  Band, Eyebrow, Display, Lead, Body, CardTitle, MicroLabel, QuoteBlock, Tagline,
+  Band, Eyebrow, Display, Lead, Body, CardTitle, MicroLabel, Tagline,
   PrimaryButton, CircleArrow, NeonCard, IconRing, Chips
 } from '../kit';
 import DoorVisual from '../visuals/DoorVisual';
 import doorsCopy from './copy/doors.copy';
 import './css/sc-02-doors.css';
-
-const ART_01 = {
-  avif: '/consultation/art-01-earth-horizon-desktop.avif',
-  webp: '/consultation/art-01-earth-horizon-desktop.webp'
-};
 
 // Words: scenes/copy/doors.copy.js (COPY_CANON). Only presentation lives here.
 const DOORS = [
@@ -18,14 +13,10 @@ const DOORS = [
   { id: 'business', accent: 'violet', icon: 'building', ...doorsCopy.cards.business }
 ];
 
-/** Globe in the top-right of the band (desktop only), faded by a mask, with a thin orbit line. */
+/** Threshold (MOTIF_PROGRESSION): no planet — an abstract orbit arc sweeps across the dark void on the right (desktop). */
 function DoorsBackdrop() {
   return (
     <div className="d-backdrop">
-      <picture className="d-backdrop__globe">
-        <source type="image/avif" srcSet={ART_01.avif} />
-        <img src={ART_01.webp} width="2560" height="1440" alt="" loading="lazy" decoding="async" />
-      </picture>
       <svg className="d-backdrop__orbit" viewBox="0 0 1000 400" preserveAspectRatio="none" focusable="false">
         <ellipse cx="560" cy="210" rx="470" ry="118" />
         <circle className="d-backdrop__orbit-dot" cx="1016" cy="182" r="4" />
@@ -74,6 +65,7 @@ function AudienceScene() {
       sectionKey="D2"
       labelledBy="cl-audiences-title"
       className="d-band"
+      hairline="none"
       art={<DoorsBackdrop />}
     >
       <header className="d-head">
@@ -82,7 +74,6 @@ function AudienceScene() {
           <Display id="cl-audiences-title" lines={doorsCopy.headline.lines} />
           <Lead className="d-head__lead">{doorsCopy.lead.text}</Lead>
         </div>
-        <QuoteBlock quote={doorsCopy.quote.lines} label={doorsCopy.quoteLabel.text} className="d-head__quote" />
       </header>
 
       <div className="d-doors">

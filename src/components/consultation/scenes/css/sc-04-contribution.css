@@ -5,19 +5,6 @@
 
 /* ── Backdrop: globe top-right, mountain horizon along the bottom ─────── */
 .cl-consultation .c-backdrop { position: absolute; inset: 0; }
-.cl-consultation .c-backdrop__globe {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: min(1200px, 80vw);
-  height: 600px;
-  opacity: .85;
-  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 90%), linear-gradient(to bottom, #000 35%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to left, #000 35%, transparent 90%), linear-gradient(to bottom, #000 35%, transparent 100%);
-  mask-composite: intersect;
-}
-.cl-consultation .c-backdrop__globe img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 100% 62%; }
 .cl-consultation .c-backdrop__mountains {
   position: absolute;
   left: 0;
@@ -29,16 +16,23 @@
 }
 .cl-consultation .c-backdrop__mountains img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
 
-/* ── Header ───────────────────────────────────────────────────────────── */
+/* ── Header: centred above the centred triptych (MOTIF_PROGRESSION) ─── */
 .cl-consultation .c-head {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 2fr) minmax(0, 3fr);
-  column-gap: 24px;
-  align-items: start;
+  justify-items: center;
+  max-width: 880px;
+  margin-inline: auto;
+  text-align: center;
 }
-.cl-consultation .c-head__lead { margin-top: 22px; }
-.cl-consultation .c-head__stack { align-self: end; justify-self: end; margin-bottom: 12px; }
-.cl-consultation .c-head__quote { margin-top: 36px; }
+.cl-consultation .c-head .k-eyebrow { justify-content: center; }
+.cl-consultation .c-head .k-eyebrow::after {
+  content: '';
+  flex: none;
+  width: 18px;
+  height: 1.5px;
+  background: currentColor;
+}
+.cl-consultation .c-head__lead { margin: 22px auto 0; max-width: 58ch; }
 
 /* ── Triptych ─────────────────────────────────────────────────────────── */
 .cl-consultation .c-triptych {
@@ -278,11 +272,81 @@
 .cl-consultation .c-next:hover .c-next__line { color: var(--k-lime); }
 .cl-consultation .c-next:focus-visible { outline: 2px solid var(--k-lime); outline-offset: 6px; }
 
+/* ── DR-10 walker seam (desktop ≥1100, motion allowed; the component isn't mounted otherwise) ─
+   The seam is pulled up over the last screen of the walls (band padding 96px + 100vh) and pins for one
+   viewport of scroll; see visuals/MonolithsSeam.jsx. */
+.cl-consultation .ws-seam {
+  position: relative;
+  z-index: 2;
+  /* Released one anchor offset early, so a #contribution jump (scroll-margin = --cl-anchor-offset) lands on p = 1. */
+  height: calc(200vh - var(--cl-anchor-offset, 96px));
+  margin-top: calc(-100vh - 96px);
+  pointer-events: none;
+}
+.cl-consultation .ws-layer {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 6vh;
+}
+.cl-consultation .ws-header { pointer-events: auto; will-change: transform, opacity; }
+.cl-consultation .ws-seam + .c-triptych { margin-top: 0; }
+.cl-consultation .ws-walker {
+  position: absolute;
+  z-index: 3;
+  width: 127px;
+  height: 190px;
+  will-change: transform;
+}
+.cl-consultation .ws-walker::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 10% -90% -12%;
+  background: radial-gradient(45% 55% at 50% 70%, rgb(176 133 255 / .3) 0%, rgb(94 230 245 / .1) 45%, transparent 75%);
+  filter: blur(6px);
+}
+.cl-consultation .ws-frame { position: absolute; inset: 0; opacity: 0; }
+.cl-consultation .ws-frame--back { opacity: 1; }
+.cl-consultation .ws-frame img,
+.cl-consultation .ws-frame svg { display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; }
+.cl-consultation .ws-pose-svg { overflow: visible; }
+.cl-consultation .ws-pose-svg .l { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.cl-consultation .ws-pose-svg__rim { fill: rgb(94 230 245 / .2); stroke: rgb(94 230 245 / .2); stroke-width: 10; }
+.cl-consultation .ws-pose-svg__rim .l { stroke-width: 52; }
+.cl-consultation .ws-pose-svg__far .l { stroke: #060d15; stroke-width: 40; }
+.cl-consultation .ws-pose-svg__body { fill: #0b1520; }
+.cl-consultation .ws-pose-svg__body .l { stroke: #0d1824; stroke-width: 42; }
+.cl-consultation .ws-pool {
+  position: absolute;
+  z-index: 2;
+  width: 250px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgb(255 255 255 / .9) 0%, rgb(201 184 255 / .5) 30%, rgb(94 230 245 / .16) 65%, transparent 100%);
+  filter: blur(2px);
+  will-change: transform, opacity;
+}
+.cl-consultation .ws-thread {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgb(176 133 255 / .9)) drop-shadow(0 0 12px rgb(176 133 255 / .5));
+}
+.cl-consultation .ws-thread__line { fill: none; stroke: #d9c4ff; stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+/* While the seam exists its walker replaces the walls' own figure and light pool. */
+.cl-consultation:has(.ws-seam) #walls .w-figure,
+.cl-consultation:has(.ws-seam) #walls .w-paths__pool { visibility: hidden; }
+
 /* ── Tablet: cards stack, harness centred ────────────────────────────── */
 @media (max-width: 1099px) {
-  .cl-consultation .c-head { grid-template-columns: minmax(0, 1fr); }
-  .cl-consultation .c-head__stack { display: none; }
-  .cl-consultation .c-head__quote { margin: 28px 0 0; }
   .cl-consultation .c-triptych { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .cl-consultation .c-arrow { display: none; }
   .cl-consultation .c-packages { grid-template-columns: minmax(0, 1fr); gap: 22px; }
@@ -293,9 +357,7 @@
 /* ── Phone (MOCK-M1): compact cards, arrow toggles the details ───────── */
 @media (max-width: 767px) {
   .cl-consultation .c-band { padding-bottom: 260px; }
-  .cl-consultation .c-backdrop__globe { display: none; }
   .cl-consultation .c-backdrop__mountains { height: 300px; }
-  .cl-consultation .c-head__quote { display: none; }
   .cl-consultation .c-head__lead { margin-top: 14px; }
   .cl-consultation .c-triptych { gap: 14px; margin-top: 28px; }
   .cl-consultation .c-card,

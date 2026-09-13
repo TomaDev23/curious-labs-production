@@ -1,41 +1,21 @@
 /* SC-02 two doors (lane A) — MOCK-D1 top (desktop), MOCK-M1 col 1 bottom (phone).
    Every selector stays under .cl-consultation; scene classes are prefixed `d-`. */
 
-/* ── Backdrop: shallow globe top-right (desktop) ─────────────────────── */
+/* ── Backdrop: orbit arc across the void (desktop) — no planet (MOTIF_PROGRESSION) ─ */
 .cl-consultation .d-backdrop { position: absolute; inset: 0; }
-.cl-consultation .d-backdrop__globe {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: min(1420px, 94vw);
-  height: 760px;
-  opacity: .9;
-  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 92%), linear-gradient(to bottom, #000 40%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to left, #000 35%, transparent 92%), linear-gradient(to bottom, #000 40%, transparent 100%);
-  mask-composite: intersect;
-}
-.cl-consultation .d-backdrop__globe img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 100% 64%;
-}
-
 .cl-consultation .d-backdrop__orbit {
   position: absolute;
-  top: 40px;
-  right: -2vw;
-  width: min(1100px, 76vw);
-  height: 330px;
+  top: 30px;
+  right: -6vw;
+  width: min(1180px, 80vw);
+  height: 360px;
   overflow: visible;
   transform: rotate(-11deg);
   fill: none;
-  -webkit-mask-image: linear-gradient(to left, #000 55%, transparent 100%);
-  mask-image: linear-gradient(to left, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, #000 50%, transparent 100%);
+  mask-image: linear-gradient(to left, #000 50%, transparent 100%);
 }
-.cl-consultation .d-backdrop__orbit ellipse { stroke: rgb(94 230 245 / .4); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.cl-consultation .d-backdrop__orbit ellipse { stroke: rgb(94 230 245 / .5); stroke-width: 1.2px; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 6px rgb(94 230 245 / .35)); }
 .cl-consultation .d-backdrop__orbit-dot { fill: #e8fbff; filter: drop-shadow(0 0 6px #5ee6f5) drop-shadow(0 0 14px #5ee6f5); }
 
 /* ── Header: copy left, quote right ──────────────────────────────────── */
@@ -47,7 +27,6 @@
 }
 .cl-consultation .d-head__copy { grid-column: 1 / 9; }
 .cl-consultation .d-head__lead { margin-top: 24px; }
-.cl-consultation .d-head__quote { grid-column: 10 / 13; margin-top: 64px; }
 
 /* ── Cards ────────────────────────────────────────────────────────────── */
 .cl-consultation .d-doors {
@@ -252,14 +231,12 @@
 /* ── Tablet: one card per row, doors kept ─────────────────────────────── */
 @media (max-width: 1099px) {
   .cl-consultation .d-head__copy { grid-column: 1 / -1; }
-  .cl-consultation .d-head__quote { grid-column: 1 / -1; margin: 36px 0 0; }
   .cl-consultation .d-doors { grid-template-columns: minmax(0, 1fr); row-gap: 88px; max-width: 720px; }
 }
 
 /* ── Phone (MOCK-M1): stacked cards, no doors, no globe ──────────────── */
 @media (max-width: 767px) {
   .cl-consultation .d-backdrop { display: none; }
-  .cl-consultation .d-head__quote { display: none; }
   .cl-consultation .d-head__lead { margin-top: 16px; }
   .cl-consultation .d-doors { gap: 16px; margin-top: 32px; }
   .cl-consultation .d-floor { display: none; }

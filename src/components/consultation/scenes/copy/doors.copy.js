@@ -7,7 +7,8 @@ export const doorsCopy = {
     text: 'Wherever you are with AI, I meet you there. Different contexts, same goal — real value, practical outcomes, and a clearer way forward.',
     source: 'COPY_CANON'
   },
-  quote: { lines: ['Two paths.', 'A wider horizon.'], source: 'COPY_CANON' },
+  // Unused since MOTIF_PROGRESSION (quote blocks only in SC-01/05/09).
+  quote: { lines: ['Two paths.', 'A wider horizon.'], source: 'COPY_CANON', unused: true },
   quoteLabel: { text: 'CuriousLabs', source: 'COPY_CANON' },
   cards: {
     source: 'COPY_CANON',

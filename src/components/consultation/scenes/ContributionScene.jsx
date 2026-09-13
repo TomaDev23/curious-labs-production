@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import {
-  Band, Eyebrow, Display, Lead, Body, CardTitle, MicroLabel, QuoteBlock, WordStack, Tagline,
+  Band, Eyebrow, Display, Lead, Body, CardTitle, MicroLabel, Tagline,
   PrimaryButton, CircleArrow, NeonCard, IconRing, IconRow, ImageTile
 } from '../kit';
 import { ClIcon } from '../ConsultationIcons';
 import HarnessSystem from '../visuals/HarnessSystem';
+import { WalkerSeam, useWalkerSeam } from '../visuals/MonolithsSeam';
 import copy from './copy/contribution.copy';
 import './css/sc-04-contribution.css';
 
 const ART = {
-  globe: { avif: '/consultation/art-01-earth-horizon-desktop.avif', webp: '/consultation/art-01-earth-horizon-desktop.webp' },
   mountains: { avif: '/consultation/art-15-horizon-mountains.avif', webp: '/consultation/art-15-horizon-mountains.webp' },
+  cityGrid: { avif: '/consultation/art-25-tile-city-grid.avif', webp: '/consultation/art-25-tile-city-grid.webp' },
   cityTile: { avif: '/consultation/art-13-tile-city-lights.avif', webp: '/consultation/art-13-tile-city-lights.webp', width: 960, height: 640 },
   summitTile: { avif: '/consultation/art-14-tile-summit.avif', webp: '/consultation/art-14-tile-summit.webp', width: 960, height: 640 }
 };
@@ -18,14 +19,10 @@ const ART = {
 const CLARITY_ICONS = ['search', 'chart', 'people'];
 const ACTION_ICONS = ['laptop', 'people', 'rocket', 'refresh'];
 
-/** Globe top-right (desktop) + mountain horizon along the band bottom. */
+/** "The work" (MOTIF_PROGRESSION): no Earth — the harness core is the light source; mountain ridge along the bottom. */
 function ContributionBackdrop() {
   return (
     <div className="c-backdrop">
-      <picture className="c-backdrop__globe">
-        <source type="image/avif" srcSet={ART.globe.avif} />
-        <img src={ART.globe.webp} width="2560" height="1440" alt="" loading="lazy" decoding="async" />
-      </picture>
       <picture className="c-backdrop__mountains">
         <source type="image/avif" srcSet={ART.mountains.avif} />
         <img src={ART.mountains.webp} width="1916" height="821" alt="" loading="lazy" decoding="async" />
@@ -78,18 +75,20 @@ function WorkCard({ id, accent, ringAccent, icon, featured, card, children }) {
 
 function ContributionScene() {
   const { clarity, core, action } = copy.cards;
+  const seam = useWalkerSeam();
+
+  const header = (
+    <header className="c-head">
+      <Eyebrow>{copy.eyebrow.text}</Eyebrow>
+      <Display id="cl-contribution-title" lines={copy.headline.lines} />
+      <Lead className="c-head__lead">{copy.lead.text}</Lead>
+    </header>
+  );
 
   return (
     <Band id="contribution" sectionKey="D3" labelledBy="cl-contribution-title" className="c-band" art={<ContributionBackdrop />}>
-      <header className="c-head">
-        <div className="c-head__copy">
-          <Eyebrow>{copy.eyebrow.text}</Eyebrow>
-          <Display id="cl-contribution-title" lines={copy.headline.lines} />
-          <Lead className="c-head__lead">{copy.lead.text}</Lead>
-        </div>
-        <WordStack words={copy.wordStack.words} className="c-head__stack" />
-        <QuoteBlock quote={copy.quote.lines} label={copy.quoteLabel.text} className="c-head__quote" />
-      </header>
+      {/* DR-10: on desktop with motion the walker seam carries the header in; otherwise it sits in the flow. */}
+      {seam ? <WalkerSeam>{header}</WalkerSeam> : header}
 
       <div className="c-triptych">
         <WorkCard id="clarity" accent="cyan" ringAccent="lime" icon="compass" card={clarity}>
@@ -98,7 +97,7 @@ function ContributionScene() {
               <li key={row}><IconRow icon={CLARITY_ICONS[i]} title={row} /></li>
             ))}
           </ul>
-          <ImageTile src={ART.cityTile} caption={clarity.tileCaption} ratio="16 / 10" className="c-tile" />
+          <ImageTile src={ART.cityGrid} fallbackSrc={ART.cityTile} caption={clarity.tileCaption} ratio="16 / 10" className="c-tile" />
         </WorkCard>
 
         <span className="c-arrow" aria-hidden="true"><ClIcon name="arrow" /></span>

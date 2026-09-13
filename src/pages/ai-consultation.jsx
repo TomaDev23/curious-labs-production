@@ -5,6 +5,7 @@ import MissionControlNavbar from '../components/navigation/MissionControlNavbar'
 import LandingCosmicBackground from '../components/landing/LandingCosmicBackground';
 import ConsultationContent from '../components/consultation/ConsultationContent';
 import '../components/consultation/consultation.css';
+import '../components/consultation/consultation-scenes.css';
 
 export default function AiConsultationPage() {
   return (

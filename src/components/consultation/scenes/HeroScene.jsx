@@ -1,7 +1,7 @@
 import React from 'react';
 import { ClIcon } from '../ConsultationIcons';
 import ConsultationOrbit from '../ConsultationOrbit';
-import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import { Reveal, Stagger } from '../ConsultationMotion';
 
 function HeroScene() {
   return (
@@ -14,37 +14,35 @@ function HeroScene() {
         <span className="cl-panel__corner cl-panel__corner--br" aria-hidden="true"></span>
         <span className="cl-hero__vmeta" aria-hidden="true">STRATEGY · MANAGEMENT · AI</span>
         <div className="cl-hero__copy">
-          <Reveal as="p" className="cl-eyebrow" y={12}><span>//</span> BUSINESS CONSULTATION IN THE AGE OF AI</Reveal>
-          <KineticHeading
-            id="cl-page-title"
-            level="h1"
-            lines={['Business consultation,', 'in the age of AI.']}
-          />
-          <Reveal as="p" className="cl-lead" delay={0.25}>
+          <p className="cl-eyebrow"><span>//</span> BUSINESS CONSULTATION IN THE AGE OF AI</p>
+          <h1 id="cl-page-title">
+            Business consultation,<br />in the age of AI.
+          </h1>
+          <p className="cl-lead">
             I’m a business advisor who now operates AI hands-on, every day. If you’re trying to bring AI into your business — whether you’ve already started or don’t know where to begin — I help you work out what you actually need, and turn it into something you can act on. Business consultancy first, with a real AI focus on top.
-          </Reveal>
-          <Reveal as="p" className="cl-hero__invitation" delay={0.33}>
+          </p>
+          <p className="cl-hero__invitation">
             Bring one real situation from your business. The first conversation is free.
-          </Reveal>
-          <Reveal className="cl-actions" delay={0.41}>
+          </p>
+          <div className="cl-actions">
             <a className="cl-button cl-button--primary" href="#contact">
               Start a free conversation <ClIcon name="arrow" />
             </a>
             <a className="cl-button cl-button--secondary" href="#approach">
               See how it works <ClIcon name="diagonal" />
             </a>
-          </Reveal>
+          </div>
         </div>
         <div className="cl-hero__visual">
           <div className="cl-hero__signal" aria-hidden="true"></div>
           <ConsultationOrbit />
         </div>
-        <Reveal className="cl-hero__meta" delay={0.5}>
+        <div className="cl-hero__meta">
           <span><ClIcon name="people" /> Personally delivered</span>
           <span><ClIcon name="pin" /> Phnom Penh / Online</span>
           <span><ClIcon name="chat" /> English &amp; Khmer</span>
           <span className="cl-hero__meta-label">CURIOUSLABS // BUSINESS CONSULTATION · AI</span>
-        </Reveal>
+        </div>
       </section>
 
       <Stagger className="cl-jump-links" as="nav" aria-label="On this page" step={0.055}>

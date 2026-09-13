@@ -1,0 +1,26 @@
+/* Cinematic scene styles for /ai-consultation (M1+). Every selector is
+   scoped under .cl-consultation. Reduced motion is handled by the existing
+   global `animation: none !important` rule in consultation.css — nothing
+   here needs its own reduced-motion override. */
+
+/* ── B-03 · DR-01 hero headline sheen ─────────────────────────────────── */
+.cl-consultation .cl-hero #cl-page-title {
+  position: relative;
+  overflow: hidden;
+}
+
+.cl-consultation .cl-hero #cl-page-title::after {
+  content: '';
+  position: absolute;
+  inset: -20% -10%;
+  background: linear-gradient(100deg, transparent 42%, rgba(255, 255, 255, .5) 48%, rgba(255, 255, 255, .85) 50%, rgba(255, 255, 255, .5) 52%, transparent 58%);
+  transform: translateX(-140%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  animation: cl-hero-sheen 1.4s cubic-bezier(.16, 1, .3, 1) .3s 1 both;
+}
+
+@keyframes cl-hero-sheen {
+  from { transform: translateX(-140%); }
+  to { transform: translateX(140%); }
+}

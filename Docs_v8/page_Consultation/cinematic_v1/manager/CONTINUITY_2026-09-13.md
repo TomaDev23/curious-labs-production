@@ -63,7 +63,7 @@ don't trust copies.
 - Don't build/commit per tiny tweak on the live main; work happens on the branch; ask before any merge/release.
 
 ## §4 · LIVE PIN — last-verified 2026-09-13T17:57 — RE-DERIVE ON RESUME, do not trust this line
-- Branch `design/cinematic-consultation`, HEAD `72cce84`+ (manager marks after); main at `895198d`.
+- Branch `design/cinematic-consultation`, HEAD `66a2d89`+; **main = `c998bad` (owner-instructed release for phone review, #MGR-075, 2026-09-14)**. Main moves again only on owner instruction.
 - Ledger: last manager mark `#MGR-073`; last builder marks `#A-021`, `#B-015`, `#C-011` (all audited).
 - **Baseline A-08r2 (#A-021, HEAD 72cce84): phone docH 9,711 ✓, desktop 14,146**; captures in lane A scratch
   `.../24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/A08/out/{p390-r2,d1440-r2}_*` + `cap/seams{390,1440}-r2.png`.
@@ -97,7 +97,7 @@ don't trust copies.
   photos/portrait (recommend owner shoots a rooftop/riverside night photo). Don't caption generated images as documentary.
 - **Contact destinations** — still PENDING (Telegram/WhatsApp/email/Facebook); page shows honest pending state.
 - **Footer "Home" link** was removed (in-page anchors only) — owner may want it back.
-- **Release** — merge `design/cinematic-consultation` → `main` only on explicit owner instruction.
+- **Release** — first release done on owner instruction (main → c998bad, #MGR-075). Further merges only on explicit owner instruction.
 - **Landing page** — the same method is the planned next step if the owner approves this pilot.
 
 ## §8 · OWNED-BY-OTHERS TAILS

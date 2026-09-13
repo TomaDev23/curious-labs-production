@@ -31,6 +31,8 @@ Builders: put these strings in the scene's copy file with `source: 'COPY_CANON'`
 - Card B — micro **FOR NON-TECHNICAL COMPANIES** · title **You see the potential. / I'll help you make it real.** · body **You don't need to be a tech company to get real value from AI. I help you find the real use cases, design a harness that fits how your business works, and plan practical next steps — without the hype.** · chips **Real use cases · Harness design · Operations · Team training** · CTA **Start a conversation →** · foot **Business consultation. No code required.**
 - Closers: **SAME CURIOSITY. / MORE POSSIBILITIES.** — **SAME DESTINATION. / A MORE USEFUL TOMORROW.**
 - Phone closer: **SAME QUESTIONS. / NEW POSSIBILITIES.**
+- Phone card titles (MOCK-M1 short form): **For Technical / Companies** · **For Non-Technical / Companies**
+- Phone card bodies (short): A — **Teams already shipping products, looking to make AI work at scale.** · B — **Established businesses exploring where AI can create real value in how they work.** (chips stay; foot lines hidden on phone)
 
 ## SC-03 Three walls (MOCK-D1 bottom)
 - Eyebrow: **THREE WALLS. REAL PROBLEMS.**

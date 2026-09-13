@@ -273,6 +273,9 @@ OWNER DECISION — COPY FROM THE MOCKUPS. "Keep pushing the team with the mockup
 - [BLD-C]: use COPY_CANON SC-01 for C-01, and SC-07/08/09 for C-02…C-04.
 ACK each.
 
+#B-005  ASSETS-RAW  [BLD-B]  2026-09-13T15:36
+ACK #MGR-016. COPY remaining ART_QUEUE rows 9–12 are ready, two variants each: `tools/art/_raw/codex-art-11-reading-experience-v{1,2}.png`, `codex-art-16-galaxy-band-v{1,2}.png`, `codex-art-17-final-horizon-desktop-v{1,2}.png`, and `codex-art-17-final-horizon-mobile-v{1,2}.png`. ART-11 uses only the approved row-9 exception: one small anonymous rear silhouette, no face or identifying detail. ART-16 and both ART-17 crops contain no people or figures. All eight are text-free. The full 12-row raw queue is now complete. SC-05/SC-06 implementation is being rebound to COPY_CANON before the X-01/X-02 commit; the single agency-form `We` in SC-06 step 02 is reduced to framing-safe imperative `Find …` to honor the owner’s no-`we` rule.
+
 #A-005  DONE  [BLD-A]  2026-09-13T15:26
 ACK #MGR-014 (A-02 audit), #MGR-015 (A-02b) and #MGR-016 (COPY_CANON). Sequencing note: A-03 was nearly finished when #MGR-015 arrived, so I finished it on COPY_CANON copy and committed it. **A-02b starts now** (door proportions, leaf, floor, globe orbit, sans body on phone, doors copy from COPY_CANON).
 **A-03 SC-03 three walls done — `8b7e53e` (pushed).** `scenes/WallsScene.jsx` (`#walls`, D2) on the kit. Copy is all COPY_CANON (`scenes/copy/walls.copy.js`, `source: 'COPY_CANON'`): eyebrow, H2 "Great potential. Real barriers.", lead, three walls (TRUST / COMPLEXITY / RELIABILITY with the two-line titles), word stack, closer. The only placeholder is the down arrow's aria-label. **Dropped the deck bridge line** "It starts with your situation. We shape the work around it." — no slot in the mockup or COPY_CANON; say if you want it back.
@@ -311,3 +314,31 @@ Remaining deltas: (a) no painted leaf text; (b) phone card titles are COPY_CANON
 
 #MGR-020  ACK  [BLD-A]  2026-09-13T15:33
 Audit A-02b (#A-006, bda257e) vs side-by-sides: **accepted.** The doorway now reads as the card's hero (rises above the card, wide vista, leaf with thickness, floor pools, globe orbit); COPY_CANON copy in; kit phone sans verified in your capture. Not-flush-right reasoning accepted. Deltas: (a) ok; (b) **yes** — COPY_CANON SC-02 now has phone short titles + short bodies (M1 form); wire them as phone-only slots (hide the desktop title/body below 768px, don't duplicate for screen readers) and hide the foot line on phone; (c) skip the notch; (d) keep the ART-01 crop. Small optional polish when you're back in this file: the leaf's top reads detached from the frame's top edge — hinge it so the leaf's outer top corner meets the frame's top-right corner. Continue A-03b.
+
+#C-002  DONE  [BLD-C]  2026-09-13T15:36
+ACK #MGR-011 (own tab — used tab-4 throughout, never the shared/"seed" tab; caught myself defaulting to it once when a call omitted `tabId` and corrected before capturing anything real) and #MGR-016 (COPY_CANON — folded into C-01 below). Also noted #A-006(5)'s kit change (`k-body`/`k-lead` → Inter Tight <768px): applies to `h-lead` automatically, no fix needed on my side.
+
+**C-01 done (SC-01 hero to canon, = v1 B-05R) — `1012bc8` (rebuild) + `6c972a9` (COPY_CANON follow-up), pushed.**
+
+Structure — `HeroScene.jsx` rebuilt on the canon kit (`Band, Eyebrow, Display, Lead, QuoteBlock, StatStrip, PrimaryButton, GhostButton, CircleArrow` from `../kit`): `<Band id="overview" sectionKey="D1" art={ART-01, scrim:left, parallax:24, position:"70% 50%"}>` → `.h-grid` (12-col: copy 1/7, quote 10/13, `align-items:start` so the quote sits flush with the eyebrow, per the card) → `.h-meta` (desktop-only quiet meta line, right-hand label dropped) → `.h-phone-stats` (StatStrip + CircleArrow down to `#audiences`, phone-only). Orbital fully removed from the hero (`ConsultationOrbit`/`_orbit.svg` untouched on disk for lane A's SC-04); the "EXPLORE THE PAGE" jump-links block deleted. Copy: eyebrow/h1/lead/quote/quoteLabel/stats all moved into `scenes/copy/hero.copy.js`, `source: 'COPY_CANON'`, no placeholders left; the invitation line and meta row aren't in COPY_CANON's SC-01 list, left as-is (deck-sourced).
+
+Bug found and fixed before commit: `k-band__art` is `inset:0` (covers the section's full height), and on phone the section grows tall (quote + stat strip stack below the copy). An edge-to-edge art layer over that ~1600px section forced the 900×1600 globe image to cover way more height than intended, scaling it into an unrecognisable vertical sliver — caught this from a live screenshot, not just the numbers. Fixed by capping `.h-band .k-band__art` to a fixed 760px band on phone (`bottom:auto; height:760px`) with a stronger top+bottom fade (override on `.cl-art--scrim-left::after`) dissolving into the page background instead of stretching edge-to-edge.
+
+Self-checks (Browser pane, my own tab-4 per #MGR-011 — I don't have lane A's CDP-file-capture setup, so this is live numbers + screenshots rather than saved comparison PNGs):
+- No horizontal overflow: `scrollWidth === innerWidth` at 320 (321/321), 390 (390/390), 1440 (1430/1440).
+- Full-bleed proof (not just scrollWidth): art element `getBoundingClientRect().width` = 1440.46 at 1440px and 390.08 at 390px — matches the viewport exactly at both; this was B-05's original defect, confirmed fixed.
+- `#cl-page-title` sheen intact through the rebuild: computed `backgroundClip: "text, text"`, `webkitTextFillColor: "rgba(0,0,0,0)"` — same pattern as the original STEER #L-027 fix.
+- Breakpoints: `.h-meta` flex(desktop)/none(phone); `.h-phone-stats` none(desktop)/flex(phone); `.h-quote` visible at both widths — 300px right-aligned on desktop, 340px centered on phone/tablet (<1099px) since MOCK-M1's hero keeps a quote too, just repositioned.
+- Confirmed via query: no orbital element, no jump-links block, no meta-label span remain in the DOM.
+- Visual: 1440×900 and 390×844 compared against `scene-crops/SC-01a_earth-hero.jpg` (MOCK-D0) and `mockups/MOCK-M1_full-flow_mobile.png` col 1 top — headline wrap (3 lines), quote position, globe/sunrise composition, meta row and phone stat strip all read like the mockups.
+- Console: the only errors present trace to `<ApproachScene>`/`<PersonScene>` (lane B's in-progress X-01/X-02), caught by the ErrorBoundary — confirmed unrelated to HeroScene by component stack; not fixing (not my lane).
+
+Delta vs MOCK-D0/M1: (1) `QuoteBlock` (kit primitive) has no decorative dash above the quote the way the mockup does — a kit-level look, didn't hack around it in my scene; lane A's call whether it's worth adding. (2) Kept the quote visible on phone (MOCK-M1 shows one there too), centred via a scene-local override since `QuoteBlock` only ships a `right` alignment — didn't add a `k-quote--center` to the kit for one scene, flagging in case another scene wants it too. (3) `#cl-page-title` max-width is 13ch (was 16ch pre-canon; canon text said "~11ch") — 11ch broke the second line's wrap badly at the actual rendered size; 13ch reproduces the mockup's 3-line silhouette without that.
+
+Next: C-02 (SC-07 engagement).
+
+#MGR-021  ASSETS  [ALL]  2026-09-13T15:37
+Picked from #B-005 — the original 12-row queue is complete: `/consultation/art-11-reading-experience` 800×600 (v1, lane B R4 card); `/consultation/art-16-galaxy-band` 1916×821 (v1, lane C SC-07 band — bright band upper-centre, dark lower half for copy); `/consultation/art-17-final-horizon-desktop` 1664×936 (v1, lane C SC-09 — Earth upper-right, sunrise behind the ridges; place the ART-09 walker on the right-hand outcrop ~x 78%, y 82% of the image) and `/consultation/art-17-final-horizon-mobile` 900×1350 (v1). Codex: row 13 `art-18-monolith-face` is still wanted first (#MGR-019).
+
+#MGR-022  OBSERVATION  [BLD-B]  2026-09-13T15:37
+From #C-002: the running page currently shows errors from `<PersonScene>`/`<ApproachScene>` caught by the ErrorBoundary (your in-progress X-01/X-02 files). Please keep saved files rendering (TEAM_PROTOCOL shared-server rule) — it blocks the other lanes' visual checks of the whole page. Post when fixed.

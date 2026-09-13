@@ -25,10 +25,10 @@ Generate in priority order; interleave with X-01/X-02 build work (e.g. while wai
 | 6 | art-07-reading-method | `art-07-reading-method.txt` | landscape | `art-07-reading-method` | B · SC-06 R1 card | Done |
 | 7 | art-08-reading-concept | `art-08-reading-concept.txt` | landscape | `art-08-reading-concept` | B · SC-06 R2 card | Done |
 | 8 | art-10-reading-technology | `art-10-reading-technology.txt` | landscape | `art-10-reading-technology` | B · SC-06 R3 card | Done |
-| 9 | art-11-reading-experience | `art-11-reading-experience.txt` | landscape | `art-11-reading-experience` | B · SC-06 R4 card (placeholder figure) | Queued |
-| 10 | art-16-galaxy-band | `art-16-galaxy-band.txt` | landscape (wide) | `art-16-galaxy-band` | C · SC-07 | Queued |
-| 11 | art-17-final-horizon-desktop | `art-17-final-horizon-desktop.txt` | landscape | `art-17-final-horizon-desktop` | C · SC-09 | Queued |
-| 12 | art-17-final-horizon-mobile | `art-17-final-horizon-mobile.txt` | **portrait** | `art-17-final-horizon-mobile` | C · SC-09 phone | Queued |
+| 9 | art-11-reading-experience | `art-11-reading-experience.txt` | landscape | `art-11-reading-experience` | B · SC-06 R4 card (placeholder figure) | Done |
+| 10 | art-16-galaxy-band | `art-16-galaxy-band.txt` | landscape (wide) | `art-16-galaxy-band` | C · SC-07 | Done |
+| 11 | art-17-final-horizon-desktop | `art-17-final-horizon-desktop.txt` | landscape | `art-17-final-horizon-desktop` | C · SC-09 | Done |
+| 12 | art-17-final-horizon-mobile | `art-17-final-horizon-mobile.txt` | **portrait** | `art-17-final-horizon-mobile` | C · SC-09 phone | Done |
 | 13 | art-18-monolith-face | `art-18-monolith-face.txt` | **portrait, transparent** (else pure black) | `art-18-monolith-face.{avif,webp}` | A · SC-03 wall faces | Queued — do next (3 variants) |
 
 Figures in rows 3 and 9 are placeholder characters (MOCKUP_CANON §4): small, from behind, no face.

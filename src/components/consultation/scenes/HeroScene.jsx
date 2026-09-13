@@ -1,9 +1,10 @@
 import React from 'react';
 import { ClIcon } from '../ConsultationIcons';
-import ConsultationOrbit from '../ConsultationOrbit';
-import { Reveal, Stagger } from '../ConsultationMotion';
-import SceneArt from '../kit/SceneArt';
-import SceneSeam from '../kit/SceneSeam';
+import {
+  Band, Eyebrow, Display, Lead, QuoteBlock, StatStrip,
+  PrimaryButton, GhostButton, CircleArrow
+} from '../kit';
+import heroCopy from './copy/hero.copy';
 import './css/sc-01-hero.css';
 
 const ART_01_DESKTOP = {
@@ -15,67 +16,58 @@ const ART_01_DESKTOP = {
 const ART_01_MOBILE = {
   avif: '/consultation/art-01-earth-horizon-mobile.avif',
   webp: '/consultation/art-01-earth-horizon-mobile.webp',
-  width: 960,
-  height: 1280
+  width: 900,
+  height: 1600
 };
 
 function HeroScene() {
   return (
-    <>
-      {/* ── D1 · Opening ─────────────────────────────────────────── */}
-      <section id="overview" className="cl-hero-stage" aria-labelledby="cl-page-title" data-cl-section="D1">
-        <SceneArt
-          priority
-          scrim="left"
-          desktop={ART_01_DESKTOP}
-          mobile={ART_01_MOBILE}
-          position="70% 50%"
-          parallax={24}
-          className="cl-hero-stage__art"
-        />
-        <div className="cl-hero-stage__grid">
-          <div className="cl-hero-stage__copy">
-            <p className="cl-eyebrow"><span>//</span> BUSINESS CONSULTATION IN THE AGE OF AI</p>
-            <h1 id="cl-page-title">
-              Business consultation,<br />in the age of AI.
-            </h1>
-            <p className="cl-lead">
-              I’m a business advisor who now operates AI hands-on, every day. If you’re trying to bring AI into your business — whether you’ve already started or don’t know where to begin — I help you work out what you actually need, and turn it into something you can act on. Business consultancy first, with a real AI focus on top.
-            </p>
-            <p className="cl-hero__invitation">
-              Bring one real situation from your business. The first conversation is free.
-            </p>
-            <div className="cl-actions">
-              <a className="cl-button cl-button--primary" href="#contact">
-                Start a free conversation <ClIcon name="arrow" />
-              </a>
-              <a className="cl-button cl-button--secondary" href="#approach">
-                See how it works <ClIcon name="diagonal" />
-              </a>
-            </div>
-          </div>
-          <div className="cl-hero-stage__orbit">
-            <ConsultationOrbit />
-          </div>
-          <div className="cl-hero__meta">
-            <span><ClIcon name="people" /> Personally delivered</span>
-            <span><ClIcon name="pin" /> Phnom Penh / Online</span>
-            <span><ClIcon name="chat" /> English &amp; Khmer</span>
-            <span className="cl-hero__meta-label">CURIOUSLABS // BUSINESS CONSULTATION · AI</span>
+    <Band
+      id="overview"
+      sectionKey="D1"
+      labelledBy="cl-page-title"
+      className="h-band"
+      art={{
+        priority: true,
+        scrim: 'left',
+        desktop: ART_01_DESKTOP,
+        mobile: ART_01_MOBILE,
+        position: '70% 50%',
+        parallax: 24
+      }}
+    >
+      <div className="h-grid">
+        <div className="h-copy">
+          <Eyebrow>Business consultation in the age of AI</Eyebrow>
+          <Display as="h1" id="cl-page-title" size="hero" lines={['Business consultation,', 'in the age of AI.']} />
+          <Lead className="h-lead">
+            I’m a business advisor who now operates AI hands-on, every day. If you’re trying to bring AI into
+            your business — whether you’ve already started or don’t know where to begin — I help you work out
+            what you actually need, and turn it into something you can act on. Business consultancy first, with
+            a real AI focus on top.
+          </Lead>
+          <p className="h-invite">
+            Bring one real situation from your business. The first conversation is free.
+          </p>
+          <div className="h-actions">
+            <PrimaryButton href="#contact">Start a free conversation</PrimaryButton>
+            <GhostButton href="#approach" icon="diagonal">See how it works</GhostButton>
           </div>
         </div>
-        <SceneSeam edge="bottom" />
-      </section>
+        <QuoteBlock quote={heroCopy.quote.text} label={heroCopy.quoteLabel.text} className="h-quote" />
+      </div>
 
-      <Stagger className="cl-jump-links" as="nav" aria-label="On this page" step={0.055}>
-        <Reveal as="span" className="cl-micro" y={10}>EXPLORE THE PAGE</Reveal>
-        <Reveal as="a" href="#contribution" y={10}>What I help with <ClIcon name="arrow" /></Reveal>
-        <Reveal as="a" href="#person" y={10}>About me <ClIcon name="arrow" /></Reveal>
-        <Reveal as="a" href="#approach" y={10}>The approach <ClIcon name="arrow" /></Reveal>
-        <Reveal as="a" href="#questions" y={10}>Questions <ClIcon name="arrow" /></Reveal>
-        <Reveal as="a" href="#contact" y={10}>Contact <ClIcon name="arrow" /></Reveal>
-      </Stagger>
-    </>
+      <div className="h-meta">
+        <span><ClIcon name="people" /> Personally delivered</span>
+        <span><ClIcon name="pin" /> Phnom Penh / Online</span>
+        <span><ClIcon name="chat" /> English &amp; Khmer</span>
+      </div>
+
+      <div className="h-phone-stats">
+        <StatStrip items={heroCopy.stats.items} />
+        <CircleArrow href="#audiences" label="See the two kinds of company" direction="down" />
+      </div>
+    </Band>
   );
 }
 

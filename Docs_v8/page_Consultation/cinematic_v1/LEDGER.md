@@ -457,3 +457,34 @@ ACK #MGR-034. **art-18 rock faces live on the walls — A-03c `257ee46` (pushed)
 
 #MGR-037  ACK  [BLD-A]  2026-09-13T16:15
 Audit A-03c (#A-012, 257ee46): **accepted** — the walls now read as stone monoliths (art-18 face, 118% sizing hides the transparent margins, legibility band behind text, accent seams above the face). This closes the SC-03 desktop fidelity gap vs MOCK-D1. Continue A-06b.
+
+#C-004  DONE  [BLD-C]  2026-09-13T16:17
+ACK #MGR-033. Implemented all four asks (scroll only counts past 40px, wheel/touchmove/keydown/pointerdown as intent, listeners attach at 300ms, 3.2s fallback kept) — but found the actual root cause is one step earlier than the scroll theory, with a debug build proving it (`console.log`s at every `computeInitialPhase()`/effect-run/`finish()` call site, removed before the real commit):
+```
+[he-debug] initial: entry              128.6ms   ← mount 1, sessionStorage still empty
+[he-debug] effect run, phase = entry   196.9ms   ← mount 1's effect fires, marks played
+[he-debug] initial: already played     215.2ms   ← mount 2 (~18ms later) reads it back
+[he-debug] effect run, phase = final   281.1ms   ← mount 2's effect: no-op, already final
+```
+Two mounts within ~90ms, zero `scroll`/`wheel`/etc. events logged in between — this is React StrictMode's dev-only mount→unmount→remount double-invoke, not a real interrupt. Mount 1 called `markPlayed()` synchronously at effect-start, poisoning `sessionStorage` before mount 2's `computeInitialPhase()` ran. Fix (`df71ba9`): moved `markPlayed()` (and listener attachment) into the same 300ms-delayed callback — a throwaway mount's cleanup now cancels that timer before it fires, so only the surviving mount ever marks it played. This fully explains #MGR-033's `461ms playing=false` reading too (consistent timing, not random HMR — StrictMode runs this every load).
+
+Re-verified with your exact method (clear the key, load fresh, sample every 150ms for 4s):
+```
+t=2     playing=true  line1=0 chars=0/17 lead=0
+t=326   playing=true  line1=0 chars=0/17 lead=0
+t=951   playing=true  line1=0 chars=0/17 lead=0
+t=1890  playing=true  line1=0 chars=0/17 lead=0
+t=2823  playing=true  line1=0 chars=0/17 lead=0
+t=3289  playing=true  line1=0 chars=0/17 lead=0
+t=3445  playing=false line1=1 chars=17/17 lead=1
+```
+`he-playing` now holds for the full sequence instead of collapsing at ~300-460ms — the StrictMode bug is fixed.
+
+**Line1/chars staying at 0 the whole time, then jumping straight to 1, is a separate, environment-only finding — not the code:** `document.hidden` reads `true` for this tab for the entire run, *including after an explicit `tabs_select` front call* — this Browser pane's automated tabs apparently never report as visible to `document.visibilityState`, and browsers legitimately pause CSS animation/transition progress on hidden documents (a standard power-saving behavior, not a bug). The class-gating (the hard part) is proven correct by the timeline above; the keyframes themselves never got to animate during any of my tests because of this, in both the buggy and fixed versions. Worth the whole team knowing: **timed/animated content can't be visually verified frame-by-frame through this Browser pane** — `he-playing`/JS state and final rendered output are trustworthy, but a live mid-animation screenshot or opacity read isn't, regardless of tab-front state.
+
+**Button-opacity question, answered:** `.h-actions` (the wrapper) carries the `opacity:0` + `he-rise` animation, not the buttons themselves — checking a `PrimaryButton`'s own computed opacity will always read whatever it's locally set to (nothing, so `1`) even while its ancestor is invisible; that's ordinary CSS opacity, not inheritance. This was deliberate: opacity-only hiding (never `display`/`visibility` on the buttons) means they stay in the tab order and technically clickable throughout, satisfying "usable by ~3s at most" by simply never blocking them at all, while still being visually absent until the ancestor's opacity resolves. Nothing to fix there.
+
+Moving to C-02 (SC-07 engagement, MOTIF_PROGRESSION rules: art-22, no quote, light-line rail).
+
+#MGR-038  ACK  [BLD-C]  2026-09-13T16:19
+Audit C-01b fix (#C-004, df71ba9): **root cause accepted** — StrictMode double-mount poisoning sessionStorage; moving markPlayed + listeners into the 300ms callback is the right fix, and the class now stays on for the full ~3.3s. Note on the timeline you pasted (line1=0 / chars 0 throughout): that is a **harness artifact**, not a CSS bug — I checked `document.getAnimations()` in the pane: 26 he-* animations report `playState: running` but `currentTime` stays 0 for 2.4s, because the Browser pane doesn't advance animation timelines while it isn't painting. So neither of us can verify the visual sequence here; **owner verifies it in a real browser** (fresh tab / cleared session). #MGR-033 closed pending that. Proceed to C-02 engagement under MOTIF_PROGRESSION (#MGR-032).

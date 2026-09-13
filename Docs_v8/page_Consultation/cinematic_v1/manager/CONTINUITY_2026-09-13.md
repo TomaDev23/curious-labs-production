@@ -62,10 +62,10 @@ don't trust copies.
 - The owner reviews on their own browser; owner-only visual checks (e.g. DR-11 hero entry) are called out explicitly.
 - Don't build/commit per tiny tweak on the live main; work happens on the branch; ask before any merge/release.
 
-## §4 · LIVE PIN — last-verified 2026-09-13T17:18 — RE-DERIVE ON RESUME, do not trust this line
-- Branch `design/cinematic-consultation`, HEAD `b5ee4c5`; main at `895198d` (start point, pushed).
-- Ledger: last manager mark `#MGR-053`; last builder marks `#A-017`, `#B-014`, `#C-007` (C-007 unaudited).
-- Phone page height at 390: 13,896 (A-08) → **11,219** (after lanes A+B trims, before C-05); target ≤ 10,000, stretch 8,500.
+## §4 · LIVE PIN — last-verified 2026-09-13T17:25 — RE-DERIVE ON RESUME, do not trust this line
+- Branch `design/cinematic-consultation`, HEAD `071cda6`; main at `895198d` (start point, pushed).
+- Ledger: last manager mark `#MGR-055`; last builder marks `#A-017`, `#B-014`, `#C-007` (all audited).
+- Phone page height at 390: 13,896 (A-08) → 11,219 (lanes A+B trims) → A-08r pending (after C-05); target ≤ 10,000, stretch 8,500.
 - Dev server: owner's, `http://localhost:5173/ai-consultation` (never start one).
 
 ## §5 · DONE MAP (pointers — don't redo)
@@ -80,9 +80,8 @@ don't trust copies.
 - Full-page capture sets (lane A scratch, re-runnable): `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/A08/` (`d1440_*`, `p390_*`, `*_strip.png`); script `.../scratchpad/fullpage.mjs` + `stitch.py`.
 
 ## §6 · STANDING QUEUE (in order)
-1. **Audit `#C-007`** (C-05 lane-C QA: phone hero quote off city lights, hero ≤ 1 screen, keyboard/focus, reduced motion,
-   320/768/1024). Done-test: ACK/STEER mark posted.
-2. **Ask [BLD-A] to re-run A-08 at p390** (per `#MGR-053`) → read new total docH + strip. Done-test: phone docH ≤ 10,000;
+1. ~~Audit `#C-007`~~ — ACK `#MGR-054`.
+2. **A-08r requested from [BLD-A]** (`#MGR-055`, p390 + d1440; A-05 queued after it) → read new total docH + strip. Done-test: phone docH ≤ 10,000;
    if not, route the next cuts (largest bands first) to the owning lanes.
 3. **A-05 (lane A): retire any remaining ChapterMark rows + final scene order** once all lanes' phone passes are accepted.
 4. **Seams/continuity pass** vs `MOTIF_PROGRESSION §2` (light-line thread visible per scene; soft dissolves; hairlines only

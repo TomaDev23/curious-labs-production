@@ -62,13 +62,13 @@ don't trust copies.
 - The owner reviews on their own browser; owner-only visual checks (e.g. DR-11 hero entry) are called out explicitly.
 - Don't build/commit per tiny tweak on the live main; work happens on the branch; ask before any merge/release.
 
-## §4 · LIVE PIN — last-verified 2026-09-13T17:40 — RE-DERIVE ON RESUME, do not trust this line
-- Branch `design/cinematic-consultation`, HEAD `35bca37`+; main at `895198d` (start point, pushed).
-- Ledger: last manager mark `#MGR-065`; last builder marks `#A-019`, `#B-014`, `#C-009` (all audited).
-- Phone docH at 390: 13,896 → 11,211 (#A-018) → 10,743 (#A-019, after A-09c) → ≈10,396 est. after C-06 (#C-009);
-  X-04 (lane B, ≈ −560 expected) pending ⇒ ≈ 9,850. Confirm on A-08r2 (folded into A-10's re-capture).
-- Open routed work: A-10 kit seams (#MGR-062) · X-04 + X-05 lane B (#MGR-057/063, Codex — poll ledger) ·
-  C-07 SC-07 phone step lines + ribbons dissolve (#MGR-064/065).
+## §4 · LIVE PIN — last-verified 2026-09-13T17:57 — RE-DERIVE ON RESUME, do not trust this line
+- Branch `design/cinematic-consultation`, HEAD `72cce84`+ (manager marks after); main at `895198d`.
+- Ledger: last manager mark `#MGR-073`; last builder marks `#A-021`, `#B-015`, `#C-011` (all audited).
+- **Baseline A-08r2 (#A-021, HEAD 72cce84): phone docH 9,711 ✓, desktop 14,146**; captures in lane A scratch
+  `.../24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/A08/out/{p390-r2,d1440-r2}_*` + `cap/seams{390,1440}-r2.png`.
+- Open: X-05b lane B (`div.sc06` column box edge, #MGR-073; Codex — owner pastes). Owner hold #MGR-067: **updated mockup
+  + art tied to owner's real work/services incoming**; celestial theme reserved for the landing page later.
 - Dev server: owner's, `http://localhost:5173/ai-consultation` (never start one).
 
 ## §5 · DONE MAP (pointers — don't redo)
@@ -83,13 +83,12 @@ don't trust copies.
 - Full-page capture sets (lane A scratch, re-runnable): `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/A08/` (`d1440_*`, `p390_*`, `*_strip.png`); script `.../scratchpad/fullpage.mjs` + `stitch.py`.
 
 ## §6 · STANDING QUEUE (in order)
-1. Audit DONEs for **A-10** (kit hairline default none + art dissolve + d1440/p390 re-capture = A-08r2), **X-04/X-05**
-   (lane B phone cuts, SC-05/06 seam, SC-06 closing statement de-quoted), **C-07** (SC-07 phone lines + ribbons dissolve).
-   Done-test: phone docH ≤ 10,000 on A-08r2 and seams per MOTIF_PROGRESSION §2 (hairlines only after SC-03 + SC-06, no hard art edges).
-2. A-05 closed (#MGR-060); dead ChapterMark code + `.cl-chapter` rules = post-release cleanup item for the release package.
-3. **Release readiness (M-17):** `npm run build` (one builder), zero console errors, QA-01…35 spot list from the plan,
-   owner review package (desktop + phone strips + open decisions, sent via SendUserFile). **Then ask the owner before any merge to main.**
-4. Update the owner's tracker status report (owner updates the .xlsx) and memory cards at milestones.
+1. **Owner's updated mockup** (arriving): file under `references/mockups/` (next MOCK id), scene-by-scene delta vs the
+   A-08r2 baseline, art keep/replace list, update MOCKUP_CANON + MOTIF_PROGRESSION (image journey may change), queue art
+   via ART_QUEUE (Codex), route layout deltas per lane. Flag any image that needs a real owner photo.
+2. Audit X-05b (#MGR-073) when lane B posts.
+3. **Release readiness (M-17)** after the mockup round: build, console, QA spot list, owner package → ask before merge.
+4. Tracker report + memory cards at milestones. Post-release cleanup: dead `kit/ChapterMark.jsx` + `.cl-chapter` rules.
 
 ## §7 · OPEN OWNER DECISIONS / CHECKS
 - **DR-11 hero entry** — owner must watch it in a real browser (fresh incognito tab, don't scroll ~3s); harness can't verify

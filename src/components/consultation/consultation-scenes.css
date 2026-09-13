@@ -4,26 +4,10 @@
    here needs its own reduced-motion override. */
 
 /* ── B-03 · DR-01 hero headline sheen ─────────────────────────────────── */
-.cl-consultation #cl-page-title {
-  position: relative;
-  overflow: hidden;
-}
-
-.cl-consultation #cl-page-title::after {
-  content: '';
-  position: absolute;
-  inset: -20% -10%;
-  background: linear-gradient(100deg, transparent 42%, rgba(255, 255, 255, .5) 48%, rgba(255, 255, 255, .85) 50%, rgba(255, 255, 255, .5) 52%, transparent 58%);
-  transform: translateX(-140%);
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  animation: cl-hero-sheen 1.4s cubic-bezier(.16, 1, .3, 1) .3s 1 both;
-}
-
-@keyframes cl-hero-sheen {
-  from { transform: translateX(-140%); }
-  to { transform: translateX(140%); }
-}
+/* The sheen lives on #cl-page-title itself (see the B-05 section below) as
+   a second background layer clipped to the glyphs, not a ::after box — a
+   box-shaped ::after streaked across the open-sky hero instead of just the
+   letters (#L-027). */
 
 /* ── B-04 · Scene kit ─────────────────────────────────────────────────── */
 
@@ -34,13 +18,22 @@
   overflow: hidden;
   background: radial-gradient(120% 120% at 30% 20%, #0a1720 0%, #03090e 60%, #020308 100%);
 }
-.cl-consultation .cl-art picture,
-.cl-consultation .cl-art img {
+.cl-consultation .cl-art picture {
   display: block;
   width: 100%;
   height: 100%;
 }
 .cl-consultation .cl-art img {
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  /* Oversized by the parallax travel distance so translating the img
+     (SceneArt's `parallax` prop) never exposes an empty band at the top
+     or bottom edge of the overflow:hidden container (#L-027). A no-op
+     (0px) when parallax isn't used. */
+  top: calc(-1 * var(--cl-art-par, 0px));
+  height: calc(100% + 2 * var(--cl-art-par, 0px));
   object-fit: cover;
   object-position: var(--cl-art-pos, center);
 }
@@ -176,14 +169,27 @@
 .cl-consultation .cl-hero-stage .cl-hero__meta { grid-column: 1 / -1; }
 
 /* Copy sizing/gradient carried over from the retired .cl-hero rules in
-   consultation.css (left untouched there; now dead, per the card). */
+   consultation.css (left untouched there; now dead, per the card). The
+   DR-01 sheen is a second, wider background layer sharing the same
+   text-clip, so it only lights up the glyphs — not a box over the sky. */
 .cl-consultation #cl-page-title {
   max-width: 16ch;
   margin-bottom: 24px;
-  background: linear-gradient(180deg, #ffffff 0%, var(--cl-cream) 55%, #c9d6dc 100%);
+  background-image:
+    linear-gradient(100deg, transparent 42%, rgba(255, 255, 255, .55) 48%, rgba(255, 255, 255, .95) 50%, rgba(255, 255, 255, .55) 52%, transparent 58%),
+    linear-gradient(180deg, #ffffff 0%, var(--cl-cream) 55%, #c9d6dc 100%);
+  background-repeat: no-repeat;
+  background-size: 300% 100%, 100% 100%;
+  background-position: -100% 0, 0 0;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: cl-hero-sheen 1.4s cubic-bezier(.16, 1, .3, 1) .3s 1 both;
+}
+
+@keyframes cl-hero-sheen {
+  from { background-position: -100% 0, 0 0; }
+  to { background-position: 200% 0, 0 0; }
 }
 .cl-consultation .cl-hero-stage .cl-lead { max-width: 57ch; }
 .cl-consultation .cl-hero-stage .cl-actions { margin-top: 28px; }

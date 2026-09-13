@@ -59,7 +59,7 @@ function SceneArt({
             loading={priority ? 'eager' : 'lazy'}
             fetchpriority={priority ? 'high' : 'auto'}
             onError={() => setFailed(true)}
-            style={{ y }}
+            style={{ y, '--cl-art-par': `${parallax}px` }}
           />
         </picture>
       )}

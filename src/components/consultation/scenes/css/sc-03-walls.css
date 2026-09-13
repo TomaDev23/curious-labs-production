@@ -63,8 +63,8 @@
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(70% 55% at 50% 45%, rgb(5 8 12 / .55) 0%, transparent 75%),
-    image-set(url('/consultation/art-18-monolith-face.avif') type('image/avif'), url('/consultation/art-18-monolith-face.webp') type('image/webp')) center / cover no-repeat;
+    linear-gradient(180deg, rgb(5 8 12 / .2) 0%, rgb(5 8 12 / .62) 22%, rgb(5 8 12 / .58) 62%, rgb(5 8 12 / .15) 100%),
+    image-set(url('/consultation/art-18-monolith-face.avif') type('image/avif'), url('/consultation/art-18-monolith-face.webp') type('image/webp')) 50% 42% / 118% auto no-repeat;
 }
 .cl-consultation .w-wall--2 .w-wall__face { transform: scaleX(-1); }
 .cl-consultation .w-wall > :not(.w-wall__face) { position: relative; }
@@ -74,6 +74,7 @@
 .cl-consultation .w-wall::before {
   content: '';
   position: absolute;
+  z-index: 1; /* above the rock-face layer */
   inset: 0;
   pointer-events: none;
   background: linear-gradient(180deg, transparent 10%, color-mix(in srgb, var(--k-acc) 85%, #fff) 60%, color-mix(in srgb, var(--k-acc) 50%, transparent) 100%) var(--w-seam-x, right) / 2px 100% no-repeat;

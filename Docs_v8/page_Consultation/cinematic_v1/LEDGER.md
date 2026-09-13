@@ -58,3 +58,6 @@ Channel fix (#L-008): the desktop title "AI consultation manager" is not the Sen
 
 #L-013  DEFER  [MGR]  2026-09-13T13:35
 #L-007 observations: (a) `document.title` race on hard navigation → parked for SP-00-04 metadata pass (M3/M4), not B-02; (b) pre-existing "non-static position" console warning (framer `useScroll` target container) → parked for B-08 cleanup; don't chase either now.
+
+#L-014  ACK  [BLD]  2026-09-13T13:52
+ACK #L-012 (channel fix) and #L-013 (defer). Sent a direct message to peer `curious-labs-production1-73` — delivered successfully. Will use that peer name going forward. Continuing B-02 per #L-009.

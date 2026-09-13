@@ -25,6 +25,7 @@ const FRAMES = {
   passing: { avif: '/consultation/art-19d-walker-profile-left-passing.avif', webp: '/consultation/art-19d-walker-profile-left-passing.webp' }
 };
 const FRAME_KEYS = Object.keys(FRAMES);
+const GROUND = { avif: '/consultation/art-04-walls-terrain-desktop.avif', webp: '/consultation/art-04-walls-terrain-desktop.webp' };
 const CYCLE = ['stride1', 'passing', 'stride2', 'passing'];
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
@@ -130,9 +131,11 @@ export function WalkerSeam({ children }) {
   const poolRef = useRef(null);
   const threadRef = useRef(null);
   const threadSvgRef = useRef(null);
+  const knotRef = useRef(null);
+  const groundRef = useRef(null);
   const headerRef = useRef(null);
   const frameRefs = useRef({});
-  const geo = useRef({ x: 0, bottom: 0, headerLeft: 0, headerMidY: 0, headerRight: 0, w: 0, h: 0 });
+  const geo = useRef({ x: 0, bottom: 0, headerLeft: 0, headerMidY: 0, headerRight: 0, anchorX: 0, anchorY: 0, w: 0, h: 0 });
 
   // Place the walker where the walls' figure stands, in layer coordinates (document geometry, so measure unpinned).
   useLayoutEffect(() => {
@@ -158,13 +161,18 @@ export function WalkerSeam({ children }) {
       // Header text block in layer coordinates, measured with the scrub transform cleared
       // (the wrapper is full width; the centred block inside it is what reads).
       const box = header.firstElementChild || header;
+      const eyebrow = header.querySelector('.k-eyebrow');
       const prev = header.style.transform;
       header.style.transform = 'none';
       const b = box.getBoundingClientRect();
+      const e = (eyebrow || box).getBoundingClientRect();
       header.style.transform = prev;
       g.headerLeft = b.left - layerRect.left;
       g.headerRight = b.right - layerRect.left;
       g.headerMidY = b.top - layerRect.top + Math.min(24, b.height / 2);
+      // The thread ties onto the eyebrow's leading dash (the far dash when walking right).
+      g.anchorX = (WALK === 'left' ? e.left - 6 : e.right + 6) - layerRect.left;
+      g.anchorY = e.top + e.height / 2 - layerRect.top;
       walkerRef.current.style.left = `${g.x}px`;
       walkerRef.current.style.top = `${g.bottom}px`;
       poolRef.current.style.left = `${g.x}px`;
@@ -219,6 +227,10 @@ export function WalkerSeam({ children }) {
       poolRef.current.style.transform = `translate(calc(-50% + ${dx}px), -50%)`;
       poolRef.current.style.opacity = String(1 - 0.8 * walk);
 
+      // Ground strip travels with the pinned walker once the walls' own terrain has scrolled away,
+      // and is gone before the pin releases (so it never scrolls up as a band).
+      groundRef.current.style.opacity = (ramp(p, 0.04, 0.2) * (1 - ramp(p, 0.72, 0.9))).toFixed(3);
+
       // Header slides in from the far side, attached to the thread's end.
       const pull = easeInOut(ramp(p, 0.3, 0.9));
       const enterDistance = dir < 0 ? vw - g.headerLeft + 40 : g.headerRight + 40;
@@ -230,12 +242,14 @@ export function WalkerSeam({ children }) {
       const threadOn = ramp(p, 0.25, 0.32) * (1 - ramp(p, 0.9, 1));
       const handX = g.x + dx + dir * -0.16 * 127;
       const handY = g.bottom - 0.55 * 190;
-      const edge = dir < 0 ? Math.min(g.headerLeft + hx, g.w + (vw - g.w) / 2) : Math.max(g.headerRight + hx, -(vw - g.w) / 2);
-      const endY = g.headerMidY;
+      const edge = dir < 0 ? Math.min(g.anchorX + hx, g.w + (vw - g.w) / 2) : Math.max(g.anchorX + hx, -(vw - g.w) / 2);
+      const endY = g.anchorY;
       const midX = (handX + edge) / 2;
       const sag = 46 + 0.06 * Math.abs(edge - handX);
       threadRef.current.setAttribute('d', `M${handX.toFixed(1)},${handY.toFixed(1)} Q${midX.toFixed(1)},${(Math.max(handY, endY) + sag).toFixed(1)} ${edge.toFixed(1)},${endY.toFixed(1)}`);
       threadSvgRef.current.style.opacity = threadOn.toFixed(3);
+      knotRef.current.setAttribute('cx', edge.toFixed(1));
+      knotRef.current.setAttribute('cy', endY.toFixed(1));
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(render); };
     render();
@@ -251,9 +265,14 @@ export function WalkerSeam({ children }) {
   return (
     <div ref={seamRef} className={`ws-seam ws-seam--${WALK}`}>
       <div ref={layerRef} className="ws-layer">
+        <picture ref={groundRef} className="ws-ground" aria-hidden="true">
+          <source type="image/avif" srcSet={GROUND.avif} />
+          <img src={GROUND.webp} width="2560" height="1200" alt="" decoding="async" />
+        </picture>
         <span ref={poolRef} className="ws-pool" aria-hidden="true" />
         <svg ref={threadSvgRef} className="ws-thread" aria-hidden="true" focusable="false" preserveAspectRatio="none">
           <path ref={threadRef} className="ws-thread__line" d="M0,0" />
+          <circle ref={knotRef} className="ws-thread__knot" r="3.5" />
         </svg>
         <span ref={walkerRef} className="ws-walker" aria-hidden="true">
           {FRAME_KEYS.map((name) => (

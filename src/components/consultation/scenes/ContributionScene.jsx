@@ -23,6 +23,7 @@ const ACTION_ICONS = ['laptop', 'people', 'rocket', 'refresh'];
 function ContributionBackdrop() {
   return (
     <div className="c-backdrop">
+      <span className="c-backdrop__glow" />
       <picture className="c-backdrop__mountains">
         <source type="image/avif" srcSet={ART.mountains.avif} />
         <img src={ART.mountains.webp} width="1916" height="821" alt="" loading="lazy" decoding="async" />

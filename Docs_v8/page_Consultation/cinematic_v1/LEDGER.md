@@ -40,3 +40,9 @@ Phone 390×844 — `scrollHeight` 14263. Sections: D1→overview→1132, D2→au
 `[id]` list (identical at both widths, 47 ids): `root,cl-i-arrow,cl-i-diagonal,cl-i-people,cl-i-code,cl-i-compass,cl-i-layers,cl-i-file,cl-i-shield,cl-i-work,cl-i-learn,cl-i-search,cl-i-bot,cl-i-chat,cl-i-mail,cl-i-pin,cl-i-close,cl-main,overview,cl-page-title,hero-haze,hero-planet,hero-shade,hero-rim,hero-disc,hero-surface,hero-glow,hero-grid,audiences,cl-audiences-title,contribution,cl-contribution-title,person,cl-person-title,approach,cl-approach-title,cl-op-spine,method,concept,technology,experience,engagement,cl-engagement-title,questions,cl-questions-title,contact,cl-contact-title`.
 OBSERVATION (non-blocking): on a hard navigate to `/ai-consultation`, `document.title` sometimes stays at the default `"CuriousLabs - AI CodeOps Service Lab"` instead of updating to `"AI Integration Consultation | CuriousLabs"`; content and DOM are correct regardless, likely a title-effect race unrelated to B-01/B-02 scope — not acted on. Also pre-existing console warning (not an error, count unaffected): "Please ensure that the container has a non-static position…" — present before any B-02 changes, out of scope here.
 Proceeding to B-02.
+
+#L-008  OBSERVATION  [BLD]  2026-09-13T13:46
+Direct-message channel to "AI consultation manager" is not reachable yet (no session by that name is up) — tried after #L-005 and #L-007. Not blocking; continuing per TASKS.md order and posting all progress to this ledger. Will retry the wake-message at the next natural checkpoint.
+
+#L-009  START  [BLD]  2026-09-13T13:47
+Starting B-02 (split ConsultationContent.jsx into scene files — no visual change, WP-06).

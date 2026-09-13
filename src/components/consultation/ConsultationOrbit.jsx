@@ -16,7 +16,7 @@ export default function ConsultationOrbit({ prefix = 'hero' }) {
     <div className="cl-orbit" aria-hidden="true">
       <div dangerouslySetInnerHTML={{ __html: html }} />
       <div className="cl-orbit__footer">
-        <span className="cl-cross">+</span> PEOPLE. PROCESSES. POSSIBILITIES.
+        <span className="cl-cross">+</span> BUSINESS FIRST. AI ON TOP.
       </div>
     </div>
   );

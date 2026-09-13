@@ -57,7 +57,7 @@ function SceneArt({
             alt=""
             decoding="async"
             loading={priority ? 'eager' : 'lazy'}
-            fetchPriority={priority ? 'high' : 'auto'}
+            fetchpriority={priority ? 'high' : 'auto'}
             onError={() => setFailed(true)}
             style={{ y }}
           />

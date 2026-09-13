@@ -4,12 +4,12 @@
    here needs its own reduced-motion override. */
 
 /* ── B-03 · DR-01 hero headline sheen ─────────────────────────────────── */
-.cl-consultation .cl-hero #cl-page-title {
+.cl-consultation #cl-page-title {
   position: relative;
   overflow: hidden;
 }
 
-.cl-consultation .cl-hero #cl-page-title::after {
+.cl-consultation #cl-page-title::after {
   content: '';
   position: absolute;
   inset: -20% -10%;
@@ -136,4 +136,80 @@
 @keyframes cl-expand-in {
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── B-05 · SC-01 Earth hero stage + orbital ──────────────────────────── */
+.cl-consultation .cl-hero-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(640px, 88vh, 820px);
+  display: flex;
+  align-items: center;
+}
+.cl-consultation .cl-hero-stage__art {
+  top: -96px;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+}
+.cl-consultation .cl-hero-stage__grid {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-inline: var(--cl-gutter);
+  padding-block: 56px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--cl-gutter);
+  row-gap: 24px;
+}
+.cl-consultation .cl-hero-stage__copy { grid-column: 1 / 7; }
+.cl-consultation .cl-hero-stage__orbit {
+  grid-column: 8 / 13;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cl-consultation .cl-hero-stage__orbit .cl-orbit { max-width: 460px; width: 100%; opacity: .9; }
+.cl-consultation .cl-hero-stage .cl-hero__meta { grid-column: 1 / -1; }
+
+/* Copy sizing/gradient carried over from the retired .cl-hero rules in
+   consultation.css (left untouched there; now dead, per the card). */
+.cl-consultation #cl-page-title {
+  max-width: 16ch;
+  margin-bottom: 24px;
+  background: linear-gradient(180deg, #ffffff 0%, var(--cl-cream) 55%, #c9d6dc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.cl-consultation .cl-hero-stage .cl-lead { max-width: 57ch; }
+.cl-consultation .cl-hero-stage .cl-actions { margin-top: 28px; }
+
+@media (max-width: 1099px) {
+  .cl-consultation .cl-hero-stage__orbit { display: none; }
+  .cl-consultation .cl-hero-stage__copy { grid-column: 1 / -1; }
+}
+
+@media (max-width: 767px) {
+  .cl-consultation .cl-hero-stage {
+    min-height: 600px;
+    height: auto;
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+  .cl-consultation .cl-hero-stage__art { top: 0; }
+  .cl-consultation .cl-hero-stage__art::after {
+    background: linear-gradient(180deg, #020308 0%, #020308e6 38%, transparent 72%);
+  }
+  .cl-consultation .cl-hero-stage .cl-hero__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+  .cl-consultation .cl-hero-stage .cl-hero__meta-label { margin-left: 0; }
 }

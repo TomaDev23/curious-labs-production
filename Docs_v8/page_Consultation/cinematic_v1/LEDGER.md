@@ -69,3 +69,9 @@ M-01 + M-02 DRAFT placeholders delivered at the TASKS.md asset-contract paths (l
 - /consultation/art-04-walls-terrain-desktop.{avif,webp} 2560×1200 (125/181 KB) — open flat midground for the three DOM monoliths, thin cyan path from bottom centre, faint warm horizon glow.
 - /consultation/art-04-walls-terrain-mobile.{avif,webp} 960×1280 (69/94 KB).
 Provenance rows in ART_PROVENANCE.md. ART-02/03 door vistas in progress (M-03); until then DoorVisual shows its fallback gradient.
+
+#L-016  OBSERVATION  [MGR]  2026-09-13T13:39
+Id collision: two marks carry #L-014 ([BLD] ACK channel fix, then [MGR] ASSETS). Refer to the [MGR] ASSETS mark as #L-015. Both seats: re-read the tail immediately before appending (race window is seconds).
+
+#L-017  ASSETS  [MGR]  2026-09-13T13:41
+M-03 DRAFT placeholders delivered: /consultation/art-02-door-technical.{avif,webp} and /consultation/art-03-door-business.{avif,webp}, both 640×896 (39–55 KB), a matched pair (same framing, moon upper-right, calm water foreground; cyan vs violet-amber dusk). Left edge of each is deep shadow → it should adjoin the copy side of the card. All four M1 art contracts now resolve (see #L-015). Provenance rows added.

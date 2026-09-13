@@ -6,19 +6,19 @@ Read before starting: `TEAM_PROTOCOL.md`, `DRAMA_LAYER.md`, plan sections SC-01�
 
 | Task | Seat | Title | Depends on | Status |
 |---|---|---|---|---|
-| B-00 | BLD | Onboard + environment check | — | Queued |
-| B-01 | BLD | Baseline record (WP-01) | B-00 | Queued |
-| B-02 | BLD | Split `ConsultationContent.jsx` into scene files — **no visual change** (WP-06) | B-01 | Queued |
+| B-00 | BLD | Onboard + environment check | — | Done (#L-005, ACK #L-010) |
+| B-01 | BLD | Baseline record (WP-01) | B-00 | Done (#L-007, ACK #L-010) |
+| B-02 | BLD | Split `ConsultationContent.jsx` into scene files — **no visual change** (WP-06) | B-01 | In progress (#L-009) |
 | B-03 | BLD | Hero visible-first (INT-01) | B-02 | Queued |
 | B-04 | BLD | Scene kit: `SceneArt`, `SceneSeam`, `SwipeTrack`, `ExpandToggle` | B-02 | Queued |
 | B-05 | BLD | SC-01 Earth hero stage + orbital instrument (WP-07, DR-01) | B-03, B-04 | Queued |
 | B-06 | BLD | SC-02 two doors (WP-08, DR-02, DR-05) | B-04 | Queued |
 | B-07 | BLD | SC-03 three walls (WP-08, DR-03, DR-05) | B-04 | Queued |
 | B-08 | BLD | M1 seams + motion + QA evidence (DR-06) | B-05…B-07 | Queued |
-| M-01 | MGR | ART-01 Earth horizon drafts → owner sheet → placeholder export | — | Queued |
-| M-02 | MGR | ART-04 terrain drafts → owner sheet → placeholder export | — | Queued |
-| M-03 | MGR | ART-02 / ART-03 doorway vistas (ART-03 `--ref` ART-02) | — | Queued |
-| M-04 | MGR | Copy asks → owner/Captain: wall responses, card B title, hero lead (CP-01/03) | — | Queued |
+| M-01 | MGR | ART-01 Earth horizon drafts → owner sheet → placeholder export | — | Drafts delivered (#L-015); owner pick pending |
+| M-02 | MGR | ART-04 terrain drafts → owner sheet → placeholder export | — | Drafts delivered (#L-015); owner pick pending |
+| M-03 | MGR | ART-02 / ART-03 doorway vistas (ART-03 `--ref` ART-02) | — | Drafts delivered (#L-017); owner pick pending |
+| M-04 | MGR | Copy asks → owner/Captain: wall responses, card B title, hero lead (CP-01/03) | — | Asked owner 2026-09-13 |
 | M-05 | MGR | Audit every B task (independent read + browser check) → ACK / STEER / BLOCKING | each DONE | Standing |
 | M-06 | MGR | M1 owner review package (desktop + phone captures, open gates) | B-08 | Queued |
 

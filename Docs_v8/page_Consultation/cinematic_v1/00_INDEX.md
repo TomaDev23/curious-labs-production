@@ -37,6 +37,7 @@ Target: every scene built to the owner's mockups (`MOCKUP_CANON.md`).
 | `TASKS.md` | Task board (B-xx builder, M-xx manager) |
 | `LEDGER.md` | Coordination marks |
 | `ART_PROVENANCE.md` | Committed record of every shipped image (QA-27) |
+| `manager/CONTINUITY_2026-09-13.md` | Manager seat flush/resume anchor (single file, updated in place) |
 
 ## Tools
 - Art: `.claude/skills/create-art/SKILL.md` → `tools/art/{generate,export,contact}.mjs` (manager only).

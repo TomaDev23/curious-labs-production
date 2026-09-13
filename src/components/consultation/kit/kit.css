@@ -102,6 +102,19 @@
 .cl-consultation .k-band--hairline-top::before { top: 0; }
 .cl-consultation .k-band--hairline-bottom::after { bottom: 0; }
 
+/* Visually hidden, still read by screen readers. */
+.cl-consultation .k-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ── 2 · Type ─────────────────────────────────────────────────────────── */
 .cl-consultation .k-eyebrow {
   display: flex;

@@ -46,10 +46,10 @@ Prompt file `art-19-walker-turnaround.txt`; replace `{POSE}` per row; pass `publ
 ### Batch 5 — motif progression (MOTIF_PROGRESSION.md §4) — **do before batch 4 walker poses? No: after art-18, before batch 4**
 | Pri | ID | Prompt file | Orientation | Replaces | Status |
 |---|---|---|---|---|---|
-| 18 | art-21-first-light-ridges | `art-21-first-light-ridges.txt` | landscape wide | ART-06 in SC-06 band 1 | Queued |
-| 19 | art-20-river-predawn | `art-20-river-predawn.txt` | landscape wide | ART-01 reuse in SC-05 band 4 | Queued |
-| 20 | art-25-tile-city-grid | `art-25-tile-city-grid.txt` | landscape | ART-13 SC-04 left tile | Queued |
-| 21 | art-23-reading-converging-roads | `art-23-reading-converging-roads.txt` | landscape | ART-08 R2 card | Queued |
-| 22 | art-24-reading-valley-overlook | `art-24-reading-valley-overlook.txt` | landscape | ART-11 R4 card (placeholder figure) | Queued |
-| 23 | art-22-momentum-ribbons | `art-22-momentum-ribbons.txt` | landscape wide | ART-16 SC-07 band | Queued |
+| 18 | art-21-first-light-ridges | `art-21-first-light-ridges.txt` | landscape wide | ART-06 in SC-06 band 1 | Done |
+| 19 | art-20-river-predawn | `art-20-river-predawn.txt` | landscape wide | ART-01 reuse in SC-05 band 4 | Done |
+| 20 | art-25-tile-city-grid | `art-25-tile-city-grid.txt` | landscape | ART-13 SC-04 left tile | Done |
+| 21 | art-23-reading-converging-roads | `art-23-reading-converging-roads.txt` | landscape | ART-08 R2 card | Done |
+| 22 | art-24-reading-valley-overlook | `art-24-reading-valley-overlook.txt` | landscape | ART-11 R4 card (placeholder figure) | Done |
+| 23 | art-22-momentum-ribbons | `art-22-momentum-ribbons.txt` | landscape wide | ART-16 SC-07 band | Done |
 Order for Codex: row 13 (art-18) → batch 5 (rows 18–23) → batch 4 (rows 14–17).

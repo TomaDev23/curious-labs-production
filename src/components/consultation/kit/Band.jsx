@@ -8,12 +8,17 @@ import SceneArt from './SceneArt';
  *
  * `art` is either SceneArt props ({ desktop, mobile, position, scrim, … })
  * or a ready element for scenes that compose their own backdrop.
+ *
+ * `hairline` defaults to none: MOTIF_PROGRESSION draws chapter lines only after
+ * SC-03 and SC-06, which pass it explicitly (#MGR-062). `artEdge` names the art
+ * edges that dissolve into the starfield ('both' | 'top' | 'bottom' | 'none').
  */
 function Band({
   id,
   sectionKey,
   art,
-  hairline = 'bottom',
+  hairline = 'none',
+  artEdge = 'both',
   className = '',
   labelledBy,
   children
@@ -29,7 +34,7 @@ function Band({
       aria-labelledby={labelledBy}
       className={`k-band k-band--hairline-${hairline} ${className}`.trim()}
     >
-      {artLayer && <div className="k-band__art" aria-hidden="true">{artLayer}</div>}
+      {artLayer && <div className={`k-band__art k-band__art--fade-${artEdge}`} aria-hidden="true">{artLayer}</div>}
       <div className="k-band__inner">{children}</div>
     </section>
   );

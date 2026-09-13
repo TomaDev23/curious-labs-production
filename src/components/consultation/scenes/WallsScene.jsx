@@ -86,7 +86,7 @@ function WallsScene() {
   const items = WALLS.map((wall, i) => ({ id: wall.id, name: wall.name, content: <WallFace wall={wall} index={i} /> }));
 
   return (
-    <Band id="walls" sectionKey="D2" labelledBy="cl-walls-title" className="w-band" art={<WallsBackdrop />}>
+    <Band id="walls" sectionKey="D2" labelledBy="cl-walls-title" className="w-band" hairline="bottom" art={<WallsBackdrop />}>
       <header className="w-head">
         <div className="w-head__copy">
           <Eyebrow>{wallsCopy.eyebrow.text}</Eyebrow>

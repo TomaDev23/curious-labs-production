@@ -1,19 +1,36 @@
-// SC-02 placeholder copy slots (MOCKUP_CANON §4). Headline, intro, card titles
-// and bodies stay in AudienceScene.jsx (COPY_DECK_v2). Every entry here is a
-// placeholder for the copy pass: { text, placeholder: true, source }.
+// SC-02 copy — COPY_CANON.md §SC-02 (the mockup's words adapted to the locked framing).
+// Edit COPY_CANON first, then sync here.
 export const doorsCopy = {
-  eyebrow: { text: 'Two audiences. One conversation.', placeholder: true, source: 'MOCK-D1' },
-  quote: { lines: ['Two paths.', 'A wider horizon.'], placeholder: true, source: 'MOCK-D1' },
-  quoteLabel: { text: 'CuriousLabs', placeholder: true, source: 'MOCK-D1' },
-  closerLeft: { lines: ['Same curiosity.', 'More possibilities.'], placeholder: true, source: 'MOCK-D1' },
-  closerRight: { lines: ['Same destination.', 'A more useful tomorrow.'], placeholder: true, source: 'MOCK-D1' },
-  cta: { text: 'Discuss your situation', placeholder: true, source: 'TASKS B-06 canon amendment' },
-  technical: {
-    chips: { items: ['Team coordination', 'Harnessing rules', 'AI at scale'], placeholder: true, source: 'deck card A body' }
+  eyebrow: { text: 'Two audiences. One conversation.', source: 'COPY_CANON' },
+  headline: { lines: ['Different starting points.', 'Same destination.'], source: 'COPY_CANON' },
+  lead: {
+    text: 'Wherever you are with AI, I meet you there. Different contexts, same goal — real value, practical outcomes, and a clearer way forward.',
+    source: 'COPY_CANON'
   },
-  business: {
-    chips: { items: ['Real use cases', 'Harness design', 'How your business works'], placeholder: true, source: 'deck card B body' }
-  }
+  quote: { lines: ['Two paths.', 'A wider horizon.'], source: 'COPY_CANON' },
+  quoteLabel: { text: 'CuriousLabs', source: 'COPY_CANON' },
+  cards: {
+    source: 'COPY_CANON',
+    technical: {
+      micro: 'For technical companies',
+      title: ['You ship technology.', 'Let’s make AI work at scale.'],
+      body: 'You already build products. Now you need AI working inside how the team works — the coordination and the harnessing rules that keep it dependable as you hand it more of the work.',
+      chips: ['Team coordination', 'Harnessing rules', 'AI at scale', 'Review & checks'],
+      cta: 'Start a conversation',
+      foot: 'Business advisory. Not programming instruction.'
+    },
+    business: {
+      micro: 'For non-technical companies',
+      title: ['You see the potential.', 'I’ll help you make it real.'],
+      body: 'You don’t need to be a tech company to get real value from AI. I help you find the real use cases, design a harness that fits how your business works, and plan practical next steps — without the hype.',
+      chips: ['Real use cases', 'Harness design', 'Operations', 'Team training'],
+      cta: 'Start a conversation',
+      foot: 'Business consultation. No code required.'
+    }
+  },
+  closerLeft: { lines: ['Same curiosity.', 'More possibilities.'], source: 'COPY_CANON' },
+  closerRight: { lines: ['Same destination.', 'A more useful tomorrow.'], source: 'COPY_CANON' },
+  closerPhone: { lines: ['Same questions.', 'New possibilities.'], source: 'COPY_CANON' }
 };
 
 export default doorsCopy;

@@ -12,32 +12,13 @@ const ART_01 = {
   webp: '/consultation/art-01-earth-horizon-desktop.webp'
 };
 
-// Headline, intro, titles and bodies: COPY_DECK_v2 (unchanged from the
-// previous scene). Slots the mockup adds come from doors.copy.js.
+// Words: scenes/copy/doors.copy.js (COPY_CANON). Only presentation lives here.
 const DOORS = [
-  {
-    id: 'technical',
-    accent: 'cyan',
-    icon: 'code',
-    micro: 'Integrating AI at scale',
-    title: 'Technical companies',
-    body: 'You already build tech products, and you want AI integrated into how the team works — but doing that at scale is a problem of its own. I help with the coordination and the harnessing rules that stop the AI sabotaging itself as you hand more of the work to it.',
-    foot: 'Business advisory. Not programming instruction.',
-    chips: doorsCopy.technical.chips.items
-  },
-  {
-    id: 'business',
-    accent: 'violet',
-    icon: 'building',
-    micro: 'Leveraging AI',
-    title: 'Companies new to AI',
-    body: 'You want to leverage AI but you’re not technical. I help you see where it genuinely helps — the real use cases — and design the harness that fits how your business actually works. Settings like hotels, restaurants, and factories are where I’ve done it.',
-    foot: 'Business consultation. No code required.',
-    chips: doorsCopy.business.chips.items
-  }
+  { id: 'technical', accent: 'cyan', icon: 'code', ...doorsCopy.cards.technical },
+  { id: 'business', accent: 'violet', icon: 'building', ...doorsCopy.cards.business }
 ];
 
-/** Shallow globe in the top-right of the band (desktop only), faded out by a mask. */
+/** Globe in the top-right of the band (desktop only), faded by a mask, with a thin orbit line. */
 function DoorsBackdrop() {
   return (
     <div className="d-backdrop">
@@ -45,6 +26,21 @@ function DoorsBackdrop() {
         <source type="image/avif" srcSet={ART_01.avif} />
         <img src={ART_01.webp} width="2560" height="1440" alt="" loading="lazy" decoding="async" />
       </picture>
+      <svg className="d-backdrop__orbit" viewBox="0 0 1000 400" preserveAspectRatio="none" focusable="false">
+        <ellipse cx="560" cy="210" rx="470" ry="118" />
+        <circle className="d-backdrop__orbit-dot" cx="1016" cy="182" r="4" />
+      </svg>
+    </div>
+  );
+}
+
+/** Perspective ground plane shared by both cards, with a light pool under each door. */
+function DoorsFloor() {
+  return (
+    <div className="d-floor" aria-hidden="true">
+      <div className="d-floor__grid" />
+      <div className="d-floor__pool d-floor__pool--technical" />
+      <div className="d-floor__pool d-floor__pool--business" />
     </div>
   );
 }
@@ -56,11 +52,11 @@ function DoorCard({ door }) {
       <div className="d-card__copy">
         <IconRing icon={door.icon} accent={door.accent} className="d-card__ring" />
         <MicroLabel className="d-card__micro">{door.micro}</MicroLabel>
-        <CardTitle id={titleId} feature className="d-card__title">{door.title}</CardTitle>
-        <CircleArrow href="#contact" label={`${doorsCopy.cta.text}: ${door.title}`} className="d-card__arrow" />
+        <CardTitle id={titleId} feature lines={door.title} className="d-card__title" />
+        <CircleArrow href="#contact" label={`${door.cta}: ${door.micro.toLowerCase()}`} className="d-card__arrow" />
         <Body className="d-card__body">{door.body}</Body>
-        <Chips items={door.chips} accent={door.accent} label={`${door.title}: focus areas`} className="d-card__chips" />
-        <PrimaryButton href="#contact" className="d-card__cta">{doorsCopy.cta.text}</PrimaryButton>
+        <Chips items={door.chips} accent={door.accent} label={`${door.micro}: focus areas`} className="d-card__chips" />
+        <PrimaryButton href="#contact" className="d-card__cta">{door.cta}</PrimaryButton>
         <p className="d-card__foot">{door.foot}</p>
       </div>
       <DoorVisual variant={door.id} />
@@ -80,21 +76,21 @@ function AudienceScene() {
       <header className="d-head">
         <div className="d-head__copy">
           <Eyebrow>{doorsCopy.eyebrow.text}</Eyebrow>
-          <Display id="cl-audiences-title" lines={['Two kinds of company.', 'Two ways in.']} />
-          <Lead className="d-head__lead">
-            The focus is the same — getting genuine value from AI. Where we begin depends on what kind of company you are.
-          </Lead>
+          <Display id="cl-audiences-title" lines={doorsCopy.headline.lines} />
+          <Lead className="d-head__lead">{doorsCopy.lead.text}</Lead>
         </div>
         <QuoteBlock quote={doorsCopy.quote.lines} label={doorsCopy.quoteLabel.text} className="d-head__quote" />
       </header>
 
       <div className="d-doors">
+        <DoorsFloor />
         {DOORS.map((door) => <DoorCard key={door.id} door={door} />)}
       </div>
 
       <div className="d-closers">
         <Tagline lines={doorsCopy.closerLeft.lines} className="d-closers__left" />
         <Tagline lines={doorsCopy.closerRight.lines} align="right" className="d-closers__right" />
+        <Tagline lines={doorsCopy.closerPhone.lines} align="center" className="d-closers__phone" />
       </div>
     </Band>
   );

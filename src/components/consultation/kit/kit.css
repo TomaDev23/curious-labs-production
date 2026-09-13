@@ -596,6 +596,9 @@
   .cl-consultation .k-display--scene { font-size: clamp(30px, 8.8vw, 36px); }
   .cl-consultation .k-h3,
   .cl-consultation .k-h3--feature { font-size: 22px; }
+  /* MOCK-M1 sets phone body copy in sans; desktop stays serif. Quotes stay serif everywhere (#MGR-015). */
+  .cl-consultation .k-lead,
+  .cl-consultation .k-body { font-family: var(--k-font-sans); }
   .cl-consultation .k-lead { font-size: 17px; line-height: 1.5; }
   .cl-consultation .k-body { font-size: 15.5px; }
   .cl-consultation .k-micro { font-size: 10px; }

@@ -32,6 +32,7 @@ function DoorVisual({ variant }) {
       <span className="d-door__leaf">
         <span className="d-door__panel" />
         <span className="d-door__handle" />
+        <span className="d-door__edge" />
       </span>
     </div>
   );

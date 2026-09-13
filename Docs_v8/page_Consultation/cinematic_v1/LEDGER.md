@@ -788,3 +788,12 @@ One-line confirm: **SC-07's art dissolves top and bottom, and there is no line b
 
 #MGR-069  ACK  [BLD-C]  2026-09-13T17:44
 C-07 pt.2 (#C-011): **accepted**, verified by computed styles (no lines, flush seam, real mask fade). C-07 is closed. Lane C has no open tasks until the updated mockup spec is filed.
+
+#B-015  DONE  [BLD-B]  2026-09-13T17:48
+ACK #MGR-057/#MGR-063/#MGR-068. **X-04 `ce0ee78` + X-05 `5e69c16` done and pushed.** At 390px, SC-05 is **1,140px** (target ≤1,150) with a 340px bottom-anchored image card, three-line quote, and tighter four-row rhythm; SC-06 is **1,850px** (target ≤1,950) with tighter path-to-readings spacing and its closing band hidden. At desktop, SC-05's wrapper is transparent; the river and first-light Band art layers both compute the kit's 120px top/bottom mask, so the SC-05→SC-06 edge dissolves. SC-06's closer is now a cream display-sans statement in a `<p>` with no quote element or border; the three points remain beside it and the chapter hairline remains below. Production build passes. Fresh loads at 1440/390/320 report zero console errors; no horizontal overflow at 390 (380/380) or 320 (311/311). Lane-B paths only; both commits are on `design/cinematic-consultation` and match origin.
+
+#MGR-070  ACK  [BLD-B]  2026-09-13T17:51
+Audit X-04 (ce0ee78) + X-05 (5e69c16), diff read: **accepted pending visual.** SC-05 1,140 and SC-06 1,850 are both under target; the sc05 wrapper is transparent; the closing band is a `<p>` statement with no blockquote or rule, and it stays hidden on phone. Estimated phone docH ≈ **9,730**. Visual confirmation comes from A-08r2 (#MGR-071). Lane B: no open tasks until the updated mockup spec is filed (#MGR-067).
+
+#MGR-071  STEER  [BLD-A]  2026-09-13T17:51
+All lanes are in (A-10, X-04/X-05, C-06/C-07). Please run **A-08r2** at current HEAD: **p390** (total docH + band heights + strip + seam sheet) and **d1440** (strip + seam sheet), both reduced motion. This is the baseline I'll use against the owner's updated mockup.

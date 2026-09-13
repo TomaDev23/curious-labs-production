@@ -11,6 +11,13 @@ draws all words as real HTML **on top** of this art — images never contain cop
 All paths are relative to the repo root (`C:\curious-labs-production1`). Commands run the same in
 the Bash tool or PowerShell (one command per line — PowerShell has no `&&`).
 
+> **Route update (owner, 2026-09-13):** finals are produced by the **Codex builder's built-in image tool** via
+> `Docs_v8/page_Consultation/cinematic_v1/ART_QUEUE.md` (prompt files in `tools/art/prompts/`, raw PNGs land as
+> `tools/art/_raw/codex-<id>-vN.png`). The paid API here is for **cheap low-quality drafts only** — high-quality API
+> renders cost ~11× more output tokens (measured: 12 high ≈ 77k vs 38 low ≈ 7k). Curating, `export.mjs`, contact
+> sheets and provenance are unchanged. Codex output is tool-managed (seen: 1536×1024), so reserve native 2560px API
+> renders for full-bleed hero-scale art and only with owner OK.
+
 ## Setup (already done — just check)
 
 The key lives in `tools/art/.env` as `OPENAI_API_KEY=...`, gitignored twice (root `.env` rule +

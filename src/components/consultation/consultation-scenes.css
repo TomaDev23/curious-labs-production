@@ -24,3 +24,116 @@
   from { transform: translateX(-140%); }
   to { transform: translateX(140%); }
 }
+
+/* ── B-04 · Scene kit ─────────────────────────────────────────────────── */
+
+/* SceneArt */
+.cl-consultation .cl-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 30% 20%, #0a1720 0%, #03090e 60%, #020308 100%);
+}
+.cl-consultation .cl-art picture,
+.cl-consultation .cl-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.cl-consultation .cl-art img {
+  object-fit: cover;
+  object-position: var(--cl-art-pos, center);
+}
+.cl-consultation .cl-art--scrim-left::after,
+.cl-consultation .cl-art--scrim-bottom::after,
+.cl-consultation .cl-art--scrim-top::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cl-consultation .cl-art--scrim-left::after { background: linear-gradient(90deg, #020308 0%, #020308e6 38%, transparent 72%); }
+.cl-consultation .cl-art--scrim-bottom::after { background: linear-gradient(0deg, #020308 0%, #020308e6 38%, transparent 72%); }
+.cl-consultation .cl-art--scrim-top::after { background: linear-gradient(180deg, #020308 0%, #020308e6 38%, transparent 72%); }
+
+/* SceneSeam */
+.cl-consultation .cl-seam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.cl-consultation .cl-seam--bottom { bottom: 0; background: linear-gradient(180deg, transparent 0%, #020308 100%); }
+.cl-consultation .cl-seam--top { top: 0; background: linear-gradient(0deg, transparent 0%, #020308 100%); }
+.cl-consultation .cl-seam__wipe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cl-accent), transparent);
+}
+
+/* SwipeTrack — phone-first; per-instance breakpoints come from the
+   component's own scoped <style> block. */
+.cl-consultation .cl-track { position: relative; }
+.cl-consultation .cl-track__index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-bottom: 14px;
+}
+.cl-consultation .cl-track__index button {
+  font-family: var(--cl-mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cl-muted);
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.cl-consultation .cl-track__index button[aria-current="true"] { color: var(--cl-accent); }
+.cl-consultation .cl-track__prev,
+.cl-consultation .cl-track__next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--cl-line);
+  background: #0a171fcc;
+  color: var(--cl-text);
+  cursor: pointer;
+}
+.cl-consultation .cl-track__prev { left: -4px; }
+.cl-consultation .cl-track__next { right: -4px; }
+.cl-consultation .cl-track__prev svg { transform: rotate(180deg); }
+.cl-consultation .cl-track__prev:disabled,
+.cl-consultation .cl-track__next:disabled { opacity: .35; cursor: default; }
+.cl-consultation .cl-track__rail {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--cl-gutter);
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
+}
+.cl-consultation .cl-track__rail::-webkit-scrollbar { display: none; }
+.cl-consultation .cl-track__item { flex: 0 0 88%; scroll-snap-align: start; }
+
+/* ExpandToggle */
+.cl-consultation .cl-expand__panel { animation: cl-expand-in .3s ease both; }
+@keyframes cl-expand-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}

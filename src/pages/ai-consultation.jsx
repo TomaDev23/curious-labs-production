@@ -1,9 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
 import MissionControlNavbar from '../components/navigation/MissionControlNavbar';
 import LandingCosmicBackground from '../components/landing/LandingCosmicBackground';
 import ConsultationContent from '../components/consultation/ConsultationContent';
+import { ConsultationFooter } from '../components/consultation/scenes/ContactScene';
 import '../components/consultation/consultation.css';
 import '../components/consultation/consultation-scenes.css';
 
@@ -53,22 +53,9 @@ export default function AiConsultationPage() {
         <ConsultationContent />
       </div>
 
-      <footer className="relative z-10 px-4 pb-12 pt-2 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
-          <p className="font-space text-xs uppercase tracking-[0.16em] text-slate-400">
-            Curious Labs · AI integration consultation
-          </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#c6f75b]/70">
-            A more capable tomorrow. Together. /_
-          </p>
-          <Link
-            to="/"
-            className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400 transition-colors hover:text-slate-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          >
-            Home
-          </Link>
-        </div>
-      </footer>
+      <div className="relative z-10">
+        <ConsultationFooter />
+      </div>
     </div>
   );
 }

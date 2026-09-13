@@ -1,1 +1,294 @@
-/* SC-09 final horizon + contact (lane C). Every selector stays under .cl-consultation. */
+/* SC-09 final horizon + contact + page footer (lane A since #MGR-040) — MOCK-D4 bottom, MOCK-M1 col 3 bottom,
+   MOTIF_PROGRESSION "Return": centred header over the Earth rising behind the ridge, walker on the ridge,
+   the light line closing as the horizon glow. Every selector stays under .cl-consultation; classes prefixed `f-`. */
+
+/* ── Horizon stage ────────────────────────────────────────────────────── */
+.cl-consultation .f-stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  min-height: 800px;
+  padding: 36px 0 150px;
+}
+.cl-consultation .f-art {
+  position: absolute;
+  z-index: -1;
+  top: -96px; /* under the band's top padding */
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+}
+.cl-consultation .f-art__plate {
+  position: absolute;
+  inset: 0;
+  /* Soft dissolve in from the scene above; no hard edge. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 100%);
+}
+.cl-consultation .f-art__plate img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 62% 58%; }
+.cl-consultation .f-art__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(44% 46% at 50% 38%, rgb(2 3 8 / .84) 0%, rgb(2 3 8 / .55) 55%, transparent 82%),
+    linear-gradient(0deg, rgb(2 3 8 / .55) 0%, transparent 22%);
+}
+.cl-consultation .f-art__walker {
+  position: absolute;
+  left: 80%;
+  bottom: 17%;
+  width: 116px;
+  height: 174px;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity .6s ease;
+  filter: drop-shadow(0 0 18px rgb(242 179 94 / .25));
+}
+.cl-consultation .f-art__walker--ready { opacity: 1; }
+.cl-consultation .f-art__walker img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; }
+/* The light line's last form: the horizon glow at the stage's foot. */
+.cl-consultation .f-art__horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgb(94 230 245 / .55) 22%, #e8fbff 50%, rgb(94 230 245 / .55) 78%, transparent 100%);
+  box-shadow: 0 0 16px 2px rgb(94 230 245 / .45), 0 0 48px 6px rgb(94 230 245 / .18);
+}
+
+/* Tagline sits in the dark space upper-left: the Earth's city lights fill the upper right in ART-17. */
+.cl-consultation .f-stage__aside {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  display: grid;
+  gap: 22px;
+}
+.cl-consultation .f-stage__tagline { color: var(--k-cream); }
+.cl-consultation .f-stage__tagline::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  margin-top: 16px;
+  background: rgb(244 239 220 / .5);
+}
+.cl-consultation .f-crumbs {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  font-family: var(--k-font-sans);
+  font-size: 13px;
+  color: rgb(244 239 220 / .85);
+}
+.cl-consultation .f-crumbs__sep { color: var(--k-ink-muted); }
+.cl-consultation .f-stage__phone-tag { display: none; }
+
+/* Centred header (MOTIF_PROGRESSION: SC-09 centred headline + CTA over the horizon). */
+.cl-consultation .f-head {
+  display: grid;
+  justify-items: center;
+  max-width: 820px;
+  text-align: center;
+}
+.cl-consultation .f-head .k-eyebrow { justify-content: center; }
+.cl-consultation .f-head .k-eyebrow::after {
+  content: '';
+  flex: none;
+  width: 18px;
+  height: 1.5px;
+  background: currentColor;
+}
+.cl-consultation .f-head .k-display { font-size: clamp(44px, 5.4vw, 80px); }
+.cl-consultation .f-head__lead { margin: 22px auto 0; max-width: 54ch; }
+.cl-consultation .f-head__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.cl-consultation .f-points {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px 56px;
+  margin: 64px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cl-consultation .f-points .k-irow__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid rgb(94 230 245 / .7);
+  box-shadow: 0 0 16px -4px rgb(94 230 245 / .6);
+}
+.cl-consultation .f-points .k-irow__icon svg { width: 22px; height: 22px; }
+.cl-consultation .f-points .k-irow__title {
+  font-family: var(--k-font-mono);
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--k-cyan);
+}
+.cl-consultation .f-points .k-irow__text { color: var(--k-ink-body); }
+
+/* ── Contact card ─────────────────────────────────────────────────────── */
+.cl-consultation .f-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  margin-top: 64px;
+  padding: 44px;
+  scroll-margin-top: calc(var(--cl-anchor-offset, 96px) + 24px);
+}
+.cl-consultation .f-card__eyebrow { margin-bottom: 16px; }
+.cl-consultation .f-card__title--phone,
+.cl-consultation .f-card__body--phone { display: none; }
+.cl-consultation .f-card__body { margin-top: 16px; }
+.cl-consultation .f-card__free {
+  margin: 20px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--k-lime);
+  font-family: var(--k-font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--k-cream);
+}
+.cl-consultation .f-card__where { display: grid; gap: 2px; margin-top: 18px; }
+.cl-consultation .f-card__where .k-irow { padding-block: 4px; }
+.cl-consultation .f-card__where .k-irow__icon { width: 34px; height: 34px; }
+.cl-consultation .f-card__where .k-irow__icon svg { width: 20px; height: 20px; }
+.cl-consultation .f-card__caption { margin: 12px 0 0; font-family: var(--k-font-sans); font-size: 13px; color: var(--k-ink-muted); }
+
+.cl-consultation .f-card__next { display: grid; align-content: start; gap: 0; }
+.cl-consultation .f-card__steps-label { margin: 6px 0 16px; color: rgb(244 239 220 / .75); }
+.cl-consultation .f-steps { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.cl-consultation .f-steps .k-nrow__head { padding-block: 12px; align-items: flex-start; }
+.cl-consultation .f-steps .k-nrow__badge { font-size: 14px; }
+.cl-consultation .f-card__reassurance {
+  margin: 18px 0 0;
+  font-family: var(--k-font-serif);
+  font-size: 19px;
+  font-style: italic;
+  color: var(--k-cream);
+}
+.cl-consultation .f-pending {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px dashed rgb(242 179 94 / .45);
+  border-radius: 12px;
+  background: rgb(242 179 94 / .05);
+}
+.cl-consultation .f-pending__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--k-font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--k-amber);
+}
+.cl-consultation .f-pending__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--k-amber);
+  box-shadow: 0 0 10px var(--k-amber);
+  animation: f-pending-pulse 2.4s ease-in-out infinite;
+}
+@keyframes f-pending-pulse { 50% { opacity: .35; } }
+.cl-consultation .f-pending__text { margin: 8px 0 0; font-family: var(--k-font-sans); font-size: 13.5px; line-height: 1.5; color: var(--k-ink-body); }
+
+/* ── Page footer (page shell) ─────────────────────────────────────────── */
+.cl-consultation.f-footer {
+  position: relative;
+  border-top: 1px solid var(--k-hairline);
+  padding: 44px var(--k-gutter) 56px;
+  background: linear-gradient(180deg, rgb(4 10 16 / .7), rgb(2 3 8 / .95));
+}
+.cl-consultation .f-footer__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 48px;
+  max-width: var(--k-column);
+  margin: 0 auto;
+}
+.cl-consultation .f-footer__brand { display: flex; align-items: center; gap: 16px; text-decoration: none; }
+.cl-consultation .f-footer__brand img { width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 0 10px rgb(176 133 255 / .5)); }
+.cl-consultation .f-footer__name { display: block; font-family: var(--k-font-display); font-size: 22px; font-weight: 600; color: var(--k-lime); }
+.cl-consultation .f-footer__sub { display: block; margin-top: 2px; font-family: var(--k-font-mono); font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase; color: rgb(244 239 220 / .7); }
+.cl-consultation .f-footer__quote { max-width: 380px; padding-left: 40px; border-left: 1px solid var(--k-hairline); }
+.cl-consultation .f-footer__quote .k-quote__text { font-size: 21px; }
+.cl-consultation .f-footer__quote .k-quote__rule { display: none; }
+.cl-consultation .f-footer__quote .k-quote__label { margin-top: 10px; }
+.cl-consultation .f-footer__nav { display: grid; justify-items: end; gap: 14px; }
+.cl-consultation .f-footer__nav ul { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 0; padding: 0; list-style: none; }
+.cl-consultation .f-footer__nav a {
+  font-family: var(--k-font-sans);
+  font-size: 14px;
+  color: rgb(244 239 220 / .88);
+  text-decoration: none;
+}
+.cl-consultation .f-footer__nav a:hover { color: var(--k-lime); }
+.cl-consultation .f-footer a:focus-visible { outline: 2px solid var(--k-lime); outline-offset: 4px; border-radius: 4px; }
+.cl-consultation .f-footer__tagline {
+  margin: 0;
+  font-family: var(--k-font-mono);
+  font-size: 11px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--k-cyan);
+}
+
+/* ── Tablet ───────────────────────────────────────────────────────────── */
+@media (max-width: 1099px) {
+  .cl-consultation .f-stage__aside { display: none; }
+  .cl-consultation .f-card { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .cl-consultation .f-footer__inner { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 28px; text-align: center; }
+  .cl-consultation .f-footer__quote { padding-left: 0; border-left: 0; }
+  .cl-consultation .f-footer__nav { justify-items: center; }
+}
+
+/* ── Phone (MOCK-M1): horizon image, then the "Ready to talk?" card ──── */
+@media (max-width: 767px) {
+  .cl-consultation .f-stage { min-height: 440px; padding: 0; align-content: end; }
+  .cl-consultation .f-art { top: -56px; }
+  .cl-consultation .f-art__plate img { object-position: 50% 52%; }
+  .cl-consultation .f-art__scrim { background: linear-gradient(0deg, rgb(2 3 8 / .85) 0%, transparent 35%); }
+  .cl-consultation .f-art__walker,
+  .cl-consultation .f-head,
+  .cl-consultation .f-points { display: none; }
+  .cl-consultation .f-stage__phone-tag {
+    display: block;
+    margin: 0 0 28px;
+    font-family: var(--k-font-mono);
+    font-size: 10px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--k-cyan);
+  }
+  .cl-consultation .f-card { margin-top: 24px; padding: 22px; gap: 24px; }
+  .cl-consultation .f-card__title--desk,
+  .cl-consultation .f-card__body--desk { display: none; }
+  .cl-consultation .f-card__title--phone,
+  .cl-consultation .f-card__body--phone { display: block; }
+  .cl-consultation .f-card__reassurance { font-size: 17px; }
+  .cl-consultation.f-footer { padding: 36px 20px 44px; }
+  .cl-consultation .f-footer__quote { display: none; }
+  .cl-consultation .f-footer__nav ul { justify-content: center; gap: 8px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-consultation .f-pending__dot { animation: none; }
+  .cl-consultation .f-art__walker { transition: none; }
+}

@@ -167,6 +167,7 @@
 .cl-consultation .f-card__where .k-irow { padding-block: 4px; }
 .cl-consultation .f-card__where .k-irow__icon { width: 34px; height: 34px; }
 .cl-consultation .f-card__where .k-irow__icon svg { width: 20px; height: 20px; }
+.cl-consultation .f-card__where .f-card__where-phone { display: none; }
 .cl-consultation .f-card__caption { margin: 12px 0 0; font-family: var(--k-font-sans); font-size: 13px; color: var(--k-ink-muted); }
 
 .cl-consultation .f-card__next { display: grid; align-content: start; gap: 0; }
@@ -328,6 +329,9 @@
   .cl-consultation .f-card__where .k-irow__icon { width: 22px; height: 22px; }
   .cl-consultation .f-card__where .k-irow__icon svg { width: 16px; height: 16px; }
   .cl-consultation .f-card__where .k-irow__title { font-size: 13.5px; }
+  /* One row on phone: the COPY_CANON short form replaces the two deck strings. */
+  .cl-consultation .f-card__where .f-card__where-full { display: none; }
+  .cl-consultation .f-card__where .f-card__where-phone { display: flex; }
   /* Compact numbered steps: no row borders, small badge, tight rhythm. */
   .cl-consultation .f-steps { gap: 12px; }
   .cl-consultation .f-steps .k-nrow { border: 0; background: none; }

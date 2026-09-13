@@ -111,8 +111,9 @@ function ContactScene() {
             <span className="f-card__toggle-icon" aria-hidden="true" />
           </button>
           <div className="f-card__where f-card__detail">
-            <IconRow icon="pin" title={card.location.text} bare accent="lime" />
-            <IconRow icon="chat" title={card.language.text} bare accent="lime" />
+            <IconRow icon="pin" title={card.location.text} bare accent="lime" className="f-card__where-full" />
+            <IconRow icon="chat" title={card.language.text} bare accent="lime" className="f-card__where-full" />
+            <IconRow icon="pin" title={card.phoneMeta.text} bare accent="lime" className="f-card__where-phone" />
           </div>
           <p className="f-card__caption f-card__detail">{card.caption.text}</p>
         </div>

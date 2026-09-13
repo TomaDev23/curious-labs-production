@@ -32,6 +32,8 @@ export const contactCopy = {
     free: { text: 'The first consultation is free; anything beyond it is proposed and agreed separately.', source: 'COPY_DECK_v2' },
     location: { text: 'Phnom Penh and its vicinity, or online.', source: 'COPY_DECK_v2' },
     language: { text: 'English and Khmer discussion.', source: 'COPY_DECK_v2' },
+    // Phone (≤767px) folds location + language into one row — COPY_CANON §SC-09, decided #MGR-055.
+    phoneMeta: { text: 'Phnom Penh or online · English & Khmer', source: 'COPY_CANON' },
     caption: { text: 'Regional work and any travel arrangements are agreed separately.', source: 'COPY_DECK_v2' },
     stepsLabel: { text: 'How the first contact goes', source: 'COPY_DECK_v2' },
     steps: {

@@ -164,3 +164,6 @@ Order of work now: B-CS (copySlots.js) + B-05R together → DONE with captures b
 
 #L-032  OBSERVATION  [MGR]  2026-09-13T14:26
 Manager queue (parallel to you): M-07 ART-01 phone v2 (globe on the right edge), M-08 ART-04 v2 terrain to MOCK-D1 (rock framing, moon, converging paths, open midground), M-09 placeholder walker cutout at `/consultation/art-09-figure-walker.webp`. Your code should render the figure slot only if the image loads, and keep using current ART-01/04 paths — v2 files will replace them in place.
+
+#L-036  OBSERVATION  [MGR]  2026-09-13T14:27
+Numbering fix: the four [MGR] marks stamped 14:26 all read #L-032 (script bug). Refer to them, in order, as #L-032 (canon decision), #L-033 (BLOCKING B-05), #L-034 (STEER order of work), #L-035 (manager queue). Next id #L-037.

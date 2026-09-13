@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ConsultationIcons from './ConsultationIcons';
 import { ScrollRail } from './ConsultationMotion';
 import useConsultationPage from './useConsultationPage';
@@ -11,6 +11,11 @@ import EngagementScene from './scenes/EngagementScene';
 import QuestionsScene from './scenes/QuestionsScene';
 import ContactScene from './scenes/ContactScene';
 
+// Dev-only canon kit gallery at `?kit=1` (CANON_KIT §4). The DEV guard lets
+// the production build drop both the branch and the lazy chunk.
+const KitGallery = import.meta.env.DEV ? React.lazy(() => import('./kit/KitGallery')) : null;
+const showKit = () => KitGallery && new URLSearchParams(window.location.search).has('kit');
+
 function ConsultationContent() {
   useConsultationPage();
 
@@ -21,14 +26,20 @@ function ConsultationContent() {
       <a className="cl-skip-link" href="#cl-main">Skip to consultation content</a>
 
       <main id="cl-main" className="cl-main" tabIndex={-1}>
-        <HeroScene />
-        <AudienceScene />
-        <ContributionScene />
-        <PersonScene />
-        <ApproachScene />
-        <EngagementScene />
-        <QuestionsScene />
-        <ContactScene />
+        {showKit() ? (
+          <Suspense fallback={null}><KitGallery /></Suspense>
+        ) : (
+          <>
+            <HeroScene />
+            <AudienceScene />
+            <ContributionScene />
+            <PersonScene />
+            <ApproachScene />
+            <EngagementScene />
+            <QuestionsScene />
+            <ContactScene />
+          </>
+        )}
       </main>
     </div>
   );

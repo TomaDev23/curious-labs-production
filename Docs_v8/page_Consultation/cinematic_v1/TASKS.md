@@ -15,8 +15,10 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | A-04 | SC-04 contribution + HarnessSystem to MOCK-D2 | A-01 | Queued |
 | A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | Later |
 | A-06 | **DR-10 walker transition** SC-03 → SC-04 (scroll-scrubbed; card below) | A-04, ART-19 poses | Done (#A-011/#A-013); poses pending |
-| A-06c | Polish: doors void atmosphere (nebula haze + brighter orbit arc, no planet); harness core ~25% larger + brighter bloom (MOCK-D2) | — | Queued |
-| A-07 | **SC-09 final horizon + pending contact + page footer** (moved from C-04): SCENE_SPECS SC-09 + MOTIF_PROGRESSION (centred header, ART-17 + walker on the ridge, quote allowed, pending contact state) | A-06c | Queued |
+| A-06c | Polish (Done #A-014): doors void atmosphere (nebula haze + brighter orbit arc, no planet); harness core ~25% larger + brighter bloom (MOCK-D2) | — | Queued |
+| A-07 | **SC-09 final horizon + pending contact + page footer** (moved from C-04): SCENE_SPECS SC-09 + MOTIF_PROGRESSION (centred header, ART-17 + walker on the ridge, quote allowed, pending contact state) | A-06c | Done (#A-014) |
+| A-08 | **Full-page capture audits** (read-only, your headless Chrome): stitched full-page captures of `/ai-consultation` at 1440 and 390, one PNG per scene band plus one scaled-down whole-page strip, re-run on manager request; paths in the mark | — | Queued — next |
+| A-09 | **Phone fidelity pass for lane-A scenes** (SC-02/03/04/09 + seam fallback) vs MOCK-M1 — side-by-sides at 390, fix deltas | A-08 | Queued |
 
 ## Lane B — AI consultation builder B (Codex) · person + approach
 

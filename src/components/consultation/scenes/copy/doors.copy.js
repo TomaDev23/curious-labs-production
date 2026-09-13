@@ -17,7 +17,9 @@ export const doorsCopy = {
       body: 'You already build products. Now you need AI working inside how the team works — the coordination and the harnessing rules that keep it dependable as you hand it more of the work.',
       chips: ['Team coordination', 'Harnessing rules', 'AI at scale', 'Review & checks'],
       cta: 'Start a conversation',
-      foot: 'Business advisory. Not programming instruction.'
+      foot: 'Business advisory. Not programming instruction.',
+      phoneTitle: ['For Technical', 'Companies'],
+      phoneBody: 'Teams already shipping products, looking to make AI work at scale.'
     },
     business: {
       micro: 'For non-technical companies',
@@ -25,7 +27,9 @@ export const doorsCopy = {
       body: 'You don’t need to be a tech company to get real value from AI. I help you find the real use cases, design a harness that fits how your business works, and plan practical next steps — without the hype.',
       chips: ['Real use cases', 'Harness design', 'Operations', 'Team training'],
       cta: 'Start a conversation',
-      foot: 'Business consultation. No code required.'
+      foot: 'Business consultation. No code required.',
+      phoneTitle: ['For Non-Technical', 'Companies'],
+      phoneBody: 'Established businesses exploring where AI can create real value in how they work.'
     }
   },
   closerLeft: { lines: ['Same curiosity.', 'More possibilities.'], source: 'COPY_CANON' },

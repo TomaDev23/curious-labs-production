@@ -48,13 +48,16 @@ function DoorsFloor() {
 function DoorCard({ door }) {
   const titleId = `cl-door-${door.id}-title`;
   return (
-    <NeonCard as="article" accent={door.accent} className={`d-card d-card--${door.id}`} aria-labelledby={titleId}>
+    <NeonCard as="article" accent={door.accent} className={`d-card d-card--${door.id}`}>
       <div className="d-card__copy">
         <IconRing icon={door.icon} accent={door.accent} className="d-card__ring" />
         <MicroLabel className="d-card__micro">{door.micro}</MicroLabel>
-        <CardTitle id={titleId} feature lines={door.title} className="d-card__title" />
+        {/* Desktop and phone (MOCK-M1 short form) copy: only one pair is displayed, the other is display:none, so screen readers get one. */}
+        <CardTitle id={titleId} feature lines={door.title} className="d-card__title d-card__title--desk" />
+        <CardTitle lines={door.phoneTitle} className="d-card__title d-card__title--phone" />
         <CircleArrow href="#contact" label={`${door.cta}: ${door.micro.toLowerCase()}`} className="d-card__arrow" />
-        <Body className="d-card__body">{door.body}</Body>
+        <Body className="d-card__body d-card__body--desk">{door.body}</Body>
+        <Body className="d-card__body d-card__body--phone">{door.phoneBody}</Body>
         <Chips items={door.chips} accent={door.accent} label={`${door.micro}: focus areas`} className="d-card__chips" />
         <PrimaryButton href="#contact" className="d-card__cta">{door.cta}</PrimaryButton>
         <p className="d-card__foot">{door.foot}</p>

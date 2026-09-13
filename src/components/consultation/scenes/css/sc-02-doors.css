@@ -124,6 +124,8 @@
 .cl-consultation .d-card__micro { grid-area: micro; letter-spacing: .14em; white-space: nowrap; }
 .cl-consultation .d-card__title { grid-area: title; margin-top: 28px; }
 .cl-consultation .d-card__arrow { grid-area: arrow; display: none; }
+.cl-consultation .d-card__title--phone,
+.cl-consultation .d-card__body--phone { display: none; }
 .cl-consultation .d-card__body { grid-area: body; margin-top: 16px; }
 .cl-consultation .d-card__chips { grid-area: chips; margin-top: 22px; }
 .cl-consultation .d-card__cta { grid-area: cta; justify-self: start; margin-top: 28px; }
@@ -167,7 +169,7 @@
   position: absolute;
   top: -2px;
   bottom: -2px;
-  left: calc(100% + 1px);
+  left: calc(100% + 2px);
   width: 100%;
   transform-origin: 0 50%;
   transform: rotateY(-60deg);
@@ -274,8 +276,13 @@
   .cl-consultation .d-card__micro,
   .cl-consultation .d-card__cta,
   .cl-consultation .d-door { display: none; }
-  .cl-consultation .d-card__ring { align-self: start; }
+  .cl-consultation .d-card__ring { align-self: center; }
   .cl-consultation .d-card__title { margin-top: 0; font-size: 21px; }
+  .cl-consultation .d-card__title--desk,
+  .cl-consultation .d-card__body--desk,
+  .cl-consultation .d-card__foot { display: none; }
+  .cl-consultation .d-card__title--phone,
+  .cl-consultation .d-card__body--phone { display: block; }
   .cl-consultation .d-card__arrow { display: inline-grid; align-self: start; width: 36px; height: 36px; }
   .cl-consultation .d-card__body { margin-top: 14px; }
   .cl-consultation .d-card__chips { margin-top: 16px; }

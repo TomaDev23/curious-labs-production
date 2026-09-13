@@ -342,3 +342,24 @@ Picked from #B-005 — the original 12-row queue is complete: `/consultation/art
 
 #MGR-022  OBSERVATION  [BLD-B]  2026-09-13T15:37
 From #C-002: the running page currently shows errors from `<PersonScene>`/`<ApproachScene>` caught by the ErrorBoundary (your in-progress X-01/X-02 files). Please keep saved files rendering (TEAM_PROTOCOL shared-server rule) — it blocks the other lanes' visual checks of the whole page. Post when fixed.
+
+#A-007  DONE  [BLD-A]  2026-09-13T15:38
+ACK #MGR-017. **A-03b walls atmosphere done — `28d401c` (pushed).** Covers the six points of #MGR-018:
+(1) Stage compressed: the figure's head sits ~40px under the wall line, the paths start **at each wall's base**, and the closer sits right under the figure's feet.
+(2) Grounded: slabs +15% (560 / 600 / 548px), outer walls tilted outward (-1.4deg / +1.2deg from the base), and a jagged SVG rock silhouette with a faint rim light along the bases overlaps the slab bottoms.
+(3) Rock faces: every wall has a `.w-wall__face` layer that paints `/consultation/art-18-monolith-face.{avif,webp}` (cover, **mirrored on the middle wall**, with a darkened centre behind the text) as soon as the file exists; until then the stone surface shows. Accent seam kept, plus a soft accent rim glow on the inner edge. **Format note:** the layer uses normal blending, so a transparent PNG is best; if Codex returns pure black, tell me and I'll switch it to `mix-blend-mode: screen`.
+(4) Art presence: ART-04 is larger (2000px) with a lighter mask and brightness 1.12, so the moon sits big above/behind wall 03 and the right cliffs frame the scene. A second, bottom-anchored copy of ART-04 (desktop only, same file, so no extra download) carries rocky ground under the walls, the paths and the figure.
+(5) Paths 2.5px core + 18px glow at 75%, blur 7; each one bows around the rock line from its base. Figure 190px (127×190) with a violet→cyan light pool at the feet and a soft backlight bloom.
+(6) No brand strip (lane C). The closer + line + down arrow stay scene-local.
+Evidence: `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/cap/A-03b_desktop_vs_MOCK-D1.png` (mockup left / build right, 1440); `cap/w9-1100-300.png` (breakpoint edge). No overflow at 1440/1100/1024/390. Phone/tablet unchanged (rocks, ground, paths and figure are hidden below 1100).
+Remaining deltas: (a) faces stay flat until art-18 lands; (b) the paths are smooth S-curves over the rock line, not weaving between individual foreground boulders; (c) the ground layer repeats the far cliffs faintly behind the figure — a dedicated foreground crop of ART-04 would be cleaner; (d) the left cliffs show less than in the mockup (the moon placement wins that trade-off).
+Next for lane A: A-04 (SC-04 what I actually do + HarnessSystem), unless you steer otherwise.
+
+#MGR-023  BLOCKING  [BLD-A]  2026-09-13T15:40
+**Kit bug — Band art disappears on desktop.** `.k-band__art` has `z-index:-1` but `.k-band` (the section) creates no stacking context, so the art paints behind the page wrapper's opaque `bg-[#020308]`. Verified on the hero at 1440 (lane C's C-01): image loaded, full-bleed rect correct, but invisible; adding `isolation: isolate` to `#overview` in devtools brings the globe back and the hero then matches MOCK-D0. Fix in `kit/kit.css`: `.cl-consultation .k-band { isolation: isolate; }` (or give the art z-index 0 and the inner content z-index 1). Check doors/walls still render the same (their art layers may already isolate). **Do this first** (one line), post #A, then A-04.
+
+#MGR-024  ACK  [BLD-A]  2026-09-13T15:40
+Audit A-03b (#A-007, 28d401c) vs side-by-side: **accepted** — walls grounded in a rock line, paths start at each base and read bright, 190px backlit figure on a light pool, moon big behind wall 03. Faces flat until art-18 lands (Codex has it queued first; I'll tell you the format). Deltas (b)–(d) accepted for now. Go A-04 after #MGR-023.
+
+#MGR-025  ACK  [BLD-C]  2026-09-13T15:40
+Audit C-01 (#C-002, 1012bc8 + 6c972a9): **phone accepted** — globe on the right edge, quote over dark space, stat strip, CircleArrow, COPY_CANON copy: reads like MOCK-M1. **Desktop blocked by a kit bug, not your code**: the ART-01 globe doesn't show because Band's art sits behind the page background (#MGR-023, lane A fixing). With `isolation: isolate` forced in devtools your desktop layout matches MOCK-D0 (headline, lead, buttons, quote top-right, meta line). Deltas: (1) quote dash — leave to kit; (2) centred phone quote override is fine; (3) 13ch is fine. After lane A's fix, re-capture desktop and post a one-line confirmation. Then go **C-02 engagement** (art-16 galaxy band is ready, #MGR-021).

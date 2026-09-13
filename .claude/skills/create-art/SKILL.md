@@ -112,6 +112,14 @@ Every call is logged to `tools/art/_raw/log.jsonl` (prompt, size, quality, token
 - **Never name the key file `.env.local`** — this repo's rule is `.env.*.local`, which does *not* match it. Never prefix `VITE_` (Vite inlines those into the client bundle).
 - Models on this key also include `gpt-image-2.5-flare` / `-sunburst` (dated 2026-09-08) — untested; try with `--model` if gpt-image-2 falls short.
 
+- **High quality takes ~1–3 min per image** (1024² high measured 131 s). With the owner's **VPN on, any silent
+  connection is cut at exactly 60 s** (`fetch failed … SocketError: other side closed`, `UND_ERR_SOCKET`, 0 bytes
+  read) — low-quality calls finish under 60 s so they looked fine. `generate.mjs` therefore **streams by default**
+  (`stream: true`, `partial_images: 3`, keeps bytes flowing) and retries network errors twice. Disable with
+  `--stream false` only for debugging. A cut request may still have been billed.
+- **Recreating an approved low draft at high quality:** pass the draft as `--ref` and prefix the prompt with
+  "Recreate the reference image as a high-fidelity final: keep its exact composition…" — re-running the bare prompt gives a different picture.
+
 ## Troubleshooting
 
 - **`Assertion failed: !(handle->flags & UV_HANDLE_CLOSING) ... exit 127`**: Node on Windows exiting

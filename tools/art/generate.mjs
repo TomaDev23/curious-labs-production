@@ -15,6 +15,7 @@
  *   --quality     low | medium | high | auto   (default medium — use low for drafts)
  *   --background  opaque | transparent | auto  (transparent needs png/webp output)
  *   --n           images per call (default 1)
+ *   --stream false  disable streaming (default: streamed with partial_images=3 when n=1)
  *   --ref         reference image(s), comma-separated → uses the edits endpoint for style continuity
  *
  * Writes PNGs to tools/art/_raw/ (gitignored) and appends one line per call to
@@ -73,6 +74,7 @@ async function call() {
     form.append('quality', quality);
     form.append('n', String(n));
     if (background !== 'auto') form.append('background', background);
+    if (n === 1 && opt.stream !== 'false') { form.append('stream', 'true'); form.append('partial_images', '3'); }
     for (const ref of refs) {
       const buf = fs.readFileSync(ref);
       form.append('image[]', new Blob([buf], { type: 'image/png' }), path.basename(ref));
@@ -81,6 +83,7 @@ async function call() {
   }
   const body = { model, prompt, size, quality, n };
   if (background !== 'auto') body.background = background;
+  if (n === 1 && opt.stream !== 'false') { body.stream = true; body.partial_images = 3; }
   return fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { ...headers, 'Content-Type': 'application/json' },
@@ -89,15 +92,64 @@ async function call() {
 }
 
 const started = Date.now();
-const res = await call();
-const json = await res.json();
-if (!res.ok) {
-  console.error(`OpenAI error ${res.status}:`, json.error?.message || JSON.stringify(json));
+// Streaming (default for n=1): this network cuts any connection that is silent for
+// 60 s (measured 60.2 s), and high-quality renders take longer. partial_images keeps
+// bytes flowing. Network-level failures retry; HTTP errors are real answers.
+const stream = n === 1 && opt.stream !== 'false';
+
+async function readStream(res) {
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+  let done = null;
+  let partials = 0;
+  for (;;) {
+    const { value, done: end } = await reader.read();
+    if (end) break;
+    buf += decoder.decode(value, { stream: true });
+    let cut;
+    buf = buf.replace(/\r\n/g, '\n');
+    while ((cut = buf.indexOf('\n\n')) !== -1) {
+      const chunk = buf.slice(0, cut);
+      buf = buf.slice(cut + 2);
+      const data = chunk.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).join('');
+      if (!data || data === '[DONE]') continue;
+      const ev = JSON.parse(data);
+      if (ev.type?.endsWith('.partial_image')) partials++;
+      else if (ev.type?.endsWith('.completed')) done = ev;
+      else if (ev.type === 'error' || ev.error) throw Object.assign(new Error(ev.error?.message || JSON.stringify(ev)), { api: true });
+    }
+  }
+  if (!done) throw new Error(`stream ended without a completed event (${partials} partials)`);
+  return { data: [{ b64_json: done.b64_json }], usage: done.usage, partials };
+}
+
+let result;
+for (let attempt = 1; ; attempt++) {
+  try {
+    const res = await call();
+    if (!res.ok) {
+      const json = await res.json();
+      result = { error: `OpenAI error ${res.status}: ${json.error?.message || JSON.stringify(json)}` };
+    } else {
+      result = stream ? await readStream(res) : await res.json();
+    }
+    break;
+  } catch (err) {
+    if (err.api) { result = { error: `OpenAI stream error: ${err.message}` }; break; }
+    const code = err.cause?.code || err.code;
+    if (attempt >= 3) throw err;
+    console.error(`network error (${code || err.message}); retry ${attempt}/2 in ${attempt * 10}s`);
+    await new Promise((r) => setTimeout(r, attempt * 10000));
+  }
+}
+if (result.error) {
+  console.error(result.error);
   // Not process.exit(): on Windows, exiting while fetch's socket handles are
   // still closing trips a libuv assertion (UV_HANDLE_CLOSING) and exits 127.
   process.exitCode = 2;
 } else {
-  save(json);
+  save(result);
 }
 
 function save(json) {

@@ -403,8 +403,9 @@
 
 /* ── Phone (MOCK-M1): compact cards, arrow toggles the details ───────── */
 @media (max-width: 767px) {
-  .cl-consultation .c-band { padding-bottom: 196px; }
-  .cl-consultation .c-backdrop__mountains { height: 240px; }
+  /* Ridge cue ≤110px below the packages card (#MGR-058). */
+  .cl-consultation .c-band { padding-bottom: 110px; }
+  .cl-consultation .c-backdrop__mountains { height: 200px; }
   /* M1: the phone header is left-aligned (the centred composition is a desktop move). */
   .cl-consultation .c-head { justify-items: start; text-align: left; margin-inline: 0; }
   .cl-consultation .c-head .k-eyebrow { justify-content: flex-start; }
@@ -466,9 +467,21 @@
   .cl-consultation .c-packages { padding: 22px; }
   .cl-consultation .c-packages__lead { gap: 14px; }
   .cl-consultation .c-packages__title { font-size: 22px; }
-  .cl-consultation .c-foot { bottom: -150px; flex-direction: column; align-items: flex-start; }
+  /* M1-short: title + two lines + the lime button; the full paragraph stays in the DOM and on desktop (#MGR-058). */
+  .cl-consultation .c-packages { gap: 14px; margin-top: 24px; }
+  .cl-consultation .c-packages__body {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .cl-consultation .c-packages__tag { display: none; }
+  .cl-consultation .c-foot { bottom: -96px; flex-direction: column; align-items: flex-start; }
   .cl-consultation .c-foot__closer { display: none; } /* M1 moves straight on; keep only the NEXT cue over the ridge */
-  .cl-consultation .c-next { margin-right: 0; }
+  .cl-consultation .c-next { margin-right: 0; gap: 14px; }
+  .cl-consultation .c-next__rail { min-height: 64px; }
+  .cl-consultation .c-next__eyebrow { margin-bottom: 4px; }
+  .cl-consultation .c-next__line { font-size: 15px; line-height: 1.3; }
 }
 
 @media (prefers-reduced-motion: reduce) {

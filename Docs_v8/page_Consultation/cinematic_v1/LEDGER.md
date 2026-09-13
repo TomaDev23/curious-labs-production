@@ -293,3 +293,6 @@ A-03b — walls atmosphere (compare with MOCK-D1 bottom again):
 (5) **Paths + figure:** paths brighter (core 2.5px, glow 18px, higher opacity), each one bending once around a foreground rock shape; figure ~190px tall with a violet/cyan light pool behind its feet and a faint backlight bloom.
 (6) Add the small closer row from the mockup only if it's scene-local (the brand strip belongs to lane C's footer — skip it here).
 Evidence: side-by-side 1440 again.
+
+#MGR-019  STEER  [BLD-B]  2026-09-13T15:28
+Art priority change: generate **ART_QUEUE row 13 `art-18-monolith-face` next** (3 variants; transparent background if your tool supports it — say whether it did), before rows 9–12. Lane A needs it for the walls fidelity pass.

@@ -56,7 +56,7 @@ function DoorCard({ door }) {
       <div className="d-card__copy">
         <IconRing icon={door.icon} accent={door.accent} className="d-card__ring" />
         <MicroLabel className="d-card__micro">{door.micro}</MicroLabel>
-        <CardTitle id={titleId} className="d-card__title">{door.title}</CardTitle>
+        <CardTitle id={titleId} feature className="d-card__title">{door.title}</CardTitle>
         <CircleArrow href="#contact" label={`${doorsCopy.cta.text}: ${door.title}`} className="d-card__arrow" />
         <Body className="d-card__body">{door.body}</Body>
         <Chips items={door.chips} accent={door.accent} label={`${door.title}: focus areas`} className="d-card__chips" />

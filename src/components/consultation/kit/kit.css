@@ -246,15 +246,31 @@
 /* ── 3 · Surfaces ─────────────────────────────────────────────────────── */
 .cl-consultation .k-card {
   --k-acc: var(--k-cyan);
+  /* Scales the outer glow; 1 = CANON_KIT spec values. #MGR-010: default a
+     touch brighter to match the mockup cards. */
+  --k-edge-boost: 1.25;
   position: relative;
   padding: 40px;
   border-radius: var(--k-radius-card);
   background: var(--k-surface);
   border: 1.5px solid color-mix(in srgb, var(--k-acc) 70%, transparent);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--k-acc) 25%, transparent),
-    0 0 36px -6px color-mix(in srgb, var(--k-acc) 45%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--k-acc) calc(25% * var(--k-edge-boost)), transparent),
+    0 0 36px -6px color-mix(in srgb, var(--k-acc) calc(45% * var(--k-edge-boost)), transparent),
     inset 0 0 48px color-mix(in srgb, var(--k-acc) 7%, transparent);
+}
+/* Light bloom along the top edge (mockup): bright centre fading to the sides. */
+.cl-consultation .k-card::after {
+  content: '';
+  position: absolute;
+  top: -1.5px;
+  left: 10%;
+  right: 10%;
+  height: 1.5px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--k-acc) 55%, #fff) 50%, transparent);
+  box-shadow: 0 0 14px 1px color-mix(in srgb, var(--k-acc) 70%, transparent);
+  pointer-events: none;
 }
 .cl-consultation .k-card.k-acc-violet { --k-acc: var(--k-violet); }
 .cl-consultation .k-card.k-acc-lime { --k-acc: var(--k-lime); }
@@ -262,8 +278,8 @@
 .cl-consultation .k-card--featured {
   border-color: var(--k-acc);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--k-acc) 35%, transparent),
-    0 0 60px -6px color-mix(in srgb, var(--k-acc) 55%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--k-acc) calc(35% * var(--k-edge-boost)), transparent),
+    0 0 60px -6px color-mix(in srgb, var(--k-acc) calc(55% * var(--k-edge-boost)), transparent),
     inset 0 0 64px color-mix(in srgb, var(--k-acc) 10%, transparent);
 }
 .cl-consultation .k-card--featured::before {

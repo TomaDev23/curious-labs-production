@@ -5,6 +5,7 @@ import { ScrollRail } from './ConsultationMotion';
 import useConsultationPage from './useConsultationPage';
 import HeroScene from './scenes/HeroScene';
 import AudienceScene from './scenes/AudienceScene';
+import WallsScene from './scenes/WallsScene';
 import ContributionScene from './scenes/ContributionScene';
 import PersonScene from './scenes/PersonScene';
 import ApproachScene from './scenes/ApproachScene';
@@ -33,6 +34,7 @@ function ConsultationContent() {
           <>
             <HeroScene />
             <AudienceScene />
+            <WallsScene />
             <ContributionScene />
             <PersonScene />
             <ApproachScene />

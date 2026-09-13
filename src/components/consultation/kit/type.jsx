@@ -48,13 +48,14 @@ export function MicroLabel({ children, className = '', as: Tag = 'span' }) {
 /**
  * Editorial quote: serif cream text with curly quotes, short lime rule,
  * `● LABEL` mono. Real text — screen readers read it as a blockquote.
+ * `quote` is a string or an array of lines (explicit breaks, as drawn).
  */
 export function QuoteBlock({ quote, label = 'CURIOUSLABS', align = 'right', className = '' }) {
   return (
     <figure className={`k-quote k-quote--${align} ${className}`.trim()}>
       <blockquote className="k-quote__text">
         <span className="k-quote__mark" aria-hidden="true">{'“'}</span>
-        {quote}
+        {Array.isArray(quote) ? joinLines(quote) : quote}
         <span aria-hidden="true">{'”'}</span>
       </blockquote>
       <span className="k-quote__rule" aria-hidden="true" />

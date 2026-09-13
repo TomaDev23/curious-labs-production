@@ -17,19 +17,22 @@ const VISTA = {
 };
 
 /**
- * Decorative door frame (DR-02): a CSS-3D leaf resting ajar over the vista,
- * opening wider on the card's hover/focus-within (desktop CSS) or when
- * `active` is set (phone, driven by the SwipeTrack's active item). Purely
- * decorative — aria-hidden, carries no text.
+ * Open doorway on the outer third of a door card (MOCK-D1, DR-02): a neon
+ * frame around the vista, a CSS-3D leaf hinged on the frame's outer edge and
+ * swung toward the viewer so it overhangs the card, and a floor glow.
+ * Desktop/tablet only; purely decorative (aria-hidden, no text). The leaf
+ * opens further on the card's hover/focus-within via CSS; static under
+ * reduced motion.
  */
-function DoorVisual({ variant, hinge = 'left', active = false }) {
+function DoorVisual({ variant }) {
   return (
-    <div className={`cl-door cl-door--${variant}${active ? ' cl-door--active' : ''}`} aria-hidden="true">
-      <SceneArt desktop={VISTA[variant]} className="cl-door__vista" />
-      <div className={`cl-door__leaf cl-door__leaf--hinge-${hinge}`}>
-        <span className="cl-door__bevel" />
-        <span className="cl-door__handle" />
-      </div>
+    <div className={`d-door d-door--${variant}`} aria-hidden="true">
+      <span className="d-door__glow" />
+      <SceneArt desktop={VISTA[variant]} position="50% 60%" className="d-door__vista" />
+      <span className="d-door__leaf">
+        <span className="d-door__panel" />
+        <span className="d-door__handle" />
+      </span>
     </div>
   );
 }

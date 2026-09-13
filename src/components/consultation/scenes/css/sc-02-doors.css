@@ -1,1 +1,228 @@
-/* SC-02 two doors (lane A). Every selector stays under .cl-consultation. */
+/* SC-02 two doors (lane A) — MOCK-D1 top (desktop), MOCK-M1 col 1 bottom (phone).
+   Every selector stays under .cl-consultation; scene classes are prefixed `d-`. */
+
+/* ── Backdrop: shallow globe top-right (desktop) ─────────────────────── */
+.cl-consultation .d-backdrop { position: absolute; inset: 0; }
+.cl-consultation .d-backdrop__globe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(1180px, 78vw);
+  height: 640px;
+  opacity: .9;
+  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent 92%), linear-gradient(to bottom, #000 40%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to left, #000 35%, transparent 92%), linear-gradient(to bottom, #000 40%, transparent 100%);
+  mask-composite: intersect;
+}
+.cl-consultation .d-backdrop__globe img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 100% 64%;
+}
+
+/* ── Header: copy left, quote right ──────────────────────────────────── */
+.cl-consultation .d-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  align-items: start;
+}
+.cl-consultation .d-head__copy { grid-column: 1 / 9; }
+.cl-consultation .d-head__lead { margin-top: 24px; }
+.cl-consultation .d-head__quote { grid-column: 10 / 13; margin-top: 64px; }
+
+/* ── Cards ────────────────────────────────────────────────────────────── */
+.cl-consultation .d-doors {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 44px;
+  margin-top: 64px;
+}
+/* Faint reflective floor under both cards. */
+.cl-consultation .d-doors::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: -4%;
+  right: -4%;
+  bottom: -70px;
+  height: 160px;
+  background: radial-gradient(50% 50% at 50% 50%, rgb(94 230 245 / .10) 0%, rgb(176 133 255 / .06) 45%, transparent 75%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.cl-consultation .d-card {
+  display: grid;
+  grid-template-columns: 62% 1fr;
+  min-height: 440px;
+}
+.cl-consultation .d-card__copy {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'ring  micro'
+    'title title'
+    'body  body'
+    'chips chips'
+    'cta   cta'
+    'foot  foot';
+  align-content: start;
+  align-items: center;
+  column-gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+.cl-consultation .d-card__ring { grid-area: ring; }
+.cl-consultation .d-card__micro { grid-area: micro; }
+.cl-consultation .d-card__title { grid-area: title; margin-top: 28px; }
+.cl-consultation .d-card__arrow { grid-area: arrow; display: none; }
+.cl-consultation .d-card__body { grid-area: body; margin-top: 16px; }
+.cl-consultation .d-card__chips { grid-area: chips; margin-top: 22px; }
+.cl-consultation .d-card__cta { grid-area: cta; justify-self: start; margin-top: 28px; }
+.cl-consultation .d-card__foot {
+  grid-area: foot;
+  margin: 18px 0 0;
+  font-family: var(--k-font-mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--k-ink-muted);
+}
+
+/* ── Door (desktop/tablet) ────────────────────────────────────────────── */
+.cl-consultation .d-door {
+  position: absolute;
+  top: -18px;
+  bottom: 26px;
+  right: 12%;
+  width: 24%;
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+  border: 2px solid var(--k-acc);
+  border-radius: 3px;
+  background: #02060a;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--k-acc) 30%, transparent),
+    0 0 28px color-mix(in srgb, var(--k-acc) 55%, transparent),
+    inset 0 0 22px color-mix(in srgb, var(--k-acc) 35%, transparent);
+}
+.cl-consultation .d-door__vista { position: absolute; inset: 0; border-radius: 1px; }
+.cl-consultation .d-door__vista img { transition: filter .35s ease; }
+.cl-consultation .d-door__vista::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--k-acc) 22%, transparent) 0%, transparent 30%);
+}
+
+/* Leaf: hinged on the frame's outer edge, swung toward the viewer. */
+.cl-consultation .d-door__leaf {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: calc(100% + 1px);
+  width: 100%;
+  transform-origin: 0 50%;
+  transform: rotateY(-58deg);
+  transition: transform .6s cubic-bezier(.16, 1, .3, 1);
+  border-radius: 2px;
+  /* Hinge side catches the vista's light; the free edge carries the neon. */
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--k-acc) 16%, transparent) 0%, transparent 35%),
+    linear-gradient(180deg, #1a2833 0%, #121e28 45%, #0c161e 100%);
+  box-shadow:
+    inset -3px 0 0 color-mix(in srgb, var(--k-acc) 85%, transparent),
+    inset 0 2px 0 rgb(255 255 255 / .10),
+    inset 0 -2px 0 rgb(0 0 0 / .5),
+    inset 0 0 0 1px rgb(255 255 255 / .08);
+}
+.cl-consultation .d-door__panel {
+  position: absolute;
+  inset: 8% 16% 8% 14%;
+  border: 1px solid rgb(255 255 255 / .12);
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgb(255 255 255 / .03), transparent 60%);
+  box-shadow: inset 0 0 18px rgb(0 0 0 / .45), 0 1px 0 rgb(255 255 255 / .05);
+}
+.cl-consultation .d-door__handle {
+  position: absolute;
+  top: 52%;
+  right: 12%;
+  width: 5px;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #c9d2d8, #6d7f8b);
+  box-shadow: 0 0 6px rgb(255 255 255 / .25);
+}
+.cl-consultation .d-door__glow {
+  position: absolute;
+  left: -50%;
+  right: -80%;
+  bottom: -64px;
+  height: 90px;
+  background: radial-gradient(50% 50% at 40% 45%, color-mix(in srgb, var(--k-acc) 75%, transparent) 0%, transparent 70%);
+  filter: blur(12px);
+}
+
+/* DR-02: the door opens further and the vista brightens on hover/focus. */
+.cl-consultation .d-card:hover .d-door__leaf,
+.cl-consultation .d-card:focus-within .d-door__leaf { transform: rotateY(-72deg); }
+.cl-consultation .d-card:hover .d-door__vista img,
+.cl-consultation .d-card:focus-within .d-door__vista img { filter: brightness(1.18) saturate(1.1); }
+
+/* DR-02 reduced-motion fallback: the leaf stays ajar; only the light changes. */
+@media (prefers-reduced-motion: reduce) {
+  .cl-consultation .d-door__leaf,
+  .cl-consultation .d-card:hover .d-door__leaf,
+  .cl-consultation .d-card:focus-within .d-door__leaf { transform: rotateY(-58deg); transition: none; }
+  .cl-consultation .d-door__vista img { transition: none; }
+}
+
+/* ── Closers ──────────────────────────────────────────────────────────── */
+.cl-consultation .d-closers {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 36px;
+}
+
+/* ── Tablet: one card per row, doors kept ─────────────────────────────── */
+@media (max-width: 1099px) {
+  .cl-consultation .d-head__copy { grid-column: 1 / -1; }
+  .cl-consultation .d-head__quote { grid-column: 1 / -1; margin: 36px 0 0; }
+  .cl-consultation .d-doors { grid-template-columns: minmax(0, 1fr); row-gap: 88px; max-width: 720px; }
+}
+
+/* ── Phone (MOCK-M1): stacked cards, no doors, no globe ──────────────── */
+@media (max-width: 767px) {
+  .cl-consultation .d-backdrop { display: none; }
+  .cl-consultation .d-head__quote { display: none; }
+  .cl-consultation .d-head__lead { margin-top: 16px; }
+  .cl-consultation .d-doors { gap: 16px; margin-top: 32px; }
+  .cl-consultation .d-doors::after { display: none; }
+  .cl-consultation .d-card { display: block; min-height: 0; }
+  .cl-consultation .d-card__copy {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'ring  title arrow'
+      'body  body  body'
+      'chips chips chips'
+      'foot  foot  foot';
+    column-gap: 14px;
+  }
+  .cl-consultation .d-card__micro,
+  .cl-consultation .d-card__cta,
+  .cl-consultation .d-door { display: none; }
+  .cl-consultation .d-card__title { margin-top: 0; }
+  .cl-consultation .d-card__arrow { display: inline-grid; align-self: start; width: 36px; height: 36px; }
+  .cl-consultation .d-card__body { margin-top: 14px; }
+  .cl-consultation .d-card__chips { margin-top: 16px; }
+  .cl-consultation .d-card__foot { margin-top: 14px; font-size: 10px; }
+  .cl-consultation .d-closers { justify-content: center; margin-top: 28px; }
+  .cl-consultation .d-closers__left { text-align: center; }
+  .cl-consultation .d-closers__right { display: none; }
+}

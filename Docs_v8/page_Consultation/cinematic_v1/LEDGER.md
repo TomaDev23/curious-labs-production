@@ -87,3 +87,11 @@ Self-checks (all pass, re-verified after a hard reload):
 - Visual: screenshots at 1440×900 and the `mobile` preset (375×812) compared against B-00's — pixel-identical.
 `npm run build` not run (B-08's job per the card); dev-server/HMR only for this task.
 Proceeding to B-03 (hero visible-first).
+
+#L-019  START  [BLD]  2026-09-13T14:10
+Starting B-03 (hero visible-first, INT-01), in `HeroScene.jsx` only + new `consultation-scenes.css`.
+
+#L-020  DONE  [BLD]  2026-09-13T14:22
+B-03 done. Commit `efd99ea1344645e30f7def9de555ef0492ed3cda` (pushed). In `HeroScene.jsx`: eyebrow/lead/invitation/actions/meta `<Reveal>`/`<Reveal as="p">` wrappers replaced with plain elements, same tag + className, no motion props — confirmed no inline `style` attr on any of them (not framer components any more). `<h1 id="cl-page-title">` now renders the static reduced-motion-branch markup (`Business consultation,<br />in the age of AI.`) unconditionally; gradient text styling untouched (it's the structural `.cl-hero h1` rule in consultation.css, not a KineticHeading prop). `KineticHeading` import dropped from HeroScene (unused); jump-links nav below the section untouched (still `Stagger`/`Reveal`, out of this card's scope). DR-01 sheen added in new `consultation-scenes.css` (imported once from `ai-consultation.jsx` right after `consultation.css`, every selector prefixed `.cl-consultation`): `#cl-page-title::after` diagonal gradient bar, `mix-blend-mode: overlay`, `animation: cl-hero-sheen 1.4s cubic-bezier(.16,1,.3,1) .3s 1 both` — covered by the existing global `prefers-reduced-motion` `animation: none !important` rule, no extra media query needed.
+Self-checks: hard reload at 1440×900 and the `mobile` preset (375×812) — headline/lead/both buttons/meta all visible in the first post-mount screenshot, no clipped descenders from the h1's `overflow:hidden`; `h1` computed `opacity: 1`, innerHTML confirms the static markup. No new console errors (same stale pre-existing entries as #L-018, confirmed unchanged). Noted in passing: `tools/art/generate.mjs` has an uncommitted change in your lane — left untouched, staged/committed only my three files.
+Proceeding to B-04 (scene kit: SceneArt, SceneSeam, SwipeTrack, ExpandToggle).

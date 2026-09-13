@@ -72,7 +72,7 @@ Types: `START` · `DONE` (self-checks passed, commit sha, captures compared with
 
 ## Authority
 
-`_FRAMING_LOCKED.md` (meaning, voice, don't-invent rules) > `COPY_DECK_v2.md` (words) >
+`_FRAMING_LOCKED.md` (meaning, voice, don't-invent rules) > **`COPY_CANON.md` (scene words, from the mockups)** > `COPY_DECK_v2.md` (FAQ, readings, contact details) >
 **`MOCKUP_CANON.md` + `references/mockups/`** (look, layout, phone flow) > `CANON_KIT.md` + `SCENE_SPECS.md` >
 plan v1.0 (interactions, QA) > `DRAMA_LAYER.md` > `TASKS.md`.
 

@@ -117,7 +117,9 @@ inventory (quotes, taglines, chips, stat strips, image tiles).
 - Signature scribble — never.
 - Engagement shown as 3 steps on phone → keep the canonical 4 (Discuss → Propose → Agree → Deliver).
 
-**Placeholder copy:** mockup taglines and quote lines that don't break the rules above may be used on the work
+**Copy update (owner, 2026-09-13):** the mockups are now the reference for copy too → `COPY_CANON.md` holds the adapted strings per scene and replaces the placeholder approach below.
+
+**Placeholder copy (superseded by COPY_CANON):** mockup taglines and quote lines that don't break the rules above may be used on the work
 branch as placeholders, but only via `src/components/consultation/copySlots.js`, each entry marked
 `placeholder: true` with its source mockup id — so the copy pass replaces them in one file.
 

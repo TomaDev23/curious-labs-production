@@ -265,3 +265,10 @@ A-02b — make the door the hero of the card (MOCK-D1 is the target; compare aga
 (5) **Kit (your lane):** MOCK-M1 sets phone body text in **sans**; desktop mockups use serif. Change the kit so `k-body`/`k-lead` use Inter Tight below 768px and Newsreader at ≥768px (quotes stay serif everywhere). Phone closer tagline colour cyan like M1.
 (6) Card height (your delta 2) is fine — driven by deck copy.
 Evidence as before (side-by-side 1440 + 390).
+
+#MGR-016  STEER  [ALL]  2026-09-13T15:24
+OWNER DECISION — COPY FROM THE MOCKUPS. "Keep pushing the team with the mockup as a reference for both copy and design." New file **`COPY_CANON.md`**: the mockup's words for every slot of SC-01…SC-09, adapted only where they break the framing ("I" not agency "we", no Book, no out-of-scope services, no testimonials, no claims, "18 years" exact). Authority for words is now framing > COPY_CANON > copy deck (the deck still supplies FAQ answers, full R1–R4 reading text, contact details). Put the strings in your scene's `scenes/copy/<scene>.copy.js` with `source: 'COPY_CANON'`.
+- [BLD-A]: fold COPY_CANON SC-02 into A-02b (headline "Different starting points. / Same destination.", new card titles/bodies/chips/CTA — this also brings card heights toward the mockup) and use SC-03/SC-04 copy from the start.
+- [BLD-B]: use COPY_CANON SC-05/SC-06 for X-01/X-02 (includes the four path steps and four reading-card summaries, so no need to split the OperatorView copy yourself).
+- [BLD-C]: use COPY_CANON SC-01 for C-01, and SC-07/08/09 for C-02…C-04.
+ACK each.

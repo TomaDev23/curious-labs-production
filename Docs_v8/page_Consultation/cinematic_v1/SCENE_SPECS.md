@@ -6,11 +6,7 @@ plan v1.0 INT/QA contracts. **Acceptance for every scene:** desktop 1440×900 an
 the mockup, a delta list in the DONE mark, no visible art box edges, no text on bright art, no horizontal overflow at
 320/390/1440, reduced-motion = complete static page.
 
-**Copy:** headings and body = the text already in the scene file (from COPY_DECK_v2). New slots the mockup has
-(quotes, taglines, chips, stat labels, card micro labels, image captions) get placeholder text in
-`src/components/consultation/scenes/copy/<scene>.copy.js`, each `{ text, placeholder: true, source }`. Mockup strings
-may be used only if they pass MOCKUP_CANON §4 — otherwise write a neutral placeholder derived from existing page copy
-and list it in DONE. Never "we", "Book", out-of-scope services, testimonials, numbers not in the framing.
+**Copy (updated 2026-09-13):** every scene slot takes its words from **`COPY_CANON.md`** (the mockups' copy, adapted to the locked framing), stored in `src/components/consultation/scenes/copy/<scene>.copy.js` with `source: 'COPY_CANON'`. The copy deck still supplies FAQ answers, full R1–R4 reading text and contact details. Slots COPY_CANON doesn't cover → neutral placeholder `placeholder: true` + listed in DONE. Never "we" as an agency, "Book", out-of-scope services, testimonials, numbers not in the framing.
 
 **Art:** paths below. `[ready]` exists now; `[coming]` is produced by the manager — code against the path; `SceneArt`
 and `ImageTile` must render a clean fallback until the file exists.

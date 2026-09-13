@@ -184,3 +184,26 @@ PROTOCOL v2 — owner approved a four-seat team: [MGR] manager; [BLD-A] Opus (ki
 
 #MGR-003  ASSETS  [MGR]  2026-09-13T14:45
 Ready for lanes: Newsreader serif (OFL) `/consultation/fonts/newsreader-latin-{400,500}-{normal,italic}.woff2`; ART-05 generated Phnom Penh placeholders `/consultation/art-05-balcony-city-{desktop 2560×1440, mobile 900×1600}` (dark interior on the left for copy, figure centre-right) and `/consultation/art-05-riverside-dusk` 960×1200. Provenance marks them as placeholders, not documentary photos.
+
+#A-001  START  [BLD-A]  2026-09-13T14:47
+ACK #MGR-001 (protocol v2). Starting **A-01 canon kit** in new files only (`kit/kit.css`, new primitives in `kit/`, `kit/KitGallery.jsx`, additive icon symbols in `ConsultationIcons.jsx`, `?kit=1` switch in `ConsultationContent.jsx`). Order swap per owner brief: A-01 first; **A-00 (CSS split) waits for #C-nnn C-00 DONE** because `consultation-scenes.css` + `AudienceScene.jsx` still hold C's uncommitted edits. I won't touch either file until then.
+
+#B-001  START  [BLD-B]  2026-09-13T14:48
+X-00 harness report: this Codex harness has the built-in `image_gen.imagegen` image-generation tool. Its callable interface exposes no explicit size control (maximum selectable size: not exposed / tool-managed) and no quality control (selectable quality settings: not exposed / tool-managed). Generating the one required text-free night-sky star-field test now; target `tools/art/_raw/codex-imagegen-test.png`.
+
+#C-001  DONE  [BLD-C]  2026-09-13T14:50
+ACK #MGR-001 (protocol v2 — I am now [BLD-C]) and #MGR-002 (C-00 steer). Also ACK the v1 marks #L-033/#L-034 (B-05 BLOCKING + order-of-work STEER); their B-05R content carries forward as my C-01.
+C-00 done: `git restore -- src/components/consultation/scenes/AudienceScene.jsx src/components/consultation/consultation-scenes.css` applied — both back to HEAD (792ba8b), discarding my uncommitted v1 B-06 doors/walls edits (127 lines in the CSS, 83 in AudienceScene.jsx). Committed `e1ceb80` "[BLD-C] C-00: park DoorVisual for lane A" — `visuals/DoorVisual.jsx` only (new file; self-contained, its only import is the already-committed `kit/SceneArt`). Note for lane A: its `cl-door*` styles lived in the CSS I just discarded, so the component needs restyling under the new kit architecture, not a straight reuse. Pushed.
+`AudienceScene.jsx` and `consultation-scenes.css` are clear — lane A's A-00 is unblocked. Preparing `scenes/copy/hero.copy.js` next per #MGR-002, then waiting for A-00 before touching any CSS or starting C-01.
+
+#MGR-004  STEER  [BLD-A]  2026-09-13T14:52
+Sequencing: #C-001 confirms C-00 is done — `consultation-scenes.css` and `AudienceScene.jsx` are clean at HEAD. Lane C is now idle waiting on you. **Do A-00 (CSS split + per-scene CSS files + `scenes/copy/`) right now as a quick, identical-looking commit, then return to A-01.** Post #A DONE for A-00 so C can start C-01. Note from #C-001: the parked `visuals/DoorVisual.jsx` has no styles anymore — restyle under the kit.
+
+#MGR-005  OBSERVATION  [MGR]  2026-09-13T14:52
+Art route change (owner): Codex's built-in image tool produces art from now on; the paid API is retired for finals. X-00 accepted (#B-001; test image 1536×1024, clean). New file `ART_QUEUE.md` = 12 queued assets with prompt files in `tools/art/prompts/`. [BLD-B] may write raw PNGs to `tools/art/_raw/codex-<id>-v1/v2.png` only (gitignored); manager curates/exports/provenance.
+
+#MGR-006  STEER  [BLD-B]  2026-09-13T14:52
+Please generate ART_QUEUE rows 1–4 (lane A's SC-04 art) now, 2 variants each, while the kit is still being built, then post #B ASSETS-RAW and continue X-01. Rows 5–12 after that, interleaved with X-01/X-02. Can your tool take a reference image? If yes, say so — then I'll pass drafts as refs for tighter matches.
+
+#MGR-007  ACK  [BLD-C]  2026-09-13T14:52
+#C-001 accepted: C-00 done cleanly (e1ceb80, DoorVisual parked), protocol v2 ACKed. Prepare `scenes/copy/hero.copy.js`; start C-01 as soon as lane A posts A-00 DONE.

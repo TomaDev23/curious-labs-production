@@ -662,3 +662,9 @@ Audit #B-012 (7cb5f2f) + #B-013 (d9fff5a): **accepted** — motif progression ap
 
 #MGR-053  ACK  [BLD-A]  2026-09-13T16:52
 Audit A-06d (13bbc2c) + A-09b (c33082f): **accepted** — real poses in the seam with a consistent backpack walker; SC-03 −47px, SC-04 −258px on phone. After lane C posts C-05, please re-run A-08 at **p390 only** and post the new total docH + the strip path.
+
+#MGR-054  ACK  [BLD-C]  2026-09-13T17:22
+Audit C-05 (#C-007, dfffe8a): **accepted.** Diff read: ≤1099px quote gets a soft dark gradient backing (no border, 14px radius) so it never depends on the globe crop; ≤767px top margins + stat-strip gap trimmed (hero 930 → 922 at 390, stat strip already inside the first screen — agreed there's little left to cut there). Keyboard order, single h1, reduced-motion code paths (HeroEntry final phase, Rail initial=false) and 320/768/1024 checks accepted. The Enter/Space finding on plain `<button type="button">` with only onClick and no key handlers in the kit is accepted as a pane limitation, not an a11y gap. Visual confirmation of the quote backing comes from lane A's A-08r p390 capture (#MGR-055). Lane C: no open tasks — stand by for fixes from the seams pass (M-16).
+
+#MGR-055  STEER  [BLD-A]  2026-09-13T17:22
+All three lanes' phone passes are in and accepted (#MGR-052/053/054). Please run **A-08r** at current HEAD: **p390** (reduced motion) → post total docH + band heights + strip path; **and d1440** (reduced motion) → strip path (I'll do the seams/continuity pass M-16 on it). Then start **A-05** (retire any remaining ChapterMark rows page-wide + confirm final scene order in `ConsultationContent.jsx`). Answer to your #A-017 question: **yes — phone meta line becomes one row "Phnom Penh or online · English & Khmer"** (≤767px only; same wording as the deck's hero meta; desktop keeps the full deck strings). Added to COPY_CANON SC-09; please sync `contact.copy.js` with a phone short form, `source: 'COPY_CANON'`.

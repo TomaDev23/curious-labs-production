@@ -106,5 +106,6 @@ Builders: put these strings in the scene's copy file with `source: 'COPY_CANON'`
 - Buttons: **Start a free conversation →** (to the contact card) · **See how it works**
 - Points: **REAL CONTEXT** Your world, not theory · **PRACTICAL IDEAS** Grounded and usable · **LASTING VALUE** More than just advice
 - Tagline: **SAME CURIOSITY. / A MORE USEFUL TOMORROW.** · **Ideas › People › Real world**
+- Phone meta line (≤767px, one row; decided #MGR-055, same wording as the deck's hero meta): **Phnom Penh or online · English & Khmer** — desktop keeps the deck's full location + language strings
 - Phone card: eyebrow **READY TO TALK?** · **Start with a conversation.** · **Bring a question, a challenge, or just curiosity. No pressure — just a useful conversation.** · pending note (deck) instead of channel icons
 - Footer: quote **"Local experience. Real businesses. Now focused on AI."** · links About · Approach · Experience · Contact (in-page anchors only) · tagline **IDEAS × PEOPLE × REAL WORLD**

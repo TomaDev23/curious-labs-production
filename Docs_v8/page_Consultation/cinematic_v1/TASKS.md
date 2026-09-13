@@ -8,37 +8,38 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 
 | Task | Title | Depends on | Status |
 |---|---|---|---|
-| A-00 | CSS partition: move kit rules from `consultation-scenes.css` → `kit/kit.css`, hero rules → `scenes/css/sc-01-hero.css` (owned by C afterwards), create empty `scenes/css/sc-0X-*.css` + `scenes/copy/` for all nine scenes and wire each scene's CSS import; page must look identical after | — | Queued — first |
-| A-01 | Canon kit v1 per `CANON_KIT.md` (tokens, Newsreader @font-face, all primitives, `?kit=1` dev gallery) | A-00 | Queued |
-| A-02 | SC-02 two doors to MOCK-D1/M1 (`SCENE_SPECS` SC-02) — takes over v1 B-06; may reuse C's parked `visuals/DoorVisual.jsx` | A-01 | Queued |
-| A-03 | SC-03 three walls to MOCK-D1 (`WallsScene.jsx`) — takes over v1 B-07 | A-01 | Queued |
-| A-04 | SC-04 contribution + HarnessSystem to MOCK-D2 | A-01 | Queued |
-| A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | Later |
-| A-06 | **DR-10 walker transition** SC-03 → SC-04 (scroll-scrubbed; card below) | A-04, ART-19 poses | Done (#A-011/#A-013); poses pending |
-| A-06c | Polish (Done #A-014): doors void atmosphere (nebula haze + brighter orbit arc, no planet); harness core ~25% larger + brighter bloom (MOCK-D2) | — | Queued |
-| A-07 | **SC-09 final horizon + pending contact + page footer** (moved from C-04): SCENE_SPECS SC-09 + MOTIF_PROGRESSION (centred header, ART-17 + walker on the ridge, quote allowed, pending contact state) | A-06c | Done (#A-014) |
-| A-08 | **Full-page capture audits** (read-only, your headless Chrome): stitched full-page captures of `/ai-consultation` at 1440 and 390, one PNG per scene band plus one scaled-down whole-page strip, re-run on manager request; paths in the mark | — | Queued — next |
-| A-09 | **Phone fidelity pass for lane-A scenes** (SC-02/03/04/09 + seam fallback) vs MOCK-M1 — side-by-sides at 390, fix deltas | A-08 | Queued |
+| A-00 | CSS partition: move kit rules from `consultation-scenes.css` → `kit/kit.css`, hero rules → `scenes/css/sc-01-hero.css` (owned by C afterwards), create empty `scenes/css/sc-0X-*.css` + `scenes/copy/` for all nine scenes and wire each scene's CSS import; page must look identical after | — | Done |
+| A-01 | Canon kit v1 per `CANON_KIT.md` (tokens, Newsreader @font-face, all primitives, `?kit=1` dev gallery) | A-00 | Done |
+| A-02 | SC-02 two doors to MOCK-D1/M1 (`SCENE_SPECS` SC-02) — takes over v1 B-06; may reuse C's parked `visuals/DoorVisual.jsx` | A-01 | Done |
+| A-03 | SC-03 three walls to MOCK-D1 (`WallsScene.jsx`) — takes over v1 B-07 | A-01 | Done |
+| A-04 | SC-04 contribution + HarnessSystem to MOCK-D2 | A-01 | Done |
+| A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | **Next after A-08r** (#MGR-055) |
+| A-06 | **DR-10 walker transition** SC-03 → SC-04 (scroll-scrubbed; card below) | A-04, ART-19 poses | Done (#A-011/#A-013; real poses A-06d #A-017, stride-1↔2, 19d dropped) |
+| A-06c | Polish (Done #A-014): doors void atmosphere (nebula haze + brighter orbit arc, no planet); harness core ~25% larger + brighter bloom (MOCK-D2) | — | Done (#A-014, ACK #MGR-042) |
+| A-07 | **SC-09 final horizon + pending contact + page footer** (moved from C-04): SCENE_SPECS SC-09 + MOTIF_PROGRESSION (centred header, ART-17 + walker on the ridge, quote allowed, pending contact state) | A-06c | Done (#A-014, ACK #MGR-042) |
+| A-08 | **Full-page capture audits** (read-only, your headless Chrome): stitched full-page captures of `/ai-consultation` at 1440 and 390, one PNG per scene band plus one scaled-down whole-page strip, re-run on manager request; paths in the mark | — | Done (#A-015); **re-run = A-08r** (#MGR-055) |
+| A-08r | **Re-run A-08 at current HEAD** after C-05: p390 (new docH + strip) **and** d1440 reduced-motion (for the M-16 seams pass) | C-05 | Queued — next (#MGR-055) |
+| A-09 | **Phone fidelity pass for lane-A scenes** (SC-02/03/04/09 + seam fallback) vs MOCK-M1 — side-by-sides at 390, fix deltas | A-08 | Done (#A-016 + A-09b #A-017, ACK #MGR-051/#MGR-053) |
 
 ## Lane B — AI consultation builder B (Codex) · person + approach
 
 | Task | Title | Depends on | Status |
 |---|---|---|---|
-| X-00 | Onboard; report whether your harness can generate images (see paste) | — | Queued |
-| X-01 | SC-05 person + this market to MOCK-D5/M1 (`SCENE_SPECS` SC-05) | A-01 (kit) — start with structure/art slots before it lands | Queued |
-| X-02 | SC-06 approach path + four reading cards to MOCK-D3/M1, readings stay inline + hash-addressable | A-01 | Queued |
+| X-00 | Onboard; report whether your harness can generate images (see paste) | — | Done |
+| X-01 | SC-05 person + this market to MOCK-D5/M1 (`SCENE_SPECS` SC-05) | A-01 (kit) — start with structure/art slots before it lands | Done (+X-01b, #B-012) |
+| X-02 | SC-06 approach path + four reading cards to MOCK-D3/M1, readings stay inline + hash-addressable | A-01 | Done (+X-02b, #B-012; X-03 phone compression #B-013) |
 
 ## Lane C — AI consultation builder C (Sonnet) · hero + engagement + questions + contact
 
 | Task | Title | Depends on | Status |
 |---|---|---|---|
-| C-00 | Park v1 B-06 WIP: `git restore` your uncommitted `AudienceScene.jsx` + `consultation-scenes.css` edits; commit `visuals/DoorVisual.jsx` alone as "parked for lane A"; ACK protocol v2 | — | Queued — first |
-| C-01 | SC-01 hero to canon (= v1 **B-05R** card, archived below) using `scenes/copy/hero.copy.js` + `scenes/css/sc-01-hero.css` (after A-00); adopt kit primitives once A-01 lands | A-00 | Queued |
-| C-01b | **DR-11 hero entry choreography** (card below) — do before C-02 | C-01, #MGR-023 fix | Queued — next |
-| C-02 | SC-07 engagement to MOCK-D4/M1 | A-01 | Queued |
-| C-03 | SC-08 questions to MOCK-D4 | A-01 | Queued |
+| C-00 | Park v1 B-06 WIP: `git restore` your uncommitted `AudienceScene.jsx` + `consultation-scenes.css` edits; commit `visuals/DoorVisual.jsx` alone as "parked for lane A"; ACK protocol v2 | — | Done (#C-001) |
+| C-01 | SC-01 hero to canon (= v1 **B-05R** card, archived below) using `scenes/copy/hero.copy.js` + `scenes/css/sc-01-hero.css` (after A-00); adopt kit primitives once A-01 lands | A-00 | Done |
+| C-01b | **DR-11 hero entry choreography** (card below) — do before C-02 | C-01, #MGR-023 fix | Done — owner to watch in a real browser |
+| C-02 | SC-07 engagement to MOCK-D4/M1 | A-01 | Done (#C-005, ACK #MGR-043) |
+| C-03 | SC-08 questions to MOCK-D4 | A-01 | Done (#C-006, ACK #MGR-045) |
 | C-04 | ~~SC-09 final horizon + contact + footer~~ → **moved to lane A as A-07** (rebalance 2026-09-13) | — | Moved |
-| C-05 | **Lane-C QA pass**: phone fidelity for SC-01/07/08 vs MOCK-M1; keyboard order + visible focus (QA-12/13) through hero buttons, engagement rows, all 15 questions + View all; reduced motion (QA-25: hero entry skipped, rail drawn); 320/768/1024 layouts; fix what you find | C-03 | Queued — next |
+| C-05 | **Lane-C QA pass**: phone fidelity for SC-01/07/08 vs MOCK-M1; keyboard order + visible focus (QA-12/13) through hero buttons, engagement rows, all 15 questions + View all; reduced motion (QA-25: hero entry skipped, rail drawn); 320/768/1024 layouts; fix what you find | C-03 | Done (#C-007, ACK #MGR-054) |
 
 ## Manager
 
@@ -47,10 +48,12 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | M-05 | Audit every DONE against its mockup (side-by-side captures) → ACK / STEER / BLOCKING | Standing |
 | M-10 | Serif font self-hosted (`public/consultation/fonts/newsreader-*`, OFL) | Done |
 | M-11 | ART-05 Phnom Penh placeholders (balcony desktop/mobile, riverside dusk) | Done — owner to judge realism |
-| M-12 | Lane A art: `art-12-harness-core` (glowing sphere), `art-13-tile-city-lights`, `art-14-tile-summit`, `art-15-horizon-mountains` | Queued (low-cost drafts; see cost note) |
-| M-13 | Lane B art: `art-06-earth-sunrise`, `art-07/08/10/11` reading images | Queued |
-| M-14 | Lane C art: `art-16-galaxy-band`, `art-17-final-horizon-{desktop,mobile}` | Queued |
-| M-15 | Art cost review with owner (API low drafts vs owner/Codex finals) | Open |
+| M-16 | Seams/continuity pass vs `MOTIF_PROGRESSION §2` on the fresh d1440 + p390 strips → per-lane deltas | Queued (after A-08r) |
+| M-17 | Release readiness (M-06 successor): build, console, QA spot list, owner review package → ask owner before any merge | Queued (after A-05 + M-16) |
+| M-12 | Lane A art: `art-12-harness-core` (glowing sphere), `art-13-tile-city-lights`, `art-14-tile-summit`, `art-15-horizon-mountains` | Done (Codex route; ART_PROVENANCE) |
+| M-13 | Lane B art: `art-06-earth-sunrise`, `art-07/08/10/11` reading images | Done (Codex route; batch 5 replaced 06/08/11) |
+| M-14 | Lane C art: `art-16-galaxy-band`, `art-17-final-horizon-{desktop,mobile}` | Done (Codex route; art-22 replaced 16) |
+| M-15 | Art cost review with owner (API low drafts vs owner/Codex finals) | Resolved — Codex finals, API low drafts only (owner) |
 
 ## Asset paths (all lanes code against these now)
 

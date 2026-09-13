@@ -1,114 +1,144 @@
 import React from 'react';
-import ChapterMark from '../kit/ChapterMark';
-import { ClIcon } from '../ConsultationIcons';
-import { OperatorView, HarnessGraph, TrustSpectrum } from '../ConsultationGraphs';
-import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import { Band, Body, Display, Eyebrow, GhostButton, IconRow, Lead, NeonCard, NumberedRow, PrimaryButton, QuoteBlock, Tagline } from '../kit';
+import { HarnessGraph, TrustSpectrum } from '../ConsultationGraphs';
 import { closeReading } from '../useConsultationPage';
+import OperatorPath from '../visuals/b-OperatorPath';
+import ReadingCard from '../visuals/b-ReadingCard';
+import { APPROACH_COPY } from './copy/approach.copy';
 import './css/sc-06-approach.css';
 
 const READINGS = [
   {
-    id: 'method',
-    key: 'R1',
-    number: '01',
-    title: 'About the method',
-    question: 'How is the work organized, directed, and reviewed?',
+    id: 'method', key: 'R1', number: '01',
     text: 'A prompt is only one part of how AI work is organized. The harness around it — context, stages, tools, handoffs, checks — is where the direction actually happens. I help you think about how the work is steered and how results are reviewed, instead of treating each output as a finished answer.'
   },
   {
-    id: 'concept',
-    key: 'R2',
-    number: '02',
-    title: 'About the concept',
-    question: 'What changes when you operate AI across a larger undertaking?',
+    id: 'concept', key: 'R2', number: '02',
     text: 'The shift is from asking AI for isolated changes to directing it across a whole body of work. The operator’s view stays above the single request: what’s being attempted, how the pieces relate, and where direction and checking are needed. It isn’t just a bigger prompt.'
   },
   {
-    id: 'technology',
-    key: 'R3',
-    number: '03',
-    title: 'About the technology',
-    question: 'Where can the capabilities help, and where should you not simply trust the output?',
+    id: 'technology', key: 'R3', number: '03',
     text: 'This is about the capabilities and their limits: where AI helps, where trust is warranted, and why checking matters. The focus is using and managing the technology in the work at hand — not tool rankings, not guarantees, not a how-to-code lesson.'
   },
   {
-    id: 'experience',
-    key: 'R4',
-    number: '04',
-    title: 'About the experience',
-    question: 'How do business experience and AI practice connect?',
+    id: 'experience', key: 'R4', number: '04',
     text: 'Running businesses and operating AI point at the same question: how do you connect the technology to the work a company actually has to do? This draws on my own projects, a hospitality and food-and-beverage background, and years living and working in Cambodia.'
   }
 ];
 
+const READING_ART = [
+  { avif: '/consultation/art-07-reading-method.avif', webp: '/consultation/art-07-reading-method.webp', width: 800, height: 600 },
+  { avif: '/consultation/art-08-reading-concept.avif', webp: '/consultation/art-08-reading-concept.webp', width: 800, height: 600 },
+  { avif: '/consultation/art-10-reading-technology.avif', webp: '/consultation/art-10-reading-technology.webp', width: 800, height: 600 },
+  { avif: '/consultation/art-11-reading-experience.avif', webp: '/consultation/art-11-reading-experience.webp', width: 800, height: 600 }
+];
+
+const ART_06 = {
+  avif: '/consultation/art-06-earth-sunrise.avif',
+  webp: '/consultation/art-06-earth-sunrise.webp',
+  width: 1664,
+  height: 936
+};
+
+const text = (slot) => slot.text;
+const texts = (slots) => slots.map(text);
+
 function ApproachScene() {
+  const steps = APPROACH_COPY.steps.map((step) => ({
+    icon: step.icon,
+    title: text(step.title),
+    text: text(step.text)
+  }));
+
   return (
-    <>
-      {/* ── D5 · The approach ────────────────────────────────────── */}
-      <ChapterMark n="04" label="THE APPROACH" />
-      <section id="approach" className="cl-section" aria-labelledby="cl-approach-title" data-cl-section="D5">
-        <header className="cl-section-heading">
-          <Reveal as="p" className="cl-eyebrow" y={12}><span>04 /</span> THE APPROACH</Reveal>
-          <KineticHeading id="cl-approach-title" level="h2" lines={['Direct the work.', 'Keep checking it.']} />
-          <Reveal as="p" className="cl-section-intro" delay={0.18}>
-            Bringing AI into a business only works if the AI itself is dependable. This is how I make it dependable: I operate it the way you’d run a good team — clear direction, the right context, and checking where it matters — instead of trusting a single prompt to get it right.
-          </Reveal>
-          <Reveal as="p" className="cl-section-intro" delay={0.26}>
-            That’s the difference between asking AI for one thing and running a whole body of work through it — knowing where to trust the output, and where to check it.
-          </Reveal>
-        </header>
-
-        <Reveal className="cl-opview-wrap" y={20}>
-          <OperatorView />
-        </Reveal>
-
-        <Reveal className="cl-contrast" y={24}>
-          <div>
-            <span className="cl-micro">AN ISOLATED REQUEST</span>
-            <p>“Help me change this one thing.”</p>
+    <div className="sc06">
+      <Band
+        id="approach"
+        sectionKey="D5"
+        labelledBy="cl-approach-title"
+        className="sc06__hero"
+        art={{ desktop: ART_06, position: '78% 48%', scrim: 'left', parallax: 18 }}
+      >
+        <div className="sc06__hero-grid">
+          <div className="sc06__hero-copy">
+            <Eyebrow className="sc06__hero-eyebrow sc06__hero-eyebrow--desktop">{text(APPROACH_COPY.eyebrow)}</Eyebrow>
+            <Eyebrow className="sc06__hero-eyebrow sc06__hero-eyebrow--mobile">{text(APPROACH_COPY.phoneEyebrow)}</Eyebrow>
+            <Display id="cl-approach-title" lines={texts(APPROACH_COPY.title)} />
+            <Lead>{text(APPROACH_COPY.lead)}</Lead>
+            <div className="sc06__actions">
+              <PrimaryButton href="#contact">{text(APPROACH_COPY.primaryAction)}</PrimaryButton>
+              <GhostButton href="#approach-path">{text(APPROACH_COPY.secondaryAction)}</GhostButton>
+            </div>
           </div>
-          <span className="cl-contrast__arrow" aria-hidden="true"><ClIcon name="arrow" /></span>
-          <div>
-            <span className="cl-micro">AN OPERATOR’S VIEW</span>
-            <p>“What is the wider task, what context is needed, and how will the work be directed and checked?”</p>
-          </div>
-        </Reveal>
-        <Reveal as="p" className="cl-caption" y={10}>Illustrative wording—not a client case or a named method.</Reveal>
+          <QuoteBlock className="sc06__hero-quote" quote={text(APPROACH_COPY.quote)} label={text(APPROACH_COPY.quoteLabel)} />
+          <Tagline className="sc06__hero-tagline" align="right" lines={texts(APPROACH_COPY.tagline)} />
+        </div>
+      </Band>
 
-        <Reveal className="cl-readings-heading" y={18}>
-          <h3>Go a little deeper.</h3>
-          <p>Open the subjects that interest you.</p>
-        </Reveal>
-        <Stagger className="cl-readings" step={0.08}>
-          {READINGS.map((reading) => (
-            <Reveal as="div" key={reading.id} y={16}>
-              <details id={reading.id} className="cl-reading" data-cl-reading={reading.key}>
-                <summary>
-                  <span className="cl-reading__number">{reading.number}</span>
-                  <span className="cl-reading__label">
-                    <strong>{reading.title}</strong>
-                    <span>{reading.question}</span>
-                  </span>
-                  <span className="cl-plus" aria-hidden="true"></span>
-                </summary>
-                <div className="cl-reading__body">
-                  <p>{reading.text}</p>
-                  {reading.key === 'R1' && (
-                    <div className="cl-reading__graph"><HarnessGraph /></div>
-                  )}
-                  {reading.key === 'R3' && (
-                    <div className="cl-reading__graph"><TrustSpectrum /></div>
-                  )}
-                  <button type="button" className="cl-text-button" onClick={closeReading}>
-                    Close this topic <ClIcon name="close" />
-                  </button>
-                </div>
-              </details>
-            </Reveal>
+      <Band id="approach-path" className="sc06__path" hairline="bottom">
+        <div className="sc06__path-header">
+          <div>
+            <Eyebrow>{text(APPROACH_COPY.pathEyebrow)}</Eyebrow>
+            <Display as="h2" lines={texts(APPROACH_COPY.pathTitle)} />
+          </div>
+          <Body>{text(APPROACH_COPY.pathAside)}</Body>
+        </div>
+        <div className="sc06__path-desktop"><OperatorPath steps={steps} /></div>
+        <div className="sc06__path-mobile">
+          {steps.map((step, index) => (
+            <NumberedRow key={step.title} n={index + 1} title={step.title} action="plus" accent={index === 3 ? 'lime' : 'cyan'}>
+              <Body>{step.text}</Body>
+            </NumberedRow>
           ))}
-        </Stagger>
-      </section>
-    </>
+        </div>
+      </Band>
+
+      <Band id="perspectives" className="sc06__readings" hairline="bottom">
+        <div className="sc06__readings-header">
+          <div>
+            <Eyebrow>{text(APPROACH_COPY.readingsEyebrow)}</Eyebrow>
+            <Display as="h2" lines={texts(APPROACH_COPY.readingsTitle)} />
+          </div>
+          <Body>{text(APPROACH_COPY.readingsAside)}</Body>
+        </div>
+        <div className="sc06__reading-grid">
+          {READINGS.map((reading, index) => {
+            const cardCopy = APPROACH_COPY.readingCards[index];
+            return (
+              <ReadingCard
+                key={reading.id}
+                reading={{ ...reading, title: text(cardCopy.title), question: text(cardCopy.summary) }}
+                label={text(cardCopy.label)}
+                chips={texts(cardCopy.chips)}
+                art={READING_ART[index]}
+                onClose={closeReading}
+              >
+                {reading.key === 'R1' && <div className="cl-reading__graph"><HarnessGraph /></div>}
+                {reading.key === 'R3' && <div className="cl-reading__graph"><TrustSpectrum /></div>}
+              </ReadingCard>
+            );
+          })}
+        </div>
+      </Band>
+
+      <Band className="sc06__closing" hairline="bottom">
+        <NeonCard accent="cyan" className="sc06__closing-card">
+          <blockquote>{text(APPROACH_COPY.closingQuote)}</blockquote>
+          <div className="sc06__closing-points">
+            {APPROACH_COPY.closingPoints.map((point) => (
+              <IconRow
+                key={text(point.title)}
+                bare
+                accent="lime"
+                icon={point.icon}
+                title={text(point.title)}
+                text={text(point.text)}
+              />
+            ))}
+          </div>
+        </NeonCard>
+      </Band>
+    </div>
   );
 }
 

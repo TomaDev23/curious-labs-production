@@ -1,55 +1,163 @@
 import React from 'react';
-import ChapterMark from '../kit/ChapterMark';
-import { ClIcon } from '../ConsultationIcons';
-import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import {
+  Band,
+  Body,
+  CardTitle,
+  Chips,
+  Display,
+  Eyebrow,
+  GhostButton,
+  IconRing,
+  IconRow,
+  ImageTile,
+  NeonCard,
+  PrimaryButton,
+  QuoteBlock,
+  WordStack
+} from '../kit';
 import { openReading } from '../useConsultationPage';
+import { PERSON_COPY } from './copy/person.copy';
 import './css/sc-05-person.css';
+
+const ART_05_DESKTOP = {
+  avif: '/consultation/art-05-balcony-city-desktop.avif',
+  webp: '/consultation/art-05-balcony-city-desktop.webp',
+  width: 2560,
+  height: 1440
+};
+
+const ART_05_MOBILE = {
+  avif: '/consultation/art-05-balcony-city-mobile.avif',
+  webp: '/consultation/art-05-balcony-city-mobile.webp',
+  width: 900,
+  height: 1600
+};
+
+const ART_05_RIVERSIDE = {
+  avif: '/consultation/art-05-riverside-dusk.avif',
+  webp: '/consultation/art-05-riverside-dusk.webp',
+  width: 960,
+  height: 1200
+};
+
+const ART_01_EARTH = {
+  avif: '/consultation/art-01-earth-horizon-desktop.avif',
+  webp: '/consultation/art-01-earth-horizon-desktop.webp',
+  width: 2560,
+  height: 1440
+};
+
+const text = (slot) => slot.text;
+const texts = (slots) => slots.map(text);
 
 function PersonScene() {
   return (
-    <>
-      {/* ── D4 · The person ──────────────────────────────────────── */}
-      <ChapterMark n="03" label="PERSONAL, NOT OFF-THE-SHELF" />
-      <section id="person" className="cl-section" aria-labelledby="cl-person-title" data-cl-section="D4">
-        <div className="cl-person">
-            <Reveal as="p" className="cl-eyebrow" y={12}><span>03 /</span> PERSONAL, NOT OFF-THE-SHELF</Reveal>
-            <KineticHeading id="cl-person-title" level="h2" lines={['The person you', 'would work with.']} />
-            <Stagger className="cl-person__strands" step={0.09} delay={0.15}>
-              <Reveal as="span" y={12}><ClIcon name="work" /> Business advisory</Reveal>
-              <Reveal as="span" y={12}><ClIcon name="compass" /> Hands-on AI practice</Reveal>
-              <Reveal as="span" y={12}><ClIcon name="pin" /> This market</Reveal>
-            </Stagger>
-            <Reveal as="p" className="cl-person__opening" y={18}>
-              I’m a business advisor first — eighteen years in the Khmer market, and hands-on with AI every day. I sit where the two meet, which is exactly where a lot of businesses now find themselves.
-            </Reveal>
-            <Reveal as="p" y={16} delay={0.08}>
-              There’s no team behind this. I meet you, work out what’s really going on, propose a direction, and do the work myself.
-            </Reveal>
-            <Stagger step={0.12}>
-              <Reveal className="cl-person__detail">
-                <h3>AI practice</h3>
-                <p>My own system, website, and planning artifacts are built with the methods I use with clients. I don’t advise on AI from the outside — I operate it across a large body of my own work.</p>
-              </Reveal>
-              <Reveal className="cl-person__detail">
-                <h3>Business, and this market</h3>
-                <p>Eighteen years in the Khmer market — food and beverage, real estate, hotels and restaurants I’ve helped lead, and a share in a well-known local food business. I know how these places actually run, and I know this market. That’s the part generic AI advice can’t fake.</p>
-              </Reveal>
-              <Reveal className="cl-person__detail">
-                <h3>Cambodia and language</h3>
-                <p>English and Khmer, in my own words — not through a translator who strips out the nuance, and not by handing over a manual to follow. I teach the reasoning, so your team can actually use it.</p>
-              </Reveal>
-            </Stagger>
-            <Reveal as="p" y={14}>
-              One package: business consultancy and advisory, with a real AI focus on top — from someone who has actually done both sides.
-            </Reveal>
-            <Reveal y={14}>
-              <a href="#experience" className="cl-text-link" onClick={() => openReading('experience')}>
-                More about my experience <ClIcon name="arrow" />
-              </a>
-            </Reveal>
+    <div className="sc05">
+      <Band
+        id="person"
+        sectionKey="D4"
+        labelledBy="cl-person-title"
+        className="sc05__hero"
+        art={{ desktop: ART_05_DESKTOP, mobile: ART_05_MOBILE, position: '56% 50%', scrim: 'left', parallax: 18 }}
+      >
+        <div className="sc05__hero-grid">
+          <div className="sc05__hero-copy">
+            <Eyebrow>{text(PERSON_COPY.eyebrow)}</Eyebrow>
+            <Display id="cl-person-title" className="sc05__hero-title sc05__hero-title--desktop" lines={texts(PERSON_COPY.title)} />
+            <Display className="sc05__hero-title sc05__hero-title--mobile" lines={texts(PERSON_COPY.phoneTitle)} />
+            <Body className="sc05__opening">{text(PERSON_COPY.body)}</Body>
+            <div className="sc05__actions sc05__actions--desktop">
+              <PrimaryButton href="#contact">{text(PERSON_COPY.primaryAction)}</PrimaryButton>
+              <GhostButton href="#experience" onClick={() => openReading('experience')}>{text(PERSON_COPY.secondaryAction)}</GhostButton>
+            </div>
+            <div className="sc05__actions sc05__actions--mobile">
+              <PrimaryButton href="#experience" onClick={() => openReading('experience')}>{text(PERSON_COPY.phonePrimaryAction)}</PrimaryButton>
+              <GhostButton href="#contact">{text(PERSON_COPY.phoneSecondaryAction)}</GhostButton>
+            </div>
+          </div>
+
+          <QuoteBlock className="sc05__hero-quote" quote={text(PERSON_COPY.quote)} label={text(PERSON_COPY.quoteLabel)} />
+          <WordStack className="sc05__hero-words" words={texts(PERSON_COPY.wordStack)} />
         </div>
-      </section>
-    </>
+
+        <div className="sc05__mobile-image">
+          <ImageTile src={ART_05_MOBILE} ratio="9 / 13" position="52% 42%" />
+          <blockquote>{text(PERSON_COPY.localQuote)}</blockquote>
+        </div>
+      </Band>
+
+      <Band className="sc05__credibility" hairline="bottom">
+        <ul className="sc05__credibility-cards">
+          {PERSON_COPY.credibility.map((item, index) => (
+            <NeonCard as="li" key={text(item.title)} accent={index === 3 ? 'violet' : 'cyan'}>
+              <IconRing icon={item.icon} accent={index === 3 ? 'violet' : 'cyan'} />
+              <div>
+                <CardTitle>{text(item.title)}</CardTitle>
+                {item.subtitle && <span className="sc05__credibility-subtitle">{text(item.subtitle)}</span>}
+                <Body>{text(item.line)}</Body>
+              </div>
+            </NeonCard>
+          ))}
+        </ul>
+        <div className="sc05__credibility-rows">
+          {PERSON_COPY.phoneCredibility.map((item, index) => (
+            <IconRow
+              key={text(item.title)}
+              bare
+              accent={index === 3 ? 'violet' : 'cyan'}
+              icon={item.icon}
+              title={text(item.title)}
+              text={text(item.line)}
+            />
+          ))}
+        </div>
+      </Band>
+
+      <Band className="sc05__rooted" hairline="bottom">
+        <div className="sc05__rooted-grid">
+          <div className="sc05__local-quote">
+            <WordStack words={texts(PERSON_COPY.localWordStack)} />
+            <blockquote>{text(PERSON_COPY.localQuote)}</blockquote>
+          </div>
+          <div className="sc05__rooted-copy">
+            <Eyebrow>{text(PERSON_COPY.rootedEyebrow)}</Eyebrow>
+            <CardTitle feature>
+              {texts(PERSON_COPY.rootedTitle).map((line, index) => (
+                <React.Fragment key={line}>{index > 0 && <br />}{line}</React.Fragment>
+              ))}
+            </CardTitle>
+            <Body>{text(PERSON_COPY.rootedBody)}</Body>
+            <Chips items={texts(PERSON_COPY.rootedChips)} accent="cyan" label="Local experience" />
+          </div>
+          <ImageTile
+            className="sc05__riverside"
+            src={ART_05_RIVERSIDE}
+            caption={texts(PERSON_COPY.riversideCaption)}
+            ratio="4 / 5"
+            position="50% 50%"
+          />
+        </div>
+      </Band>
+
+      <Band
+        className="sc05__tomorrow"
+        art={{ desktop: ART_01_EARTH, position: '60% 100%', scrim: 'left', parallax: 12 }}
+        hairline="bottom"
+      >
+        <div className="sc05__tomorrow-copy">
+          <Eyebrow>{text(PERSON_COPY.tomorrowEyebrow)}</Eyebrow>
+          <Display as="h2" lines={texts(PERSON_COPY.tomorrowTitle)} />
+          <Body>{text(PERSON_COPY.tomorrowBody)}</Body>
+          <ul className="sc05__tomorrow-points">
+            {PERSON_COPY.tomorrowPoints.map((point) => <li key={text(point)}>{text(point)}</li>)}
+          </ul>
+        </div>
+        <div className="sc05__cambodia-marker" aria-label="Cambodia">
+          <span className="sc05__cambodia-pin" aria-hidden="true" />
+          <span>{text(PERSON_COPY.cambodiaLabel)}</span>
+        </div>
+      </Band>
+    </div>
   );
 }
 

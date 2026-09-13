@@ -14,6 +14,7 @@ Target: every scene built to the owner's mockups (`MOCKUP_CANON.md`).
 3. `TASKS.md` — task board + M1 cards + asset contract.
 4. **`MOCKUP_CANON.md` — the binding visual target (owner, 2026-09-13); mockups in `references/mockups/`.**
 4a. `CANON_KIT.md` — shared tokens, type scale, primitives (lane A builds it; everyone uses it).
+4a1. **`MOTIF_PROGRESSION.md` — owner 2026-09-13: the image journey + light-line thread + layout rhythm; overrides mockup reuse of Earth/quote blocks.**
 4a2. **`COPY_CANON.md` — the words for every scene slot (mockup copy adapted to the framing).**
 4b. `SCENE_SPECS.md` — per-scene build spec: layout, phone flow, art paths, copy rule, acceptance.
 5. `DRAMA_LAYER.md` — the dynamic moves layered on the plan (DR-01…09; canon wins where they differ).

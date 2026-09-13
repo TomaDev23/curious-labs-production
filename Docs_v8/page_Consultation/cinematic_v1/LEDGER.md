@@ -107,3 +107,20 @@ B-04 done. Commit `4bec6f5f1194bb266df30c43498470c8e88eab46` (pushed). Files + A
 - `kit/ExpandToggle.jsx` — `{ id, label, children }`. `<button aria-expanded aria-controls={id}>` + `<div id hidden={!open}>`; native `hidden` removes tab stops while closed (no extra work needed). Panel fade/rise is a plain CSS `@keyframes` on `.cl-expand__panel`, already covered by the global reduced-motion override. Focus never redirected, so it stays on the button after toggling.
 CSS added to `consultation-scenes.css` under a new "B-04 · Scene kit" section, all selectors `.cl-consultation`-scoped. No `npm run lint` available to sanity-check (no ESLint config found in the repo despite the `lint` script in package.json — pre-existing, not something I touched); reviewed all four files by hand instead. No temporary demo committed.
 Proceeding to B-05 (SC-01 Earth hero stage + orbital) — this is the first task that actually renders `SceneArt`/`SceneSeam`, and it also depends on the M-01 art assets you delivered at #L-015, so I'll verify against real files, not just the fallback gradient.
+
+#L-023  START  [BLD]  2026-09-13T14:52
+Starting B-05 (hero stage + orbital, WP-07/DR-01), in `HeroScene.jsx`, `_orbit.svg`, `ConsultationOrbit.jsx` + `consultation-scenes.css`. Confirmed all four ART-01 files present at the asset-contract paths under `public/consultation/`.
+
+#L-024  ACK  [MGR]  2026-09-13T14:06
+Audit B-02 (#L-018, e16af0c): accepted. Diff touches only consultation files + nothing outside the lane; fingerprint 14121/2e76a310… identical, ids and section order identical, deep links verified, pixel-identical captures. The ±2px height jitter is font-load noise — fine. The transient "Reveal is not defined" mid-edit errors are noted and closed.
+
+#L-025  ACK  [MGR]  2026-09-13T14:06
+Audit B-03 (#L-020, efd99ea): accepted — hero text is plain markup, h1 static, no opacity-0 start. Two follow-ups carried into B-05 (see #L-027).
+
+#L-026  ACK  [MGR]  2026-09-13T14:06
+Audit B-04 (#L-022, 4bec6f5): accepted. The per-instance <style> in SwipeTrack is acceptable (real media queries, CSS-driven switch, scoped via useId) — keep it; don't generalise the pattern elsewhere. Parallax on motion.img (not the Parallax helper) is the right call. Follow-up for B-05 in #L-027.
+
+#L-027  STEER  [MGR]  2026-09-13T14:06
+Apply while doing B-05 (must respond):
+(1) Sheen selector: `.cl-consultation .cl-hero #cl-page-title` depends on the `.cl-hero` class that B-05 removes → re-scope to `.cl-consultation #cl-page-title` (or the new stage class). Also the ::after bar spans the whole h1 box, so on the new open-sky hero it will streak across the sky, not the letters. Clip it to the glyphs: put the sheen as a second background layer on the h1 itself (`background-image: linear-gradient(sheen), linear-gradient(existing text gradient)`, `background-clip: text`, animate `background-position` of the sheen layer once), and drop the ::after + overflow:hidden.
+(2) SceneArt parallax: the img exactly fills an overflow:hidden box, so translating it ±parallax exposes empty bands at the top/bottom edge. When parallax > 0, oversize the img: `top: calc(-1 * var(--cl-art-par)); height: calc(100% + 2 * var(--cl-art-par))` with `--cl-art-par: {parallax}px` set inline. Check at 1440×900 while scrolling the hero out.

@@ -1,0 +1,97 @@
+/* SC-01 hero (lane C). Moved verbatim from consultation-scenes.css by A-00.
+   Every selector stays under .cl-consultation. */
+
+/* ── B-03 · DR-01 hero headline sheen ─────────────────────────────────── */
+/* The sheen lives on #cl-page-title itself (see the B-05 section below) as
+   a second background layer clipped to the glyphs, not a ::after box — a
+   box-shaped ::after streaked across the open-sky hero instead of just the
+   letters (#L-027). */
+
+/* ── B-05 · SC-01 Earth hero stage + orbital ──────────────────────────── */
+.cl-consultation .cl-hero-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(640px, 88vh, 820px);
+  display: flex;
+  align-items: center;
+}
+.cl-consultation .cl-hero-stage__art {
+  top: -96px;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+}
+.cl-consultation .cl-hero-stage__grid {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-inline: var(--cl-gutter);
+  padding-block: 56px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--cl-gutter);
+  row-gap: 24px;
+}
+.cl-consultation .cl-hero-stage__copy { grid-column: 1 / 7; }
+.cl-consultation .cl-hero-stage__orbit {
+  grid-column: 8 / 13;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cl-consultation .cl-hero-stage__orbit .cl-orbit { max-width: 460px; width: 100%; opacity: .9; }
+.cl-consultation .cl-hero-stage .cl-hero__meta { grid-column: 1 / -1; }
+
+/* Copy sizing/gradient carried over from the retired .cl-hero rules in
+   consultation.css (left untouched there; now dead, per the card). The
+   DR-01 sheen is a second, wider background layer sharing the same
+   text-clip, so it only lights up the glyphs — not a box over the sky. */
+.cl-consultation #cl-page-title {
+  max-width: 16ch;
+  margin-bottom: 24px;
+  background-image:
+    linear-gradient(100deg, transparent 42%, rgba(255, 255, 255, .55) 48%, rgba(255, 255, 255, .95) 50%, rgba(255, 255, 255, .55) 52%, transparent 58%),
+    linear-gradient(180deg, #ffffff 0%, var(--cl-cream) 55%, #c9d6dc 100%);
+  background-repeat: no-repeat;
+  background-size: 300% 100%, 100% 100%;
+  background-position: -100% 0, 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: cl-hero-sheen 1.4s cubic-bezier(.16, 1, .3, 1) .3s 1 both;
+}
+
+@keyframes cl-hero-sheen {
+  from { background-position: -100% 0, 0 0; }
+  to { background-position: 200% 0, 0 0; }
+}
+.cl-consultation .cl-hero-stage .cl-lead { max-width: 57ch; }
+.cl-consultation .cl-hero-stage .cl-actions { margin-top: 28px; }
+
+@media (max-width: 1099px) {
+  .cl-consultation .cl-hero-stage__orbit { display: none; }
+  .cl-consultation .cl-hero-stage__copy { grid-column: 1 / -1; }
+}
+
+@media (max-width: 767px) {
+  .cl-consultation .cl-hero-stage {
+    min-height: 600px;
+    height: auto;
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+  .cl-consultation .cl-hero-stage__art { top: 0; }
+  .cl-consultation .cl-hero-stage__art::after {
+    background: linear-gradient(180deg, #020308 0%, #020308e6 38%, transparent 72%);
+  }
+  .cl-consultation .cl-hero-stage .cl-hero__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+  .cl-consultation .cl-hero-stage .cl-hero__meta-label { margin-left: 0; }
+}

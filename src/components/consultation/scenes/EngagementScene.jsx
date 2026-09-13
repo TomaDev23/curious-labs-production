@@ -3,6 +3,7 @@ import ChapterMark from '../kit/ChapterMark';
 import { ClIcon } from '../ConsultationIcons';
 import { FlowGraph } from '../ConsultationGraphs';
 import { Reveal, KineticHeading } from '../ConsultationMotion';
+import './css/sc-07-engagement.css';
 
 function EngagementScene() {
   return (

@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import './kit/kit.css';
 import ConsultationIcons from './ConsultationIcons';
 import { ScrollRail } from './ConsultationMotion';
 import useConsultationPage from './useConsultationPage';

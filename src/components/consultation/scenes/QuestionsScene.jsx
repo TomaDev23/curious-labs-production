@@ -1,6 +1,7 @@
 import React from 'react';
 import ChapterMark from '../kit/ChapterMark';
 import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import './css/sc-08-questions.css';
 
 /* Answers written from the owner's own discovery answers Q1–Q18 — see
    Docs_v8/page_Consultation/DISCOVERY_ANSWERS_Q1-Q18.md, which also records

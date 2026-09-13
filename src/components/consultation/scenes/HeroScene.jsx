@@ -4,6 +4,7 @@ import ConsultationOrbit from '../ConsultationOrbit';
 import { Reveal, Stagger } from '../ConsultationMotion';
 import SceneArt from '../kit/SceneArt';
 import SceneSeam from '../kit/SceneSeam';
+import './css/sc-01-hero.css';
 
 const ART_01_DESKTOP = {
   avif: '/consultation/art-01-earth-horizon-desktop.avif',

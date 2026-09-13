@@ -3,6 +3,7 @@ import ChapterMark from '../kit/ChapterMark';
 import { ClIcon } from '../ConsultationIcons';
 import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
 import { openReading } from '../useConsultationPage';
+import './css/sc-05-person.css';
 
 function PersonScene() {
   return (

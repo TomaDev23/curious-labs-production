@@ -2,6 +2,7 @@ import React from 'react';
 import ChapterMark from '../kit/ChapterMark';
 import { ClIcon } from '../ConsultationIcons';
 import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import './css/sc-09-contact.css';
 
 function ContactScene() {
   return (

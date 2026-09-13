@@ -4,6 +4,7 @@ import { ClIcon } from '../ConsultationIcons';
 import { OperatorView, HarnessGraph, TrustSpectrum } from '../ConsultationGraphs';
 import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
 import { closeReading } from '../useConsultationPage';
+import './css/sc-06-approach.css';
 
 const READINGS = [
   {

@@ -2,6 +2,7 @@ import React from 'react';
 import ChapterMark from '../kit/ChapterMark';
 import { ClIcon } from '../ConsultationIcons';
 import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import './css/sc-04-contribution.css';
 
 /* Three consolidated themes (T1–T3). Source subjects folded in:
    T1 ← S1 · T2 ← S2/S3/S4 (the core) · T3 ← S5/S6. These are areas the

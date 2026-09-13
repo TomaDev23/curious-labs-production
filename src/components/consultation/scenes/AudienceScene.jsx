@@ -3,6 +3,8 @@ import ChapterMark from '../kit/ChapterMark';
 import { ClIcon } from '../ConsultationIcons';
 import { StatTrio } from '../ConsultationGraphs';
 import { Reveal, Stagger, KineticHeading } from '../ConsultationMotion';
+import './css/sc-02-doors.css';
+import './css/sc-03-walls.css';
 
 function AudienceScene() {
   return (

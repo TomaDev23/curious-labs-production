@@ -9,18 +9,18 @@ v1 (manager + one builder) is superseded; its history stays in the ledger.
 | Seat | Tag | Engine | Lane | Owns |
 |---|---|---|---|---|
 | **AI consultation manager** | `[MGR]` | Opus | Management | Specs (`CANON_KIT.md`, `SCENE_SPECS.md`, `TASKS.md`), all art, audits against the mockups, owner comms, decisions, merges of scene order, provenance |
-| **AI consultation builder A** | `[BLD-A]` | Opus | A — kit + hardest scenes | Canon kit, `ConsultationIcons.jsx`, `ConsultationContent.jsx` (scene order), SC-02 doors, SC-03 walls, SC-04 contribution/harness |
+| **AI consultation builder A** | `[BLD-A]` | Opus | A — kit + hardest scenes | Canon kit, `ConsultationIcons.jsx`, `ConsultationContent.jsx` (scene order), SC-02 doors, SC-03 walls, SC-04 contribution/harness, **SC-09 final + contact + page footer** (moved from C) |
 | **AI consultation builder B** | `[BLD-B]` | Codex | B — story scenes | SC-05 person, SC-06 approach + readings |
-| **AI consultation builder C** | `[BLD-C]` | Sonnet (formerly `[BLD]`) | C — ends of the page | SC-01 hero finish, SC-07 engagement, SC-08 questions, SC-09 final + contact + page footer |
+| **AI consultation builder C** | `[BLD-C]` | Sonnet (formerly `[BLD]`) | C — ends of the page | SC-01 hero finish, SC-07 engagement, SC-08 questions |
 | **Owner** | `[OWNER]` | — | — | Copy approval (Captain), art approval, decisions, release |
 
 ## File lanes (file-disjoint — the rule that makes parallel work safe)
 
 | Lane | Files it may edit |
 |---|---|
-| A | `src/components/consultation/kit/**` (incl. `kit/kit.css`), `ConsultationIcons.jsx`, `ConsultationContent.jsx`, `useConsultationPage.js`, `ConsultationMotion.jsx`, `scenes/AudienceScene.jsx`, `scenes/WallsScene.jsx`, `scenes/ContributionScene.jsx`, their `scenes/css/sc-02-doors.css`, `sc-03-walls.css`, `sc-04-contribution.css`, their `scenes/copy/*.copy.js`, `visuals/{DoorVisual,Monoliths,HarnessSystem}*` |
+| A | `src/components/consultation/kit/**` (incl. `kit/kit.css`), `ConsultationIcons.jsx`, `ConsultationContent.jsx`, `useConsultationPage.js`, `ConsultationMotion.jsx`, `scenes/AudienceScene.jsx`, `scenes/WallsScene.jsx`, `scenes/ContributionScene.jsx`, their `scenes/css/sc-02-doors.css`, `sc-03-walls.css`, `sc-04-contribution.css`, their `scenes/copy/*.copy.js`, `visuals/{DoorVisual,Monoliths,HarnessSystem}*`, **`scenes/ContactScene.jsx`, `scenes/css/sc-09-contact.css`, contact copy file, `src/pages/ai-consultation.jsx` (shell + footer)** |
 | B | `scenes/PersonScene.jsx`, `scenes/ApproachScene.jsx`, `scenes/css/sc-05-person.css`, `sc-06-approach.css`, their copy files, `visuals/{OperatorPath,ReadingCard}*` and any new `visuals/b-*` files |
-| C | `scenes/HeroScene.jsx`, `scenes/EngagementScene.jsx`, `scenes/QuestionsScene.jsx`, `scenes/ContactScene.jsx`, `scenes/css/sc-01-hero.css`, `sc-07-engagement.css`, `sc-08-questions.css`, `sc-09-contact.css`, their copy files, `src/pages/ai-consultation.jsx` (shell + footer), `ConsultationOrbit.jsx`, `_orbit.svg`, new `visuals/c-*` files |
+| C | `scenes/HeroScene.jsx`, `scenes/EngagementScene.jsx`, `scenes/QuestionsScene.jsx`, `scenes/css/sc-01-hero.css`, `sc-07-engagement.css`, `sc-08-questions.css`, their copy files, `ConsultationOrbit.jsx`, `_orbit.svg`, new `visuals/c-*` files |
 | MGR | `public/consultation/**`, `tools/art/**`, `.claude/skills/**`, `Docs_v8/page_Consultation/cinematic_v1/**` |
 
 - **Each scene imports its own CSS file** (`import './css/sc-0X-….css'`). `consultation.css` is legacy and frozen;

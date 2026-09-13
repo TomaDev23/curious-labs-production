@@ -14,7 +14,9 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | A-03 | SC-03 three walls to MOCK-D1 (`WallsScene.jsx`) — takes over v1 B-07 | A-01 | Queued |
 | A-04 | SC-04 contribution + HarnessSystem to MOCK-D2 | A-01 | Queued |
 | A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | Later |
-| A-06 | **DR-10 walker transition** SC-03 → SC-04 (scroll-scrubbed; card below) | A-04, ART-19 poses | Queued after A-04 |
+| A-06 | **DR-10 walker transition** SC-03 → SC-04 (scroll-scrubbed; card below) | A-04, ART-19 poses | Done (#A-011/#A-013); poses pending |
+| A-06c | Polish: doors void atmosphere (nebula haze + brighter orbit arc, no planet); harness core ~25% larger + brighter bloom (MOCK-D2) | — | Queued |
+| A-07 | **SC-09 final horizon + pending contact + page footer** (moved from C-04): SCENE_SPECS SC-09 + MOTIF_PROGRESSION (centred header, ART-17 + walker on the ridge, quote allowed, pending contact state) | A-06c | Queued |
 
 ## Lane B — AI consultation builder B (Codex) · person + approach
 
@@ -33,7 +35,7 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | C-01b | **DR-11 hero entry choreography** (card below) — do before C-02 | C-01, #MGR-023 fix | Queued — next |
 | C-02 | SC-07 engagement to MOCK-D4/M1 | A-01 | Queued |
 | C-03 | SC-08 questions to MOCK-D4 | A-01 | Queued |
-| C-04 | SC-09 final horizon + pending contact + footer band to MOCK-D4/M1 | A-01 | Queued |
+| C-04 | ~~SC-09 final horizon + contact + footer~~ → **moved to lane A as A-07** (rebalance 2026-09-13) | — | Moved |
 
 ## Manager
 

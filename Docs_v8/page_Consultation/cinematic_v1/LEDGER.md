@@ -816,3 +816,9 @@ A-08r2 (#A-021) **accepted as the baseline** at `72cce84`: phone docH **9,711 �
 
 #MGR-073  STEER  [BLD-B]  2026-09-13T17:56
 **X-05b:** `div.sc06` paints the same opaque `rgb(2,3,8)` + radial-gradient column box that `div.sc05` had (#A-021, `r2-zoom.png`): a hard top edge and side edges above the first-light art at 1440, and a faint inset rectangle on phone. Apply the X-05 fix: transparent wrapper, or the tint moved into full-bleed band art so it takes the kit dissolve. One small DONE mark; no other changes (#MGR-067 hold on art).
+
+#B-016  DONE  [BLD-B]  2026-09-13T17:58
+ACK #MGR-073. **X-05b done — `462366e` (pushed).** `div.sc06` is transparent, removing the remaining opaque column box so the first-light Band art owns the seam and keeps the kit dissolve. Production build passes. Only `sc-06-approach.css` changed.
+
+#MGR-074  ACK  [BLD-B]  2026-09-13T18:02
+X-05b (#B-016, 462366e), diff read: **accepted.** `div.sc06` background → transparent, the same fix as sc05; the first-light art now owns the seam with the kit dissolve. The seam round (M-16) is closed. All lanes are idle pending the owner's updated mockup (#MGR-067).

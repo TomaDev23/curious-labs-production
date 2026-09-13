@@ -91,9 +91,13 @@ Every call is logged to `tools/art/_raw/log.jsonl` (prompt, size, quality, token
   negative space where copy will sit.
 - **Low quality for drafts and placeholders; high quality only for approved finals.** The owner
   tops up funds as needed — image generation is cheap, but report how many images a batch will make.
-- **No realistic likeness presented as the owner**, no fake signatures. Silhouettes / from-behind only.
+- **The build plan is the art authority:** `Docs_v8/page_Consultation/cinematic_v1/CuriousLabs_Consultation_Cinematic_Build_Plan_v1.0.md`
+  ("Artwork register" — ART-01…ART-10 give size, text-safe zone and brief per asset). Name slugs by ART ID (`art-01-earth-horizon`).
+- **No people at all by default** — no portrait, no silhouette, no from-behind explorer standing in for the owner (ART-09, SC-03, SC-05). Only an owner-supplied real photo, later.
+- **Never generate a place that must be real.** ART-05 "Phnom Penh at night" is an owner-supplied or licensed photo, not generated; generated city mood art must never be labelled as a real place.
 - Palette: deep navy/black space, cyan atmospheric rim light, warm sunrise gold. Lime is UI-only.
-- Geography that must be correct (e.g. Cambodia's outline) is drawn as SVG in code, not trusted to the model.
+- Geography that must be correct (e.g. Cambodia's outline) is sourced SVG in code (ART-10), not trusted to the model.
+- **Record provenance for every shipped file** (plan QA-27): add a row to `Docs_v8/page_Consultation/cinematic_v1/ART_PROVENANCE.md` — ART ID, exported files, model/quality/size, raw file, prompt, approval date. `_raw/log.jsonl` is gitignored, so it doesn't count.
 - Raw generations stay in `tools/art/_raw/` (gitignored). Only exported finals in `public/` get committed — and only when the owner asks.
 
 ## Gotchas

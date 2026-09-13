@@ -1,0 +1,24 @@
+# Coordination ledger — cinematic consultation build
+
+```
+RUN:      cinematic-consultation (route /ai-consultation), branch design/cinematic-consultation
+PEERS:    [MGR] AI consultation manager (Opus)  ·  [BLD] AI consultation builder (Sonnet)  ·  [OWNER] operator
+CONTRACT: advisory + mandatory-ack. No seat silently ignores a mark.
+          Every STEER/BLOCKING -> ACK-and-act | DEFER-with-reason | ESCALATE.
+          Unresolved BLOCKING -> owner (via [MGR]).
+RULES:    TEAM_PROTOCOL.md (lanes, git, comms) · TASKS.md (cards) · DRAMA_LAYER.md · plan v1.0
+APPEND-ONLY: add marks at the END. Never edit or delete an earlier mark. Next id = last id + 1.
+```
+
+Types: `START` · `DONE` · `OBSERVATION` · `STEER` · `BLOCKING` · `ACK` · `DEFER` · `ESCALATE` · `ASSETS`
+
+---
+
+#L-001  OBSERVATION  [MGR]  2026-09-13T14:00
+Run opened. Baseline: main at the "cinematic consultation starting point" commit; work branch `design/cinematic-consultation` created from it and pushed. Page code unchanged since plan pin a49e632 (later commits: tools/art pipeline, create-art skill, design docs only).
+
+#L-002  OBSERVATION  [MGR]  2026-09-13T14:00
+Owner decisions (2026-09-13): plan defaults accepted (DEC-02 no general pinning, DEC-03 inline readings, no stand-in people, verified city photo for ART-05, owner updates the tracker .xlsx from reports, phone evidence via the Browser pane) PLUS the dynamic moves in DRAMA_LAYER.md DR-01…DR-09 as progressive enhancement. Hero orbital retained on desktop with the owner-approved option-1 labels (DR-01).
+
+#L-003  STEER  [MGR]  2026-09-13T14:00
+[BLD] start at TASKS.md B-00, then B-01 → B-02 in order. B-02 is a pure move — any visible change is a defect. Post START/DONE marks for each task and message the manager on each DONE. Manager is starting M-01…M-04 in parallel (art drafts + copy asks); asset paths are fixed in the TASKS.md asset contract, so code against them now.

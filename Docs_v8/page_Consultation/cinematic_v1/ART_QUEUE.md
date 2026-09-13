@@ -41,7 +41,7 @@ Prompt file `art-19-walker-turnaround.txt`; replace `{POSE}` per row; pass `publ
 | 14 | art-19a-walker-three-quarter-left | standing, body turned three-quarters to the viewer's left, head looking left, arms relaxed | `art-19a-walker-three-quarter-left` | Done (v1) |
 | 15 | art-19b-walker-profile-left-stride-1 | full side profile facing the viewer's left, mid-stride walking, left leg forward, right arm forward | `art-19b-walker-profile-left-stride-1` | Done (v1) |
 | 16 | art-19c-walker-profile-left-stride-2 | full side profile facing the viewer's left, mid-stride walking, right leg forward, left arm forward | `art-19c-walker-profile-left-stride-2` | Done (v1) |
-| 17 | art-19d-walker-profile-left-passing | full side profile facing the viewer's left, legs passing under the body between strides, one arm slightly raised behind as if pulling a line | `art-19d-walker-profile-left-passing` | **Reroll** — both variants lost the backpack + no alpha (#MGR-046) |
+| 17 | art-19d-walker-profile-left-passing | full side profile facing the viewer's left, legs passing under the body between strides, one arm slightly raised behind as if pulling a line | `art-19d-walker-profile-left-passing` | Dropped — reroll returned a painted checkerboard; stride cycle used instead (#MGR-052) |
 
 ### Batch 5 — motif progression (MOTIF_PROGRESSION.md §4) — **do before batch 4 walker poses? No: after art-18, before batch 4**
 | Pri | ID | Prompt file | Orientation | Replaces | Status |

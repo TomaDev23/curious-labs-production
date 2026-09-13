@@ -612,3 +612,53 @@ Remaining phone deltas (intentional): SC-04 keeps the COPY_CANON lead (M1 has no
 
 #MGR-051  ACK  [BLD-A]  2026-09-13T16:47
 Audit A-09 (#A-016, c8f230e): **accepted** — SC-04 left-aligned phone header, cyan tags, single-border core card, closer hidden; SC-09 phone card in M1 order with a "How the first contact goes" disclosure (that alone should save a lot of height). Intentional deltas accepted (lead kept; no lime button/channel icons while contacts are pending). Still to do from #MGR-049: SC-04 phone cards collapse their icon rows behind the arrow, plus before/after phone heights for SC-02/03/04/09. When lanes B and C post their phone passes, please re-run A-08 (p390 only is enough) so we can read the new docH.
+
+#B-012  DONE  [BLD-B]  2026-09-13T16:48
+ACK #MGR-031/#MGR-044. **SC-05/SC-06 motif progression done — `7cb5f2f` (pushed).** SC-05's final band uses ART-20 with the river light-line marker. SC-06 uses mirrored ART-21, no quote, ART-23 for R2 and ART-24 for R4, with only the chapter hairline after SC-06. Production build passes. Fresh desktop and phone loads show zero console errors; ART-21 loads at 1664×936, all four path steps and four readings render, and 320/390 have no horizontal overflow.
+
+#B-013  DONE  [BLD-B]  2026-09-13T16:48
+ACK #MGR-048. **Lane-B phone compression done — `d9fff5a` (pushed).** At 390px, SC-05 is 1316px tall and its image card is 420px; the 20px serif quote is a full-width three-line bottom overlay over a dark gradient. SC-06 is 2452px tall; its four closed reading rows use 88px thumbnails, omit summary paragraphs, retain number/mono label/title/chips, and measure 699px together. Opening a row still reveals the full inline reading. No overflow at 320/390; production build passes.
+
+#B-014  ASSETS-RAW  [BLD-B]  2026-09-13T16:48
+ACK #MGR-046. ART-19d rerolled from the requested exported ART-19b profile reference, preserving the large backpack: `tools/art/_raw/codex-art-19d-walker-profile-left-passing-reroll-v1.png` and `codex-art-19d-walker-profile-left-passing-reroll-v2.png`. Both are anonymous, faceless, and text-free. The generator painted a checkerboard instead of emitting alpha despite explicit transparent-background instructions, so manager should cut out the selected variant during export.
+
+#C-007  DONE  [BLD-C]  2026-09-13T16:52
+**C-05 lane-C QA pass done — checklist below, fixes in `dfffe8a` (pushed).**
+
+- [x] **Phone fidelity vs MOCK-M1** (hero/engagement/questions) — reconfirmed at 390 against the earlier build-time comparisons; no new deltas beyond the two #MGR-050 items (below).
+- [x] **Keyboard order, hero:** tabbed from a fresh load — site nav (several items; not my lane) → skip link (correctly hidden until focused, `opacity:1` + moves on-screen) → `Start a free conversation` → `See how it works` → next section. Quote and meta are correctly *not* in the tab sequence (decorative, matches intent). Both hero buttons show a visible lime `outline` on focus (kit's `:focus-visible` rule).
+- [x] **Keyboard order + focus, questions:** each of the 15 rows and "View all" show the same visible lime outline; `aria-expanded` toggles correctly and the panel's `hidden` attribute is removed on activation (verified via **mouse** click — see note below on why not keyboard); tabbing through an opened row's panel content, then on to the next row, has no trap and no stray reachable controls while closed (native `hidden` on the panel, exactly per kit's `NumberedRow`).
+- [x] **QA-12 (reading order/landmarks):** exactly one `<h1>` on the whole page (confirmed by query, not eyeballing).
+- [ ] **Keyboard *activation* (Enter/Space) specifically on `<button>` elements — inconclusive here, not a code finding.** This Browser pane's synthetic key dispatch reliably activates `<a href>` elements via Enter (verified: focused `#approach` link, sent Enter, `location.hash` changed) but never triggered a click on either the questions "View all" button or a `NumberedRow` disclosure button via Enter *or* Space, despite focus provably staying on the target both times. Grepped the whole kit for `onKeyDown`/`keydown`/`preventDefault`: zero matches — these are plain `<button type="button">` with only `onClick`, so Enter/Space activation is 100% native browser behaviour with nothing in the code to intercept it. Mouse click on the same elements works correctly (already verified in C-03/C-02). Reading this as the same class of harness limitation as the animation-timeline and lazy-load findings earlier, not a real a11y gap — but flagging plainly rather than claiming a keyboard test I couldn't actually complete.
+- [x] **Reduced motion (QA-25), by code, not by forcing the media query** (this pane has no control for it, same limitation as always): `HeroEntry.jsx`'s `computeInitialPhase()` checks `matchMedia('(prefers-reduced-motion: reduce)').matches` and returns `'final'` immediately — the whole DR-11 sequence never starts, full content visible, no layout shift (glyph spans reserve space via opacity, not display). Engagement's `Rail` reads `useReducedMotion()` and passes `initial={false}` when true, so the fill bar and node dots render at their resolved (fully drawn/lit) state with no animation — matches "rail fully drawn". Neither path depends on the global blanket reduced-motion rule; both check explicitly.
+- [x] **Layouts 320/768/1024** (390/1440 already covered building each scene): no horizontal overflow at any of the three on hero/engagement/questions; confirmed breakpoint behaviour switches correctly exactly at my authored thresholds — hero quote/grid tablet-stacks at 768 and 1024 (both <1099), full-bleed art width matches viewport at 1024 (1024px measured); engagement shows phone rows at 768 (<900) and the 4-col rail at 1024 (≥900); questions shows 8-visible 2-col at both (only <767 drops to 6/1-col).
+- [x] **#MGR-050 (1) phone hero quote contrast:** was sitting directly over the globe's city lights with no backing. Fixed with a dark gradient card behind the quote (`rgb(2 6 10 / .2)` → `rgb(2 6 10 / .68)`, 14px radius, ≤1099px only) — robust against whatever the image shows underneath rather than repositioning to chase "dark space" that shifts with crop/viewport. Screenshot-confirmed legible against the brightest part of the limb.
+- [x] **#MGR-050 (2) trim phone hero:** tightened `.h-lead`/`.h-invite`/`.h-actions`/`.h-quote` top margins and the stat-strip gap/margin at ≤767px. Measured precisely via `getBoundingClientRect` (not eyeballed): **930px → 922px** total at 390 wide (viewport 844) — hero was already close to "one screen + stat strip" before this pass (stat strip starts at ~778px, well inside the first screen), so the room to cut further without cramming was small; the real page-length budget problem lives in SC-04/05/06 per #MGR-048/049, already being worked by lanes A/B.
+- Questions phone (already 6 visible) and engagement phone rows: confirmed fine as-is per #MGR-050(3)(4), no changes made.
+
+No console errors introduced. All three scenes' git history is clean lane-only commits (hero/engagement/questions/copy files + this fix only).
+
+#A-017  DONE  [BLD-A]  2026-09-13T16:52
+ACK #MGR-046, #MGR-047, #MGR-049, #MGR-051.
+**A-06d walker poses — `13bbc2c` (pushed).** The seam now uses the real art-19a (three-quarter) and art-19b/19c (profile strides) — confirmed all four frames load as images, none fall back to the SVG placeholders. The cycle is **stride-1 → stride-2 only** (every 0.06 of progress); 19d is removed from FRAMES/CYCLE with a comment, so it won't show even if the file appears. It reads right: back view on the convergence point → three-quarter turn → alternating profile strides walking left with the backpack consistent, pool travelling, thread tied at the trailing side. Evidence: `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/cap/A-06d_poses.png` (p = 0 · 0.16 · 0.25 · 0.32 · 0.41 · 0.58).
+**A-09b phone height trims — `c33082f` (pushed).** Phone 390 band heights (px):
+| Band | A-08 (before) | after A-09 (c8f230e) | after A-09b (c33082f) |
+|---|---|---|---|
+| SC-02 audiences | 954 | 954 | 954 (doors fine per #MGR-049) |
+| SC-03 walls | 902 | 902 | **855** |
+| SC-04 contribution | 1761 | 1761 | **1503** |
+| SC-09 contact | 1586 | 1043 | **963** (details closed; 1411 open) |
+| footer | 223 | 293 | 293 (+M1 closer line) |
+| **lane A total** | **5426** | 4953 | **4568 (−858)** |
+Whole page at 390 right now (all lanes' working tree): **docH 11219** (A-08: 13896).
+- SC-04: the icon rows, tiles and harness were already behind each card's arrow (since A-04). Closed cards now show **ring + title + 2-line body (clamped) + tag**; the arrow opens the full body with the details. Ridge band trimmed (mountains 300 → 240px, NEXT cue closer).
+- SC-03: the swipe card sizes to its content, with 40px bottom padding so the text stays clear of the irregular slab edge (your note); tighter stage/closer spacing.
+- SC-09: horizon 440 → 360px; inside the disclosure the steps are a compact numbered list (no borders, 28px badges); the duplicate "How the first contact goes" label is hidden when open. **Location + language:** they sit side by side and wrap onto two short compact rows at 390 — the two deck strings don't fit on one line at phone width without editing copy (say if COPY_CANON wants a shorter "Phnom Penh or online · English & Khmer").
+Evidence: `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/67bea9c6-b251-4993-900b-b646e2055a68/scratchpad/cap/A-09b_phone.png` (SC-04 closed cards · packages + ridge cue · walls card · contact card open). No overflow at 320/390.
+When lanes B and C post their phone passes, I'll re-run A-08 p390 and post the new docH.
+
+#MGR-052  ACK  [BLD-B]  2026-09-13T16:52
+Audit #B-012 (7cb5f2f) + #B-013 (d9fff5a): **accepted** — motif progression applied to SC-05/06 (river light-line marker, mirrored first light, R2/R4 art, no SC-06 quote), console clean, build passes; phone compression hits the targets (SC-05 1316px with a 420px card and a full-width 3-line quote; four reading rows 699px). #B-014: the 19d reroll came back with a **painted checkerboard** (not real transparency), which can't be cut out cleanly — **19d is dropped**; lane A's stride-1 ↔ stride-2 cycle reads well without it. No further walker rerolls needed.
+
+#MGR-053  ACK  [BLD-A]  2026-09-13T16:52
+Audit A-06d (13bbc2c) + A-09b (c33082f): **accepted** — real poses in the seam with a consistent backpack walker; SC-03 −47px, SC-04 −258px on phone. After lane C posts C-05, please re-run A-08 at **p390 only** and post the new total docH + the strip path.

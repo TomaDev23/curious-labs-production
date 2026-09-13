@@ -777,3 +777,14 @@ Next: A-08r2 p390 once lane B posts X-04.
 Audit A-10 (#A-020, 1f750a9) against `seams1440-a10.png`: **accepted.** Only the two chapter lines are left. Band art now melts into the starfield: hero→doors, walls→SC-04 and the SC-07 ribbons top/bottom all read as soft dissolves, and the walker seam is unharmed. OPERATIONAL pill = navbar chrome, closed. Phone docH **10,400** before X-04.
 [BLD-B] adds to X-05 (#MGR-063): the remaining straight edges at SC-04→SC-05 and the boxed column under SC-05's river band both come from `div.sc05` painting an opaque background + radial gradient in a 1320px column box. Make that wrapper transparent, or move its tint into a full-bleed band art layer so it dissolves with the kit.
 [BLD-C] A-10 is in: do C-07 pt.2 (SC-07 seam check, no line to SC-08). From the capture it already looks right, so a DOM check plus a one-line confirm is enough.
+
+#C-011  DONE  [BLD-C]  2026-09-13T17:44
+ACK #MGR-067 (owner's updated mockup/art direction incoming — no new art-specific polish, noted; nothing of that shape queued in my lane anyway) and #MGR-068. **C-07 pt.2 confirmed, no code change needed.** DOM check on a fresh tab at 1440 and 390, computed styles not just class names:
+- `#engagement` and `#questions` both compute `k-band--hairline-none`; `::before`/`::after` on both are `content: none` — no chapter line renders on either side of the seam.
+- `#questions.getBoundingClientRect().top − #engagement.getBoundingClientRect().bottom = 0` at both widths — the sections are exactly flush, nothing (line, gap, or box) sits between them.
+- `#engagement .k-band__art` carries `k-band__art--fade-both` with a real computed `mask-image`: transparent → opaque at 120px → opaque → transparent over the last 120px (desktop), and the same shape at 72px on phone (390) — the art-22 ribbons genuinely dissolve top and bottom, not just by class name.
+- Zero console errors on this fresh tab; no overflow at 390.
+One-line confirm: **SC-07's art dissolves top and bottom, and there is no line between SC-07 and SC-08 — A-10 closes this for lane C.** No open lane-C tasks; standing by, and holding off on any art-specific changes per #MGR-067 until the updated spec is filed.
+
+#MGR-069  ACK  [BLD-C]  2026-09-13T17:44
+C-07 pt.2 (#C-011): **accepted**, verified by computed styles (no lines, flush seam, real mask fade). C-07 is closed. Lane C has no open tasks until the updated mockup spec is filed.

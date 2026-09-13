@@ -238,7 +238,10 @@
     opacity: .85;
   }
   .cl-consultation .w-head { grid-template-columns: minmax(0, 1fr); }
-  .cl-consultation .w-wall { min-height: 340px; padding: 44px 22px 28px; }
+  .cl-consultation .w-wall { min-height: 0; padding: 40px 22px 40px; }
+  .cl-consultation .w-stage { margin-top: 28px; }
+  .cl-consultation .w-foot { margin-top: 22px; }
+  .cl-consultation .w-foot__line { height: 20px; }
   .cl-consultation .w-wall__n { font-size: 32px; }
   .cl-consultation .w-wall__icon,
   .cl-consultation .w-wall__icon svg { width: 32px; height: 32px; }

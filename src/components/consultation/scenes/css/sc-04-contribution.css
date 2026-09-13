@@ -403,14 +403,14 @@
 
 /* ── Phone (MOCK-M1): compact cards, arrow toggles the details ───────── */
 @media (max-width: 767px) {
-  .cl-consultation .c-band { padding-bottom: 260px; }
-  .cl-consultation .c-backdrop__mountains { height: 300px; }
+  .cl-consultation .c-band { padding-bottom: 196px; }
+  .cl-consultation .c-backdrop__mountains { height: 240px; }
   /* M1: the phone header is left-aligned (the centred composition is a desktop move). */
   .cl-consultation .c-head { justify-items: start; text-align: left; margin-inline: 0; }
   .cl-consultation .c-head .k-eyebrow { justify-content: flex-start; }
   .cl-consultation .c-head .k-eyebrow::after { display: none; }
   .cl-consultation .c-head__lead { margin: 14px 0 0; }
-  .cl-consultation .c-triptych { gap: 14px; margin-top: 28px; }
+  .cl-consultation .c-triptych { gap: 12px; margin-top: 24px; }
   .cl-consultation .c-card,
   .cl-consultation .c-card--core { padding: 20px; }
   .cl-consultation .c-card__rule { display: none; }
@@ -427,6 +427,13 @@
   .cl-consultation .c-card--core .c-card__title { font-size: 20px; padding-top: 12px; }
   .cl-consultation .c-card__toggle { display: inline-grid; width: 36px; height: 36px; }
   .cl-consultation .c-card__body { margin: 10px 0 0 66px; font-size: 15px; }
+  /* Closed card: two lines of body; the arrow opens the full text with the details (#MGR-049). */
+  .cl-consultation .c-card:not([data-open='true']) .c-card__body {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
   .cl-consultation .c-card__tag {
     display: block;
     margin: 12px 0 0 66px;
@@ -459,7 +466,7 @@
   .cl-consultation .c-packages { padding: 22px; }
   .cl-consultation .c-packages__lead { gap: 14px; }
   .cl-consultation .c-packages__title { font-size: 22px; }
-  .cl-consultation .c-foot { bottom: -196px; flex-direction: column; align-items: flex-start; }
+  .cl-consultation .c-foot { bottom: -150px; flex-direction: column; align-items: flex-start; }
   .cl-consultation .c-foot__closer { display: none; } /* M1 moves straight on; keep only the NEXT cue over the ridge */
   .cl-consultation .c-next { margin-right: 0; }
 }

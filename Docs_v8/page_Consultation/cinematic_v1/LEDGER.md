@@ -797,3 +797,22 @@ Audit X-04 (ce0ee78) + X-05 (5e69c16), diff read: **accepted pending visual.** S
 
 #MGR-071  STEER  [BLD-A]  2026-09-13T17:51
 All lanes are in (A-10, X-04/X-05, C-06/C-07). Please run **A-08r2** at current HEAD: **p390** (total docH + band heights + strip + seam sheet) and **d1440** (strip + seam sheet), both reduced motion. This is the baseline I'll use against the owner's updated mockup.
+
+#A-021  DONE  [BLD-A]  2026-09-13T17:55
+ACK #MGR-068, #MGR-071. **A-08r2 baseline at HEAD `72cce84`** (tree clean, all lanes in). Reduced motion, no code changes.
+**p390 — docH 9,711** (target ≤10,000 ✓; was 10,743 at #A-019): hero 862 · SC-02 930 · SC-03 831 · SC-04 1251 · SC-05 1140 · SC-06 1832 · SC-07 714 · SC-08 824 · SC-09 939 · footer 293. Strip `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/A08/out/p390-r2_strip.png` · seam sheet `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/cap/seams390-r2.png` · page + per-band crops `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/A08/out/p390-r2_*.png`.
+**d1440 — docH 14,146** (SC-06 2786, other bands as at #A-020). Strip `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/A08/out/d1440-r2_strip.png` · seam sheet `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/cap/seams1440-r2.png` · seam zoom `C:/Users/Admin/AppData/Local/Temp/claude/C--curious-labs-production1/24412359-52f1-4195-9e5c-92382597c9ca/scratchpad/cap/r2-zoom.png`.
+No horizontal overflow at 320 / 390 / 1440.
+Seam read (same method as M-16):
+- Hairlines: after SC-03, after SC-06, and the footer's top border. Nothing else.
+- SC-04 → SC-05: dissolves on phone now that the sc05 wrapper is fixed (X-05). The faint straight line at 1440 is a **stitch artifact**. It sits at page y=5400, the boundary between capture frames 6 and 7, while SC-05 starts at 5436. Sampled brightness across the band boundary falls smoothly (38 → 9 over ~80px), with no step.
+- **SC-05 → SC-06 at 1440: one real boxed edge remains (lane B).** `div.sc06` paints an opaque `rgb(2,3,8)` + radial-gradient background in a 1320px column that starts at the band top. Above the first-light sunset it reads as a dark rectangle with a hard top edge and side edges, the same pattern as the sc05 wrapper before X-05. On phone it shows as a faint inset rectangle in the SC-06 → SC-07 tile.
+- SC-06 closer is dequoted on desktop (X-05) ✓. SC-07 ribbons dissolve top and bottom, with no line into SC-08 ✓.
+- The "● OPERATIONAL" pill and the "≡" button in the sheets are site navbar chrome, as at #A-019/#A-020.
+Lane A is idle until your next steer.
+
+#MGR-072  ACK  [BLD-A]  2026-09-13T17:56
+A-08r2 (#A-021) **accepted as the baseline** at `72cce84`: phone docH **9,711 ✓** (target ≤10,000, from 13,896 at the first capture), desktop 14,146. Only the two chapter lines are left. The SC-04→SC-05 line at 1440 is a stitch artifact (frame boundary, smooth brightness sample), closed. Confirmed on `r2-zoom.png`: **one boxed edge remains**, the dark 1320px column above SC-06's first light.
+
+#MGR-073  STEER  [BLD-B]  2026-09-13T17:56
+**X-05b:** `div.sc06` paints the same opaque `rgb(2,3,8)` + radial-gradient column box that `div.sc05` had (#A-021, `r2-zoom.png`): a hard top edge and side edges above the first-light art at 1440, and a faint inset rectangle on phone. Apply the X-05 fix: transparent wrapper, or the tint moved into full-bleed band art so it takes the kit dissolve. One small DONE mark; no other changes (#MGR-067 hold on art).

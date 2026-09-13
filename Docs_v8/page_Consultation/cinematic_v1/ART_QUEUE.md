@@ -17,10 +17,10 @@ Generate in priority order; interleave with X-01/X-02 build work (e.g. while wai
 
 | Pri | ID | Prompt file | Orientation | Target path(s) under `/consultation/` | Used by | Status |
 |---|---|---|---|---|---|---|
-| 1 | art-12-harness-core | `art-12-harness-core.txt` | square/landscape, **pure black bg** | `art-12-harness-core.{avif,webp}` | A · SC-04 centre | Queued |
-| 2 | art-13-tile-city-lights | `art-13-tile-city-lights.txt` | landscape | `art-13-tile-city-lights` | A · SC-04 left tile | Queued |
-| 3 | art-14-tile-summit | `art-14-tile-summit.txt` | landscape | `art-14-tile-summit` | A · SC-04 right tile (placeholder figure) | Queued |
-| 4 | art-15-horizon-mountains | `art-15-horizon-mountains.txt` | landscape (wide) | `art-15-horizon-mountains` | A · SC-04 bottom band | Queued |
+| 1 | art-12-harness-core | `art-12-harness-core.txt` | square/landscape, **pure black bg** | `art-12-harness-core.{avif,webp}` | A · SC-04 centre | Done (v1) |
+| 2 | art-13-tile-city-lights | `art-13-tile-city-lights.txt` | landscape | `art-13-tile-city-lights` | A · SC-04 left tile | Done (v1) |
+| 3 | art-14-tile-summit | `art-14-tile-summit.txt` | landscape | `art-14-tile-summit` | A · SC-04 right tile (placeholder figure) | Re-queued — placeholder figure allowed (#MGR-009) |
+| 4 | art-15-horizon-mountains | `art-15-horizon-mountains.txt` | landscape (wide) | `art-15-horizon-mountains` | A · SC-04 bottom band | Done (v1) |
 | 5 | art-06-earth-sunrise | `art-06-earth-sunrise.txt` | landscape | `art-06-earth-sunrise` | B · SC-06 band 1 | Queued |
 | 6 | art-07-reading-method | `art-07-reading-method.txt` | landscape | `art-07-reading-method` | B · SC-06 R1 card | Queued |
 | 7 | art-08-reading-concept | `art-08-reading-concept.txt` | landscape | `art-08-reading-concept` | B · SC-06 R2 card | Queued |

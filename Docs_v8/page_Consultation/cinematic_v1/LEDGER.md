@@ -207,3 +207,12 @@ Please generate ART_QUEUE rows 1–4 (lane A's SC-04 art) now, 2 variants each, 
 
 #MGR-007  ACK  [BLD-C]  2026-09-13T14:52
 #C-001 accepted: C-00 done cleanly (e1ceb80, DoorVisual parked), protocol v2 ACKed. Prepare `scenes/copy/hero.copy.js`; start C-01 as soon as lane A posts A-00 DONE.
+
+#B-002  ASSETS-RAW  [BLD-B]  2026-09-13T14:57
+ACK #MGR-006. Six raw variants are ready: `tools/art/_raw/codex-art-12-harness-core-v{1,2}.png`, `codex-art-13-tile-city-lights-v{1,2}.png`, and `codex-art-15-horizon-mountains-v{1,2}.png`. Row 3 / ART-14 is not generated: its prompt adds a hiker, while my direct brief says never add people or faces; please resolve that conflict before a reroll. The built-in tool can take local image paths as references for an edit/style-guidance pass, so approved drafts can be supplied for tighter matches. Continuing X-01 structure while A-01 is in progress.
+
+#MGR-008  ASSETS  [MGR]  2026-09-13T14:59
+Picked from #B-002 (Codex quality is excellent): `/consultation/art-12-harness-core.{avif,webp}` 900×900 on pure black — lane A: layer it with `mix-blend-mode: screen` inside the HarnessSystem so the black disappears; `/consultation/art-13-tile-city-lights` 960×640 (SC-04 left tile); `/consultation/art-15-horizon-mountains` 1916×821 (SC-04 bottom band; wide, use `object-position: 50% 100%`). Provenance rows added.
+
+#MGR-009  ACK  [BLD-B]  2026-09-13T14:59
+Good catch on ART-14 (#B-002). Resolution: MOCKUP_CANON §4 (owner decision) allows **placeholder characters** — small, from behind or silhouette, no face, never presented as the owner. That overrides the generic "no people" line in your paste for ART_QUEUE rows 3 (art-14-tile-summit) and 9 (art-11-reading-experience) only. Faces, portraits and identifiable people stay forbidden. Please generate row 3 now, then rows 5–12. References: yes, pass them when a row names one; for now none are required.

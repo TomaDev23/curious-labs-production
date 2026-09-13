@@ -13,13 +13,14 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | A-02 | SC-02 two doors to MOCK-D1/M1 (`SCENE_SPECS` SC-02) — takes over v1 B-06; may reuse C's parked `visuals/DoorVisual.jsx` | A-01 | Done |
 | A-03 | SC-03 three walls to MOCK-D1 (`WallsScene.jsx`) — takes over v1 B-07 | A-01 | Done |
 | A-04 | SC-04 contribution + HarnessSystem to MOCK-D2 | A-01 | Done |
-| A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | **Next after A-08r** (#MGR-055) |
+| A-05 | Retire ChapterMark rows page-wide once all scenes use `Band`/`Eyebrow`; final scene order in `ConsultationContent.jsx` | all scenes | Done — verified (#A-019, #MGR-060); dead ChapterMark code = post-release cleanup |
 | A-06 | **DR-10 walker transition** SC-03 → SC-04 (scroll-scrubbed; card below) | A-04, ART-19 poses | Done (#A-011/#A-013; real poses A-06d #A-017, stride-1↔2, 19d dropped) |
 | A-06c | Polish (Done #A-014): doors void atmosphere (nebula haze + brighter orbit arc, no planet); harness core ~25% larger + brighter bloom (MOCK-D2) | — | Done (#A-014, ACK #MGR-042) |
 | A-07 | **SC-09 final horizon + pending contact + page footer** (moved from C-04): SCENE_SPECS SC-09 + MOTIF_PROGRESSION (centred header, ART-17 + walker on the ridge, quote allowed, pending contact state) | A-06c | Done (#A-014, ACK #MGR-042) |
 | A-08 | **Full-page capture audits** (read-only, your headless Chrome): stitched full-page captures of `/ai-consultation` at 1440 and 390, one PNG per scene band plus one scaled-down whole-page strip, re-run on manager request; paths in the mark | — | Done (#A-015); **re-run = A-08r** (#MGR-055) |
 | A-08r | **Re-run A-08 at current HEAD** after C-05: p390 (new docH + strip) **and** d1440 reduced-motion (for the M-16 seams pass) | C-05 | p390 Done (#A-018, docH 11,211); d1440 folded into A-09c |
-| A-09c | **Phone height cuts** (#MGR-058): kit phone band padding 44px; SC-04 packages card clamp + ridge cue; SC-04 ≤ 1,300; then d1440 capture + A-08r2 p390 after X-04/C-06 | A-08r | Queued — next |
+| A-09c | **Phone height cuts** (#MGR-058): kit phone band padding 44px; SC-04 packages card clamp + ridge cue; SC-04 ≤ 1,300 | A-08r | Done (#A-019, 1d108b8; SC-04 1,251; docH 10,743) |
+| A-10 | **Seams in the kit** (#MGR-062): Band hairline default none (walls explicit bottom); `.k-band__art` top/bottom mask dissolve; confirm OPERATIONAL pill; then d1440 + p390 re-capture (= A-08r2) | M-16 | Queued — next |
 | A-09 | **Phone fidelity pass for lane-A scenes** (SC-02/03/04/09 + seam fallback) vs MOCK-M1 — side-by-sides at 390, fix deltas | A-08 | Done (#A-016 + A-09b #A-017, ACK #MGR-051/#MGR-053) |
 
 ## Lane B — AI consultation builder B (Codex) · person + approach
@@ -29,6 +30,7 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | X-00 | Onboard; report whether your harness can generate images (see paste) | — | Done |
 | X-01 | SC-05 person + this market to MOCK-D5/M1 (`SCENE_SPECS` SC-05) | A-01 (kit) — start with structure/art slots before it lands | Done (+X-01b, #B-012) |
 | X-04 | **Phone height cuts** (#MGR-057): SC-06 closing statement band hidden on phone, spacing; SC-05 image card 340px bottom-anchored; SC-06 ≤ 1,950, SC-05 ≤ 1,150 | X-03 | Queued — next |
+| X-05 | **Seams** (#MGR-063): SC-05→SC-06 dissolve check; SC-06 closing band de-quoted on desktop | A-10 | Queued (with X-04) |
 | X-02 | SC-06 approach path + four reading cards to MOCK-D3/M1, readings stay inline + hash-addressable | A-01 | Done (+X-02b, #B-012; X-03 phone compression #B-013) |
 
 ## Lane C — AI consultation builder C (Sonnet) · hero + engagement + questions + contact
@@ -42,6 +44,7 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | C-03 | SC-08 questions to MOCK-D4 | A-01 | Done (#C-006, ACK #MGR-045) |
 | C-04 | ~~SC-09 final horizon + contact + footer~~ → **moved to lane A as A-07** (rebalance 2026-09-13) | — | Moved |
 | C-06 | **Phone height cuts** (#MGR-059): SC-07 step bodies 2-line clamp + trailing note hidden (≤760); SC-08 5 visible (≤880); hero bottom space (≤870) | C-05 | Queued — next |
+| C-07 | **Seams** (#MGR-064): SC-07 ribbons top/bottom dissolve, no line SC-07→SC-08 | A-10 | Queued (with C-06) |
 | C-05 | **Lane-C QA pass**: phone fidelity for SC-01/07/08 vs MOCK-M1; keyboard order + visible focus (QA-12/13) through hero buttons, engagement rows, all 15 questions + View all; reduced motion (QA-25: hero entry skipped, rail drawn); 320/768/1024 layouts; fix what you find | C-03 | Done (#C-007, ACK #MGR-054) |
 
 ## Manager
@@ -51,7 +54,7 @@ the bottom of this file (they still hold useful detail for SC-01…03; where the
 | M-05 | Audit every DONE against its mockup (side-by-side captures) → ACK / STEER / BLOCKING | Standing |
 | M-10 | Serif font self-hosted (`public/consultation/fonts/newsreader-*`, OFL) | Done |
 | M-11 | ART-05 Phnom Penh placeholders (balcony desktop/mobile, riverside dusk) | Done — owner to judge realism |
-| M-16 | Seams/continuity pass vs `MOTIF_PROGRESSION §2` on the fresh d1440 + p390 strips → per-lane deltas | Queued (after A-08r) |
+| M-16 | Seams/continuity pass vs `MOTIF_PROGRESSION §2` on the fresh d1440 + p390 strips → per-lane deltas | Done (#MGR-061 → A-10/X-05/C-07); re-check on A-08r2 |
 | M-17 | Release readiness (M-06 successor): build, console, QA spot list, owner review package → ask owner before any merge | Queued (after A-05 + M-16) |
 | M-12 | Lane A art: `art-12-harness-core` (glowing sphere), `art-13-tile-city-lights`, `art-14-tile-summit`, `art-15-horizon-mountains` | Done (Codex route; ART_PROVENANCE) |
 | M-13 | Lane B art: `art-06-earth-sunrise`, `art-07/08/10/11` reading images | Done (Codex route; batch 5 replaced 06/08/11) |

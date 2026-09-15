@@ -13,6 +13,12 @@ const VISTA = {
     webp: '/consultation/art-03-door-business.webp',
     width: 640,
     height: 896
+  },
+  product: {
+    avif: '/consultation/art-26-door-product-desktop.avif',
+    webp: '/consultation/art-26-door-product-desktop.webp',
+    width: 640,
+    height: 896
   }
 };
 

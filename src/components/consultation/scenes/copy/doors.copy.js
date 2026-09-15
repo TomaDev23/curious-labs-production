@@ -1,41 +1,58 @@
-// SC-02 copy — COPY_CANON.md §SC-02 (the mockup's words adapted to the locked framing).
-// Edit COPY_CANON first, then sync here.
+// SC-02 copy — owner-supplied three-door mockup update, 2026-09-16.
+// Mockup booking language is intentionally adapted to the page's no-booking framing.
 export const doorsCopy = {
-  eyebrow: { text: 'Two audiences. One conversation.', source: 'COPY_CANON' },
-  headline: { lines: ['Different starting points.', 'Same destination.'], source: 'COPY_CANON' },
+  eyebrow: { text: 'Three doors. One advisory system.', source: 'OWNER_MOCKUP_2026-09-16' },
+  headline: { lines: ['Three starting points.', 'One clearer way forward.'], source: 'OWNER_MOCKUP_2026-09-16' },
   lead: {
-    text: 'Wherever you are with AI, I meet you there. Different contexts, same goal — real value, practical outcomes, and a clearer way forward.',
-    source: 'COPY_CANON'
+    text: 'Enter through business consultation, product advisory, or AI consultation. Different starting points. A shared destination — real value, practical outcomes, and a brighter tomorrow.',
+    source: 'OWNER_MOCKUP_2026-09-16'
   },
-  // Unused since MOTIF_PROGRESSION (quote blocks only in SC-01/05/09).
-  quote: { lines: ['Two paths.', 'A wider horizon.'], source: 'COPY_CANON', unused: true },
-  quoteLabel: { text: 'CuriousLabs', source: 'COPY_CANON' },
+  quote: { lines: ['Different perspectives.', 'A brighter tomorrow.'], source: 'OWNER_MOCKUP_2026-09-16' },
+  quoteLabel: { text: 'CuriousLabs', source: 'OWNER_MOCKUP_2026-09-16' },
   cards: {
-    source: 'COPY_CANON',
-    technical: {
-      micro: 'For technical companies',
-      title: ['You ship technology.', 'Let’s make AI work at scale.'],
-      body: 'You already build products. Now you need AI working inside how the team works — the coordination and the harnessing rules that keep it dependable as you hand it more of the work.',
-      chips: ['Team coordination', 'Harnessing rules', 'AI at scale', 'Review & checks'],
-      cta: 'Start a conversation',
-      foot: 'Business advisory. Not programming instruction.',
-      phoneTitle: ['For Technical', 'Companies'],
-      phoneBody: 'Teams already shipping products, looking to make AI work at scale.'
-    },
+    source: 'OWNER_MOCKUP_2026-09-16',
     business: {
-      micro: 'For non-technical companies',
-      title: ['You see the potential.', 'I’ll help you make it real.'],
-      body: 'You don’t need to be a tech company to get real value from AI. I help you find the real use cases, design a harness that fits how your business works, and plan practical next steps — without the hype.',
-      chips: ['Real use cases', 'Harness design', 'Operations', 'Team training'],
+      micro: 'For businesses and leaders',
+      title: ['Business', 'Consultation'],
+      body: 'Practical business advisory for operations, growth, decisions, and action plans.',
+      chips: ['Operations', 'Action plans', 'Growth'],
       cta: 'Start a conversation',
-      foot: 'Business consultation. No code required.',
-      phoneTitle: ['For Non-Technical', 'Companies'],
-      phoneBody: 'Established businesses exploring where AI can create real value in how they work.'
+      side: { lines: ['From challenges', 'to progress'] },
+      foot: { lines: ['Stronger businesses.', 'Brighter horizons.'] },
+      connectionTitle: 'Business consultation',
+      connectionBody: 'Real-world business insight and operational clarity.'
+    },
+    product: {
+      micro: 'The junction of possibility',
+      title: ['Product', 'Advisory'],
+      body: 'Where business understanding and AI capability meet. A guided path for turning ideas, teams, and tools into a workable product direction.',
+      chips: ['Strategy', 'Systems', 'Execution'],
+      cta: 'Start a conversation',
+      side: { lines: ['Ideas', 'People', 'Tools', 'Real outcomes'] },
+      foot: { lines: ['Where perspectives converge.', 'Products take flight.'] },
+      connectionTitle: 'Product advisory',
+      connectionBody: 'Where it comes together. From insight to a workable direction.'
+    },
+    ai: {
+      micro: 'For teams and innovators',
+      title: ['AI', 'Consultation'],
+      body: 'Practical AI guidance, methods, training, and workflows designed for real-world use.',
+      chips: ['Methods', 'Training', 'Workflows'],
+      cta: 'Start a conversation',
+      side: { lines: ['From potential', 'to practice'] },
+      foot: { lines: ['More capable people.', 'A more open tomorrow.'] },
+      connectionTitle: 'AI consultation',
+      connectionBody: 'Practical AI capability for real use.'
     }
   },
-  closerLeft: { lines: ['Same curiosity.', 'More possibilities.'], source: 'COPY_CANON' },
-  closerRight: { lines: ['Same destination.', 'A more useful tomorrow.'], source: 'COPY_CANON' },
-  closerPhone: { lines: ['Same questions.', 'New possibilities.'], source: 'COPY_CANON' }
+  closer: { lines: ['Same destination.', 'A brighter tomorrow.'], source: 'OWNER_MOCKUP_2026-09-16' },
+  connections: {
+    eyebrow: 'How it all fits together',
+    title: ['How the three paths connect'],
+    lead: 'Different expertise. A unified approach. Business, AI, and product work best together — helping you move from where you are to what’s possible.',
+    foot: { lines: ['Three paths. A brighter tomorrow.'] },
+    source: 'OWNER_MOCKUP_2026-09-16'
+  }
 };
 
 export default doorsCopy;

@@ -188,7 +188,7 @@ export function WalkerSeam({ children }) {
     return () => {
       ro.disconnect();
       window.removeEventListener('load', measure);
-      document.querySelectorAll('#walls .w-paths, #walls .w-foot, #walls .w-backdrop').forEach((el) => { el.style.opacity = ''; });
+      document.querySelectorAll('#walls .w-paths, #walls .w-foot').forEach((el) => { el.style.opacity = ''; });
     };
   }, []);
 
@@ -211,11 +211,9 @@ export function WalkerSeam({ children }) {
       const wallsOpacity = String(1 - ramp(p, 0, 0.14));
       // Looked up per frame: the walls' path SVG mounts only after its own measurement.
       document.querySelectorAll('#walls .w-paths, #walls .w-foot').forEach((el) => { el.style.opacity = wallsOpacity; });
-      // #MGR-refine: fade the walls' own terrain backdrop out fast at the start of the pin,
-      // otherwise it stays painted under the seam's ws-ground (same ART-04 file) and the two
-      // terrain layers overlap as a jagged double surface while the walker is pinned.
-      const wallsBackdropOpacity = String(1 - ramp(p, 0, 0.08));
-      document.querySelectorAll('#walls .w-backdrop').forEach((el) => { el.style.opacity = wallsBackdropOpacity; });
+      // #MGR-refine: keep the walls' terrain backdrop visible (it scrolls up naturally,
+      // revealing the starfield — the "revelation of the background" the owner wants).
+      // Do NOT fade it out; the previous fade made the terrain "disappear" abruptly.
 
       // Pose: back → three-quarter → profile walk cycle.
       let pose = 'back';
@@ -232,9 +230,10 @@ export function WalkerSeam({ children }) {
       poolRef.current.style.transform = `translate(calc(-50% + ${dx}px), -50%)`;
       poolRef.current.style.opacity = String(1 - 0.8 * walk);
 
-      // Ground strip travels with the pinned walker once the walls' own terrain has scrolled away,
-      // and is gone before the pin releases (so it never scrolls up as a band).
-      groundRef.current.style.opacity = (ramp(p, 0.04, 0.2) * (1 - ramp(p, 0.72, 0.9))).toFixed(3);
+      // Ground strip: brief bridge at the very start of the pin (covers the moment the walls'
+      // terrain begins to scroll), then dissolves fast to reveal the starfield behind it —
+      // the "revelation of the background" the owner wants. No sustained double terrain.
+      groundRef.current.style.opacity = (ramp(p, 0.02, 0.06) * (1 - ramp(p, 0.08, 0.16))).toFixed(3);
 
       // Header slides in from the far side, attached to the thread's end.
       const pull = easeInOut(ramp(p, 0.3, 0.9));

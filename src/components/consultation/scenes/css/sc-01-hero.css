@@ -37,8 +37,18 @@
 /* Pull the art's clipping layer up behind the navbar (page shell's pt-24) so
    it reaches the true top of the viewport. Must be on `.k-band__art` (the
    layer that clips) — putting it on the inner `.cl-art` instead just gets
-   clipped by the still-at-top-0 parent, leaving a hard edge at y≈96 (#A-009). */
-.cl-consultation .h-band .k-band__art { top: -96px; }
+   clipped by the still-at-top-0 parent, leaving a hard edge at y≈96 (#A-009).
+   #MGR-refine: extend the art below the hero section so the globe bleeds into
+   the doors header (the "revelation of the background" transition). The doors
+   cards (opaque k-surface) cover the globe naturally where they sit. The mask
+   keeps the top fade (navbar) and adds a late bottom fade so the globe
+   dissolves cleanly just before the cards begin. */
+.cl-consultation .h-band .k-band__art {
+  top: -96px;
+  bottom: -360px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--k-art-fade), #000 88%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 var(--k-art-fade), #000 88%, transparent 100%);
+}
 
 .cl-consultation .h-grid {
   display: grid;

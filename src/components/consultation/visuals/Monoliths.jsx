@@ -78,6 +78,7 @@ export function LightPaths({ stageRef, wallSelector, accents }) {
           };
         return (
           <g key={d} className="w-paths__trace" style={{ color: accents[i] }}>
+            <path d={d} className="w-paths__river" filter="url(#w-glow)" />
             <motion.path d={d} className="w-paths__glow" filter="url(#w-glow)" {...draw} />
             <motion.path d={d} className="w-paths__core" {...draw} />
           </g>

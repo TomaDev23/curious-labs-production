@@ -42,6 +42,7 @@ function HeroScene() {
         position: '70% 50%',
         parallax: 24
       }}
+      artEdge="top"
     >
       <div className="h-grid">
         <div className="h-copy">

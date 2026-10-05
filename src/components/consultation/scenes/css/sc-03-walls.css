@@ -5,11 +5,11 @@
 .cl-consultation .w-backdrop { position: absolute; inset: 0; }
 .cl-consultation .w-backdrop__art {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: var(--w-art-bottom, 40px);
-  width: var(--w-art-width, max(100%, 2100px));
+  width: 100%;
   aspect-ratio: 2560 / 1200;
-  transform: translateX(var(--w-art-shift, -50%));
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 90%, transparent 100%);
   mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 90%, transparent 100%);
 }
@@ -19,6 +19,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 72% 50%;
 }
 
 /* ── Header ───────────────────────────────────────────────────────────── */
@@ -146,27 +147,26 @@
   .cl-consultation .w-wall--1 { rotate: -1.4deg; }
   .cl-consultation .w-wall--3 { rotate: 1.2deg; }
 
-  /* ART-04 larger, placed so the moon sits big above/behind wall 03 and the cliffs frame both sides. */
+  /* ART-04 full-bleed, moon sits top-right behind wall 03 via object-position. */
   .cl-consultation .w-backdrop__art {
-    --w-art-width: max(100%, 2000px);
-    --w-art-shift: -55%;
     top: 40px;
     bottom: auto;
     filter: brightness(1.12);
   }
+  .cl-consultation .w-backdrop__art img { object-position: 72% 42%; }
 
   .cl-consultation .w-backdrop__ground {
     display: block;
     position: absolute;
-    left: 50%;
+    left: 0;
+    right: 0;
     bottom: 0;
-    width: max(100%, 1800px);
+    width: 100%;
     aspect-ratio: 2560 / 1200;
-    transform: translateX(-50%);
     -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 42%, #000 62%, #000 88%, transparent 100%);
     mask-image: linear-gradient(180deg, transparent 0%, transparent 42%, #000 62%, #000 88%, transparent 100%);
   }
-  .cl-consultation .w-backdrop__ground img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+  .cl-consultation .w-backdrop__ground img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 72% 100%; }
 
   .cl-consultation .w-rocks {
     display: block;
@@ -190,8 +190,9 @@
     pointer-events: none;
   }
   .cl-consultation .w-paths__trace path { fill: none; stroke: currentColor; stroke-linecap: round; }
-  .cl-consultation .w-paths__core { stroke-width: 2.5; }
-  .cl-consultation .w-paths__glow { stroke-width: 18; opacity: .75; }
+  .cl-consultation .w-paths__river { stroke-width: 60; opacity: .22; }
+  .cl-consultation .w-paths__core { stroke-width: 4; }
+  .cl-consultation .w-paths__glow { stroke-width: 36; opacity: .55; }
 
   .cl-consultation .w-figure {
     display: block;
@@ -226,12 +227,11 @@
 @media (max-width: 1099px) {
   .cl-consultation .w-stage { margin-top: 40px; }
   .cl-consultation .w-wall { min-height: 360px; padding: 48px 26px 32px; }
-  .cl-consultation .w-backdrop__art { --w-art-width: max(100%, 1600px); --w-art-bottom: 0px; }
+  .cl-consultation .w-backdrop__art { bottom: 0; }
 }
 @media (max-width: 767px) {
   .cl-consultation .w-backdrop__art {
-    --w-art-width: 100%;
-    --w-art-bottom: 0px;
+    bottom: 0;
     aspect-ratio: auto;
     top: 0;
     height: 100%;

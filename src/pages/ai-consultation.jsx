@@ -50,6 +50,15 @@ export default function AiConsultationPage() {
           desktop and the full 56px bar on mobile, with consistent galaxy
           breathing room above the first panel. */}
       <div className="relative z-10 pt-24">
+        <div
+          className="mx-auto mb-4 flex w-[calc(100%_-_2rem)] max-w-[1240px] items-center justify-center rounded-md border border-lime-300/40 bg-[#071018]/90 px-4 py-2 shadow-[0_0_30px_rgba(190,242,100,0.12)] backdrop-blur-md"
+          role="status"
+          aria-label="Work in progress"
+        >
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.26em] text-lime-300">
+            Work in progress
+          </span>
+        </div>
         <ConsultationContent />
       </div>
 
